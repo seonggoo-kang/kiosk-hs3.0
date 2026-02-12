@@ -1,8 +1,7 @@
 "use client"
 
-import { useState, useMemo, useCallback, Suspense } from "react"
+import { useState, useMemo, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { X } from "lucide-react"
 import { KioskHeader } from "@/components/kiosk/kiosk-header"
 import { KioskFooter } from "@/components/kiosk/kiosk-footer"
 import { ActionBar } from "@/components/kiosk/action-bar"
@@ -10,7 +9,7 @@ import { ProductDetailPanel } from "@/components/kiosk/product-detail-panel"
 import { OptionSelector } from "@/components/kiosk/option-selector"
 import { useOrder } from "@/lib/order-context"
 import { products, flavors, optionGroups, type Flavor, type CartItemOption } from "@/lib/mock-data"
-import { cn } from "@/lib/utils"
+
 
 function OptionsContent() {
   const router = useRouter()
@@ -23,7 +22,15 @@ function OptionsContent() {
     [productId]
   )
 
-  const [selectedFlavors, setSelectedFlavors] = useState<Flavor[]>([])
+  // Read pre-selected flavors from URL (set by the flavors page)
+  const [selectedFlavors] = useState<Flavor[]>(() => {
+    const flavorIds = searchParams.get("flavors")
+    if (!flavorIds) return []
+    const ids = flavorIds.split(",")
+    return ids
+      .map((id) => flavors.find((f) => f.id === id))
+      .filter((f): f is Flavor => f !== undefined)
+  })
   const [optionState, setOptionState] = useState<Record<string, { selectedId: string | null; quantities: Record<string, number> }>>(() => {
     const init: Record<string, { selectedId: string | null; quantities: Record<string, number> }> = {}
     optionGroups.forEach((group) => {
@@ -35,18 +42,6 @@ function OptionsContent() {
     })
     return init
   })
-
-  const toggleFlavor = useCallback(
-    (flavor: Flavor) => {
-      setSelectedFlavors((prev) => {
-        const exists = prev.find((f) => f.id === flavor.id)
-        if (exists) return prev.filter((f) => f.id !== flavor.id)
-        if (product && prev.length >= product.maxFlavors) return prev
-        return [...prev, flavor]
-      })
-    },
-    [product]
-  )
 
   const handleOptionSelect = (groupId: string, optionId: string) => {
     setOptionState((prev) => ({
@@ -131,74 +126,35 @@ function OptionsContent() {
       {/* Scrollable options area */}
       <div className="flex-1 overflow-y-auto bg-muted/40">
         <div className="p-4">
-          {/* Flavor selection */}
-          {product.requiresFlavor && (
+          {/* Selected flavors summary */}
+          {product.requiresFlavor && selectedFlavors.length > 0 && (
             <section className="mb-6">
-              <h2 className="mb-2 text-base font-bold text-foreground">
-                {product.maxFlavors}가지 맛
-              </h2>
-
-              {/* Selected flavors */}
-              {selectedFlavors.length > 0 && (
-                <div className="mb-3 flex flex-wrap gap-2">
-                  {selectedFlavors.map((f) => (
-                    <span
-                      key={f.id}
-                      className="flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium"
-                    >
-                      <span
-                        className="inline-block h-3 w-3 rounded-full"
-                        style={{ backgroundColor: f.color }}
-                      />
-                      {f.name}
-                      <button
-                        onClick={() => toggleFlavor(f)}
-                        className="ml-0.5 text-muted-foreground hover:text-foreground"
-                        aria-label={`${f.name} 제거`}
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              )}
-
-              {/* Flavor grid */}
-              <div className="grid grid-cols-3 gap-2">
-                {flavors.map((flavor) => {
-                  const isSelected = selectedFlavors.some((f) => f.id === flavor.id)
-                  const isDisabled =
-                    !isSelected && selectedFlavors.length >= product.maxFlavors
-
-                  return (
-                    <button
-                      key={flavor.id}
-                      onClick={() => !isDisabled && toggleFlavor(flavor)}
-                      disabled={isDisabled}
-                      className={cn(
-                        "flex items-center gap-2 rounded-xl border-2 p-2.5 text-left transition-all active:scale-[0.97]",
-                        isSelected
-                          ? "border-primary bg-accent"
-                          : isDisabled
-                          ? "border-border bg-muted opacity-50"
-                          : "border-border bg-card"
-                      )}
-                    >
-                      <span
-                        className="inline-block h-5 w-5 shrink-0 rounded-full"
-                        style={{ backgroundColor: flavor.color }}
-                      />
-                      <span className="text-[11px] font-medium leading-tight text-foreground">
-                        {flavor.name}
-                      </span>
-                    </button>
-                  )
-                })}
+              <div className="mb-2 flex items-center justify-between">
+                <h2 className="text-base font-bold text-foreground">
+                  선택한 맛 ({selectedFlavors.length}/{product.maxFlavors})
+                </h2>
+                <button
+                  onClick={() => router.push(`/menu/flavors?productId=${product.id}`)}
+                  className="text-xs font-semibold text-primary"
+                >
+                  맛 변경하기
+                </button>
               </div>
 
-              <p className="mt-2 text-xs text-muted-foreground">
-                {selectedFlavors.length}/{product.maxFlavors} 맛 선택됨
-              </p>
+              <div className="flex flex-wrap gap-2">
+                {selectedFlavors.map((f) => (
+                  <span
+                    key={f.id}
+                    className="flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium"
+                  >
+                    <span
+                      className="inline-block h-3 w-3 shrink-0 rounded-full"
+                      style={{ backgroundColor: f.color }}
+                    />
+                    {f.name}
+                  </span>
+                ))}
+              </div>
             </section>
           )}
 

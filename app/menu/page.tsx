@@ -61,9 +61,9 @@ function MenuContent() {
 
   const handleProductSelect = (product: Product) => {
     if (state.selectedProductId === product.id) {
-      // Double tap = go straight to options
+      // Double tap = go straight to flavor selection (or cart if no flavor needed)
       if (product.requiresFlavor) {
-        router.push(`/menu/options?productId=${product.id}`)
+        router.push(`/menu/flavors?productId=${product.id}`)
       } else {
         dispatch({
           type: "ADD_TO_CART",
@@ -83,7 +83,7 @@ function MenuContent() {
 
   const handleFlavorSelect = () => {
     if (selectedProduct) {
-      router.push(`/menu/options?productId=${selectedProduct.id}`)
+      router.push(`/menu/flavors?productId=${selectedProduct.id}`)
     }
   }
 
