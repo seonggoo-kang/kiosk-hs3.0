@@ -65,8 +65,12 @@ function OptionsContent() {
     }))
   }
 
+  const canAddToCart = product
+    ? product.requiresFlavor ? selectedFlavors.length > 0 : true
+    : false
+
   const handleAddToCart = () => {
-    if (!product) return
+    if (!product || !canAddToCart) return
 
     const cartOptions: CartItemOption[] = []
     optionGroups.forEach((group) => {
@@ -107,6 +111,8 @@ function OptionsContent() {
         quantity: 1,
       },
     })
+
+    // Navigate back to menu after adding
     router.push("/menu")
   }
 
@@ -251,7 +257,7 @@ function OptionsContent() {
         onBack={() => router.push("/menu")}
         primaryLabel="담기"
         onPrimary={handleAddToCart}
-        primaryDisabled={product.requiresFlavor && selectedFlavors.length === 0}
+        primaryDisabled={!canAddToCart}
       />
 
       <KioskFooter />

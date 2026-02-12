@@ -18,7 +18,7 @@ const ITEMS_PER_PAGE = 12
 export default function MenuPage() {
   const router = useRouter()
   const { state, dispatch } = useOrder()
-  const [activeCategory, setActiveCategory] = useState(categories[3].id) // default to 포장가능 아이스크림
+  const [activeCategory, setActiveCategory] = useState(categories[3].id)
   const [page, setPage] = useState(0)
 
   const categoryProducts = useMemo(
@@ -45,10 +45,25 @@ export default function MenuPage() {
   }
 
   const handleProductSelect = (product: Product) => {
-    dispatch({
-      type: "SELECT_PRODUCT",
-      payload: state.selectedProductId === product.id ? null : product.id,
-    })
+    if (state.selectedProductId === product.id) {
+      // Double tap = go straight to options/add
+      if (product.requiresFlavor) {
+        router.push(`/menu/options?productId=${product.id}`)
+      } else {
+        dispatch({
+          type: "ADD_TO_CART",
+          payload: {
+            cartId: `${product.id}-${Date.now()}`,
+            product,
+            selectedFlavors: [],
+            options: [],
+            quantity: 1,
+          },
+        })
+      }
+    } else {
+      dispatch({ type: "SELECT_PRODUCT", payload: product.id })
+    }
   }
 
   const handleFlavorSelect = () => {
@@ -71,6 +86,30 @@ export default function MenuPage() {
       })
     }
   }
+
+  // Determine primary button state
+  const getPrimaryConfig = () => {
+    if (selectedProduct) {
+      return {
+        label: selectedProduct.requiresFlavor ? "맛 선택하기" : "담기",
+        disabled: false,
+        action: () => {
+          if (selectedProduct.requiresFlavor) {
+            handleFlavorSelect()
+          } else {
+            handleAddSimple()
+          }
+        },
+      }
+    }
+    return {
+      label: "주문하기",
+      disabled: !hasCart,
+      action: () => router.push("/discounts"),
+    }
+  }
+
+  const primary = getPrimaryConfig()
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
@@ -142,12 +181,15 @@ export default function MenuPage() {
         )}
       </div>
 
-      {/* Product Detail / Promo area */}
-      {selectedProduct ? (
+      {/* Product Detail when selected */}
+      {selectedProduct && (
         <div className="shrink-0 border-t border-border bg-card p-3">
           <ProductDetailPanel product={selectedProduct} />
         </div>
-      ) : !hasCart ? (
+      )}
+
+      {/* Promo banner when nothing selected and no cart */}
+      {!selectedProduct && !hasCart && (
         <div className="shrink-0 border-t border-border bg-card p-3">
           <div className="flex h-28 items-center justify-center rounded-xl bg-gradient-to-br from-accent to-muted">
             <div className="text-center">
@@ -156,7 +198,7 @@ export default function MenuPage() {
             </div>
           </div>
         </div>
-      ) : null}
+      )}
 
       {/* Cart strip */}
       <CartStrip />
@@ -172,25 +214,9 @@ export default function MenuPage() {
           }
         }}
         backLabel={selectedProduct ? "이전으로" : "처음으로"}
-        primaryLabel={
-          selectedProduct
-            ? selectedProduct.requiresFlavor
-              ? "맛 선택하기"
-              : "담기"
-            : "주문하기"
-        }
-        primaryDisabled={!selectedProduct && !hasCart}
-        onPrimary={() => {
-          if (selectedProduct) {
-            if (selectedProduct.requiresFlavor) {
-              handleFlavorSelect()
-            } else {
-              handleAddSimple()
-            }
-          } else if (hasCart) {
-            router.push("/discounts")
-          }
-        }}
+        primaryLabel={primary.label}
+        primaryDisabled={primary.disabled}
+        onPrimary={primary.action}
       />
 
       <KioskFooter />
