@@ -25,11 +25,21 @@ export function OptionSelector({
   onQuantityChange,
   unit,
 }: OptionSelectorProps) {
+  const showQuantity = hasQuantity && isSelected && onQuantityChange
+
   return (
-    <button
+    <div
+      role="button"
+      tabIndex={0}
       onClick={onSelect}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault()
+          onSelect()
+        }
+      }}
       className={cn(
-        "flex flex-col items-center justify-center gap-1.5 rounded-xl border-2 p-3 transition-all active:scale-[0.97]",
+        "flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border-2 p-3 transition-all active:scale-[0.97]",
         isSelected
           ? "border-primary bg-accent"
           : "border-border bg-card"
@@ -43,16 +53,18 @@ export function OptionSelector({
           </span>
         )}
       </span>
-      {hasQuantity && isSelected && onQuantityChange && (
-        <QuantityControl
-          value={quantity}
-          onChange={onQuantityChange}
-          min={0}
-          max={99}
-          unit={unit}
-          size="sm"
-        />
+      {showQuantity && (
+        <div onClick={(e) => e.stopPropagation()}>
+          <QuantityControl
+            value={quantity}
+            onChange={onQuantityChange}
+            min={0}
+            max={99}
+            unit={unit}
+            size="sm"
+          />
+        </div>
       )}
-    </button>
+    </div>
   )
 }
