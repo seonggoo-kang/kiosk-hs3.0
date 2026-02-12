@@ -87,30 +87,6 @@ export default function MenuPage() {
     }
   }
 
-  // Determine primary button state
-  const getPrimaryConfig = () => {
-    if (selectedProduct) {
-      return {
-        label: selectedProduct.requiresFlavor ? "맛 선택하기" : "담기",
-        disabled: false,
-        action: () => {
-          if (selectedProduct.requiresFlavor) {
-            handleFlavorSelect()
-          } else {
-            handleAddSimple()
-          }
-        },
-      }
-    }
-    return {
-      label: "주문하기",
-      disabled: !hasCart,
-      action: () => router.push("/discounts"),
-    }
-  }
-
-  const primary = getPrimaryConfig()
-
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
       <KioskHeader title="메뉴 선택" />
@@ -181,8 +157,15 @@ export default function MenuPage() {
         )}
       </div>
 
-      {/* Product Detail when selected */}
-      {selectedProduct && (
+      {/* Product Detail when selected (and no items in cart) */}
+      {selectedProduct && !hasCart && (
+        <div className="shrink-0 border-t border-border bg-card p-3">
+          <ProductDetailPanel product={selectedProduct} />
+        </div>
+      )}
+
+      {/* Product Detail + Cart when selected AND cart has items */}
+      {selectedProduct && hasCart && (
         <div className="shrink-0 border-t border-border bg-card p-3">
           <ProductDetailPanel product={selectedProduct} />
         </div>
@@ -200,24 +183,36 @@ export default function MenuPage() {
         </div>
       )}
 
-      {/* Cart strip */}
+      {/* Cart strip -- always shows if cart has items */}
       <CartStrip />
 
-      {/* Action bar */}
-      <ActionBar
-        onBack={() => {
-          if (selectedProduct) {
-            dispatch({ type: "SELECT_PRODUCT", payload: null })
-          } else {
+      {/* Action bar: When product is selected, show detail actions. When cart exists and no selection, show order action. */}
+      {selectedProduct ? (
+        <ActionBar
+          onBack={() => dispatch({ type: "SELECT_PRODUCT", payload: null })}
+          backLabel="이전으로"
+          primaryLabel={selectedProduct.requiresFlavor ? "맛 선택하기" : "담기"}
+          primaryDisabled={false}
+          onPrimary={() => {
+            if (selectedProduct.requiresFlavor) {
+              handleFlavorSelect()
+            } else {
+              handleAddSimple()
+            }
+          }}
+        />
+      ) : (
+        <ActionBar
+          onBack={() => {
             dispatch({ type: "RESET_ORDER" })
             router.push("/")
-          }
-        }}
-        backLabel={selectedProduct ? "이전으로" : "처음으로"}
-        primaryLabel={primary.label}
-        primaryDisabled={primary.disabled}
-        onPrimary={primary.action}
-      />
+          }}
+          backLabel="처음으로"
+          primaryLabel="주문하기"
+          primaryDisabled={!hasCart}
+          onPrimary={() => router.push("/discounts")}
+        />
+      )}
 
       <KioskFooter />
     </div>
