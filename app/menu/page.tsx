@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useMemo } from "react"
-import { useRouter } from "next/navigation"
-import { ChevronLeft, ChevronRight, IceCreamCone } from "lucide-react"
+import { useState, useMemo, useEffect, Suspense } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { ChevronLeft, ChevronRight, IceCreamCone, Check } from "lucide-react"
 import { KioskHeader } from "@/components/kiosk/kiosk-header"
 import { KioskFooter } from "@/components/kiosk/kiosk-footer"
 import { CategoryTabs } from "@/components/kiosk/category-tabs"
@@ -15,11 +15,25 @@ import { categories, getProductsByCategory, type Product } from "@/lib/mock-data
 
 const ITEMS_PER_PAGE = 12
 
-export default function MenuPage() {
+function MenuContent() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { state, dispatch } = useOrder()
   const [activeCategory, setActiveCategory] = useState(categories[3].id)
   const [page, setPage] = useState(0)
+  const [showAddedToast, setShowAddedToast] = useState(false)
+
+  // Show "item added" toast when coming back from options
+  const justAdded = searchParams.get("added") === "true"
+  useEffect(() => {
+    if (justAdded && state.cart.length > 0) {
+      setShowAddedToast(true)
+      // Clear the param from URL without navigation
+      window.history.replaceState(null, "", "/menu")
+      const timer = setTimeout(() => setShowAddedToast(false), 2500)
+      return () => clearTimeout(timer)
+    }
+  }, [justAdded, state.cart.length])
 
   const categoryProducts = useMemo(
     () => getProductsByCategory(activeCategory),
@@ -46,7 +60,7 @@ export default function MenuPage() {
 
   const handleProductSelect = (product: Product) => {
     if (state.selectedProductId === product.id) {
-      // Double tap = go straight to options/add
+      // Double tap = go straight to options
       if (product.requiresFlavor) {
         router.push(`/menu/options?productId=${product.id}`)
       } else {
@@ -155,23 +169,27 @@ export default function MenuPage() {
             ))}
           </div>
         )}
+
+        {/* Toast notification when item was just added */}
+        {showAddedToast && (
+          <div className="absolute left-1/2 top-4 z-20 -translate-x-1/2 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="flex items-center gap-2 rounded-full bg-foreground px-5 py-3 shadow-lg">
+              <Check className="h-4 w-4 text-primary-foreground" />
+              <span className="text-sm font-semibold text-primary-foreground">
+                상품이 담겼습니다
+              </span>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Product Detail when selected (and no items in cart) */}
-      {selectedProduct && !hasCart && (
+      {/* Bottom area: Product detail OR Promo banner OR nothing (just cart) */}
+      {selectedProduct && (
         <div className="shrink-0 border-t border-border bg-card p-3">
           <ProductDetailPanel product={selectedProduct} />
         </div>
       )}
 
-      {/* Product Detail + Cart when selected AND cart has items */}
-      {selectedProduct && hasCart && (
-        <div className="shrink-0 border-t border-border bg-card p-3">
-          <ProductDetailPanel product={selectedProduct} />
-        </div>
-      )}
-
-      {/* Promo banner when nothing selected and no cart */}
       {!selectedProduct && !hasCart && (
         <div className="shrink-0 border-t border-border bg-card p-3">
           <div className="flex h-28 items-center justify-center rounded-xl bg-gradient-to-br from-accent to-muted">
@@ -186,7 +204,7 @@ export default function MenuPage() {
       {/* Cart strip -- always shows if cart has items */}
       <CartStrip />
 
-      {/* Action bar: When product is selected, show detail actions. When cart exists and no selection, show order action. */}
+      {/* Action Bar */}
       {selectedProduct ? (
         <ActionBar
           onBack={() => dispatch({ type: "SELECT_PRODUCT", payload: null })}
@@ -216,5 +234,19 @@ export default function MenuPage() {
 
       <KioskFooter />
     </div>
+  )
+}
+
+export default function MenuPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex flex-1 items-center justify-center">
+          <p className="text-muted-foreground">로딩 중...</p>
+        </div>
+      }
+    >
+      <MenuContent />
+    </Suspense>
   )
 }

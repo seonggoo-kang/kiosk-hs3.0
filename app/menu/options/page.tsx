@@ -112,8 +112,8 @@ function OptionsContent() {
       },
     })
 
-    // Navigate back to menu after adding
-    router.push("/menu")
+    // Navigate forward to the menu with cart visible so user can add more or proceed
+    router.push("/menu?added=true")
   }
 
   if (!product) {
