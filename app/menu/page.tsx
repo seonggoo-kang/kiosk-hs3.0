@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
+import Image from "next/image"
 import { ChevronLeft, ChevronRight, IceCreamCone, Check } from "lucide-react"
 import { KioskHeader } from "@/components/kiosk/kiosk-header"
 import { KioskFooter } from "@/components/kiosk/kiosk-footer"
@@ -192,11 +193,13 @@ function MenuContent() {
 
       {!selectedProduct && !hasCart && (
         <div className="shrink-0 border-t border-border bg-card p-3">
-          <div className="flex h-28 items-center justify-center rounded-xl bg-gradient-to-br from-accent to-muted">
-            <div className="text-center">
-              <p className="text-lg font-extrabold text-primary">BERRY GOOD</p>
-              <p className="text-xs text-muted-foreground">SEASONAL STRAWBERRY ICECREAM</p>
-            </div>
+          <div className="relative h-28 overflow-hidden rounded-xl">
+            <Image
+              src="/promo-banner.jpg"
+              alt="BERRY GOOD - Seasonal Strawberry Icecream"
+              fill
+              className="object-cover"
+            />
           </div>
         </div>
       )}

@@ -1,6 +1,6 @@
 "use client"
 
-import { IceCreamCone } from "lucide-react"
+import Image from "next/image"
 import { cn } from "@/lib/utils"
 import { formatPrice, type Product } from "@/lib/mock-data"
 
@@ -19,11 +19,14 @@ export function ProductCard({ product, isSelected, onSelect }: ProductCardProps)
         isSelected ? "border-primary shadow-md" : "border-transparent shadow-sm"
       )}
     >
-      <div
-        className="mb-2 flex h-20 w-full items-center justify-center rounded-lg"
-        style={{ backgroundColor: product.colorAccent }}
-      >
-        <IceCreamCone className="h-8 w-8 text-card/70" />
+      <div className="relative mb-2 flex h-20 w-full items-center justify-center rounded-lg bg-muted/30">
+        <Image
+          src={product.image}
+          alt={product.name}
+          width={80}
+          height={80}
+          className="h-[72px] w-[72px] object-contain"
+        />
       </div>
       <p className="text-center text-xs font-semibold leading-tight text-foreground">
         {product.name}

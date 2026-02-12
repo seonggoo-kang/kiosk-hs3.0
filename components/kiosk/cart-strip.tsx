@@ -1,6 +1,7 @@
 "use client"
 
-import { X, IceCreamCone } from "lucide-react"
+import Image from "next/image"
+import { X } from "lucide-react"
 import { useOrder } from "@/lib/order-context"
 import { formatPrice } from "@/lib/mock-data"
 import { QuantityControl } from "./quantity-control"
@@ -42,11 +43,14 @@ export function CartStrip() {
             </button>
 
             <div className="flex items-start gap-2">
-              <div
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
-                style={{ backgroundColor: item.product.colorAccent }}
-              >
-                <IceCreamCone className="h-4 w-4 text-card/70" />
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted/30">
+                <Image
+                  src={item.product.image}
+                  alt={item.product.name}
+                  width={36}
+                  height={36}
+                  className="h-9 w-9 object-contain"
+                />
               </div>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-xs font-semibold text-foreground">{item.product.name}</p>

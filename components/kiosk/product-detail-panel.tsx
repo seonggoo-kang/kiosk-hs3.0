@@ -1,6 +1,6 @@
 "use client"
 
-import { IceCreamCone } from "lucide-react"
+import Image from "next/image"
 import { formatPrice, type Product } from "@/lib/mock-data"
 
 type ProductDetailPanelProps = {
@@ -11,11 +11,14 @@ export function ProductDetailPanel({ product }: ProductDetailPanelProps) {
   return (
     <div className="flex gap-4 rounded-xl border border-border bg-card p-4">
       <div className="flex flex-col items-center">
-        <div
-          className="flex h-16 w-16 items-center justify-center rounded-xl"
-          style={{ backgroundColor: product.colorAccent }}
-        >
-          <IceCreamCone className="h-7 w-7 text-card/70" />
+        <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-muted/30">
+          <Image
+            src={product.image}
+            alt={product.name}
+            width={56}
+            height={56}
+            className="h-14 w-14 object-contain"
+          />
         </div>
         <p className="mt-1.5 text-center text-xs font-bold text-foreground">{product.name}</p>
         <p className="text-center text-[10px] text-muted-foreground">{product.size}</p>
