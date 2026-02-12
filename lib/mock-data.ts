@@ -28,7 +28,7 @@ export type Flavor = {
   color: string
   categoryId: string
   description: string
-  badge?: "이달의 맛" | "1위" | "2위" | "3위" | "NEW" | null
+  badge?: "이달의 맛" | "1위" | "2위" | "3위" | "5위" | "NEW" | "과일 섬유질 포함" | null
 }
 
 export type OptionGroup = {
@@ -257,9 +257,9 @@ const cakeProducts = generateProducts("icecream-cake", [
   { name: "프리미엄 케이크", desc: "프리미엄", size: "프리미엄", weight: "1000g", price: 45000, cal: "2400~3200 kcal", serving: "1000g", image: "/products/cake-round.jpg", flavor: true, maxF: 3 },
   { name: "아이스 타르트", desc: "타르트 스타일", size: "레귤러", weight: "600g", price: 25000, cal: "1400~1800 kcal", serving: "600g", image: "/products/cake-round.jpg", flavor: true, maxF: 2 },
   { name: "캐릭터 케이크 B", desc: "캐릭터 디자인", size: "1호", weight: "850g", price: 36000, cal: "1900~2500 kcal", serving: "850g", image: "/products/cake-character.jpg", flavor: true, maxF: 2 },
-  { name: "캐릭터 케이크 C", desc: "캐릭터 디자인", size: "2호", weight: "1200g", price: 48000, cal: "2800~3600 kcal", serving: "1200g", image: "/products/cake-character.jpg", flavor: true, maxF: 3 },
+  { name: "캐릭터 케이크 C", desc: "캐릭�� 디자인", size: "2호", weight: "1200g", price: 48000, cal: "2800~3600 kcal", serving: "1200g", image: "/products/cake-character.jpg", flavor: true, maxF: 3 },
   { name: "웨딩 미니케이크", desc: "웨딩 에디션", size: "미니", weight: "500g", price: 22000, cal: "1000~1400 kcal", serving: "500g", image: "/products/cake-heart.jpg", flavor: true, maxF: 2 },
-  { name: "���토 케이크", desc: "사진 프린팅", size: "1호", weight: "900g", price: 38000, cal: "2000~2600 kcal", serving: "900g", image: "/products/cake-round.jpg", flavor: true, maxF: 2 },
+  { name: "�����토 케이크", desc: "사진 프린팅", size: "1호", weight: "900g", price: 38000, cal: "2000~2600 kcal", serving: "900g", image: "/products/cake-round.jpg", flavor: true, maxF: 2 },
   { name: "��터링 케이크", desc: "레터링 디자인", size: "1호", weight: "800g", price: 34000, cal: "1800~2400 kcal", serving: "800g", image: "/products/cake-round.jpg", flavor: true, maxF: 2 },
   { name: "꽃 케이크", desc: "플라워 디자인", size: "1호", weight: "850g", price: 36000, cal: "1900~2500 kcal", serving: "850g", image: "/products/cake-heart.jpg", flavor: true, maxF: 2 },
   { name: "마카롱 케이크", desc: "마카롱 토핑", size: "1호", weight: "900g", price: 37000, cal: "2100~2700 kcal", serving: "900g", image: "/products/cake-round.jpg", flavor: true, maxF: 2 },
@@ -510,7 +510,7 @@ const partyProducts = generateProducts("party", [
   { name: "리본 세트", desc: "장식 리본", size: "3개", weight: "30g", price: 2000, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
   { name: "축하 카드", desc: "메시지 카드", size: "1장", weight: "20g", price: 1500, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
   { name: "스티커 세트", desc: "데코 스티커", size: "1시트", weight: "10g", price: 2000, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "케이크 토퍼", desc: "케이�� 장식", size: "1개", weight: "30g", price: 3500, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
+  { name: "케이크 토퍼", desc: "��이�� 장식", size: "1개", weight: "30g", price: 3500, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
   { name: "파티 안경 세트", desc: "재미 안경", size: "5개", weight: "100g", price: 6000, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
   { name: "파티 호루라기", desc: "호루라기", size: "5개", weight: "50g", price: 3000, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
   { name: "올인원 파티세트", desc: "완전 파티 세트", size: "1세트", weight: "2000g", price: 45000, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
@@ -544,68 +544,72 @@ export const flavorCategories: FlavorCategory[] = [
   { id: "grain-nut", name: "곡물/견과류" },
 ]
 
-// ─── Flavors (100) ───────────────────────────────────────
+// ─── Flavors (100) ── Based on actual BR Korea in-store menu ─
 export const flavors: Flavor[] = [
-  // ── 추천 (12) ──
-  { id: "berry-good", name: "베리굿", image: "/flavors/berry.jpg", color: "hsl(340,60%,75%)", categoryId: "recommended", description: "상큼한 베리의 달콤한 조화", badge: "이달의 맛" },
-  { id: "almond-bonbon", name: "아몬드봉봉", image: "/flavors/almond.jpg", color: "hsl(25,35%,72%)", categoryId: "recommended", description: "고소한 아몬드와 달콤한 봉봉의 만남", badge: "1위" },
-  { id: "cookies-cream", name: "쿠키앤크림", image: "/flavors/cookies-cream.jpg", color: "hsl(0,0%,80%)", categoryId: "recommended", description: "바삭한 쿠키와 부드러운 크림의 조화", badge: null },
-  { id: "green-tea", name: "그린티", image: "/flavors/green-tea.jpg", color: "hsl(120,40%,70%)", categoryId: "recommended", description: "진한 녹차의 깊은 풍미", badge: null },
-  { id: "chocolate", name: "초콜릿", image: "/flavors/chocolate.jpg", color: "hsl(20,50%,40%)", categoryId: "recommended", description: "진하고 부드러운 초콜릿의 맛", badge: null },
-  { id: "pistachio-almond", name: "피스타치오 아몬드", image: "/flavors/pistachio.jpg", color: "hsl(90,30%,65%)", categoryId: "recommended", description: "고소한 피스타치오와 아몬드의 풍미", badge: null },
-  { id: "wind-away", name: "바람과 함께 사라지다", image: "/flavors/swirl.jpg", color: "hsl(270,50%,80%)", categoryId: "recommended", description: "부드럽게 사라지는 솜사탕의 달콤함", badge: "2위" },
-  { id: "choco-cookie-smore", name: "초콜릿 쿠키 스모어", image: "/flavors/chocolate.jpg", color: "hsl(15,40%,50%)", categoryId: "recommended", description: "초콜릿 쿠키와 마시멜로의 캠핑 감성", badge: "NEW" },
-  { id: "love-strawberry", name: "사랑에 빠진 딸기", image: "/flavors/strawberry.jpg", color: "hsl(345,60%,75%)", categoryId: "recommended", description: "딸기와 초콜릿이 치즈케이크에 반해버린 사랑의 맛", badge: null },
-  { id: "apple-mint", name: "애플민트", image: "/flavors/mint-choco.jpg", color: "hsl(140,45%,75%)", categoryId: "recommended", description: "상큼한 사과와 시원한 민트의 조화", badge: null },
-  { id: "wonderland-cotton", name: "이상한 나라의 솜사탕", image: "/flavors/rainbow.jpg", color: "hsl(300,50%,80%)", categoryId: "recommended", description: "동화 속 솜사탕처럼 달콤한 맛", badge: null },
-  { id: "mint-choco-chip", name: "민트초코칩", image: "/flavors/mint-choco.jpg", color: "hsl(160,50%,75%)", categoryId: "recommended", description: "시원한 민트와 달콤한 초코칩의 조화", badge: "3위" },
+  // ── 추천 (12) ── Matches page 1 from kiosk photos exactly
+  { id: "jjonkkuret", name: "진정한 쫀꾸렛", image: "/flavors/jjonkkuret.jpg", color: "hsl(30,40%,75%)", categoryId: "recommended", description: "쫀득한 초콜릿과 바삭한 크런치의 진정한 만남", badge: "이달의 맛" },
+  { id: "alien-mom", name: "엄마는 외계인", image: "/flavors/alien-mom.jpg", color: "hsl(280,50%,75%)", categoryId: "recommended", description: "알록달록 솜사탕과 쿠키의 신비로운 우주 맛", badge: "1위" },
+  { id: "almond-bonbon", name: "아몬드 봉봉", image: "/flavors/almond.jpg", color: "hsl(25,35%,72%)", categoryId: "recommended", description: "고소한 아몬드와 달콤한 봉봉의 만남", badge: "2위" },
+  { id: "mint-choco-chip", name: "민트 초콜릿 칩", image: "/flavors/mint-choco.jpg", color: "hsl(160,50%,75%)", categoryId: "recommended", description: "시원한 민트와 달콤한 초코칩의 조화", badge: "3위" },
+  { id: "rainbow-sherbet", name: "레인보우 샤베트", image: "/flavors/rainbow.jpg", color: "hsl(40,80%,80%)", categoryId: "recommended", description: "다채로운 과일 맛의 상큼한 샤베트 (과일 섬유질 포함)", badge: "과일 섬유질 포함" },
+  { id: "ny-cheesecake", name: "뉴욕 치즈케이크", image: "/flavors/cheesecake.jpg", color: "hsl(45,50%,82%)", categoryId: "recommended", description: "진한 뉴욕 스타일 치즈케이크의 깊은 맛", badge: "5위" },
+  { id: "jjonddeok-heukimja", name: "쫀떡 만난 흑임자", image: "/flavors/heukimja-jjonddeok.jpg", color: "hsl(0,0%,35%)", categoryId: "recommended", description: "고소한 흑임자와 쫄깃한 쫀떡의 전통 조화", badge: "NEW" },
+  { id: "ice-hotteok", name: "아이스 호떡", image: "/flavors/ice-hotteok.jpg", color: "hsl(35,55%,60%)", categoryId: "recommended", description: "달콤한 호떡의 따뜻한 맛을 아이스크림으로", badge: "NEW" },
+  { id: "bam-goguma", name: "밤이 옥수로 맛있구마", image: "/flavors/sweet-potato.jpg", color: "hsl(35,60%,55%)", categoryId: "recommended", description: "고구마, 밤, 옥수수의 고소한 가을 맛", badge: "NEW" },
+  { id: "honey-mochi", name: "말랑 꿀떡 모찌", image: "/flavors/honey-mochi.jpg", color: "hsl(42,50%,78%)", categoryId: "recommended", description: "꿀떡 모찌의 말랑말랑 달콤한 맛", badge: "NEW" },
+  { id: "cream-cheese-peach-tart", name: "크림치즈 피치 타르트", image: "/flavors/peach-tart.jpg", color: "hsl(20,60%,80%)", categoryId: "recommended", description: "크림치즈와 복숭아 타르트의 상큼한 조화", badge: null },
+  { id: "berry-berry-strawberry", name: "베리베리 스트로베리", image: "/flavors/strawberry.jpg", color: "hsl(340,60%,78%)", categoryId: "recommended", description: "딸기의 상큼함을 가득 담은 베리 맛", badge: null },
 
-  // ── 과일 (13) ──
+  // ── Page 2 flavors from photos (also categorized) ──
+  { id: "love-strawberry", name: "사랑에 빠진 딸기", image: "/flavors/love-strawberry.jpg", color: "hsl(345,60%,75%)", categoryId: "fruit", description: "딸기와 초콜릿이 치즈케이크에 반해버린 사랑의 맛", badge: null },
+  { id: "wonderland-cotton", name: "이상한 나라의 솜사탕", image: "/flavors/cotton-candy.jpg", color: "hsl(300,50%,80%)", categoryId: "fruit", description: "동화 속 솜사탕처럼 달콤하고 몽환적인 맛", badge: null },
+  { id: "pistachio-almond", name: "피스타치오 아몬드", image: "/flavors/pistachio.jpg", color: "hsl(90,30%,65%)", categoryId: "grain-nut", description: "고소한 피스타치오와 아몬드의 풍미", badge: null },
+  { id: "31-yogurt", name: "31 요거트", image: "/flavors/yogurt.jpg", color: "hsl(50,20%,92%)", categoryId: "milk-cheese", description: "상큼하고 부드러운 31 요거트", badge: null },
+  { id: "green-tea", name: "그린티", image: "/flavors/green-tea.jpg", color: "hsl(120,40%,70%)", categoryId: "vanilla-mint", description: "진한 녹차의 깊은 풍미", badge: null },
+  { id: "choco-mousse", name: "초콜릿 무스", image: "/flavors/choco-mousse.jpg", color: "hsl(15,40%,25%)", categoryId: "chocolate", description: "부드럽고 진한 초콜릿 무스의 맛", badge: null },
+  { id: "vanilla", name: "바닐라", image: "/flavors/vanilla.jpg", color: "hsl(50,60%,90%)", categoryId: "vanilla-mint", description: "클래식 바닐라의 부드러운 맛", badge: null },
+  { id: "cherry-jubilee", name: "체리쥬빌레", image: "/flavors/cherry-jubilee.jpg", color: "hsl(340,50%,70%)", categoryId: "fruit", description: "달콤한 체리의 풍성한 맛", badge: null },
+  { id: "oreo-cookies-cream", name: "오레오 쿠키 앤 크림", image: "/flavors/oreo.jpg", color: "hsl(0,0%,50%)", categoryId: "milk-cheese", description: "바삭한 오레오 쿠키와 부드러운 크림의 조화", badge: null },
+  { id: "jamoca-almond-fudge", name: "자모카 아몬드 휘지", image: "/flavors/jamoca-fudge.jpg", color: "hsl(20,40%,40%)", categoryId: "coffee-caramel", description: "커피 아이스크림에 아몬드와 초콜릿 퍼지의 조화", badge: null },
+  { id: "wind-away", name: "바람과 함께 사라지다", image: "/flavors/swirl.jpg", color: "hsl(270,50%,80%)", categoryId: "fruit", description: "부드럽게 사라지는 솜사탕의 달콤함", badge: null },
+  { id: "chocolate", name: "초콜릿", image: "/flavors/chocolate.jpg", color: "hsl(20,50%,40%)", categoryId: "chocolate", description: "진하고 부드러운 클래식 초콜릿의 맛", badge: null },
+
+  // ── 추가 과일 flavors ──
   { id: "mango-tango", name: "망고 탱고", image: "/flavors/mango.jpg", color: "hsl(35,80%,75%)", categoryId: "fruit", description: "열대 망고의 상큼한 맛", badge: null },
-  { id: "strawberry-cream", name: "베리베리 스트로베리", image: "/flavors/strawberry.jpg", color: "hsl(340,60%,78%)", categoryId: "fruit", description: "딸기의 상큼함을 가득 담은 맛", badge: null },
-  { id: "rainbow-sherbet", name: "레인보우 샤베트", image: "/flavors/rainbow.jpg", color: "hsl(40,80%,80%)", categoryId: "fruit", description: "다채로운 과일 맛의 샤베트", badge: null },
-  { id: "peach-yogurt", name: "피치 요거트", image: "/flavors/mango.jpg", color: "hsl(20,70%,82%)", categoryId: "fruit", description: "복숭아와 요거트의 상큼한 조화", badge: null },
+  { id: "peach-yogurt", name: "피치 요거트", image: "/flavors/peach-tart.jpg", color: "hsl(20,70%,82%)", categoryId: "fruit", description: "복숭아와 요거트의 상큼한 조화", badge: null },
   { id: "grape-sorbet", name: "포도 소르베", image: "/flavors/swirl.jpg", color: "hsl(280,50%,55%)", categoryId: "fruit", description: "달콤한 포도의 시원한 소르베", badge: null },
   { id: "lemon-sorbet", name: "레몬 소르베", image: "/flavors/vanilla.jpg", color: "hsl(55,80%,80%)", categoryId: "fruit", description: "새콤달콤한 레몬의 청량함", badge: null },
-  { id: "blueberry-cheesecake", name: "블루베리 치즈케이크", image: "/flavors/swirl.jpg", color: "hsl(240,40%,60%)", categoryId: "fruit", description: "블루베리와 치즈케이크의 진한 맛", badge: "NEW" },
-  { id: "cherry-jubilee", name: "체리 쥬빌레", image: "/flavors/berry.jpg", color: "hsl(350,60%,55%)", categoryId: "fruit", description: "달콤한 체리의 풍성한 맛", badge: null },
+  { id: "blueberry-cheesecake", name: "블루베리 치즈케이크", image: "/flavors/swirl.jpg", color: "hsl(240,40%,60%)", categoryId: "fruit", description: "블루베리와 치즈케이크의 진한 맛", badge: null },
   { id: "passion-fruit", name: "패션후르츠", image: "/flavors/mango.jpg", color: "hsl(45,80%,70%)", categoryId: "fruit", description: "이국적인 패션후르츠의 상큼함", badge: null },
   { id: "watermelon-sorbet", name: "수박 소르베", image: "/flavors/strawberry.jpg", color: "hsl(0,60%,65%)", categoryId: "fruit", description: "시원한 수박의 여름 소르베", badge: null },
   { id: "kiwi-lime", name: "키위 라임", image: "/flavors/green-tea.jpg", color: "hsl(100,50%,60%)", categoryId: "fruit", description: "키위와 라임의 상큼한 맛", badge: null },
-  { id: "citrus-mix", name: "시트러스 믹스", image: "/flavors/mango.jpg", color: "hsl(30,80%,75%)", categoryId: "fruit", description: "감귤류의 상큼한 믹스", badge: null },
   { id: "melon-cream", name: "메론 크림", image: "/flavors/green-tea.jpg", color: "hsl(130,40%,75%)", categoryId: "fruit", description: "달콤한 메론과 부드러운 크림", badge: null },
 
-  // ── 초콜릿 (13) ──
+  // ── 추가 초콜릿 flavors ──
   { id: "dark-chocolate", name: "다크 초콜릿", image: "/flavors/chocolate.jpg", color: "hsl(15,40%,30%)", categoryId: "chocolate", description: "깊고 진한 다크 초콜릿의 풍미", badge: null },
   { id: "choco-brownie", name: "초코 브라우니", image: "/flavors/chocolate.jpg", color: "hsl(20,45%,38%)", categoryId: "chocolate", description: "촉촉한 브라우니와 초콜릿의 만남", badge: null },
   { id: "white-choco", name: "화이트 초콜릿", image: "/flavors/vanilla.jpg", color: "hsl(40,30%,88%)", categoryId: "chocolate", description: "달콤한 화이트 초콜릿의 부드러움", badge: null },
   { id: "choco-mint-fudge", name: "초코 민트 퍼지", image: "/flavors/mint-choco.jpg", color: "hsl(150,35%,55%)", categoryId: "chocolate", description: "민트와 초콜릿 퍼지의 시원한 만남", badge: null },
-  { id: "choco-truffle", name: "초콜릿 트러플", image: "/flavors/chocolate.jpg", color: "hsl(10,35%,35%)", categoryId: "chocolate", description: "프리미엄 초콜릿 트러플의 맛", badge: null },
   { id: "rocky-road", name: "로키 로드", image: "/flavors/chocolate.jpg", color: "hsl(15,30%,40%)", categoryId: "chocolate", description: "초콜릿, 마시멜로, 견과류의 조합", badge: null },
   { id: "choco-banana", name: "초코 바나나", image: "/flavors/caramel.jpg", color: "hsl(45,50%,55%)", categoryId: "chocolate", description: "바나나와 초콜릿의 클래식 조합", badge: null },
   { id: "triple-choco", name: "트리플 초콜릿", image: "/flavors/chocolate.jpg", color: "hsl(12,40%,32%)", categoryId: "chocolate", description: "세 가지 초콜릿의 진한 맛", badge: null },
   { id: "choco-strawberry", name: "초코 스트로베리", image: "/flavors/berry.jpg", color: "hsl(340,50%,60%)", categoryId: "chocolate", description: "딸기와 초콜릿의 달콤한 조합", badge: null },
   { id: "choco-caramel", name: "초코 카라멜", image: "/flavors/caramel.jpg", color: "hsl(25,55%,45%)", categoryId: "chocolate", description: "카라멜과 초콜릿의 달콤 쌉쌀한 맛", badge: null },
   { id: "hazelnut-choco", name: "헤이즐넛 초콜릿", image: "/flavors/almond.jpg", color: "hsl(25,40%,50%)", categoryId: "chocolate", description: "헤이즐넛과 초콜릿의 고소한 맛", badge: null },
-  { id: "choco-cookie-dough", name: "초코 쿠키도우", image: "/flavors/cookies-cream.jpg", color: "hsl(20,35%,55%)", categoryId: "chocolate", description: "쿠키 도우와 초콜릿의 달콤한 만남", badge: "NEW" },
-  { id: "choco-forest", name: "초코나무 숲", image: "/flavors/chocolate.jpg", color: "hsl(20,50%,55%)", categoryId: "chocolate", description: "초콜릿 숲처럼 깊고 풍부한 맛", badge: null },
+  { id: "choco-cookie-dough", name: "초코 쿠키도우", image: "/flavors/cookies-cream.jpg", color: "hsl(20,35%,55%)", categoryId: "chocolate", description: "쿠키 도우와 초콜릿의 달콤한 만남", badge: null },
 
-  // ── 우유/치즈/과자 (13) ──
-  { id: "ny-cheesecake", name: "뉴욕 치즈케이크", image: "/flavors/cheesecake.jpg", color: "hsl(45,50%,82%)", categoryId: "milk-cheese", description: "진한 뉴욕 스타일 치즈케이크", badge: null },
+  // ── 추가 우유/치즈/과자 flavors ──
   { id: "cookie-dough", name: "쿠키도우", image: "/flavors/cookies-cream.jpg", color: "hsl(30,40%,70%)", categoryId: "milk-cheese", description: "달콤한 쿠키 반죽의 맛", badge: null },
-  { id: "oreo-cookies", name: "오레오 쿠키", image: "/flavors/cookies-cream.jpg", color: "hsl(0,0%,30%)", categoryId: "milk-cheese", description: "바삭한 오레오의 진한 맛", badge: null },
   { id: "cream-cheese", name: "크림치즈", image: "/flavors/cheesecake.jpg", color: "hsl(45,40%,90%)", categoryId: "milk-cheese", description: "부드러운 크림치즈의 풍미", badge: null },
-  { id: "yogurt-plain", name: "플레인 요거트", image: "/flavors/vanilla.jpg", color: "hsl(50,20%,92%)", categoryId: "milk-cheese", description: "상큼하고 부드러운 플레인 요거트", badge: null },
   { id: "butter-cookie", name: "버터쿠키", image: "/flavors/caramel.jpg", color: "hsl(40,50%,75%)", categoryId: "milk-cheese", description: "고소한 버터쿠키의 맛", badge: null },
   { id: "milk-tea-flavor", name: "밀크티", image: "/flavors/caramel.jpg", color: "hsl(25,30%,70%)", categoryId: "milk-cheese", description: "부드러운 밀크티의 향긋함", badge: null },
   { id: "condensed-milk", name: "연유", image: "/flavors/vanilla.jpg", color: "hsl(45,50%,85%)", categoryId: "milk-cheese", description: "달콤한 연유의 진한 맛", badge: null },
   { id: "corn-cereal", name: "콘 시리얼", image: "/flavors/caramel.jpg", color: "hsl(45,60%,72%)", categoryId: "milk-cheese", description: "바삭한 콘 시리얼의 고소한 맛", badge: null },
   { id: "tiramisu-cheese", name: "티라미수 치즈", image: "/flavors/coffee.jpg", color: "hsl(25,35%,60%)", categoryId: "milk-cheese", description: "티라미수와 치즈의 진한 풍미", badge: null },
   { id: "waffle-cone-crunch", name: "와플콘 크런치", image: "/flavors/almond.jpg", color: "hsl(35,45%,65%)", categoryId: "milk-cheese", description: "바삭한 와플콘의 달콤한 맛", badge: null },
-  { id: "cheese-cake-berry", name: "치즈케이크 베리", image: "/flavors/berry.jpg", color: "hsl(340,45%,72%)", categoryId: "milk-cheese", description: "치즈케이크와 베리의 조화", badge: null },
   { id: "shooting-star", name: "슈팅스타", image: "/flavors/rainbow.jpg", color: "hsl(220,60%,80%)", categoryId: "milk-cheese", description: "반짝이는 캔디 조각의 달콤한 맛", badge: null },
 
-  // ── 커피/카라멜/티 (12) ──
+  // ── 추가 커피/카라멜/티 flavors ──
   { id: "espresso-crunch", name: "에스프레소 크런치", image: "/flavors/coffee.jpg", color: "hsl(25,40%,35%)", categoryId: "coffee-caramel", description: "진한 에스프레소와 크런치의 조화", badge: null },
   { id: "salted-caramel", name: "솔티드 카라멜", image: "/flavors/caramel.jpg", color: "hsl(30,55%,55%)", categoryId: "coffee-caramel", description: "달콤 짭조름한 솔티드 카라멜", badge: null },
   { id: "cafe-mocha", name: "카페 모카", image: "/flavors/coffee.jpg", color: "hsl(20,40%,40%)", categoryId: "coffee-caramel", description: "커피와 초콜릿의 진한 모카", badge: null },
@@ -617,10 +621,8 @@ export const flavors: Flavor[] = [
   { id: "matcha-latte", name: "말차 라떼", image: "/flavors/green-tea.jpg", color: "hsl(110,35%,60%)", categoryId: "coffee-caramel", description: "진한 말차와 부드러운 라떼", badge: null },
   { id: "toffee-nut", name: "토피넛", image: "/flavors/almond.jpg", color: "hsl(30,45%,50%)", categoryId: "coffee-caramel", description: "고소한 토피넛의 달콤한 맛", badge: null },
   { id: "dulce-de-leche", name: "둘세 데 레체", image: "/flavors/caramel.jpg", color: "hsl(28,50%,48%)", categoryId: "coffee-caramel", description: "진한 카라멜 우유의 달콤함", badge: null },
-  { id: "black-sesame-latte", name: "흑임자 라떼", image: "/flavors/chocolate.jpg", color: "hsl(0,0%,35%)", categoryId: "coffee-caramel", description: "고소한 흑임자의 깊은 풍미", badge: null },
 
-  // ── 바닐라/민트 (12) ──
-  { id: "vanilla", name: "바닐라", image: "/flavors/vanilla.jpg", color: "hsl(50,60%,90%)", categoryId: "vanilla-mint", description: "클래식 바닐라의 부드러운 맛", badge: null },
+  // ── 추가 바닐라/민트 flavors ──
   { id: "french-vanilla", name: "프렌치 바닐라", image: "/flavors/vanilla.jpg", color: "hsl(45,55%,85%)", categoryId: "vanilla-mint", description: "프리미엄 프렌치 바닐라의 풍미", badge: null },
   { id: "vanilla-caramel", name: "바닐라 카라멜", image: "/flavors/caramel.jpg", color: "hsl(40,55%,78%)", categoryId: "vanilla-mint", description: "바닐라와 카라멜의 달콤한 조화", badge: null },
   { id: "mint-chocolate", name: "민트 초콜릿", image: "/flavors/mint-choco.jpg", color: "hsl(160,50%,70%)", categoryId: "vanilla-mint", description: "시원한 민트와 진한 초콜릿", badge: null },
@@ -631,22 +633,20 @@ export const flavors: Flavor[] = [
   { id: "vanilla-choco-swirl", name: "바닐라 초코 스월", image: "/flavors/swirl.jpg", color: "hsl(40,40%,75%)", categoryId: "vanilla-mint", description: "바닐라와 초콜릿의 마블링", badge: null },
   { id: "honey-vanilla", name: "허니 바닐라", image: "/flavors/vanilla.jpg", color: "hsl(42,60%,82%)", categoryId: "vanilla-mint", description: "꿀과 바닐라의 달콤한 조화", badge: null },
   { id: "cool-lime-mint", name: "쿨 라임 민트", image: "/flavors/mint-choco.jpg", color: "hsl(140,55%,70%)", categoryId: "vanilla-mint", description: "라임과 민트의 청량한 맛", badge: null },
-  { id: "vanilla-macadamia", name: "바닐라 마카다미아", image: "/flavors/vanilla.jpg", color: "hsl(46,50%,84%)", categoryId: "vanilla-mint", description: "바닐라와 마카다미아 넛의 고소함", badge: null },
 
-  // ── 곡물/견과류 (13) ──
+  // ── 추가 곡물/견과류 flavors ──
   { id: "almond-fudge", name: "아몬드 퍼지", image: "/flavors/almond.jpg", color: "hsl(25,40%,55%)", categoryId: "grain-nut", description: "고소한 아몬드와 달콤한 퍼지", badge: null },
   { id: "peanut-butter", name: "피넛버터", image: "/flavors/almond.jpg", color: "hsl(30,50%,55%)", categoryId: "grain-nut", description: "고소한 피넛버터의 진한 맛", badge: null },
   { id: "walnut-brownie", name: "호두 브라우니", image: "/flavors/chocolate.jpg", color: "hsl(20,35%,45%)", categoryId: "grain-nut", description: "호두와 브라우니의 풍성한 맛", badge: null },
   { id: "cashew-praline", name: "캐슈넛 프랄린", image: "/flavors/caramel.jpg", color: "hsl(30,45%,58%)", categoryId: "grain-nut", description: "캐슈넛과 프랄린의 고소한 달콤함", badge: null },
   { id: "rice-cake", name: "인절미", image: "/flavors/cheesecake.jpg", color: "hsl(40,35%,75%)", categoryId: "grain-nut", description: "고소한 인절미의 전통 맛", badge: null },
-  { id: "black-sesame", name: "흑임자", image: "/flavors/chocolate.jpg", color: "hsl(0,0%,30%)", categoryId: "grain-nut", description: "고소한 흑임자의 깊은 맛", badge: null },
-  { id: "sweet-potato", name: "고구마", image: "/flavors/mango.jpg", color: "hsl(35,60%,55%)", categoryId: "grain-nut", description: "달콤한 고구마의 구수한 맛", badge: null },
+  { id: "black-sesame", name: "흑임자", image: "/flavors/heukimja-jjonddeok.jpg", color: "hsl(0,0%,30%)", categoryId: "grain-nut", description: "고소한 흑임자의 깊은 맛", badge: null },
+  { id: "sweet-potato-classic", name: "고구마", image: "/flavors/sweet-potato.jpg", color: "hsl(35,60%,55%)", categoryId: "grain-nut", description: "달콤한 고구마의 구수한 맛", badge: null },
   { id: "red-bean", name: "팥", image: "/flavors/berry.jpg", color: "hsl(350,30%,40%)", categoryId: "grain-nut", description: "달콤한 팥의 전통 맛", badge: null },
   { id: "macadamia-nut", name: "마카다미아 넛", image: "/flavors/almond.jpg", color: "hsl(35,35%,68%)", categoryId: "grain-nut", description: "부드러운 마카다미아의 고소함", badge: null },
   { id: "hazelnut-praline", name: "헤이즐넛 프랄린", image: "/flavors/almond.jpg", color: "hsl(28,42%,52%)", categoryId: "grain-nut", description: "헤이즐넛과 프랄린의 조화", badge: null },
-  { id: "winter-night", name: "윈터 밤", image: "/flavors/almond.jpg", color: "hsl(30,40%,65%)", categoryId: "grain-nut", description: "겨울 밤처럼 따뜻한 밤의 풍미", badge: null },
   { id: "misutgaru", name: "미숫가루", image: "/flavors/cheesecake.jpg", color: "hsl(40,30%,70%)", categoryId: "grain-nut", description: "고소한 미숫가루의 전통 맛", badge: null },
-  { id: "berry-night", name: "베리밤", image: "/flavors/berry.jpg", color: "hsl(300,40%,70%)", categoryId: "grain-nut", description: "베리와 밤의 달콤 고소한 맛", badge: null },
+  { id: "coconut", name: "코코넛", image: "/flavors/vanilla.jpg", color: "hsl(50,30%,90%)", categoryId: "grain-nut", description: "열대 코코넛의 달콤한 맛", badge: null },
 ]
 
 export function getFlavorsByCategory(categoryId: string): Flavor[] {

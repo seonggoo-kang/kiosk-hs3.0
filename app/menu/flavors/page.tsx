@@ -199,7 +199,16 @@ function FlavorsContent() {
                 >
                   {/* Badge */}
                   {flavor.badge && (
-                    <span className="absolute left-0.5 top-0.5 z-10 rounded bg-primary px-1 py-px text-[7px] font-bold leading-tight text-primary-foreground">
+                    <span
+                      className={cn(
+                        "absolute left-0.5 top-0.5 z-10 max-w-[90%] truncate rounded px-1 py-px text-[7px] font-bold leading-tight text-white",
+                        flavor.badge === "NEW"
+                          ? "bg-red-500"
+                          : flavor.badge === "과일 섬유질 포함"
+                          ? "bg-pink-400"
+                          : "bg-primary"
+                      )}
+                    >
                       {flavor.badge}
                     </span>
                   )}
