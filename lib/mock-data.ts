@@ -259,7 +259,7 @@ const cakeProducts = generateProducts("icecream-cake", [
   { name: "캐릭터 케이크 B", desc: "캐릭터 디자인", size: "1호", weight: "850g", price: 36000, cal: "1900~2500 kcal", serving: "850g", image: "/products/cake-character.jpg", flavor: true, maxF: 2 },
   { name: "캐릭터 케이크 C", desc: "캐릭터 디자인", size: "2호", weight: "1200g", price: 48000, cal: "2800~3600 kcal", serving: "1200g", image: "/products/cake-character.jpg", flavor: true, maxF: 3 },
   { name: "웨딩 미니케이크", desc: "웨딩 에디션", size: "미니", weight: "500g", price: 22000, cal: "1000~1400 kcal", serving: "500g", image: "/products/cake-heart.jpg", flavor: true, maxF: 2 },
-  { name: "포토 케이크", desc: "사진 프린팅", size: "1호", weight: "900g", price: 38000, cal: "2000~2600 kcal", serving: "900g", image: "/products/cake-round.jpg", flavor: true, maxF: 2 },
+  { name: "���토 케이크", desc: "사진 프린팅", size: "1호", weight: "900g", price: 38000, cal: "2000~2600 kcal", serving: "900g", image: "/products/cake-round.jpg", flavor: true, maxF: 2 },
   { name: "��터링 케이크", desc: "레터링 디자인", size: "1호", weight: "800g", price: 34000, cal: "1800~2400 kcal", serving: "800g", image: "/products/cake-round.jpg", flavor: true, maxF: 2 },
   { name: "꽃 케이크", desc: "플라워 디자인", size: "1호", weight: "850g", price: 36000, cal: "1900~2500 kcal", serving: "850g", image: "/products/cake-heart.jpg", flavor: true, maxF: 2 },
   { name: "마카롱 케이크", desc: "마카롱 토핑", size: "1호", weight: "900g", price: 37000, cal: "2100~2700 kcal", serving: "900g", image: "/products/cake-round.jpg", flavor: true, maxF: 2 },
@@ -510,7 +510,7 @@ const partyProducts = generateProducts("party", [
   { name: "리본 세트", desc: "장식 리본", size: "3개", weight: "30g", price: 2000, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
   { name: "축하 카드", desc: "메시지 카드", size: "1장", weight: "20g", price: 1500, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
   { name: "스티커 세트", desc: "데코 스티커", size: "1시트", weight: "10g", price: 2000, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "케이크 토퍼", desc: "케이크 장식", size: "1개", weight: "30g", price: 3500, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
+  { name: "케이크 토퍼", desc: "케이�� 장식", size: "1개", weight: "30g", price: 3500, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
   { name: "파티 안경 세트", desc: "재미 안경", size: "5개", weight: "100g", price: 6000, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
   { name: "파티 호루라기", desc: "호루라기", size: "5개", weight: "50g", price: 3000, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
   { name: "올인원 파티세트", desc: "완전 파티 세트", size: "1세트", weight: "2000g", price: 45000, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
@@ -658,12 +658,12 @@ export function getFlavorsByCategory(categoryId: string): Flavor[] {
 export const optionGroups: OptionGroup[] = [
   {
     id: "spoon",
-    name: "스폰",
+    name: "스푼",
     type: "single",
     options: [
       { id: "no-spoon", name: "필요 없음", priceAdd: 0, hasQuantity: false },
-      { id: "spoon-normal", name: "스폰", priceAdd: 0, hasQuantity: true, defaultQty: 1, unit: "개" },
-      { id: "spoon-extra", name: "스폰추가", priceAdd: 50, hasQuantity: true, defaultQty: 1, unit: "개" },
+      { id: "spoon-normal", name: "스푼", priceAdd: 0, hasQuantity: true, defaultQty: 1, unit: "개" },
+      { id: "spoon-extra", name: "스푼추가", priceAdd: 50, hasQuantity: true, defaultQty: 1, unit: "개" },
     ],
   },
   {
