@@ -17,6 +17,28 @@
 
 @layer base {
   :root {
+    /* ── Kiosk hardware dimensions (portrait) ──
+       The physical screen is 1080 x 1920, but we author the
+       CSS layout at a "logical" viewport of 480 x 853
+       (i.e. 1080 / 2.25 and 1920 / 2.25). This keeps Tailwind
+       utility classes (text-sm, p-4, gap-2, etc.) looking correct
+       without converting every value to rem.
+
+       The container is scaled up to fill the real hardware via
+       CSS transform: scale(). In the browser preview it scales
+       to fit whatever window size is available.
+
+       Override --kiosk-hw-* for different form factors:
+       - Standing kiosk: 1080 x 1920  (default)
+       - Table order:    800 x 1280   (example)
+    */
+    /* Logical viewport = physical / DPR (2.25)
+       Standing kiosk: 1080/2.25 = 480,  1920/2.25 ≈ 853  */
+    --kiosk-w: 480px;
+    --kiosk-h: 853px;
+    /* --kiosk-scale is set by JS on mount + resize (see KioskScaler). */
+    --kiosk-scale: 1;
+
     --background: 0 0% 96%;
     --foreground: 220 15% 15%;
     --card: 0 0% 100%;

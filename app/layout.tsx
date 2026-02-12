@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Noto_Sans_KR } from 'next/font/google'
 import { OrderProvider } from '@/lib/order-context'
+import { KioskScaler } from '@/components/kiosk/kiosk-scaler'
 
 import './globals.css'
 
@@ -24,6 +25,19 @@ export const viewport: Viewport = {
   themeColor: '#e84088',
 }
 
+/**
+ * Kiosk hardware: 1080 x 1920 (9:16 portrait)
+ *
+ * Layout is authored at a "logical" viewport of 480 x 853
+ * (physical / 2.25) so existing Tailwind utilities render correctly.
+ * A CSS transform: scale() controlled by KioskScaler maps the
+ * logical frame onto any screen size:
+ *   - Real kiosk (1080x1920): scale ≈ 2.25
+ *   - Browser preview:        scales to fit the window
+ *
+ * For a "table order" variant, adjust --kiosk-w / --kiosk-h and
+ * the constants in KioskScaler.
+ */
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -33,8 +47,20 @@ export default function RootLayout({
     <html lang="ko">
       <body className={`${notoSansKR.variable} font-sans antialiased`}>
         <OrderProvider>
-          <div className="relative mx-auto flex h-dvh w-full max-w-[480px] flex-col overflow-hidden bg-card shadow-2xl">
-            {children}
+          <KioskScaler />
+          {/* Outer wrapper centres + scales the fixed-size kiosk frame */}
+          <div className="flex h-dvh w-dvw items-center justify-center overflow-hidden bg-black">
+            <div
+              className="relative flex flex-col overflow-hidden bg-card shadow-2xl"
+              style={{
+                width: 'var(--kiosk-w)',
+                height: 'var(--kiosk-h)',
+                transform: 'scale(var(--kiosk-scale))',
+                transformOrigin: 'center center',
+              }}
+            >
+              {children}
+            </div>
           </div>
         </OrderProvider>
       </body>
