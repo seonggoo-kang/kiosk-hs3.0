@@ -205,18 +205,18 @@ function FlavorsContent() {
                   )}
 
                   {/* Scoop image */}
-                  <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full">
+                  <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full">
                     <Image
                       src={flavor.image}
                       alt={flavor.name}
                       fill
                       className="object-cover"
-                      sizes="44px"
+                      sizes="56px"
                     />
                   </div>
 
                   {/* Name */}
-                  <span className="line-clamp-2 w-full px-0.5 text-center text-[8px] font-semibold leading-tight text-foreground">
+                  <span className="line-clamp-2 w-full px-0.5 text-center text-[9px] font-semibold leading-tight text-foreground">
                     {flavor.name}
                   </span>
                 </button>
