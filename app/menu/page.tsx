@@ -199,6 +199,8 @@ function MenuContent() {
               src="/promo-banner.jpg"
               alt="BERRY GOOD - Seasonal Strawberry Icecream"
               fill
+              sizes="(max-width: 768px) 100vw, 480px"
+              priority
               className="object-cover"
             />
           </div>
