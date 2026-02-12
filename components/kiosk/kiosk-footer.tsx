@@ -1,0 +1,24 @@
+"use client"
+
+import { Keyboard, Accessibility, HelpCircle } from "lucide-react"
+
+export function KioskFooter() {
+  return (
+    <footer className="flex h-12 shrink-0 items-center justify-around border-t border-border bg-muted/60">
+      <button className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors active:text-foreground">
+        <Keyboard className="h-4 w-4" />
+        <span>교환권조회</span>
+      </button>
+      <div className="h-4 w-px bg-border" />
+      <button className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors active:text-foreground">
+        <Accessibility className="h-4 w-4" />
+        <span>낮은자세</span>
+      </button>
+      <div className="h-4 w-px bg-border" />
+      <button className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors active:text-foreground">
+        <HelpCircle className="h-4 w-4" />
+        <span>도움기능</span>
+      </button>
+    </footer>
+  )
+}
