@@ -1,9 +1,9 @@
 "use client"
 
-import { useState, useMemo, useCallback, Suspense } from "react"
+import { useState, useMemo, useCallback, useRef, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Image from "next/image"
-import { HelpCircle, X } from "lucide-react"
+import { HelpCircle, X, ChevronLeft, ChevronRight } from "lucide-react"
 import { KioskHeader } from "@/components/kiosk/kiosk-header"
 import { KioskFooter } from "@/components/kiosk/kiosk-footer"
 import { ActionBar } from "@/components/kiosk/action-bar"
@@ -16,6 +16,10 @@ import {
 } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
 
+const COLS = 4
+const ROWS = 5
+const PER_PAGE = COLS * ROWS
+
 function FlavorsContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -26,14 +30,26 @@ function FlavorsContent() {
   )
 
   const [activeCategory, setActiveCategory] = useState("all")
+  const [page, setPage] = useState(0)
   const [selectedFlavors, setSelectedFlavors] = useState<Flavor[]>([])
   const [focusedFlavor, setFocusedFlavor] = useState<Flavor | null>(null)
+
+  // Touch swipe handling
+  const touchStartX = useRef(0)
+  const touchEndX = useRef(0)
+  const gridRef = useRef<HTMLDivElement>(null)
 
   const maxFlavors = product?.maxFlavors ?? 5
 
   const filteredFlavors = useMemo(
     () => getFlavorsByCategory(activeCategory),
     [activeCategory]
+  )
+
+  const totalPages = Math.ceil(filteredFlavors.length / PER_PAGE)
+  const pageFlavors = filteredFlavors.slice(
+    page * PER_PAGE,
+    (page + 1) * PER_PAGE
   )
 
   const toggleFlavor = useCallback(
@@ -54,6 +70,22 @@ function FlavorsContent() {
 
   const handleCategoryChange = (catId: string) => {
     setActiveCategory(catId)
+    setPage(0)
+  }
+
+  const goPage = (dir: number) => {
+    setPage((p) => Math.max(0, Math.min(totalPages - 1, p + dir)))
+  }
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.changedTouches[0].screenX
+  }
+  const onTouchEnd = (e: React.TouchEvent) => {
+    touchEndX.current = e.changedTouches[0].screenX
+    const diff = touchStartX.current - touchEndX.current
+    if (Math.abs(diff) > 50) {
+      goPage(diff > 0 ? 1 : -1)
+    }
   }
 
   const handleComplete = () => {
@@ -76,7 +108,7 @@ function FlavorsContent() {
     <div className="flex flex-1 flex-col overflow-hidden">
       <KioskHeader title="맛 선택" />
 
-      {/* Flavor category tabs */}
+      {/* Flavor category tabs - 2 rows */}
       <div className="shrink-0 border-b border-border bg-card">
         <div className="grid grid-cols-4">
           {flavorCategories.slice(0, 4).map((cat) => (
@@ -112,64 +144,111 @@ function FlavorsContent() {
         </div>
       </div>
 
-      {/* Scrollable flavor grid -- no pagination, fit as many rows as possible */}
-      <div className="flex-1 overflow-y-auto bg-muted/30 p-2">
-        <div className="grid grid-cols-4 gap-1.5">
-          {filteredFlavors.map((flavor) => {
-            const isSelected = selectedFlavors.some(
-              (f) => f.id === flavor.id
-            )
-            const isDisabled =
-              !isSelected && selectedFlavors.length >= maxFlavors
+      {/* Swipeable flavor grid */}
+      <div className="relative flex-1 overflow-hidden bg-muted/30">
+        {/* Left / Right arrows */}
+        {page > 0 && (
+          <button
+            onClick={() => goPage(-1)}
+            className="absolute left-0 top-1/2 z-20 -translate-y-1/2 rounded-r-lg bg-card/80 py-4 pl-0.5 pr-1 shadow"
+            aria-label="이전 페이지"
+          >
+            <ChevronLeft className="h-4 w-4 text-muted-foreground" />
+          </button>
+        )}
+        {page < totalPages - 1 && (
+          <button
+            onClick={() => goPage(1)}
+            className="absolute right-0 top-1/2 z-20 -translate-y-1/2 rounded-l-lg bg-card/80 py-4 pl-1 pr-0.5 shadow"
+            aria-label="다음 페이지"
+          >
+            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+          </button>
+        )}
 
-            return (
-              <button
-                key={flavor.id}
-                onClick={() => {
-                  if (!isDisabled) toggleFlavor(flavor)
-                }}
-                disabled={isDisabled}
-                className={cn(
-                  "relative flex flex-col items-center gap-0.5 rounded-lg border-2 bg-card p-1.5 pb-2 transition-all active:scale-[0.97]",
-                  isSelected
-                    ? "border-primary"
-                    : isDisabled
-                    ? "border-transparent opacity-35"
-                    : "border-transparent"
-                )}
-              >
-                {/* Badge */}
-                {flavor.badge && (
-                  <span className="absolute left-0.5 top-0.5 z-10 rounded px-1 py-px text-[8px] font-bold leading-tight text-primary-foreground bg-primary">
-                    {flavor.badge}
+        {/* Grid with touch swipe */}
+        <div
+          ref={gridRef}
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+          className="flex h-full flex-col p-2"
+        >
+          <div className="grid flex-1 grid-cols-4 grid-rows-5 gap-1">
+            {pageFlavors.map((flavor) => {
+              const isSelected = selectedFlavors.some(
+                (f) => f.id === flavor.id
+              )
+              const isDisabled =
+                !isSelected && selectedFlavors.length >= maxFlavors
+
+              return (
+                <button
+                  key={flavor.id}
+                  onClick={() => {
+                    if (!isDisabled) toggleFlavor(flavor)
+                  }}
+                  disabled={isDisabled}
+                  className={cn(
+                    "relative flex flex-col items-center justify-center gap-0.5 rounded-lg border-2 bg-card transition-all active:scale-[0.97]",
+                    isSelected
+                      ? "border-primary"
+                      : isDisabled
+                      ? "border-transparent opacity-35"
+                      : "border-transparent"
+                  )}
+                >
+                  {/* Badge */}
+                  {flavor.badge && (
+                    <span className="absolute left-0.5 top-0.5 z-10 rounded bg-primary px-1 py-px text-[7px] font-bold leading-tight text-primary-foreground">
+                      {flavor.badge}
+                    </span>
+                  )}
+
+                  {/* Scoop image */}
+                  <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full">
+                    <Image
+                      src={flavor.image}
+                      alt={flavor.name}
+                      fill
+                      className="object-cover"
+                      sizes="44px"
+                    />
+                  </div>
+
+                  {/* Name */}
+                  <span className="line-clamp-2 w-full px-0.5 text-center text-[8px] font-semibold leading-tight text-foreground">
+                    {flavor.name}
                   </span>
-                )}
+                </button>
+              )
+            })}
+          </div>
 
-                {/* Scoop image */}
-                <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full">
-                  <Image
-                    src={flavor.image}
-                    alt={flavor.name}
-                    fill
-                    className="object-cover"
-                    sizes="56px"
-                  />
-                </div>
-
-                {/* Name */}
-                <span className="line-clamp-2 w-full text-center text-[9px] font-semibold leading-tight text-foreground">
-                  {flavor.name}
-                </span>
-              </button>
-            )
-          })}
+          {/* Page dots */}
+          {totalPages > 1 && (
+            <div className="flex shrink-0 items-center justify-center gap-1.5 py-1">
+              {Array.from({ length: totalPages }).map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setPage(i)}
+                  className={cn(
+                    "h-1.5 rounded-full transition-all",
+                    i === page
+                      ? "w-4 bg-primary"
+                      : "w-1.5 bg-muted-foreground/30"
+                  )}
+                  aria-label={`${i + 1} 페이지`}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Flavor description bar (shows when a flavor is focused) */}
+      {/* Flavor description bar */}
       {focusedFlavor && (
-        <div className="shrink-0 border-t border-border bg-accent/50 px-4 py-2">
-          <p className="text-center text-[11px] leading-relaxed text-muted-foreground">
+        <div className="shrink-0 border-t border-border bg-accent/50 px-4 py-1.5">
+          <p className="text-center text-[10px] leading-relaxed text-muted-foreground">
             {focusedFlavor.description}
           </p>
         </div>
@@ -179,23 +258,26 @@ function FlavorsContent() {
       <div className="shrink-0 border-t border-border bg-card">
         <div className="flex overflow-x-auto scrollbar-hide">
           {/* Product info */}
-          <div className="flex shrink-0 flex-col items-center border-r border-border p-2" style={{ width: 90 }}>
-            <div className="relative mb-0.5 h-10 w-10 overflow-hidden rounded-lg">
+          <div
+            className="flex shrink-0 flex-col items-center border-r border-border p-1.5"
+            style={{ width: 80 }}
+          >
+            <div className="relative mb-0.5 h-9 w-9 overflow-hidden rounded-lg">
               <Image
                 src={product.image}
                 alt={product.name}
                 fill
                 className="object-contain"
-                sizes="40px"
+                sizes="36px"
               />
             </div>
-            <p className="text-center text-[8px] font-bold leading-tight text-foreground">
+            <p className="text-center text-[7px] font-bold leading-tight text-foreground">
               {product.name}
             </p>
-            <p className="text-center text-[8px] leading-tight text-foreground">
+            <p className="text-center text-[7px] leading-tight text-foreground">
               {product.size}
             </p>
-            <p className="text-[9px] font-bold text-primary">
+            <p className="text-[8px] font-bold text-primary">
               {formatPrice(product.price)}
             </p>
           </div>
@@ -209,7 +291,7 @@ function FlavorsContent() {
                   <div
                     key={flavor.id}
                     className="relative flex shrink-0 flex-col items-center border-r border-border p-1.5"
-                    style={{ width: 68 }}
+                    style={{ width: 62 }}
                   >
                     <button
                       onClick={() => toggleFlavor(flavor)}
@@ -218,16 +300,16 @@ function FlavorsContent() {
                     >
                       <X className="h-2.5 w-2.5" />
                     </button>
-                    <div className="relative mb-0.5 h-9 w-9 overflow-hidden rounded-full">
+                    <div className="relative mb-0.5 h-8 w-8 overflow-hidden rounded-full">
                       <Image
                         src={flavor.image}
                         alt={flavor.name}
                         fill
                         className="object-cover"
-                        sizes="36px"
+                        sizes="32px"
                       />
                     </div>
-                    <p className="line-clamp-2 w-full text-center text-[8px] font-medium leading-tight text-foreground">
+                    <p className="line-clamp-2 w-full text-center text-[7px] font-medium leading-tight text-foreground">
                       {flavor.name}
                     </p>
                   </div>
@@ -237,12 +319,12 @@ function FlavorsContent() {
                 <div
                   key={`empty-${i}`}
                   className="flex shrink-0 flex-col items-center border-r border-border p-1.5"
-                  style={{ width: 68 }}
+                  style={{ width: 62 }}
                 >
-                  <div className="mb-0.5 flex h-9 w-9 items-center justify-center rounded-full bg-muted">
-                    <HelpCircle className="h-4 w-4 text-muted-foreground/40" />
+                  <div className="mb-0.5 flex h-8 w-8 items-center justify-center rounded-full bg-muted">
+                    <HelpCircle className="h-3.5 w-3.5 text-muted-foreground/40" />
                   </div>
-                  <p className="text-center text-[8px] text-muted-foreground">
+                  <p className="text-center text-[7px] text-muted-foreground">
                     {"플레이버 " + (i + 1)}
                   </p>
                 </div>
