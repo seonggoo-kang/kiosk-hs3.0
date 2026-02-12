@@ -116,12 +116,13 @@ function MenuContent() {
         <div className="h-full overflow-y-auto p-3">
           {currentProducts.length > 0 ? (
             <div className="grid grid-cols-4 gap-2">
-              {currentProducts.map((product) => (
+              {currentProducts.map((product, idx) => (
                 <ProductCard
                   key={product.id}
                   product={product}
                   isSelected={state.selectedProductId === product.id}
                   onSelect={handleProductSelect}
+                  priority={page === 0 && idx < 4}
                 />
               ))}
             </div>

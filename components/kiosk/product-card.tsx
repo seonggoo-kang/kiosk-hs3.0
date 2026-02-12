@@ -8,9 +8,10 @@ type ProductCardProps = {
   product: Product
   isSelected?: boolean
   onSelect: (product: Product) => void
+  priority?: boolean
 }
 
-export function ProductCard({ product, isSelected, onSelect }: ProductCardProps) {
+export function ProductCard({ product, isSelected, onSelect, priority }: ProductCardProps) {
   return (
     <button
       onClick={() => onSelect(product)}
@@ -26,6 +27,7 @@ export function ProductCard({ product, isSelected, onSelect }: ProductCardProps)
           width={80}
           height={80}
           className="h-[72px] w-[72px] object-contain"
+          priority={priority}
         />
       </div>
       <p className="text-center text-xs font-semibold leading-tight text-foreground">
