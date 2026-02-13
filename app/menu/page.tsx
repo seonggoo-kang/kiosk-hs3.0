@@ -1,8 +1,7 @@
 "use client"
 
-import { useState, useMemo, useEffect, Suspense } from "react"
+import { useState, useMemo, useEffect, useRef, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import Image from "next/image"
 import { ChevronLeft, ChevronRight, IceCreamCone, Check } from "lucide-react"
 import { KioskHeader } from "@/components/kiosk/kiosk-header"
 import { KioskFooter } from "@/components/kiosk/kiosk-footer"
@@ -14,7 +13,7 @@ import { ActionBar } from "@/components/kiosk/action-bar"
 import { useOrder } from "@/lib/order-context"
 import { categories, getProductsByCategory, type Product } from "@/lib/mock-data"
 
-const ITEMS_PER_PAGE = 12
+const ITEMS_PER_PAGE = 16 // 4 cols x 4 rows
 
 function MenuContent() {
   const router = useRouter()
@@ -23,6 +22,7 @@ function MenuContent() {
   const [activeCategory, setActiveCategory] = useState(categories[3].id)
   const [page, setPage] = useState(0)
   const [showAddedToast, setShowAddedToast] = useState(false)
+  const touchStartX = useRef(0)
 
   // Show "item added" toast when coming back from options
   const justAdded = searchParams.get("added") === "true"
@@ -111,11 +111,21 @@ function MenuContent() {
         onSelect={handleCategoryChange}
       />
 
-      {/* Product Grid */}
-      <div className="relative flex-1 overflow-hidden bg-muted/40">
-        <div className="h-full overflow-y-auto p-3">
+      {/* Product Grid -- swipe left/right, no vertical scroll */}
+      <div
+        className="relative flex-1 overflow-hidden bg-muted/40"
+        onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX }}
+        onTouchEnd={(e) => {
+          const diff = touchStartX.current - e.changedTouches[0].clientX
+          if (Math.abs(diff) > 50) {
+            if (diff > 0 && page < totalPages - 1) setPage((p) => p + 1)
+            if (diff < 0 && page > 0) setPage((p) => p - 1)
+          }
+        }}
+      >
+        <div className="flex h-full flex-col p-3">
           {currentProducts.length > 0 ? (
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid flex-1 grid-cols-4 grid-rows-4 gap-2">
               {currentProducts.map((product, idx) => (
                 <ProductCard
                   key={product.id}
@@ -185,25 +195,10 @@ function MenuContent() {
         )}
       </div>
 
-      {/* Bottom area: Product detail OR Promo banner OR nothing (just cart) */}
+      {/* Product detail panel -- only when a product is selected */}
       {selectedProduct && (
         <div className="shrink-0 border-t border-border bg-card p-3">
           <ProductDetailPanel product={selectedProduct} />
-        </div>
-      )}
-
-      {!selectedProduct && !hasCart && (
-        <div className="shrink-0 border-t border-border bg-card p-3">
-          <div className="relative h-28 overflow-hidden rounded-xl">
-            <Image
-              src="/promo-banner.jpg"
-              alt="BERRY GOOD - Seasonal Strawberry Icecream"
-              fill
-              sizes="1080px"
-              priority
-              className="object-cover"
-            />
-          </div>
         </div>
       )}
 
