@@ -13,7 +13,7 @@ import { ActionBar } from "@/components/kiosk/action-bar"
 import { EventPromoBanners } from "@/components/kiosk/event-promo-banners"
 import { SubcategoryFilter } from "@/components/kiosk/subcategory-filter"
 import { useOrder } from "@/lib/order-context"
-import { categories, getProductsByCategory, cakeSubcategories, type Product } from "@/lib/mock-data"
+import { categories, getProductsByCategory, cakeSubcategories, beverageSubcategories, type Product } from "@/lib/mock-data"
 
 const ITEMS_PER_PAGE = 16 // 4 cols x 4 rows
 
@@ -25,6 +25,7 @@ function MenuContent() {
   const [page, setPage] = useState(0)
   const [showAddedToast, setShowAddedToast] = useState(false)
   const [cakeFilter, setCakeFilter] = useState("all")
+  const [beverageFilter, setBeverageFilter] = useState("all")
   const touchStartX = useRef(0)
   const touchStartY = useRef(0)
   const isSwiping = useRef(false)
@@ -43,6 +44,7 @@ function MenuContent() {
 
   const isEvent = activeCategory === "event"
   const isCake = activeCategory === "icecream-cake"
+  const isBeverage = activeCategory === "beverage"
 
   const categoryProducts = useMemo(() => {
     if (isEvent) return []
@@ -50,8 +52,11 @@ function MenuContent() {
     if (isCake && cakeFilter !== "all") {
       return all.filter((p) => p.subcategory === cakeFilter)
     }
+    if (isBeverage && beverageFilter !== "all") {
+      return all.filter((p) => p.subcategory === beverageFilter)
+    }
     return all
-  }, [activeCategory, isEvent, isCake, cakeFilter])
+  }, [activeCategory, isEvent, isCake, cakeFilter, isBeverage, beverageFilter])
 
   // Event category uses promo banners (no pagination), other categories use product grid
   const totalPages = isEvent ? 1 : Math.max(1, Math.ceil(categoryProducts.length / ITEMS_PER_PAGE))
@@ -70,6 +75,7 @@ function MenuContent() {
     setActiveCategory(id)
     setPage(0)
     setCakeFilter("all")
+    setBeverageFilter("all")
     dispatch({ type: "SELECT_PRODUCT", payload: null })
   }
 
@@ -167,6 +173,18 @@ function MenuContent() {
           activeId={cakeFilter}
           onSelect={(id) => {
             setCakeFilter(id)
+            setPage(0)
+          }}
+        />
+      )}
+
+      {/* Subcategory filter for beverage category */}
+      {isBeverage && (
+        <SubcategoryFilter
+          items={beverageSubcategories}
+          activeId={beverageFilter}
+          onSelect={(id) => {
+            setBeverageFilter(id)
             setPage(0)
           }}
         />

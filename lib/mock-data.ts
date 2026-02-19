@@ -350,38 +350,49 @@ const coffeeProducts = generateProducts("coffee", [
   { name: "수카방 커피", desc: "수카방 커피", size: "레귤러", weight: "300ml", price: 3900, cal: "80~120 kcal", serving: "300ml", image: "/products/sukabang.jpg", flavor: false, maxF: 0 },
 ])
 
-// ─── 음료 블라스트 (30) ───────────────────────────────────
+// ─── 음료 블라스트 (30) ────────────────��──────────────────
+export const beverageSubcategories = [
+  { id: "all", name: "전체" },
+  { id: "signature", name: "시그니처/쉐이크" },
+  { id: "tea", name: "Tea/Hot" },
+  { id: "k-drink", name: "K-Drink" },
+  { id: "classic-shake", name: "클래식 쉐이크" },
+]
+
 const beverageProducts = generateProducts("beverage", [
-  { name: "딸기 연유 블라스트", desc: "블라스트", size: "레귤러", weight: "400ml", price: 6500, cal: "280~350 kcal", serving: "400ml", image: "/products/strawberry-blast.jpg", flavor: false, maxF: 0 },
-  { name: "망고 패션 블라스트", desc: "블라스트", size: "레귤러", weight: "400ml", price: 6500, cal: "260~320 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0 },
-  { name: "초코 블라스트", desc: "블라스트", size: "레귤러", weight: "400ml", price: 6500, cal: "300~380 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0 },
-  { name: "바닐라 블라스트", desc: "블라스트", size: "레귤러", weight: "400ml", price: 6000, cal: "270~340 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0 },
-  { name: "민트초코 블라스트", desc: "블라스트", size: "레귤러", weight: "400ml", price: 6500, cal: "290~360 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0 },
-  { name: "피치 블라스트", desc: "블라스트", size: "레귤러", weight: "400ml", price: 6500, cal: "250~310 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0 },
-  { name: "블루베리 블라스트", desc: "블라스트", size: "레귤러", weight: "400ml", price: 6500, cal: "260~320 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0 },
-  { name: "카라멜 블라스트", desc: "블라스트", size: "레귤러", weight: "400ml", price: 6500, cal: "310~390 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0 },
-  { name: "그린티 블라스트", desc: "블라스트", size: "레귤러", weight: "400ml", price: 6000, cal: "240~300 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0 },
-  { name: "쿠키크림 블라스트", desc: "블라스트", size: "레귤러", weight: "400ml", price: 6800, cal: "320~400 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0 },
-  { name: "레몬 에이드", desc: "에이드", size: "레귤러", weight: "400ml", price: 4500, cal: "120~180 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0 },
-  { name: "자몽 에이드", desc: "에이드", size: "레귤러", weight: "400ml", price: 4800, cal: "130~190 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0 },
-  { name: "청포도 에이드", desc: "에이드", size: "레귤러", weight: "400ml", price: 4500, cal: "120~180 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0 },
-  { name: "패션프루트 에이드", desc: "에이드", size: "레귤러", weight: "400ml", price: 4800, cal: "130~190 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0 },
-  { name: "라임 에이드", desc: "에이드", size: "레귤러", weight: "400ml", price: 4500, cal: "120~180 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0 },
-  { name: "딸기 스무디", desc: "스무디", size: "레귤러", weight: "400ml", price: 5800, cal: "220~300 kcal", serving: "400ml", image: "/products/strawberry-blast.jpg", flavor: false, maxF: 0 },
-  { name: "망고 스무디", desc: "스무디", size: "레귤러", weight: "400ml", price: 5800, cal: "210~290 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0 },
-  { name: "블루베리 스무디", desc: "스무디", size: "레귤러", weight: "400ml", price: 5800, cal: "210~290 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0 },
-  { name: "키위 스무디", desc: "스무디", size: "레귤러", weight: "400ml", price: 5800, cal: "200~280 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0 },
-  { name: "바나나 스무디", desc: "스무디", size: "레귤러", weight: "400ml", price: 5500, cal: "230~310 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0 },
-  { name: "유자 티", desc: "핫/아이스", size: "레귤러", weight: "350ml", price: 4200, cal: "100~150 kcal", serving: "350ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0 },
-  { name: "캐모마일 티", desc: "핫", size: "레귤러", weight: "350ml", price: 4000, cal: "5~10 kcal", serving: "350ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0 },
-  { name: "페퍼민트 티", desc: "핫", size: "레귤러", weight: "350ml", price: 4000, cal: "5~10 kcal", serving: "350ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0 },
-  { name: "아이스티 복숭아", desc: "아이스", size: "레귤러", weight: "400ml", price: 3800, cal: "80~120 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0 },
-  { name: "아이스티 레몬", desc: "아이스", size: "레귤러", weight: "400ml", price: 3800, cal: "80~120 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0 },
-  { name: "딸기 블라스트 L", desc: "블라스트 라지", size: "라지", weight: "550ml", price: 7800, cal: "380~480 kcal", serving: "550ml", image: "/products/strawberry-blast.jpg", flavor: false, maxF: 0 },
-  { name: "망고 블라스트 L", desc: "블라스트 라지", size: "라지", weight: "550ml", price: 7800, cal: "360~450 kcal", serving: "550ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0 },
-  { name: "수박 주스", desc: "생과일", size: "레귤러", weight: "400ml", price: 5500, cal: "150~220 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0 },
-  { name: "오렌지 주스", desc: "생과일", size: "레귤러", weight: "400ml", price: 5200, cal: "140~200 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0 },
-  { name: "토마토 주스", desc: "생과일", size: "레귤러", weight: "400ml", price: 5200, cal: "100~160 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0 },
+  // ── 시그니처 / 쉐이크 / 블라스트 ──
+  { name: "레슬리 민트\n초콜릿칩 쉐이크", desc: "시그니처 쉐이크", size: "레귤러", weight: "400ml", price: 6200, cal: "320~400 kcal", serving: "400ml", image: "/products/shake-mint.jpg", flavor: false, maxF: 0, sub: "signature" },
+  { name: "레슬리 엄마는\n외계인 쉐이크", desc: "시그니처 쉐이크", size: "레귤러", weight: "400ml", price: 6200, cal: "310~390 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0, sub: "signature" },
+  { name: "엄마는 외계인\n블라스트", desc: "블라스트", size: "레귤러", weight: "400ml", price: 6200, cal: "300~380 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0, sub: "signature" },
+  { name: "우주 라이크\n봉봉 블라스트", desc: "블라스트", size: "레귤러", weight: "400ml", price: 5800, cal: "280~350 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0, sub: "signature" },
+  { name: "카푸치노 블라스트\n오리지널", desc: "카푸치노 블라스트", size: "레귤러", weight: "400ml", price: 5800, cal: "260~340 kcal", serving: "400ml", image: "/products/cappuccino-blast.jpg", flavor: false, maxF: 0, sub: "signature" },
+  { name: "카푸치노 블라스트\n모카", desc: "카푸치노 블라스트", size: "레귤러", weight: "400ml", price: 6100, cal: "290~370 kcal", serving: "400ml", image: "/products/cappuccino-blast.jpg", flavor: false, maxF: 0, sub: "signature" },
+  { name: "설향딸기 블라스트", desc: "블라스트", size: "레귤러", weight: "400ml", price: 5000, cal: "220~300 kcal", serving: "400ml", image: "/products/strawberry-blast.jpg", flavor: false, maxF: 0, sub: "signature" },
+  { name: "딸기 연유 블라스트", desc: "블라스트", size: "레귤러", weight: "400ml", price: 6800, cal: "280~360 kcal", serving: "400ml", image: "/products/strawberry-blast.jpg", flavor: false, maxF: 0, sub: "signature" },
+
+  // ── Tea / Hot Beverage ──
+  { name: "자몽 히비스커스티", desc: "허브티", size: "레귤러", weight: "350ml", price: 3500, cal: "40~80 kcal", serving: "350ml", image: "/products/hibiscus-tea.jpg", flavor: false, maxF: 0, sub: "tea" },
+  { name: "레드향 캐모마일티", desc: "허브티", size: "레귤러", weight: "350ml", price: 3500, cal: "30~60 kcal", serving: "350ml", image: "/products/hibiscus-tea.jpg", flavor: false, maxF: 0, sub: "tea" },
+  { name: "얼그레이", desc: "차", size: "레귤러", weight: "350ml", price: 4900, cal: "5~10 kcal", serving: "350ml", image: "/products/hibiscus-tea.jpg", flavor: false, maxF: 0, sub: "tea" },
+  { name: "캐모마일", desc: "허브티", size: "레귤러", weight: "350ml", price: 4900, cal: "5~10 kcal", serving: "350ml", image: "/products/hibiscus-tea.jpg", flavor: false, maxF: 0, sub: "tea" },
+  { name: "위스키\n아이리쉬 커피", desc: "위스키 커피", size: "레귤러", weight: "250ml", price: 9500, cal: "200~300 kcal", serving: "250ml", image: "/products/irish-coffee.jpg", flavor: false, maxF: 0, sub: "tea", tag: "먹고가기 전용" },
+  { name: "한라봉\n커즈마인 티", desc: "프루트티", size: "레귤러", weight: "350ml", price: 6200, cal: "80~130 kcal", serving: "350ml", image: "/products/hibiscus-tea.jpg", flavor: false, maxF: 0, sub: "tea" },
+  { name: "피치 캐모마일\n아이스티", desc: "아이스티", size: "레귤러", weight: "400ml", price: 6200, cal: "60~100 kcal", serving: "400ml", image: "/products/hibiscus-tea.jpg", flavor: false, maxF: 0, sub: "tea" },
+
+  // ── K-Drink / Specialty Drink ──
+  { name: "식혜 K-Drink", desc: "전통 음료", size: "레귤러", weight: "350ml", price: 6200, cal: "120~180 kcal", serving: "350ml", image: "/products/sikhye.jpg", flavor: false, maxF: 0, sub: "k-drink" },
+  { name: "수정과 K-Drink", desc: "전통 음료", size: "레귤러", weight: "350ml", price: 6200, cal: "100~160 kcal", serving: "350ml", image: "/products/sikhye.jpg", flavor: false, maxF: 0, sub: "k-drink" },
+  { name: "미숫가루 라떼", desc: "곡물 라떼", size: "레귤러", weight: "350ml", price: 3800, cal: "180~260 kcal", serving: "350ml", image: "/products/misugaru.jpg", flavor: false, maxF: 0, sub: "k-drink", tag: "NEW" },
+  { name: "우리 인절미\n곡물쉐이크", desc: "곡물 쉐이크", size: "레귤러", weight: "400ml", price: 6900, cal: "300~400 kcal", serving: "400ml", image: "/products/misugaru.jpg", flavor: false, maxF: 0, sub: "k-drink" },
+  { name: "두바이 스타일\n초코라떼", desc: "스페셜 라떼", size: "레귤러", weight: "350ml", price: 5800, cal: "250~340 kcal", serving: "350ml", image: "/products/dubai-choco.jpg", flavor: false, maxF: 0, sub: "k-drink" },
+
+  // ── Classic Shake Line – NEW ──
+  { name: "딸기&바나나\n더블쉐이크", desc: "클래식 쉐이크", size: "레귤러", weight: "400ml", price: 6900, cal: "320~420 kcal", serving: "400ml", image: "/products/double-shake.jpg", flavor: false, maxF: 0, sub: "classic-shake", tag: "NEW" },
+  { name: "초콜릿&바나나\n더블쉐이크", desc: "클래식 쉐이크", size: "레귤러", weight: "400ml", price: 6900, cal: "340~440 kcal", serving: "400ml", image: "/products/double-shake.jpg", flavor: false, maxF: 0, sub: "classic-shake", tag: "NEW" },
+  { name: "클래식 초콜릿 쉐이크", desc: "클래식 쉐이크", size: "레귤러", weight: "400ml", price: 6100, cal: "300~390 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0, sub: "classic-shake", tag: "NEW" },
+  { name: "클래식 딸기 쉐이크", desc: "클래식 쉐이크", size: "레귤러", weight: "400ml", price: 6100, cal: "280~360 kcal", serving: "400ml", image: "/products/strawberry-blast.jpg", flavor: false, maxF: 0, sub: "classic-shake", tag: "NEW" },
+  { name: "클래식 바나나 쉐이크", desc: "클래식 쉐이크", size: "레귤러", weight: "400ml", price: 6100, cal: "290~370 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0, sub: "classic-shake", tag: "NEW" },
+  { name: "클래식 바닐라 쉐이크", desc: "클래식 쉐이크", size: "레귤러", weight: "400ml", price: 6100, cal: "270~350 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0, sub: "classic-shake", tag: "NEW" },
 ])
 
 // ─── 젤라또 쉐프디저트 (30) ──────────────────────────────
