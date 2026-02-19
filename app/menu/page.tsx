@@ -13,7 +13,7 @@ import { ActionBar } from "@/components/kiosk/action-bar"
 import { EventPromoBanners } from "@/components/kiosk/event-promo-banners"
 import { SubcategoryFilter } from "@/components/kiosk/subcategory-filter"
 import { useOrder } from "@/lib/order-context"
-import { categories, getProductsByCategory, cakeSubcategories, beverageSubcategories, dessertSubcategories, type Product } from "@/lib/mock-data"
+import { categories, getProductsByCategory, cakeSubcategories, beverageSubcategories, dessertSubcategories, prepackSubcategories, type Product } from "@/lib/mock-data"
 
 const ITEMS_PER_PAGE = 16 // 4 cols x 4 rows
 
@@ -27,6 +27,7 @@ function MenuContent() {
   const [cakeFilter, setCakeFilter] = useState("all")
   const [beverageFilter, setBeverageFilter] = useState("all")
   const [dessertFilter, setDessertFilter] = useState("all")
+  const [prepackFilter, setPrepackFilter] = useState("all")
   const touchStartX = useRef(0)
   const touchStartY = useRef(0)
   const isSwiping = useRef(false)
@@ -47,6 +48,7 @@ function MenuContent() {
   const isCake = activeCategory === "icecream-cake"
   const isBeverage = activeCategory === "beverage"
   const isDessert = activeCategory === "dessert"
+  const isPrepack = activeCategory === "prepack"
 
   const categoryProducts = useMemo(() => {
     if (isEvent) return []
@@ -60,8 +62,11 @@ function MenuContent() {
     if (isDessert && dessertFilter !== "all") {
       return all.filter((p) => p.subcategory === dessertFilter)
     }
+    if (isPrepack && prepackFilter !== "all") {
+      return all.filter((p) => p.subcategory === prepackFilter)
+    }
     return all
-  }, [activeCategory, isEvent, isCake, cakeFilter, isBeverage, beverageFilter, isDessert, dessertFilter])
+  }, [activeCategory, isEvent, isCake, cakeFilter, isBeverage, beverageFilter, isDessert, dessertFilter, isPrepack, prepackFilter])
 
   // Event category uses promo banners (no pagination), other categories use product grid
   const totalPages = isEvent ? 1 : Math.max(1, Math.ceil(categoryProducts.length / ITEMS_PER_PAGE))
@@ -82,6 +87,7 @@ function MenuContent() {
     setCakeFilter("all")
     setBeverageFilter("all")
     setDessertFilter("all")
+    setPrepackFilter("all")
     dispatch({ type: "SELECT_PRODUCT", payload: null })
   }
 
@@ -203,6 +209,18 @@ function MenuContent() {
           activeId={dessertFilter}
           onSelect={(id) => {
             setDessertFilter(id)
+            setPage(0)
+          }}
+        />
+      )}
+
+      {/* Subcategory filter for prepack category */}
+      {isPrepack && (
+        <SubcategoryFilter
+          items={prepackSubcategories}
+          activeId={prepackFilter}
+          onSelect={(id) => {
+            setPrepackFilter(id)
             setPage(0)
           }}
         />
