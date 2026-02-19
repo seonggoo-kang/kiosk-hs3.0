@@ -11,8 +11,9 @@ import { ProductDetailPanel } from "@/components/kiosk/product-detail-panel"
 import { CartStrip } from "@/components/kiosk/cart-strip"
 import { ActionBar } from "@/components/kiosk/action-bar"
 import { EventPromoBanners } from "@/components/kiosk/event-promo-banners"
+import { SubcategoryFilter } from "@/components/kiosk/subcategory-filter"
 import { useOrder } from "@/lib/order-context"
-import { categories, getProductsByCategory, type Product } from "@/lib/mock-data"
+import { categories, getProductsByCategory, cakeSubcategories, type Product } from "@/lib/mock-data"
 
 const ITEMS_PER_PAGE = 16 // 4 cols x 4 rows
 
@@ -23,6 +24,7 @@ function MenuContent() {
   const [activeCategory, setActiveCategory] = useState(categories[3].id)
   const [page, setPage] = useState(0)
   const [showAddedToast, setShowAddedToast] = useState(false)
+  const [cakeFilter, setCakeFilter] = useState("all")
   const touchStartX = useRef(0)
   const touchStartY = useRef(0)
   const isSwiping = useRef(false)
@@ -40,11 +42,16 @@ function MenuContent() {
   }, [justAdded, state.cart.length])
 
   const isEvent = activeCategory === "event"
+  const isCake = activeCategory === "icecream-cake"
 
-  const categoryProducts = useMemo(
-    () => (isEvent ? [] : getProductsByCategory(activeCategory)),
-    [activeCategory, isEvent]
-  )
+  const categoryProducts = useMemo(() => {
+    if (isEvent) return []
+    const all = getProductsByCategory(activeCategory)
+    if (isCake && cakeFilter !== "all") {
+      return all.filter((p) => p.subcategory === cakeFilter)
+    }
+    return all
+  }, [activeCategory, isEvent, isCake, cakeFilter])
 
   // Event category uses promo banners (no pagination), other categories use product grid
   const totalPages = isEvent ? 1 : Math.max(1, Math.ceil(categoryProducts.length / ITEMS_PER_PAGE))
@@ -62,6 +69,7 @@ function MenuContent() {
   const handleCategoryChange = (id: string) => {
     setActiveCategory(id)
     setPage(0)
+    setCakeFilter("all")
     dispatch({ type: "SELECT_PRODUCT", payload: null })
   }
 
@@ -151,6 +159,18 @@ function MenuContent() {
         activeId={activeCategory}
         onSelect={handleCategoryChange}
       />
+
+      {/* Subcategory filter for cake category */}
+      {isCake && (
+        <SubcategoryFilter
+          items={cakeSubcategories}
+          activeId={cakeFilter}
+          onSelect={(id) => {
+            setCakeFilter(id)
+            setPage(0)
+          }}
+        />
+      )}
 
       {/* Content area -- event promos OR product grid */}
       {isEvent ? (

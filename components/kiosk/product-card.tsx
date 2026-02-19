@@ -14,8 +14,11 @@ type ProductCardProps = {
 const TAG_STYLES: Record<string, string> = {
   "Chef Made": "bg-amber-600 text-white",
   "먹고가기 전용": "bg-sky-500 text-white",
+  "먹고가기": "bg-sky-500 text-white",
   "20% 할인": "bg-red-500 text-white",
   "이달의 더블주니어": "bg-primary text-primary-foreground",
+  "NEW": "bg-rose-500 text-white",
+  "세트포장": "bg-violet-500 text-white",
 }
 
 export function ProductCard({ product, isSelected, onSelect, priority }: ProductCardProps) {

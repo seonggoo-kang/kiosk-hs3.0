@@ -1,7 +1,7 @@
 // ─── Types ────────────────────────────────────────────────
 export type Category = { id: string; name: string }
 
-export type ProductTag = "Chef Made" | "먹고가기 전용" | "20% 할인" | "이달의 더블주니어"
+export type ProductTag = "Chef Made" | "먹고가기 전용" | "20% 할인" | "이달의 더블주니어" | "NEW" | "세트포장" | "먹고가기"
 
 export type Product = {
   id: string
@@ -17,6 +17,7 @@ export type Product = {
   requiresFlavor: boolean
   maxFlavors: number
   tag?: ProductTag | null
+  subcategory?: string | null
 }
 
 export type FlavorCategory = {
@@ -92,7 +93,7 @@ function generateProducts(
   items: Array<{
     name: string; desc: string; size: string; weight: string;
     price: number; cal: string; serving: string; image: string;
-    flavor: boolean; maxF: number; tag?: ProductTag | null;
+    flavor: boolean; maxF: number; tag?: ProductTag | null; sub?: string | null;
   }>
 ): Product[] {
   return items.map((item, i) => ({
@@ -109,6 +110,7 @@ function generateProducts(
     requiresFlavor: item.flavor,
     maxFlavors: item.maxF,
     tag: item.tag ?? null,
+    subcategory: item.sub ?? null,
   }))
 }
 
@@ -229,38 +231,77 @@ const packableProducts = generateProducts("packable-icecream", [
   { name: "트윈 쿼터", desc: "2개 쿼터 세트", size: "2개 세트", weight: "1240g", price: 34000, cal: "648~1408 kcal", serving: "1240g", image: "/products/quarter.jpg", flavor: true, maxF: 4 },
 ])
 
-// ─── 아이스크림 케이크 (30) ───────────────────────────────
+// ─── 아이스크림 케이크 (58) ── Actual BR ice cream cake menu ──
+export const cakeSubcategories = [
+  { id: "all", name: "전체" },
+  { id: "small", name: "보울/에그/소형" },
+  { id: "basic", name: "기본 홀케이크" },
+  { id: "premium", name: "프리미엄/캐릭터" },
+]
+
 const cakeProducts = generateProducts("icecream-cake", [
-  { name: "해피 바스데이", desc: "생일축하 케이크", size: "1호", weight: "800g", price: 28000, cal: "1800~2400 kcal", serving: "800g", image: "/products/cake-round.jpg", flavor: true, maxF: 2 },
-  { name: "러브 하트", desc: "하트 케이크", size: "하트", weight: "700g", price: 32000, cal: "1600~2200 kcal", serving: "700g", image: "/products/cake-heart.jpg", flavor: true, maxF: 2 },
-  { name: "캐릭터 케이크 A", desc: "캐릭터 디자인", size: "1호", weight: "850g", price: 35000, cal: "1900~2500 kcal", serving: "850g", image: "/products/cake-character.jpg", flavor: true, maxF: 2 },
-  { name: "더블 레이어", desc: "2단 케이크", size: "2호", weight: "1200g", price: 42000, cal: "2800~3600 kcal", serving: "1200g", image: "/products/cake-round.jpg", flavor: true, maxF: 3 },
-  { name: "미니 케이크", desc: "미니 사이즈", size: "미니", weight: "400g", price: 18000, cal: "900~1200 kcal", serving: "400g", image: "/products/cake-round.jpg", flavor: true, maxF: 1 },
-  { name: "초코 퐁당 케이크", desc: "초콜릿 케이크", size: "1호", weight: "800g", price: 30000, cal: "2000~2600 kcal", serving: "800g", image: "/products/cake-round.jpg", flavor: true, maxF: 2 },
-  { name: "딸기 크림 케이크", desc: "딸기 케이크", size: "1호", weight: "800g", price: 29000, cal: "1700~2300 kcal", serving: "800g", image: "/products/cake-heart.jpg", flavor: true, maxF: 2 },
-  { name: "티라미수 케이크", desc: "티라미수", size: "1호", weight: "850g", price: 33000, cal: "2000~2600 kcal", serving: "850g", image: "/products/cake-round.jpg", flavor: true, maxF: 2 },
-  { name: "프리미엄 케이크", desc: "프리미엄", size: "프리미엄", weight: "1000g", price: 45000, cal: "2400~3200 kcal", serving: "1000g", image: "/products/cake-round.jpg", flavor: true, maxF: 3 },
-  { name: "아이스 타르트", desc: "타르트 스타일", size: "레귤러", weight: "600g", price: 25000, cal: "1400~1800 kcal", serving: "600g", image: "/products/cake-round.jpg", flavor: true, maxF: 2 },
-  { name: "캐릭터 케이크 B", desc: "캐릭터 디자인", size: "1호", weight: "850g", price: 36000, cal: "1900~2500 kcal", serving: "850g", image: "/products/cake-character.jpg", flavor: true, maxF: 2 },
-  { name: "캐릭터 케이크 C", desc: "캐릭�� 디자인", size: "2호", weight: "1200g", price: 48000, cal: "2800~3600 kcal", serving: "1200g", image: "/products/cake-character.jpg", flavor: true, maxF: 3 },
-  { name: "웨딩 미니케이크", desc: "웨딩 에디션", size: "미니", weight: "500g", price: 22000, cal: "1000~1400 kcal", serving: "500g", image: "/products/cake-heart.jpg", flavor: true, maxF: 2 },
-  { name: "�����토 케이크", desc: "사진 프린팅", size: "1호", weight: "900g", price: 38000, cal: "2000~2600 kcal", serving: "900g", image: "/products/cake-round.jpg", flavor: true, maxF: 2 },
-  { name: "��터링 케이크", desc: "레터링 디자인", size: "1호", weight: "800g", price: 34000, cal: "1800~2400 kcal", serving: "800g", image: "/products/cake-round.jpg", flavor: true, maxF: 2 },
-  { name: "꽃 케이크", desc: "플라워 디자인", size: "1호", weight: "850g", price: 36000, cal: "1900~2500 kcal", serving: "850g", image: "/products/cake-heart.jpg", flavor: true, maxF: 2 },
-  { name: "마카롱 케이크", desc: "마카롱 토핑", size: "1호", weight: "900g", price: 37000, cal: "2100~2700 kcal", serving: "900g", image: "/products/cake-round.jpg", flavor: true, maxF: 2 },
-  { name: "갈라 케이크", desc: "갈라 에디션", size: "2호", weight: "1300g", price: 50000, cal: "3000~3800 kcal", serving: "1300g", image: "/products/cake-round.jpg", flavor: true, maxF: 3 },
-  { name: "롤 케이크", desc: "아이스크림 롤", size: "레귤러", weight: "600g", price: 23000, cal: "1300~1700 kcal", serving: "600g", image: "/products/cake-round.jpg", flavor: true, maxF: 2 },
-  { name: "무스 케이크", desc: "무스 스타일", size: "레귤러", weight: "700g", price: 27000, cal: "1500~2000 kcal", serving: "700g", image: "/products/cake-round.jpg", flavor: true, maxF: 2 },
-  { name: "시즌 케이크 봄", desc: "봄 시즌", size: "1호", weight: "800g", price: 31000, cal: "1800~2400 kcal", serving: "800g", image: "/products/cake-heart.jpg", flavor: true, maxF: 2 },
-  { name: "시즌 케이크 여름", desc: "여름 시즌", size: "1호", weight: "800g", price: 31000, cal: "1800~2400 kcal", serving: "800g", image: "/products/cake-round.jpg", flavor: true, maxF: 2 },
-  { name: "시즌 케이크 가을", desc: "가을 시즌", size: "1호", weight: "800g", price: 31000, cal: "1800~2400 kcal", serving: "800g", image: "/products/cake-round.jpg", flavor: true, maxF: 2 },
-  { name: "시즌 케이크 겨울", desc: "겨울 시즌", size: "1호", weight: "800g", price: 31000, cal: "1800~2400 kcal", serving: "800g", image: "/products/cake-character.jpg", flavor: true, maxF: 2 },
-  { name: "넘버 케이크", desc: "숫자 디자인", size: "1호", weight: "900g", price: 39000, cal: "2000~2600 kcal", serving: "900g", image: "/products/cake-round.jpg", flavor: true, maxF: 2 },
-  { name: "아이스 치즈케이크", desc: "치즈케이크", size: "레귤러", weight: "700g", price: 28000, cal: "1600~2200 kcal", serving: "700g", image: "/products/cake-round.jpg", flavor: true, maxF: 2 },
-  { name: "브라우니 케이크", desc: "브라우니 믹스", size: "레귤러", weight: "750g", price: 29000, cal: "1700~2300 kcal", serving: "750g", image: "/products/cake-round.jpg", flavor: true, maxF: 2 },
-  { name: "쿠키 케이크", desc: "쿠키 토핑", size: "1호", weight: "850g", price: 32000, cal: "1900~2500 kcal", serving: "850g", image: "/products/cake-round.jpg", flavor: true, maxF: 2 },
-  { name: "그랑 케이크", desc: "그랑 에디션", size: "3호", weight: "1800g", price: 65000, cal: "4000~5200 kcal", serving: "1800g", image: "/products/cake-round.jpg", flavor: true, maxF: 4 },
-  { name: "팝 케이크 세트", desc: "팝 케이크 6개", size: "6개 세트", weight: "360g", price: 19000, cal: "800~1100 kcal", serving: "360g", image: "/products/cake-character.jpg", flavor: true, maxF: 3 },
+  // ── 15,000원대 – 보울/에그/소형 케이크 라인 ──
+  { name: "레드하트\n시트론 보울", desc: "보울 케이크", size: "보울", weight: "350g", price: 15000, cal: "600~800 kcal", serving: "350g", image: "/products/cake-bowl.jpg", flavor: false, maxF: 0, sub: "small" },
+  { name: "해피 윈터\n화이트 씰", desc: "씰 케이크", size: "에그", weight: "500g", price: 22000, cal: "800~1100 kcal", serving: "500g", image: "/products/cake-seal.jpg", flavor: false, maxF: 0, sub: "small" },
+  { name: "스노우맨\n블루 씰", desc: "씰 케이크", size: "에그", weight: "500g", price: 22000, cal: "800~1100 kcal", serving: "500g", image: "/products/cake-seal.jpg", flavor: false, maxF: 0, sub: "small" },
+  { name: "스윗 드림핑\n핑크 씰", desc: "씰 케이크", size: "에그", weight: "500g", price: 22000, cal: "800~1100 kcal", serving: "500g", image: "/products/cake-seal.jpg", flavor: false, maxF: 0, sub: "small" },
+  { name: "핑크 디노", desc: "디노 케이크", size: "캐릭터", weight: "600g", price: 29000, cal: "1000~1400 kcal", serving: "600g", image: "/products/cake-dino.jpg", flavor: false, maxF: 0, sub: "small" },
+  { name: "오렌지 디노", desc: "디노 케이크", size: "캐릭터", weight: "600g", price: 29000, cal: "1000~1400 kcal", serving: "600g", image: "/products/cake-dino.jpg", flavor: false, maxF: 0, sub: "small" },
+  { name: "바나나치오 바질", desc: "보울 케이크", size: "보울", weight: "350g", price: 15000, cal: "600~800 kcal", serving: "350g", image: "/products/cake-bowl.jpg", flavor: false, maxF: 0, sub: "small" },
+  { name: "스윗하트\n크랩 에그", desc: "에그 케이크", size: "에그", weight: "400g", price: 15000, cal: "500~700 kcal", serving: "400g", image: "/products/cake-egg.jpg", flavor: false, maxF: 0, sub: "small" },
+  { name: "초콜릿 더블 에그", desc: "에그 케이크", size: "에그", weight: "400g", price: 15000, cal: "550~750 kcal", serving: "400g", image: "/products/cake-egg.jpg", flavor: false, maxF: 0, sub: "small" },
+  { name: "단지 쑥 유자", desc: "보울 케이크", size: "보울", weight: "350g", price: 15000, cal: "500~700 kcal", serving: "350g", image: "/products/cake-bowl.jpg", flavor: false, maxF: 0, sub: "small" },
+  { name: "멜로우 쇼코니", desc: "소형 케이크", size: "소형", weight: "350g", price: 15000, cal: "500~700 kcal", serving: "350g", image: "/products/cake-bowl.jpg", flavor: false, maxF: 0, sub: "small" },
+  { name: "치즈러버 쇼코니", desc: "소형 케이크", size: "소형", weight: "350g", price: 15000, cal: "500~700 kcal", serving: "350g", image: "/products/cake-bowl.jpg", flavor: false, maxF: 0, sub: "small" },
+  { name: "쪼꼬볼 쇼코니", desc: "소형 케이크", size: "소형", weight: "350g", price: 15000, cal: "500~700 kcal", serving: "350g", image: "/products/cake-bowl.jpg", flavor: false, maxF: 0, sub: "small" },
+  { name: "쪼꼬링 쇼코니", desc: "소형 케이크", size: "소형", weight: "350g", price: 15000, cal: "500~700 kcal", serving: "350g", image: "/products/cake-bowl.jpg", flavor: false, maxF: 0, sub: "small" },
+  { name: "초코딥\n스노우볼 놀", desc: "소형 케이크", size: "소형", weight: "350g", price: 15000, cal: "550~750 kcal", serving: "350g", image: "/products/cake-bowl.jpg", flavor: false, maxF: 0, sub: "small" },
+  { name: "허그미 러브 벨", desc: "소형 케이크", size: "소형", weight: "350g", price: 15000, cal: "500~700 kcal", serving: "350g", image: "/products/cake-bowl.jpg", flavor: false, maxF: 0, sub: "small" },
+  { name: "써니사이드\n업 에그", desc: "에그 케이크", size: "에그", weight: "400g", price: 15000, cal: "500~700 kcal", serving: "400g", image: "/products/cake-egg.jpg", flavor: false, maxF: 0, sub: "small" },
+  { name: "러블리 미녀 놀", desc: "소형 케이크", size: "소형", weight: "350g", price: 15000, cal: "500~700 kcal", serving: "350g", image: "/products/cake-bowl.jpg", flavor: false, maxF: 0, sub: "small", tag: "먹고가기" },
+  { name: "리틀 기프트 보울", desc: "보울 케이크", size: "보울", weight: "350g", price: 15000, cal: "500~700 kcal", serving: "350g", image: "/products/cake-bowl.jpg", flavor: false, maxF: 0, sub: "small" },
+
+  // ── 30,000원대 – 기본 홀케이크 라인 ──
+  { name: "골든 프랄린\n바움쿠헨 케이크", desc: "홀케이크", size: "홀", weight: "800g", price: 32000, cal: "1800~2400 kcal", serving: "800g", image: "/products/cake-round.jpg", flavor: false, maxF: 0, sub: "basic" },
+  { name: "골든 브릴레\n판타지", desc: "홀케이크", size: "홀", weight: "800g", price: 32000, cal: "1800~2400 kcal", serving: "800g", image: "/products/cake-round.jpg", flavor: false, maxF: 0, sub: "basic", tag: "먹고가기" },
+  { name: "홀리데이\n초콜릿 판타지", desc: "홀케이크", size: "홀", weight: "800g", price: 32000, cal: "1900~2500 kcal", serving: "800g", image: "/products/cake-round.jpg", flavor: false, maxF: 0, sub: "basic" },
+  { name: "피넛 라떼 브릭", desc: "홀케이크", size: "홀", weight: "750g", price: 28000, cal: "1600~2200 kcal", serving: "750g", image: "/products/cake-round.jpg", flavor: false, maxF: 0, sub: "basic" },
+  { name: "스노우 초코아몬드\n바움쿠헨", desc: "홀케이크", size: "홀", weight: "800g", price: 31000, cal: "1800~2400 kcal", serving: "800g", image: "/products/cake-round.jpg", flavor: false, maxF: 0, sub: "basic" },
+  { name: "스노우 초코베리\n바움쿠헨", desc: "홀케이크", size: "홀", weight: "800g", price: 31000, cal: "1800~2400 kcal", serving: "800g", image: "/products/cake-round.jpg", flavor: false, maxF: 0, sub: "basic" },
+  { name: "진정한 크림치즈\n레드벨벳", desc: "홀케이크", size: "홀", weight: "750g", price: 28000, cal: "1600~2200 kcal", serving: "750g", image: "/products/cake-round.jpg", flavor: false, maxF: 0, sub: "basic" },
+  { name: "더 듬뿍 딸기\n우유 케이크", desc: "홀케이크", size: "홀", weight: "900g", price: 35000, cal: "1800~2400 kcal", serving: "900g", image: "/products/cake-premium.jpg", flavor: false, maxF: 0, sub: "basic" },
+  { name: "더 듬뿍 오렌지\n앤 자몽 케이크", desc: "홀케이크", size: "홀", weight: "850g", price: 34000, cal: "1700~2300 kcal", serving: "850g", image: "/products/cake-premium.jpg", flavor: false, maxF: 0, sub: "basic" },
+  { name: "마이멜로디와\n더 듬뿍 딸기", desc: "캐릭터 홀케이크", size: "홀", weight: "850g", price: 34000, cal: "1800~2400 kcal", serving: "850g", image: "/products/cake-character.jpg", flavor: false, maxF: 0, sub: "basic" },
+  { name: "한고동의\n스윗 파티", desc: "캐릭터 홀케이크", size: "홀", weight: "800g", price: 30000, cal: "1700~2300 kcal", serving: "800g", image: "/products/cake-character.jpg", flavor: false, maxF: 0, sub: "basic" },
+  { name: "스윗 해피 트레인", desc: "홀케이크", size: "홀", weight: "850g", price: 34000, cal: "1800~2400 kcal", serving: "850g", image: "/products/cake-party.jpg", flavor: false, maxF: 0, sub: "basic" },
+
+  // ── 38,000원~48,000원 – 프리미엄/캐릭터/테마 라인 ──
+  { name: "굿럭 카피바라", desc: "프리미엄 케이크", size: "프리미엄", weight: "900g", price: 38000, cal: "2000~2600 kcal", serving: "900g", image: "/products/cake-character.jpg", flavor: false, maxF: 0, sub: "premium" },
+  { name: "럭키 포니 춘식이", desc: "캐릭터 케이크", size: "캐릭터", weight: "800g", price: 30000, cal: "1700~2300 kcal", serving: "800g", image: "/products/cake-character.jpg", flavor: false, maxF: 0, sub: "premium" },
+  { name: "짝짝짝 시계 보울", desc: "보울 케이크", size: "보울", weight: "350g", price: 15000, cal: "500~700 kcal", serving: "350g", image: "/products/cake-bowl.jpg", flavor: false, maxF: 0, sub: "premium" },
+  { name: "로맨틱 야수 에그", desc: "에그 케이크", size: "에그", weight: "400g", price: 15000, cal: "500~700 kcal", serving: "400g", image: "/products/cake-egg.jpg", flavor: false, maxF: 0, sub: "premium" },
+  { name: "빵띠 케이크\n4개입 세트", desc: "세트 케이크", size: "4개입", weight: "1200g", price: 59000, cal: "3200~4200 kcal", serving: "1200g", image: "/products/cake-party.jpg", flavor: false, maxF: 0, sub: "premium", tag: "세트포장" },
+  { name: "화이트 스트로베리\n캡슐", desc: "프리미엄 케이크", size: "프리미엄", weight: "1000g", price: 46000, cal: "2400~3200 kcal", serving: "1000g", image: "/products/cake-premium.jpg", flavor: false, maxF: 0, sub: "premium" },
+  { name: "초코 스트로베리\n가든", desc: "프리미엄 케이크", size: "프리미엄", weight: "1000g", price: 46000, cal: "2500~3300 kcal", serving: "1000g", image: "/products/cake-premium.jpg", flavor: false, maxF: 0, sub: "premium" },
+  { name: "골든 쇼콜라 케이크", desc: "프리미엄 케이크", size: "프리미엄", weight: "850g", price: 34000, cal: "2000~2600 kcal", serving: "850g", image: "/products/cake-round.jpg", flavor: false, maxF: 0, sub: "premium" },
+  { name: "화이트 스트로베리\n페스티벌", desc: "신제품", size: "홀", weight: "750g", price: 26000, cal: "1400~1900 kcal", serving: "750g", image: "/products/cake-premium.jpg", flavor: false, maxF: 0, sub: "premium", tag: "NEW" },
+  { name: "초코 스트로베리\n페스티벌", desc: "신제품", size: "홀", weight: "750g", price: 26000, cal: "1500~2000 kcal", serving: "750g", image: "/products/cake-premium.jpg", flavor: false, maxF: 0, sub: "premium", tag: "NEW" },
+  { name: "피스타치오\n스트로베리 페스티벌", desc: "신제품", size: "홀", weight: "750g", price: 26000, cal: "1500~2000 kcal", serving: "750g", image: "/products/cake-premium.jpg", flavor: false, maxF: 0, sub: "premium", tag: "NEW" },
+  { name: "핑크 펀 인 하트", desc: "하트 프리미엄", size: "하트", weight: "900g", price: 36000, cal: "2000~2600 kcal", serving: "900g", image: "/products/cake-heart.jpg", flavor: false, maxF: 0, sub: "premium", tag: "NEW" },
+  { name: "하트 앤 하트\n쇼콜라", desc: "하트 프리미엄", size: "하트", weight: "1000g", price: 44000, cal: "2400~3200 kcal", serving: "1000g", image: "/products/cake-heart.jpg", flavor: false, maxF: 0, sub: "premium", tag: "NEW" },
+  { name: "초코 스트로베리\n바스켓", desc: "바스켓 케이크", size: "바스켓", weight: "400g", price: 15000, cal: "500~700 kcal", serving: "400g", image: "/products/cake-basket.jpg", flavor: false, maxF: 0, sub: "premium", tag: "NEW" },
+  { name: "화이트 스트로베리\n바스켓", desc: "바스켓 케이크", size: "바스켓", weight: "400g", price: 15000, cal: "500~700 kcal", serving: "400g", image: "/products/cake-basket.jpg", flavor: false, maxF: 0, sub: "premium", tag: "NEW" },
+  { name: "스트로베리 요거트\n프레지에", desc: "프리미엄 케이크", size: "프리미엄", weight: "1100g", price: 49000, cal: "2600~3400 kcal", serving: "1100g", image: "/products/cake-premium.jpg", flavor: false, maxF: 0, sub: "premium", tag: "NEW" },
+  { name: "두바이 스타일\n앤 스트로베리", desc: "프리미엄 케이크", size: "프리미엄", weight: "950g", price: 42000, cal: "2200~2900 kcal", serving: "950g", image: "/products/cake-premium.jpg", flavor: false, maxF: 0, sub: "premium", tag: "NEW" },
+  { name: "베리 베리 빅에그", desc: "빅에그 케이크", size: "빅에그", weight: "1000g", price: 43000, cal: "2300~3000 kcal", serving: "1000g", image: "/products/cake-egg.jpg", flavor: false, maxF: 0, sub: "premium" },
+  { name: "물개박수\n그레이 씰 빅에그", desc: "빅에그 케이크", size: "빅에그", weight: "1000g", price: 44000, cal: "2300~3000 kcal", serving: "1000g", image: "/products/cake-seal.jpg", flavor: false, maxF: 0, sub: "premium", tag: "NEW" },
+  { name: "코지 래빗 하우스", desc: "캐릭터 케이크", size: "캐릭터", weight: "850g", price: 34000, cal: "1800~2400 kcal", serving: "850g", image: "/products/cake-character.jpg", flavor: false, maxF: 0, sub: "premium" },
+  { name: "야옹이 프렌즈\n샌드", desc: "캐릭터 케이크", size: "캐릭터", weight: "850g", price: 34000, cal: "1800~2400 kcal", serving: "850g", image: "/products/cake-character.jpg", flavor: false, maxF: 0, sub: "premium", tag: "먹고가기" },
+  { name: "화이트 테디의\n하트 쿠션", desc: "캐릭터 케이크", size: "캐릭터", weight: "850g", price: 34000, cal: "1800~2400 kcal", serving: "850g", image: "/products/cake-character.jpg", flavor: false, maxF: 0, sub: "premium" },
+  { name: "마이 핑크\n벌룬 퍼피", desc: "캐릭터 케이크", size: "캐릭터", weight: "800g", price: 32000, cal: "1700~2300 kcal", serving: "800g", image: "/products/cake-character.jpg", flavor: false, maxF: 0, sub: "premium" },
+  { name: "포니 마카롱\n원더랜드", desc: "마카롱 케이크", size: "프리미엄", weight: "1000g", price: 43000, cal: "2400~3200 kcal", serving: "1000g", image: "/products/cake-macaron.jpg", flavor: false, maxF: 0, sub: "premium" },
+  { name: "소원 가득 포니\n파밀리 에그", desc: "빅에그 케이크", size: "빅에그", weight: "1100g", price: 48000, cal: "2600~3400 kcal", serving: "1100g", image: "/products/cake-egg.jpg", flavor: false, maxF: 0, sub: "premium" },
+  { name: "럭키 해피 비숑", desc: "캐릭터 케이크", size: "캐릭터", weight: "900g", price: 38000, cal: "2000~2600 kcal", serving: "900g", image: "/products/cake-character.jpg", flavor: false, maxF: 0, sub: "premium" },
 ])
 
 // ─── 빙수 (30) ────────────────────────────────────────────
@@ -433,7 +474,7 @@ const dessertProducts = generateProducts("dessert", [
   { name: "디저트 플래터", desc: "모둠 디저트", size: "4인", weight: "600g", price: 22000, cal: "900~1300 kcal", serving: "600g", image: "/products/macarons.jpg", flavor: true, maxF: 3 },
 ])
 
-// ─── 프리팩 (30) ──────────────────────────────────────────
+// ─── 프리팩 (30) ─────────────��────────────────────────────
 const prepackProducts = generateProducts("prepack", [
   { name: "바 초콜릿", desc: "아이스크림 바", size: "1개", weight: "100g", price: 2500, cal: "180~260 kcal", serving: "100g", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
   { name: "바 딸기", desc: "아이스크림 바", size: "1개", weight: "100g", price: 2500, cal: "170~240 kcal", serving: "100g", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
