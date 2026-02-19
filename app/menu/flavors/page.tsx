@@ -221,6 +221,7 @@ function FlavorsContent() {
                       fill
                       className="object-cover"
                       sizes="56px"
+                      priority={page === 0}
                     />
                   </div>
 
