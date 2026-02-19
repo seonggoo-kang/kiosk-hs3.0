@@ -10,7 +10,7 @@ type SubcategoryFilterProps = {
 
 export function SubcategoryFilter({ items, activeId, onSelect }: SubcategoryFilterProps) {
   return (
-    <div className="flex shrink-0 gap-1.5 overflow-x-auto border-b border-border bg-card px-3 py-2 scrollbar-hide">
+    <div className="flex w-full max-w-full shrink-0 gap-1.5 overflow-x-auto overscroll-x-contain border-b border-border bg-card px-3 py-2 scrollbar-hide touch-pan-x">
       {items.map((item) => (
         <button
           key={item.id}
