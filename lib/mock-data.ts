@@ -338,38 +338,16 @@ const bingsuProducts = generateProducts("bingsu", [
   { name: "스페셜 빙수", desc: "스페셜 에디션", size: "스페셜", weight: "600g", price: 15000, cal: "420~600 kcal", serving: "600g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
 ])
 
-// ─── 커피 (30) ────────────────────────────────────────────
+// ─── 커피 (8) ── Actual BR coffee menu ────────────────────
 const coffeeProducts = generateProducts("coffee", [
-  { name: "아메리카노", desc: "아이스/레귤러", size: "레귤러", weight: "350ml", price: 3500, cal: "5~10 kcal", serving: "350ml", image: "/products/americano.jpg", flavor: false, maxF: 0 },
-  { name: "카페라떼", desc: "아이스/레귤러", size: "레귤러", weight: "350ml", price: 4500, cal: "120~180 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
-  { name: "바닐라 라떼", desc: "아이스/레귤러", size: "레귤러", weight: "350ml", price: 5000, cal: "180~250 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
-  { name: "카라멜 마키아또", desc: "아이스/레귤러", size: "레귤러", weight: "350ml", price: 5200, cal: "200~280 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
-  { name: "카푸치노", desc: "핫/레귤러", size: "레귤러", weight: "300ml", price: 4500, cal: "100~160 kcal", serving: "300ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
-  { name: "에스프레소", desc: "핫/싱글", size: "싱글", weight: "30ml", price: 3000, cal: "2~5 kcal", serving: "30ml", image: "/products/americano.jpg", flavor: false, maxF: 0 },
-  { name: "더블 에스프레소", desc: "핫/더블", size: "더블", weight: "60ml", price: 3800, cal: "4~10 kcal", serving: "60ml", image: "/products/americano.jpg", flavor: false, maxF: 0 },
-  { name: "콜드브루", desc: "아이스", size: "레귤러", weight: "350ml", price: 4800, cal: "5~10 kcal", serving: "350ml", image: "/products/americano.jpg", flavor: false, maxF: 0 },
-  { name: "콜드브루 라떼", desc: "아이스", size: "레귤러", weight: "350ml", price: 5500, cal: "130~190 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
-  { name: "모카 라떼", desc: "아이스/레귤러", size: "레귤러", weight: "350ml", price: 5000, cal: "200~280 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
-  { name: "헤이즐넛 라떼", desc: "아이스/레귤러", size: "레귤러", weight: "350ml", price: 5000, cal: "180~250 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
-  { name: "아인슈패너", desc: "아이스/레귤러", size: "레귤러", weight: "350ml", price: 5200, cal: "150~220 kcal", serving: "350ml", image: "/products/americano.jpg", flavor: false, maxF: 0 },
-  { name: "더치 커피", desc: "아이스", size: "레귤러", weight: "300ml", price: 5500, cal: "5~10 kcal", serving: "300ml", image: "/products/americano.jpg", flavor: false, maxF: 0 },
-  { name: "아포가토", desc: "에스프레소+아이스크림", size: "레귤러", weight: "250ml", price: 5800, cal: "200~300 kcal", serving: "250ml", image: "/products/cafe-latte.jpg", flavor: true, maxF: 1 },
-  { name: "카페모카", desc: "아이스/레귤러", size: "레귤러", weight: "350ml", price: 5000, cal: "220~300 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
-  { name: "플랫 화이트", desc: "핫/레귤러", size: "레귤러", weight: "300ml", price: 4800, cal: "110~170 kcal", serving: "300ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
-  { name: "아이스 티 라떼", desc: "아이스", size: "레귤러", weight: "350ml", price: 4500, cal: "130~190 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
-  { name: "핫 초콜릿", desc: "핫", size: "레귤러", weight: "350ml", price: 4500, cal: "250~350 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
-  { name: "말차 라떼", desc: "아이스/레귤러", size: "레귤러", weight: "350ml", price: 5200, cal: "180~260 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
-  { name: "딸기 라떼", desc: "아이스", size: "레귤러", weight: "350ml", price: 5500, cal: "200~280 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
-  { name: "라벤더 라떼", desc: "아이스/핫", size: "레귤러", weight: "350ml", price: 5500, cal: "170~240 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
-  { name: "아메리카노 L", desc: "아이스/라지", size: "라지", weight: "500ml", price: 4200, cal: "7~15 kcal", serving: "500ml", image: "/products/americano.jpg", flavor: false, maxF: 0 },
-  { name: "카페라떼 L", desc: "아이스/라지", size: "라지", weight: "500ml", price: 5200, cal: "170~250 kcal", serving: "500ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
-  { name: "쑥 라떼", desc: "아이스/핫", size: "레귤러", weight: "350ml", price: 5200, cal: "180~260 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
-  { name: "��당 라떼", desc: "아이스", size: "레귤러", weight: "350ml", price: 5500, cal: "220~310 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
-  { name: "연유 라떼", desc: "아이스", size: "레귤러", weight: "350ml", price: 5200, cal: "210~300 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
-  { name: "디카페인 아메리카노", desc: "디카페인", size: "레귤러", weight: "350ml", price: 4000, cal: "5~10 kcal", serving: "350ml", image: "/products/americano.jpg", flavor: false, maxF: 0 },
-  { name: "디카페인 라떼", desc: "디카페인", size: "레귤러", weight: "350ml", price: 5000, cal: "120~180 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
-  { name: "민트 초코 라떼", desc: "아이스", size: "레귤러", weight: "350ml", price: 5500, cal: "200~280 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
-  { name: "토피넛 라떼", desc: "아이스/핫", size: "레귤러", weight: "350ml", price: 5200, cal: "190~270 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
+  { name: "위티 골든 브릴레\n아이스슈페너", desc: "아이스슈페너", size: "레귤러", weight: "350ml", price: 5500, cal: "180~260 kcal", serving: "350ml", image: "/products/einspanner.jpg", flavor: false, maxF: 0 },
+  { name: "카페 레이어드 라떼", desc: "레이어드 라떼", size: "레귤러", weight: "350ml", price: 5400, cal: "150~220 kcal", serving: "350ml", image: "/products/layered-latte.jpg", flavor: false, maxF: 0 },
+  { name: "아메리카노", desc: "아이스/핫", size: "레귤러", weight: "350ml", price: 4400, cal: "5~10 kcal", serving: "350ml", image: "/products/americano.jpg", flavor: false, maxF: 0 },
+  { name: "카페라떼", desc: "아이스/핫", size: "레귤러", weight: "350ml", price: 5000, cal: "120~180 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
+  { name: "바닐라라떼", desc: "아이스/핫", size: "레귤러", weight: "350ml", price: 5000, cal: "180~250 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
+  { name: "연유라떼", desc: "아이스", size: "레귤러", weight: "350ml", price: 5000, cal: "210~300 kcal", serving: "350ml", image: "/products/condensed-latte.jpg", flavor: false, maxF: 0 },
+  { name: "엄마는 외계인\n카페모카", desc: "카페모카", size: "레귤러", weight: "350ml", price: 5000, cal: "220~300 kcal", serving: "350ml", image: "/products/cafe-mocha.jpg", flavor: false, maxF: 0 },
+  { name: "수카방 커피", desc: "수카방 커피", size: "레귤러", weight: "300ml", price: 3900, cal: "80~120 kcal", serving: "300ml", image: "/products/sukabang.jpg", flavor: false, maxF: 0 },
 ])
 
 // ─── 음료 블라스트 (30) ───────────────────────────────────
