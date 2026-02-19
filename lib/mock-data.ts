@@ -1,6 +1,8 @@
 // ─── Types ────────────────────────────────────────────────
 export type Category = { id: string; name: string }
 
+export type ProductTag = "Chef Made" | "먹고가기 전용" | "20% 할인"
+
 export type Product = {
   id: string
   categoryId: string
@@ -14,6 +16,7 @@ export type Product = {
   image: string
   requiresFlavor: boolean
   maxFlavors: number
+  tag?: ProductTag | null
 }
 
 export type FlavorCategory = {
@@ -89,7 +92,7 @@ function generateProducts(
   items: Array<{
     name: string; desc: string; size: string; weight: string;
     price: number; cal: string; serving: string; image: string;
-    flavor: boolean; maxF: number;
+    flavor: boolean; maxF: number; tag?: ProductTag | null;
   }>
 ): Product[] {
   return items.map((item, i) => ({
@@ -105,6 +108,7 @@ function generateProducts(
     image: item.image,
     requiresFlavor: item.flavor,
     maxFlavors: item.maxF,
+    tag: item.tag ?? null,
   }))
 }
 
@@ -142,41 +146,46 @@ const eventProducts = generateProducts("event", [
   { name: "시즌 파이널팩", desc: "마감 에디션", size: "쿼터", weight: "620g", price: 17500, cal: "324~704 kcal", serving: "620g", image: "/products/quarter.jpg", flavor: true, maxF: 4 },
 ])
 
-// ─── 워크샵 스페셜 (30) ───────────────────────────────────
+// ─── 워크샵 스페셜 (28) ── Actual BR workshop menu ────────
 const workshopProducts = generateProducts("workshop", [
-  { name: "워크샵 A세트", desc: "10인 세트", size: "10인", weight: "3kg", price: 89000, cal: "5000~8000 kcal", serving: "3kg", image: "/products/workshop.jpg", flavor: true, maxF: 5 },
-  { name: "워크샵 B세트", desc: "20인 세트", size: "20인", weight: "6kg", price: 159000, cal: "10000~16000 kcal", serving: "6kg", image: "/products/workshop.jpg", flavor: true, maxF: 8 },
-  { name: "워크샵 C세트", desc: "30인 세트", size: "30인", weight: "9kg", price: 219000, cal: "15000~24000 kcal", serving: "9kg", image: "/products/workshop.jpg", flavor: true, maxF: 10 },
-  { name: "워크샵 미니세트", desc: "5인 세트", size: "5인", weight: "1.5kg", price: 49000, cal: "2500~4000 kcal", serving: "1.5kg", image: "/products/pack-6.jpg", flavor: true, maxF: 3 },
-  { name: "워크샵 디럭스", desc: "15인 디럭스", size: "15인", weight: "4.5kg", price: 129000, cal: "7500~12000 kcal", serving: "4.5kg", image: "/products/workshop.jpg", flavor: true, maxF: 6 },
-  { name: "워크샵 프리미엄", desc: "10인 프리미엄", size: "10인", weight: "3.5kg", price: 109000, cal: "5500~9000 kcal", serving: "3.5kg", image: "/products/workshop.jpg", flavor: true, maxF: 6 },
-  { name: "미팅 세트 A", desc: "8인 세트", size: "8인", weight: "2.5kg", price: 72000, cal: "4000~6500 kcal", serving: "2.5kg", image: "/products/pack-8.jpg", flavor: true, maxF: 4 },
-  { name: "미팅 세트 B", desc: "12인 세트", size: "12인", weight: "3.8kg", price: 98000, cal: "6000~10000 kcal", serving: "3.8kg", image: "/products/workshop.jpg", flavor: true, maxF: 5 },
-  { name: "세미나 세트", desc: "25인 세트", size: "25인", weight: "7.5kg", price: 189000, cal: "12500~20000 kcal", serving: "7.5kg", image: "/products/workshop.jpg", flavor: true, maxF: 8 },
-  { name: "컨퍼런스 세트", desc: "50인 세트", size: "50인", weight: "15kg", price: 380000, cal: "25000~40000 kcal", serving: "15kg", image: "/products/workshop.jpg", flavor: true, maxF: 10 },
-  { name: "팀빌딩 세트 A", desc: "10인 팀빌딩", size: "10인", weight: "3kg", price: 85000, cal: "5000~8000 kcal", serving: "3kg", image: "/products/pack-6.jpg", flavor: true, maxF: 5 },
-  { name: "팀빌딩 세트 B", desc: "20인 팀빌딩", size: "20인", weight: "6kg", price: 155000, cal: "10000~16000 kcal", serving: "6kg", image: "/products/workshop.jpg", flavor: true, maxF: 8 },
-  { name: "오피스 세트 S", desc: "5인 오피스", size: "5인", weight: "1.5kg", price: 45000, cal: "2500~4000 kcal", serving: "1.5kg", image: "/products/pack-4.jpg", flavor: true, maxF: 3 },
-  { name: "오피스 세트 M", desc: "10인 오피스", size: "10인", weight: "3kg", price: 82000, cal: "5000~8000 kcal", serving: "3kg", image: "/products/workshop.jpg", flavor: true, maxF: 5 },
-  { name: "오피스 세트 L", desc: "15인 오피스", size: "15인", weight: "4.5kg", price: 119000, cal: "7500~12000 kcal", serving: "4.5kg", image: "/products/workshop.jpg", flavor: true, maxF: 6 },
-  { name: "파티 세트 A", desc: "10인 파티", size: "10인", weight: "3kg", price: 92000, cal: "5000~8000 kcal", serving: "3kg", image: "/products/workshop.jpg", flavor: true, maxF: 5 },
-  { name: "파티 세트 B", desc: "20인 파티", size: "20인", weight: "6kg", price: 165000, cal: "10000~16000 kcal", serving: "6kg", image: "/products/workshop.jpg", flavor: true, maxF: 8 },
-  { name: "파티 세트 C", desc: "30인 파티", size: "30인", weight: "9kg", price: 225000, cal: "15000~24000 kcal", serving: "9kg", image: "/products/workshop.jpg", flavor: true, maxF: 10 },
-  { name: "브런치 세트", desc: "8인 브런치", size: "8인", weight: "2.5kg", price: 68000, cal: "4000~6500 kcal", serving: "2.5kg", image: "/products/pack-6.jpg", flavor: true, maxF: 4 },
-  { name: "애프터눈 세트", desc: "6인 애프터눈", size: "6인", weight: "2kg", price: 55000, cal: "3000~5000 kcal", serving: "2kg", image: "/products/pack-4.jpg", flavor: true, maxF: 3 },
-  { name: "VIP 세트", desc: "10인 VIP", size: "10인", weight: "4kg", price: 135000, cal: "6000~10000 kcal", serving: "4kg", image: "/products/workshop.jpg", flavor: true, maxF: 6 },
-  { name: "이벤트 케이터링 A", desc: "30인 케이터링", size: "30인", weight: "10kg", price: 250000, cal: "16000~25000 kcal", serving: "10kg", image: "/products/workshop.jpg", flavor: true, maxF: 10 },
-  { name: "이벤트 케이터링 B", desc: "50인 케이터링", size: "50인", weight: "16kg", price: 399000, cal: "26000~42000 kcal", serving: "16kg", image: "/products/workshop.jpg", flavor: true, maxF: 10 },
-  { name: "스낵 세트 S", desc: "5인 스낵", size: "5인", weight: "1kg", price: 35000, cal: "1500~2500 kcal", serving: "1kg", image: "/products/pack-4.jpg", flavor: true, maxF: 3 },
-  { name: "스낵 세트 M", desc: "10인 스낵", size: "10인", weight: "2kg", price: 62000, cal: "3000~5000 kcal", serving: "2kg", image: "/products/pack-6.jpg", flavor: true, maxF: 4 },
-  { name: "스낵 세트 L", desc: "20인 스낵", size: "20인", weight: "4kg", price: 115000, cal: "6000~10000 kcal", serving: "4kg", image: "/products/pack-8.jpg", flavor: true, maxF: 6 },
-  { name: "골드 케이터링", desc: "40인 프리미엄", size: "40인", weight: "12kg", price: 320000, cal: "20000~32000 kcal", serving: "12kg", image: "/products/workshop.jpg", flavor: true, maxF: 10 },
-  { name: "실버 케이터링", desc: "20인 스탠다드", size: "20인", weight: "6kg", price: 148000, cal: "10000~16000 kcal", serving: "6kg", image: "/products/workshop.jpg", flavor: true, maxF: 8 },
-  { name: "브론즈 케이터링", desc: "10인 베이직", size: "10인", weight: "3kg", price: 78000, cal: "5000~8000 kcal", serving: "3kg", image: "/products/pack-8.jpg", flavor: true, maxF: 5 },
-  { name: "커스텀 세트", desc: "맞춤 세트", size: "맞춤", weight: "맞춤", price: 100000, cal: "맞춤", serving: "맞춤", image: "/products/workshop.jpg", flavor: true, maxF: 10 },
+  // Chef Made - 모찌 & 마카롱
+  { name: "모찌 바람과\n함께 사라지다", desc: "Chef Made 모찌", size: "1개", weight: "60g", price: 3800, cal: "120~180 kcal", serving: "60g", image: "/products/mochi.jpg", flavor: false, maxF: 0, tag: "Chef Made" },
+  { name: "마카롱\n피스타치오 아몬드", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/macaron.jpg", flavor: false, maxF: 0, tag: "Chef Made" },
+  { name: "마카롱\n베리베리 스트로베리", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/macaron.jpg", flavor: false, maxF: 0, tag: "Chef Made" },
+  { name: "마카롱\n초콜릿무스", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/macaron.jpg", flavor: false, maxF: 0, tag: "Chef Made" },
+  { name: "마카롱\n체리쥬빌레", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/macaron.jpg", flavor: false, maxF: 0, tag: "Chef Made" },
+  { name: "마카롱\n자모카 아몬드 휘지", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/macaron.jpg", flavor: false, maxF: 0, tag: "Chef Made" },
+  // Snack / Bakery
+  { name: "넛츠피칸 아몬드", desc: "Chef Made 스낵", size: "1봉", weight: "120g", price: 5200, cal: "280~350 kcal", serving: "120g", image: "/products/nuts-pecan.jpg", flavor: false, maxF: 0, tag: "Chef Made" },
+  { name: "초코머핀", desc: "진한 초코 머핀", size: "1개", weight: "100g", price: 3000, cal: "250~320 kcal", serving: "100g", image: "/products/choco-muffin.jpg", flavor: false, maxF: 0 },
+  { name: "초코머핀 SET", desc: "초코머핀 세트 (20% 할인)", size: "세트", weight: "200g", price: 5900, cal: "500~640 kcal", serving: "200g", image: "/products/choco-muffin.jpg", flavor: false, maxF: 0, tag: "20% 할인" },
+  // Popcorn
+  { name: "초코 카라멜 팝콘", desc: "달콤한 초코 카라멜", size: "1봉", weight: "80g", price: 4200, cal: "300~400 kcal", serving: "80g", image: "/products/popcorn.jpg", flavor: false, maxF: 0 },
+  { name: "시나몬 카라멜 팝콘", desc: "시나몬 향 카라멜", size: "1봉", weight: "80g", price: 4200, cal: "300~400 kcal", serving: "80g", image: "/products/popcorn.jpg", flavor: false, maxF: 0 },
+  { name: "스윗 카라멜 팝콘", desc: "클래식 카라멜", size: "1봉", weight: "80g", price: 4200, cal: "300~400 kcal", serving: "80g", image: "/products/popcorn.jpg", flavor: false, maxF: 0 },
+  // Affogato (위스키)
+  { name: "위스키 아포가토\n바닐라", desc: "위스키 아포가토", size: "1잔", weight: "250ml", price: 9500, cal: "350~450 kcal", serving: "250ml", image: "/products/affogato.jpg", flavor: false, maxF: 0, tag: "먹고가기 전용" },
+  { name: "위스키 아포가토\n크렘마롱", desc: "위스키 아포가토", size: "1잔", weight: "250ml", price: 9500, cal: "380~480 kcal", serving: "250ml", image: "/products/affogato.jpg", flavor: false, maxF: 0, tag: "먹고가기 전용" },
+  { name: "위스키 아포가토\n브라우니쥬빌레", desc: "위스키 아포가토", size: "1잔", weight: "250ml", price: 9500, cal: "400~500 kcal", serving: "250ml", image: "/products/affogato.jpg", flavor: false, maxF: 0, tag: "먹고가기 전용" },
+  // Gift Set
+  { name: "카라멜 로스티드\n넛츠 선물세트", desc: "3EA 선물세트", size: "3EA", weight: "360g", price: 16600, cal: "840~1050 kcal", serving: "360g", image: "/products/gift-set.jpg", flavor: false, maxF: 0 },
+  // Ice Cream Sets
+  { name: "스트리조\n싱글레귤러(컵/콘)", desc: "싱글레귤러 컵 또는 콘", size: "싱글", weight: "120g", price: 3900, cal: "150~280 kcal", serving: "120g", image: "/products/cone-single.jpg", flavor: true, maxF: 1 },
+  { name: "버라이어티팩 4색", desc: "싱글레귤러 4개", size: "4개", weight: "480g", price: 15600, cal: "600~1120 kcal", serving: "480g", image: "/products/pack-4.jpg", flavor: true, maxF: 4 },
+  { name: "버라이어티팩 8색", desc: "싱글레귤러 8개", size: "8개", weight: "960g", price: 31200, cal: "1200~2240 kcal", serving: "960g", image: "/products/pack-8.jpg", flavor: true, maxF: 8 },
+  // Affogato (일반)
+  { name: "카페 아포가토", desc: "에스프레소 아포가토", size: "1잔", weight: "200ml", price: 6400, cal: "250~350 kcal", serving: "200ml", image: "/products/affogato.jpg", flavor: false, maxF: 0, tag: "먹고가기 전용" },
+  { name: "쇼콜라 아포가토", desc: "초콜릿 아포가토", size: "1잔", weight: "200ml", price: 6400, cal: "280~380 kcal", serving: "200ml", image: "/products/affogato.jpg", flavor: false, maxF: 0, tag: "먹고가기 전용" },
+  { name: "말차 아포가토", desc: "말차 아포가토", size: "1잔", weight: "200ml", price: 6400, cal: "260~360 kcal", serving: "200ml", image: "/products/affogato.jpg", flavor: false, maxF: 0, tag: "먹고가기 전용" },
+  // Dessert / Plate
+  { name: "두바이 스타일\n초콜릿쿠키", desc: "두바이st 디저트", size: "1개", weight: "150g", price: 6500, cal: "400~500 kcal", serving: "150g", image: "/products/dubai-cookie.jpg", flavor: false, maxF: 0 },
+  { name: "인절미 플레이트", desc: "인절미 디저트 플레이트", size: "1세트", weight: "250g", price: 14500, cal: "450~600 kcal", serving: "250g", image: "/products/injeolmi-plate.jpg", flavor: false, maxF: 0, tag: "먹고가기 전용" },
+  { name: "모찌 라이브 인절미", desc: "라이브 모찌", size: "1개", weight: "70g", price: 4800, cal: "140~200 kcal", serving: "70g", image: "/products/mochi.jpg", flavor: false, maxF: 0 },
+  { name: "모찌 라이브 흑임자", desc: "라이브 모찌", size: "1개", weight: "70g", price: 4800, cal: "140~200 kcal", serving: "70g", image: "/products/mochi.jpg", flavor: false, maxF: 0 },
+  { name: "모찌 라이브\n바람과 함께 사라지다", desc: "라이브 모찌", size: "1개", weight: "70g", price: 4800, cal: "140~200 kcal", serving: "70g", image: "/products/mochi.jpg", flavor: false, maxF: 0, tag: "Chef Made" },
 ])
 
-// ─── 콘/컵 (30) ───────────────────────────────────────────
+// ─── 콘/컵 (30) ────────────────────────────────��──────────
 const coneCupProducts = generateProducts("cone-cup", [
   { name: "싱글 레귤러 콘", desc: "콘", size: "레귤러", weight: "120g", price: 3900, cal: "150~280 kcal", serving: "120g", image: "/products/cone-single.jpg", flavor: true, maxF: 1 },
   { name: "더블 레귤러 콘", desc: "콘", size: "레귤러", weight: "240g", price: 6800, cal: "300~520 kcal", serving: "240g", image: "/products/cone-double.jpg", flavor: true, maxF: 2 },

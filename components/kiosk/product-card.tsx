@@ -11,6 +11,12 @@ type ProductCardProps = {
   priority?: boolean
 }
 
+const TAG_STYLES: Record<string, string> = {
+  "Chef Made": "bg-amber-600 text-white",
+  "먹고가기 전용": "bg-sky-500 text-white",
+  "20% 할인": "bg-red-500 text-white",
+}
+
 export function ProductCard({ product, isSelected, onSelect, priority }: ProductCardProps) {
   return (
     <button
@@ -29,8 +35,18 @@ export function ProductCard({ product, isSelected, onSelect, priority }: Product
           className="h-[72px] w-[72px] object-contain"
           priority={priority}
         />
+        {product.tag && (
+          <span
+            className={cn(
+              "absolute left-0 top-0 rounded-br-lg rounded-tl-lg px-1 py-px text-[7px] font-bold leading-tight",
+              TAG_STYLES[product.tag] ?? "bg-muted text-foreground"
+            )}
+          >
+            {product.tag}
+          </span>
+        )}
       </div>
-      <p className="text-center text-xs font-semibold leading-tight text-foreground">
+      <p className="whitespace-pre-wrap text-center text-xs font-semibold leading-tight text-foreground">
         {product.name}
       </p>
       <p className="mt-0.5 text-center text-[10px] leading-tight text-muted-foreground">
