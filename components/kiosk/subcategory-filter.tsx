@@ -11,36 +11,42 @@ type SubcategoryFilterProps = {
 
 export function SubcategoryFilter({ items, activeId, onSelect }: SubcategoryFilterProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
-  const dragging = useRef(false)
+  const isDragging = useRef(false)
   const startX = useRef(0)
-  const scrollLeft = useRef(0)
-  const moved = useRef(false)
+  const startScrollLeft = useRef(0)
+  const totalDx = useRef(0)
 
   const onPointerDown = useCallback((e: React.PointerEvent) => {
     const el = scrollRef.current
     if (!el) return
-    dragging.current = true
-    moved.current = false
+    isDragging.current = true
+    totalDx.current = 0
     startX.current = e.clientX
-    scrollLeft.current = el.scrollLeft
+    startScrollLeft.current = el.scrollLeft
     el.setPointerCapture(e.pointerId)
   }, [])
 
   const onPointerMove = useCallback((e: React.PointerEvent) => {
-    if (!dragging.current || !scrollRef.current) return
+    if (!isDragging.current || !scrollRef.current) return
     const dx = e.clientX - startX.current
-    if (Math.abs(dx) > 3) moved.current = true
-    scrollRef.current.scrollLeft = scrollLeft.current - dx
+    totalDx.current = dx
+    scrollRef.current.scrollLeft = startScrollLeft.current - dx
   }, [])
 
-  const onPointerUp = useCallback((e: React.PointerEvent) => {
-    dragging.current = false
-    scrollRef.current?.releasePointerCapture(e.pointerId)
-  }, [])
+  const onPointerUp = useCallback(
+    (e: React.PointerEvent) => {
+      if (!isDragging.current) return
+      isDragging.current = false
+      scrollRef.current?.releasePointerCapture(e.pointerId)
 
-  const handleClick = useCallback(
-    (id: string) => {
-      if (!moved.current) onSelect(id)
+      // If barely moved, treat as a tap - find the button under the pointer
+      if (Math.abs(totalDx.current) < 5) {
+        const target = document.elementFromPoint(e.clientX, e.clientY)
+        const btn = target?.closest<HTMLButtonElement>("button[data-filter-id]")
+        if (btn?.dataset.filterId) {
+          onSelect(btn.dataset.filterId)
+        }
+      }
     },
     [onSelect]
   )
@@ -57,7 +63,7 @@ export function SubcategoryFilter({ items, activeId, onSelect }: SubcategoryFilt
       {items.map((item) => (
         <button
           key={item.id}
-          onClick={() => handleClick(item.id)}
+          data-filter-id={item.id}
           className={cn(
             "shrink-0 rounded-full px-3 py-1 text-[11px] font-medium transition-colors",
             activeId === item.id
