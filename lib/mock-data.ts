@@ -405,38 +405,59 @@ const gelatoProducts = generateProducts("gelato", [
   { name: "초콜릿 바나나", desc: "젤라또", size: "1컵", weight: "200g", price: 6300, cal: "210~310 kcal", serving: "200g", image: "/products/gelato-choco-banana.jpg", flavor: false, maxF: 0 },
 ])
 
-// ─── 디저트 (30) ──────────────────────────────────────────
+// ─── 디저트 (31) ── Actual BR dessert menu ────────────────
+export const dessertSubcategories = [
+  { id: "all", name: "전체" },
+  { id: "baum-monaka-mochi", name: "바움쿠헨/모나카/모찌" },
+  { id: "cookie-bagel-sand", name: "쿠키/베이글/샌드" },
+  { id: "set-menu", name: "세트 메뉴" },
+  { id: "churros-cake", name: "츄러스/케이크" },
+  { id: "choco-hangwa", name: "초콜릿바/한과/선물" },
+  { id: "etc", name: "기타" },
+]
+
 const dessertProducts = generateProducts("dessert", [
-  { name: "아이스 마카롱 6개", desc: "마카롱 세트", size: "6개", weight: "180g", price: 12000, cal: "600~840 kcal", serving: "180g", image: "/products/macarons.jpg", flavor: false, maxF: 0 },
-  { name: "아이스 마카롱 12개", desc: "마카롱 세트", size: "12개", weight: "360g", price: 22000, cal: "1200~1680 kcal", serving: "360g", image: "/products/macarons.jpg", flavor: false, maxF: 0 },
-  { name: "아이스 모찌 4개", desc: "모찌 세트", size: "4개", weight: "160g", price: 8500, cal: "400~560 kcal", serving: "160g", image: "/products/mochi.jpg", flavor: false, maxF: 0 },
-  { name: "아이스 모찌 8개", desc: "모찌 세트", size: "8개", weight: "320g", price: 15000, cal: "800~1120 kcal", serving: "320g", image: "/products/mochi.jpg", flavor: false, maxF: 0 },
-  { name: "벨기에 와플", desc: "와플 세트", size: "1개", weight: "200g", price: 6800, cal: "350~480 kcal", serving: "200g", image: "/products/waffle.jpg", flavor: true, maxF: 2 },
-  { name: "와플 아이스크림", desc: "와플+아이스크림", size: "1세트", weight: "300g", price: 8500, cal: "450~620 kcal", serving: "300g", image: "/products/waffle.jpg", flavor: true, maxF: 2 },
-  { name: "크로플", desc: "크로플", size: "1개", weight: "180g", price: 5800, cal: "300~420 kcal", serving: "180g", image: "/products/waffle.jpg", flavor: false, maxF: 0 },
-  { name: "크로플 세트", desc: "크로플+아이스크림", size: "1세트", weight: "280g", price: 8200, cal: "420~580 kcal", serving: "280g", image: "/products/waffle.jpg", flavor: true, maxF: 1 },
-  { name: "초코 브라우니", desc: "브라우니", size: "1개", weight: "120g", price: 4500, cal: "280~380 kcal", serving: "120g", image: "/products/macarons.jpg", flavor: false, maxF: 0 },
-  { name: "브라우니 선데이", desc: "브라우니+아이스크림", size: "1세트", weight: "250g", price: 7800, cal: "420~580 kcal", serving: "250g", image: "/products/sundae.jpg", flavor: true, maxF: 1 },
-  { name: "마카롱 아이스크림", desc: "아이스크림 마카롱", size: "1개", weight: "60g", price: 3200, cal: "120~170 kcal", serving: "60g", image: "/products/macarons.jpg", flavor: false, maxF: 0 },
-  { name: "초코 퐁듀 세트", desc: "퐁듀", size: "2인", weight: "400g", price: 15000, cal: "600~850 kcal", serving: "400g", image: "/products/sundae.jpg", flavor: true, maxF: 3 },
-  { name: "팬케이크 세트", desc: "팬케이크+아이스크림", size: "1세트", weight: "300g", price: 8800, cal: "400~560 kcal", serving: "300g", image: "/products/waffle.jpg", flavor: true, maxF: 2 },
-  { name: "아이스크림 쿠키", desc: "쿠키 샌드위치", size: "1개", weight: "100g", price: 3800, cal: "180~260 kcal", serving: "100g", image: "/products/macarons.jpg", flavor: true, maxF: 1 },
-  { name: "쿠키 샌드위치 4개", desc: "쿠키 세트", size: "4개", weight: "400g", price: 13500, cal: "720~1040 kcal", serving: "400g", image: "/products/macarons.jpg", flavor: true, maxF: 2 },
-  { name: "프렌치 토스트", desc: "토스트+아이스크림", size: "1세트", weight: "280g", price: 7500, cal: "380~520 kcal", serving: "280g", image: "/products/waffle.jpg", flavor: true, maxF: 1 },
-  { name: "도넛 아이스크림", desc: "도넛", size: "1개", weight: "150g", price: 5200, cal: "280~400 kcal", serving: "150g", image: "/products/macarons.jpg", flavor: true, maxF: 1 },
-  { name: "도넛 세트", desc: "도넛 3개", size: "3개", weight: "450g", price: 14000, cal: "840~1200 kcal", serving: "450g", image: "/products/macarons.jpg", flavor: true, maxF: 3 },
-  { name: "아이스 슈", desc: "슈크림", size: "2개", weight: "120g", price: 4800, cal: "200~300 kcal", serving: "120g", image: "/products/macarons.jpg", flavor: false, maxF: 0 },
-  { name: "에클레어", desc: "아이스 에클레어", size: "1개", weight: "100g", price: 4500, cal: "180~260 kcal", serving: "100g", image: "/products/macarons.jpg", flavor: false, maxF: 0 },
-  { name: "밀크레이프", desc: "밀크레이프 케이크", size: "1조각", weight: "150g", price: 6500, cal: "300~420 kcal", serving: "150g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "치즈케이크 바", desc: "바 타입", size: "1개", weight: "120g", price: 5200, cal: "250~350 kcal", serving: "120g", image: "/products/macarons.jpg", flavor: false, maxF: 0 },
-  { name: "파르페", desc: "아이스크림 파르페", size: "레귤러", weight: "300g", price: 8500, cal: "380~520 kcal", serving: "300g", image: "/products/sundae.jpg", flavor: true, maxF: 2 },
-  { name: "아포가토 세트", desc: "에스프레소+젤라또", size: "1세트", weight: "200g", price: 7200, cal: "220~320 kcal", serving: "200g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "과일 타르트", desc: "과일 타르트", size: "1개", weight: "180g", price: 6800, cal: "280~390 kcal", serving: "180g", image: "/products/macarons.jpg", flavor: false, maxF: 0 },
-  { name: "모찌 롤", desc: "롤 타입 모찌", size: "1개", weight: "150g", price: 5500, cal: "250~350 kcal", serving: "150g", image: "/products/mochi.jpg", flavor: false, maxF: 0 },
-  { name: "베리 파블로바", desc: "파블로바", size: "1개", weight: "200g", price: 8800, cal: "300~420 kcal", serving: "200g", image: "/products/macarons.jpg", flavor: false, maxF: 0 },
-  { name: "크로칸트", desc: "크로칸트 바", size: "1개", weight: "80g", price: 3500, cal: "180~260 kcal", serving: "80g", image: "/products/macarons.jpg", flavor: false, maxF: 0 },
-  { name: "까눌레", desc: "아이스 까눌레", size: "2개", weight: "120g", price: 5200, cal: "220~320 kcal", serving: "120g", image: "/products/macarons.jpg", flavor: false, maxF: 0 },
-  { name: "디저트 플래터", desc: "모둠 디저트", size: "4인", weight: "600g", price: 22000, cal: "900~1300 kcal", serving: "600g", image: "/products/macarons.jpg", flavor: true, maxF: 3 },
+  // ── 바움쿠헨 / 모나카 / 모찌 라인 ──
+  { name: "아이스 바움쿠헨\n아몬드봉봉", desc: "바움쿠헨", size: "1개", weight: "120g", price: 4500, cal: "280~380 kcal", serving: "120g", image: "/products/baumkuchen.jpg", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
+  { name: "아이스 모나카 우유", desc: "모나카", size: "1개", weight: "100g", price: 3800, cal: "180~260 kcal", serving: "100g", image: "/products/monaka.jpg", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
+  { name: "아이스 모나카\n쫀떡 인절미", desc: "모나카", size: "1개", weight: "100g", price: 3800, cal: "200~280 kcal", serving: "100g", image: "/products/monaka.jpg", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
+  { name: "아이스모찌 소금우유", desc: "모찌", size: "1개", weight: "60g", price: 3300, cal: "100~150 kcal", serving: "60g", image: "/products/mochi.jpg", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
+  { name: "아이스 모찌\n스트로베리", desc: "모찌", size: "1개", weight: "60g", price: 3300, cal: "100~150 kcal", serving: "60g", image: "/products/mochi.jpg", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
+  { name: "아이스 모찌\n아몬드봉봉", desc: "모찌", size: "1개", weight: "60g", price: 3300, cal: "110~160 kcal", serving: "60g", image: "/products/mochi.jpg", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
+  { name: "아이스 모찌 그린티", desc: "모찌", size: "1개", weight: "60g", price: 3300, cal: "100~150 kcal", serving: "60g", image: "/products/mochi.jpg", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
+  { name: "아이스 모찌\n초코바닐라", desc: "모찌", size: "1개", weight: "60g", price: 3300, cal: "110~160 kcal", serving: "60g", image: "/products/mochi.jpg", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
+  { name: "아이스 모찌 크림치즈", desc: "모찌", size: "1개", weight: "60g", price: 3300, cal: "110~160 kcal", serving: "60g", image: "/products/mochi.jpg", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
+
+  // ── 쿠키 / 베이글 / 샌드 ──
+  { name: "솔티드 초콜릿칩\n쿠키", desc: "쿠키", size: "1개", weight: "90g", price: 3800, cal: "200~280 kcal", serving: "90g", image: "/products/choco-cookie.jpg", flavor: false, maxF: 0, sub: "cookie-bagel-sand" },
+  { name: "다크 초콜릿 칩\n쿠키", desc: "쿠키", size: "1개", weight: "90g", price: 3800, cal: "210~290 kcal", serving: "90g", image: "/products/choco-cookie.jpg", flavor: false, maxF: 0, sub: "cookie-bagel-sand" },
+  { name: "블루베리 베이글", desc: "베이글", size: "1개", weight: "110g", price: 3000, cal: "240~320 kcal", serving: "110g", image: "/products/bagel.jpg", flavor: false, maxF: 0, sub: "cookie-bagel-sand" },
+  { name: "플레인 베이글", desc: "베이글", size: "1개", weight: "100g", price: 3000, cal: "220~300 kcal", serving: "100g", image: "/products/bagel.jpg", flavor: false, maxF: 0, sub: "cookie-bagel-sand" },
+  { name: "버터 쿠키 샌드\n바닐라 카라멜", desc: "쿠키 샌드", size: "1개", weight: "100g", price: 4300, cal: "220~310 kcal", serving: "100g", image: "/products/cookie-sand.jpg", flavor: false, maxF: 0, sub: "cookie-bagel-sand" },
+  { name: "버터 쿠키 샌드\n스트로베리", desc: "쿠키 샌드", size: "1개", weight: "100g", price: 4300, cal: "210~300 kcal", serving: "100g", image: "/products/cookie-sand.jpg", flavor: false, maxF: 0, sub: "cookie-bagel-sand" },
+
+  // ── 세트 메뉴 – 20% 할인 ──
+  { name: "스윗 시나몬\n츄러스 SET", desc: "세트 메뉴", size: "1세트", weight: "250g", price: 7100, cal: "380~520 kcal", serving: "250g", image: "/products/churros.jpg", flavor: false, maxF: 0, sub: "set-menu", tag: "20% 할인" },
+  { name: "젤라또 하트\n츄러스 SET", desc: "세트 메뉴", size: "1세트", weight: "300g", price: 9500, cal: "480~650 kcal", serving: "300g", image: "/products/churros.jpg", flavor: false, maxF: 0, sub: "set-menu", tag: "20% 할인" },
+  { name: "플레인 베이글 SET", desc: "세트 메뉴", size: "1세트", weight: "250g", price: 5900, cal: "350~480 kcal", serving: "250g", image: "/products/bagel.jpg", flavor: false, maxF: 0, sub: "set-menu", tag: "20% 할인" },
+  { name: "블루베리 베이글 SET", desc: "세트 메뉴", size: "1세트", weight: "260g", price: 5900, cal: "370~500 kcal", serving: "260g", image: "/products/bagel.jpg", flavor: false, maxF: 0, sub: "set-menu", tag: "20% 할인" },
+
+  // ── 츄러스 / 케이크 단품 ──
+  { name: "스윗 시나몬 츄러스", desc: "츄러스", size: "1개", weight: "100g", price: 4500, cal: "250~350 kcal", serving: "100g", image: "/products/churros.jpg", flavor: false, maxF: 0, sub: "churros-cake" },
+  { name: "젤라또 하트 츄러스", desc: "츄러스", size: "1개", weight: "150g", price: 7500, cal: "380~500 kcal", serving: "150g", image: "/products/churros.jpg", flavor: false, maxF: 0, sub: "churros-cake" },
+  { name: "바스크 치즈 케이크", desc: "치즈케이크", size: "1개", weight: "150g", price: 7500, cal: "350~480 kcal", serving: "150g", image: "/products/basque-cheese.jpg", flavor: false, maxF: 0, sub: "churros-cake" },
+
+  // ── 초콜릿 바 / 한과 / 선물세트 ──
+  { name: "스윗 초콜릿 바\n(2개입)", desc: "초콜릿 바", size: "2개입", weight: "120g", price: 5800, cal: "280~380 kcal", serving: "120g", image: "/products/choco-bar.jpg", flavor: false, maxF: 0, sub: "choco-hangwa" },
+  { name: "스윗 초콜릿바\n세트 (4개입)", desc: "초콜릿 바 세트", size: "4개입", weight: "240g", price: 11600, cal: "560~760 kcal", serving: "240g", image: "/products/choco-bar.jpg", flavor: false, maxF: 0, sub: "choco-hangwa", tag: "NEW" },
+  { name: "찹쌀 한과 선물\n세트 (4개입)", desc: "한과 세트", size: "4개입", weight: "320g", price: 27200, cal: "600~800 kcal", serving: "320g", image: "/products/hangwa.jpg", flavor: false, maxF: 0, sub: "choco-hangwa", tag: "NEW" },
+  { name: "아이스 찹쌀 한과\n조청", desc: "한과", size: "1개", weight: "80g", price: 6800, cal: "150~220 kcal", serving: "80g", image: "/products/hangwa.jpg", flavor: false, maxF: 0, sub: "choco-hangwa", tag: "NEW" },
+  { name: "아이스 찹쌀 한과\n고구마", desc: "한과", size: "1개", weight: "80g", price: 6800, cal: "150~220 kcal", serving: "80g", image: "/products/hangwa.jpg", flavor: false, maxF: 0, sub: "choco-hangwa", tag: "NEW" },
+  { name: "아이스 찹쌀 한과\n흑임자", desc: "한과", size: "1개", weight: "80g", price: 6800, cal: "150~220 kcal", serving: "80g", image: "/products/hangwa.jpg", flavor: false, maxF: 0, sub: "choco-hangwa", tag: "NEW" },
+  { name: "아이스 찹쌀 한과\n쌀", desc: "한과", size: "1개", weight: "80g", price: 6800, cal: "140~210 kcal", serving: "80g", image: "/products/hangwa.jpg", flavor: false, maxF: 0, sub: "choco-hangwa", tag: "NEW" },
+
+  // ── 기타 디저트 ──
+  { name: "베리 크럼블 스푼업", desc: "스푼업", size: "1개", weight: "200g", price: 6300, cal: "280~380 kcal", serving: "200g", image: "/products/berry-crumble.jpg", flavor: false, maxF: 0, sub: "etc", tag: "NEW" },
 ])
 
 // ─── 프리팩 (30) ─────────────��────────────────────────────

@@ -13,7 +13,7 @@ import { ActionBar } from "@/components/kiosk/action-bar"
 import { EventPromoBanners } from "@/components/kiosk/event-promo-banners"
 import { SubcategoryFilter } from "@/components/kiosk/subcategory-filter"
 import { useOrder } from "@/lib/order-context"
-import { categories, getProductsByCategory, cakeSubcategories, beverageSubcategories, type Product } from "@/lib/mock-data"
+import { categories, getProductsByCategory, cakeSubcategories, beverageSubcategories, dessertSubcategories, type Product } from "@/lib/mock-data"
 
 const ITEMS_PER_PAGE = 16 // 4 cols x 4 rows
 
@@ -26,6 +26,7 @@ function MenuContent() {
   const [showAddedToast, setShowAddedToast] = useState(false)
   const [cakeFilter, setCakeFilter] = useState("all")
   const [beverageFilter, setBeverageFilter] = useState("all")
+  const [dessertFilter, setDessertFilter] = useState("all")
   const touchStartX = useRef(0)
   const touchStartY = useRef(0)
   const isSwiping = useRef(false)
@@ -45,6 +46,7 @@ function MenuContent() {
   const isEvent = activeCategory === "event"
   const isCake = activeCategory === "icecream-cake"
   const isBeverage = activeCategory === "beverage"
+  const isDessert = activeCategory === "dessert"
 
   const categoryProducts = useMemo(() => {
     if (isEvent) return []
@@ -55,8 +57,11 @@ function MenuContent() {
     if (isBeverage && beverageFilter !== "all") {
       return all.filter((p) => p.subcategory === beverageFilter)
     }
+    if (isDessert && dessertFilter !== "all") {
+      return all.filter((p) => p.subcategory === dessertFilter)
+    }
     return all
-  }, [activeCategory, isEvent, isCake, cakeFilter, isBeverage, beverageFilter])
+  }, [activeCategory, isEvent, isCake, cakeFilter, isBeverage, beverageFilter, isDessert, dessertFilter])
 
   // Event category uses promo banners (no pagination), other categories use product grid
   const totalPages = isEvent ? 1 : Math.max(1, Math.ceil(categoryProducts.length / ITEMS_PER_PAGE))
@@ -76,6 +81,7 @@ function MenuContent() {
     setPage(0)
     setCakeFilter("all")
     setBeverageFilter("all")
+    setDessertFilter("all")
     dispatch({ type: "SELECT_PRODUCT", payload: null })
   }
 
@@ -185,6 +191,18 @@ function MenuContent() {
           activeId={beverageFilter}
           onSelect={(id) => {
             setBeverageFilter(id)
+            setPage(0)
+          }}
+        />
+      )}
+
+      {/* Subcategory filter for dessert category */}
+      {isDessert && (
+        <SubcategoryFilter
+          items={dessertSubcategories}
+          activeId={dessertFilter}
+          onSelect={(id) => {
+            setDessertFilter(id)
             setPage(0)
           }}
         />
