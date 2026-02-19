@@ -460,38 +460,43 @@ const dessertProducts = generateProducts("dessert", [
   { name: "베리 크럼블 스푼업", desc: "스푼업", size: "1개", weight: "200g", price: 6300, cal: "280~380 kcal", serving: "200g", image: "/products/berry-crumble.jpg", flavor: false, maxF: 0, sub: "etc", tag: "NEW" },
 ])
 
-// ─── 프리팩 (30) ─────────────��────────────────────────────
+// ─── 프리팩 (23) ── Actual BR prepack menu ────────────────
+export const prepackSubcategories = [
+  { id: "all", name: "전체" },
+  { id: "readypack", name: "레디팩" },
+  { id: "blockpack", name: "블록팩" },
+  { id: "lessly-blockpack", name: "(Lessly) 블록팩" },
+]
+
 const prepackProducts = generateProducts("prepack", [
-  { name: "바 초콜릿", desc: "아이스크림 바", size: "1개", weight: "100g", price: 2500, cal: "180~260 kcal", serving: "100g", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
-  { name: "바 딸기", desc: "아이스크림 바", size: "1개", weight: "100g", price: 2500, cal: "170~240 kcal", serving: "100g", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
-  { name: "바 바닐라", desc: "아이스크림 바", size: "1개", weight: "100g", price: 2500, cal: "170~240 kcal", serving: "100g", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
-  { name: "바 민트초코", desc: "아이스크림 바", size: "1개", weight: "100g", price: 2800, cal: "180~260 kcal", serving: "100g", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
-  { name: "바 망고", desc: "아이스크림 바", size: "1개", weight: "100g", price: 2800, cal: "170~240 kcal", serving: "100g", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
-  { name: "미니컵 초코", desc: "미니컵", size: "1개", weight: "100ml", price: 2200, cal: "120~180 kcal", serving: "100ml", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
-  { name: "미니컵 딸기", desc: "미니컵", size: "1개", weight: "100ml", price: 2200, cal: "110~170 kcal", serving: "100ml", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
-  { name: "미니컵 바닐라", desc: "미니컵", size: "1개", weight: "100ml", price: 2200, cal: "110~170 kcal", serving: "100ml", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
-  { name: "미니컵 세트 4개", desc: "미니컵 세트", size: "4개", weight: "400ml", price: 7800, cal: "440~680 kcal", serving: "400ml", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
-  { name: "미니컵 세트 6개", desc: "미니컵 세트", size: "6개", weight: "600ml", price: 11000, cal: "660~1020 kcal", serving: "600ml", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
-  { name: "샌드위치 초코", desc: "아이스 샌드위치", size: "1개", weight: "120g", price: 3200, cal: "200~290 kcal", serving: "120g", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
-  { name: "샌드위치 바닐라", desc: "아이스 샌드위치", size: "1개", weight: "120g", price: 3200, cal: "190~280 kcal", serving: "120g", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
-  { name: "샌드위치 딸기", desc: "아이스 샌드위치", size: "1개", weight: "120g", price: 3200, cal: "190~280 kcal", serving: "120g", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
-  { name: "콘 바닐라", desc: "콘 아이스크림", size: "1개", weight: "130g", price: 2800, cal: "200~290 kcal", serving: "130g", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
-  { name: "콘 초코", desc: "콘 아이스크림", size: "1개", weight: "130g", price: 2800, cal: "210~300 kcal", serving: "130g", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
-  { name: "콘 딸기", desc: "콘 아이스크림", size: "1개", weight: "130g", price: 2800, cal: "200~290 kcal", serving: "130g", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
-  { name: "모나카", desc: "아이스크림 모나카", size: "1개", weight: "100g", price: 2500, cal: "170~240 kcal", serving: "100g", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
-  { name: "모나카 세트 4개", desc: "모나카 세트", size: "4개", weight: "400g", price: 8800, cal: "680~960 kcal", serving: "400g", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
-  { name: "빠삐코", desc: "튜브형", size: "1개", weight: "130ml", price: 1800, cal: "100~150 kcal", serving: "130ml", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
-  { name: "쮸쮸바", desc: "쮸쮸바", size: "1개", weight: "100ml", price: 1500, cal: "60~90 kcal", serving: "100ml", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
-  { name: "바 세트 6개", desc: "바 모음", size: "6개", weight: "600g", price: 13000, cal: "1020~1560 kcal", serving: "600g", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
-  { name: "바 세트 10개", desc: "바 모음", size: "10개", weight: "1000g", price: 20000, cal: "1700~2600 kcal", serving: "1000g", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
-  { name: "프리미엄 바 초코", desc: "프리미엄 바", size: "1개", weight: "120g", price: 3500, cal: "220~320 kcal", serving: "120g", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
-  { name: "프리미엄 바 딸기", desc: "프리미엄 바", size: "1개", weight: "120g", price: 3500, cal: "210~300 kcal", serving: "120g", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
-  { name: "프리미엄 바 그린티", desc: "프리미엄 바", size: "1개", weight: "120g", price: 3500, cal: "200~290 kcal", serving: "120g", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
-  { name: "튜브 딸기", desc: "튜브형", size: "1개", weight: "130ml", price: 1800, cal: "90~140 kcal", serving: "130ml", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
-  { name: "튜브 포도", desc: "튜브형", size: "1개", weight: "130ml", price: 1800, cal: "90~140 kcal", serving: "130ml", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
-  { name: "아이스 떡", desc: "떡 아이스크림", size: "4개", weight: "200g", price: 5500, cal: "300~440 kcal", serving: "200g", image: "/products/mochi.jpg", flavor: false, maxF: 0 },
-  { name: "아이스 캔디", desc: "캔디 바", size: "1개", weight: "80ml", price: 1500, cal: "50~80 kcal", serving: "80ml", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
-  { name: "종합 선물세트", desc: "프리팩 모음", size: "12개", weight: "1200g", price: 25000, cal: "2000~3000 kcal", serving: "1200g", image: "/products/prepack-bar.jpg", flavor: false, maxF: 0 },
+  // ── 레디팩 (대용량 컵형) – 10,800원 고정 ──
+  { name: "레디팩 아몬드 봉봉", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "600~900 kcal", serving: "660ml", image: "/products/readypack.jpg", flavor: false, maxF: 0, sub: "readypack" },
+  { name: "레디팩 오레오\n쿠키앤크림", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "650~950 kcal", serving: "660ml", image: "/products/readypack.jpg", flavor: false, maxF: 0, sub: "readypack" },
+  { name: "레디팩 베리베리\n스트로베리", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "550~850 kcal", serving: "660ml", image: "/products/readypack.jpg", flavor: false, maxF: 0, sub: "readypack" },
+  { name: "레디팩 초코나무숲", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "650~950 kcal", serving: "660ml", image: "/products/readypack.jpg", flavor: false, maxF: 0, sub: "readypack" },
+  { name: "레디팩 엄마는 외계인", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "600~900 kcal", serving: "660ml", image: "/products/readypack.jpg", flavor: false, maxF: 0, sub: "readypack" },
+  { name: "레디팩 31 요거트", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "500~800 kcal", serving: "660ml", image: "/products/readypack.jpg", flavor: false, maxF: 0, sub: "readypack" },
+  { name: "레디팩 체리쥬빌레", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "550~850 kcal", serving: "660ml", image: "/products/readypack.jpg", flavor: false, maxF: 0, sub: "readypack" },
+  { name: "레디팩 민트\n초콜릿 칩", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "600~900 kcal", serving: "660ml", image: "/products/readypack.jpg", flavor: false, maxF: 0, sub: "readypack" },
+  { name: "레디팩 소금우유", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "500~800 kcal", serving: "660ml", image: "/products/readypack.jpg", flavor: false, maxF: 0, sub: "readypack" },
+  { name: "레디팩 레인보우\n샤베트", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "450~700 kcal", serving: "660ml", image: "/products/readypack.jpg", flavor: false, maxF: 0, sub: "readypack" },
+
+  // ── 블록팩 (소용량 컵형) – 4,000원 고정 ──
+  { name: "블록팩 아몬드봉봉", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
+  { name: "블록팩 뉴욕치즈케이크", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "200~300 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
+  { name: "블록팩 민트초코봉봉", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "190~290 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
+  { name: "블록팩 슈팅스타", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "170~260 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
+  { name: "블록팩 체리쥬빌레", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "170~260 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
+  { name: "블록팩 이상한 나라의\n솜사탕", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
+  { name: "블록팩 쿠키앤크림", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "200~300 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
+  { name: "블록팩 바람과 함께\n사라지다", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
+  { name: "블록팩 엄마는 외계인", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
+
+  // ── (Lessly) 블록팩 – NEW 라인 ──
+  { name: "(Lessly) 블록팩\n초코나무숲", desc: "Lessly 블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "200~300 kcal", serving: "200ml", image: "/products/lessly-blockpack.jpg", flavor: false, maxF: 0, sub: "lessly-blockpack", tag: "NEW" },
+  { name: "(Lessly) 블록팩\n민트 초콜릿 칩", desc: "Lessly 블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "190~290 kcal", serving: "200ml", image: "/products/lessly-blockpack.jpg", flavor: false, maxF: 0, sub: "lessly-blockpack", tag: "NEW" },
+  { name: "(Lessly) 블록팩\n아몬드봉봉", desc: "Lessly 블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/lessly-blockpack.jpg", flavor: false, maxF: 0, sub: "lessly-blockpack", tag: "NEW" },
+  { name: "(Lessly) 블록팩\n엄마는 외계인", desc: "Lessly 블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/lessly-blockpack.jpg", flavor: false, maxF: 0, sub: "lessly-blockpack", tag: "NEW" },
 ])
 
 // ─── 상품 파티용품 (30) ───────────────────────────────────
