@@ -197,38 +197,59 @@ const coneCupProducts = generateProducts("cone-cup", [
   { name: "더블레귤러", desc: "레귤러 2스쿱", size: "레귤러", weight: "230g", price: 7300, cal: "300~520 kcal", serving: "230g", image: "/products/double-regular.jpg", flavor: true, maxF: 2 },
 ])
 
-// ─── 포장가능 아이스크림 (keep existing 12 + add 18 more = 30) ──
+// ─── 포장가능 아이스크림 (30) ─────────────────────────────
+export const packableSubcategories = [
+  { id: "all", name: "전체" },
+  { id: "pint", name: "파인트" },
+  { id: "quarter", name: "쿼터" },
+  { id: "family", name: "패밀리" },
+  { id: "half-gallon", name: "하프갤론" },
+  { id: "pack", name: "팩" },
+  { id: "set", name: "세트" },
+]
+
 const packableProducts = generateProducts("packable-icecream", [
-  { name: "파인트", desc: "3가지 맛", size: "3가지 맛 (320g)", weight: "320g", price: 9800, cal: "200~350 kcal", serving: "320g", image: "/products/pint.jpg", flavor: true, maxF: 3 },
-  { name: "쿼터", desc: "4가지 맛", size: "4가지 맛 (620g)", weight: "620g", price: 18500, cal: "324~704 kcal", serving: "620g", image: "/products/quarter.jpg", flavor: true, maxF: 4 },
-  { name: "패밀리", desc: "5가지 맛", size: "5가지 맛 (960g)", weight: "960g", price: 26000, cal: "324~704 kcal", serving: "960g", image: "/products/family.jpg", flavor: true, maxF: 5 },
-  { name: "하프갤론", desc: "6가지 맛", size: "6가지 맛 (1200g)", weight: "1200g", price: 31500, cal: "450~900 kcal", serving: "1200g", image: "/products/half-gallon.jpg", flavor: true, maxF: 6 },
-  { name: "아빠왔다팩", desc: "싱글레귤러 4개", size: "싱글레귤러 4개", weight: "4개", price: 15600, cal: "150~280 kcal", serving: "4개", image: "/products/pack-4.jpg", flavor: true, maxF: 4 },
-  { name: "버라이어티팩", desc: "싱글레귤러 6개", size: "싱글레귤러 6개", weight: "6개", price: 23400, cal: "150~280 kcal", serving: "6개", image: "/products/pack-6.jpg", flavor: true, maxF: 6 },
-  { name: "옹기종기팩", desc: "싱글레귤러 8개", size: "싱글레귤러 8개", weight: "8개", price: 31200, cal: "150~280 kcal", serving: "8개", image: "/products/pack-8.jpg", flavor: true, maxF: 8 },
-  { name: "쿼터 초코", desc: "4가지 맛 초코", size: "4가지 맛 (620g)", weight: "620g", price: 18500, cal: "324~704 kcal", serving: "620g", image: "/products/quarter.jpg", flavor: true, maxF: 4 },
-  { name: "쿼터 딸기", desc: "4가지 맛 딸기", size: "4가지 맛 (620g)", weight: "620g", price: 18500, cal: "324~704 kcal", serving: "620g", image: "/products/quarter.jpg", flavor: true, maxF: 4 },
-  { name: "쿼터 민트", desc: "4가지 맛 민트", size: "4가지 맛 (620g)", weight: "620g", price: 18500, cal: "324~704 kcal", serving: "620g", image: "/products/quarter.jpg", flavor: true, maxF: 4 },
-  { name: "쿼터 바닐라", desc: "4가지 맛 바닐라", size: "4가지 맛 (620g)", weight: "620g", price: 18500, cal: "324~704 kcal", serving: "620g", image: "/products/quarter.jpg", flavor: true, maxF: 4 },
-  { name: "쿼터 망고", desc: "4가지 맛 망고", size: "4가지 맛 (620g)", weight: "620g", price: 18500, cal: "324~704 kcal", serving: "620g", image: "/products/quarter.jpg", flavor: true, maxF: 4 },
-  { name: "파인트 초코", desc: "3가지 맛 초코", size: "3가지 맛 (320g)", weight: "320g", price: 9800, cal: "200~350 kcal", serving: "320g", image: "/products/pint.jpg", flavor: true, maxF: 3 },
-  { name: "파인트 딸기", desc: "3가지 맛 딸기", size: "3가지 맛 (320g)", weight: "320g", price: 9800, cal: "200~350 kcal", serving: "320g", image: "/products/pint.jpg", flavor: true, maxF: 3 },
-  { name: "파인트 민트", desc: "3가지 맛 민트", size: "3가지 맛 (320g)", weight: "320g", price: 9800, cal: "200~350 kcal", serving: "320g", image: "/products/pint.jpg", flavor: true, maxF: 3 },
-  { name: "패밀리 초코", desc: "5가지 맛 초코", size: "5가지 맛 (960g)", weight: "960g", price: 26000, cal: "324~704 kcal", serving: "960g", image: "/products/family.jpg", flavor: true, maxF: 5 },
-  { name: "패밀리 딸기", desc: "5가지 맛 딸기", size: "5가지 맛 (960g)", weight: "960g", price: 26000, cal: "324~704 kcal", serving: "960g", image: "/products/family.jpg", flavor: true, maxF: 5 },
-  { name: "하프갤론 초코", desc: "6가지 맛 초코", size: "6가지 맛 (1200g)", weight: "1200g", price: 31500, cal: "450~900 kcal", serving: "1200g", image: "/products/half-gallon.jpg", flavor: true, maxF: 6 },
-  { name: "하프갤론 딸기", desc: "6가지 맛 딸기", size: "6가지 맛 (1200g)", weight: "1200g", price: 31500, cal: "450~900 kcal", serving: "1200g", image: "/products/half-gallon.jpg", flavor: true, maxF: 6 },
-  { name: "엄마왔다팩", desc: "싱글레귤러 4개", size: "싱글레귤러 4개", weight: "4개", price: 15600, cal: "150~280 kcal", serving: "4개", image: "/products/pack-4.jpg", flavor: true, maxF: 4 },
-  { name: "스페셜 버라이어티", desc: "싱글레귤러 6개", size: "싱글레귤러 6개", weight: "6개", price: 24500, cal: "150~280 kcal", serving: "6개", image: "/products/pack-6.jpg", flavor: true, maxF: 6 },
-  { name: "점보 옹기종기", desc: "싱글레귤러 10개", size: "싱글레귤러 10개", weight: "10개", price: 38000, cal: "150~280 kcal", serving: "10개", image: "/products/pack-8.jpg", flavor: true, maxF: 10 },
-  { name: "미니 파인트", desc: "2가지 맛", size: "2가지 맛 (200g)", weight: "200g", price: 7200, cal: "130~230 kcal", serving: "200g", image: "/products/pint.jpg", flavor: true, maxF: 2 },
-  { name: "더블 파인트", desc: "3가지 맛 x2", size: "3가지 맛 (640g)", weight: "640g", price: 18500, cal: "400~700 kcal", serving: "640g", image: "/products/pint.jpg", flavor: true, maxF: 3 },
-  { name: "프리미엄 쿼터", desc: "프리미엄 4가지", size: "4가지 맛 (620g)", weight: "620g", price: 21000, cal: "350~750 kcal", serving: "620g", image: "/products/quarter.jpg", flavor: true, maxF: 4 },
-  { name: "프리미엄 패밀리", desc: "프리미엄 5가지", size: "5가지 맛 (960g)", weight: "960g", price: 29000, cal: "350~750 kcal", serving: "960g", image: "/products/family.jpg", flavor: true, maxF: 5 },
-  { name: "시즌 파인트", desc: "시즌 3가지", size: "3가지 맛 (320g)", weight: "320g", price: 10800, cal: "200~350 kcal", serving: "320g", image: "/products/pint.jpg", flavor: true, maxF: 3 },
-  { name: "시즌 쿼터", desc: "시즌 4가지", size: "4가지 맛 (620g)", weight: "620g", price: 19500, cal: "324~704 kcal", serving: "620g", image: "/products/quarter.jpg", flavor: true, maxF: 4 },
-  { name: "커플 파인트", desc: "2개 파인트 세트", size: "2개 세트", weight: "640g", price: 18000, cal: "400~700 kcal", serving: "640g", image: "/products/pint.jpg", flavor: true, maxF: 3 },
-  { name: "트윈 쿼터", desc: "2개 쿼터 세트", size: "2개 세트", weight: "1240g", price: 34000, cal: "648~1408 kcal", serving: "1240g", image: "/products/quarter.jpg", flavor: true, maxF: 4 },
+  // ── 파인트 (320g) ──
+  { name: "파인트", desc: "3가지 맛", size: "3가지 맛 (320g)", weight: "320g", price: 9800, cal: "200~350 kcal", serving: "320g", image: "/products/pint.jpg", flavor: true, maxF: 3, sub: "pint" },
+  { name: "파인트 초코", desc: "3가지 맛 초코", size: "3가지 맛 (320g)", weight: "320g", price: 9800, cal: "200~350 kcal", serving: "320g", image: "/products/pint.jpg", flavor: true, maxF: 3, sub: "pint" },
+  { name: "파인트 딸기", desc: "3가지 맛 딸기", size: "3가지 맛 (320g)", weight: "320g", price: 9800, cal: "200~350 kcal", serving: "320g", image: "/products/pint.jpg", flavor: true, maxF: 3, sub: "pint" },
+  { name: "파인트 민트", desc: "3가지 맛 민트", size: "3가지 맛 (320g)", weight: "320g", price: 9800, cal: "200~350 kcal", serving: "320g", image: "/products/pint.jpg", flavor: true, maxF: 3, sub: "pint" },
+  { name: "미니 파인트", desc: "2가지 맛", size: "2가지 맛 (200g)", weight: "200g", price: 7200, cal: "130~230 kcal", serving: "200g", image: "/products/pint.jpg", flavor: true, maxF: 2, sub: "pint" },
+  { name: "더블 파인트", desc: "3가지 맛 x2", size: "3가지 맛 (640g)", weight: "640g", price: 18500, cal: "400~700 kcal", serving: "640g", image: "/products/pint.jpg", flavor: true, maxF: 3, sub: "pint" },
+  { name: "시즌 파인트", desc: "시즌 3가지", size: "3가지 맛 (320g)", weight: "320g", price: 10800, cal: "200~350 kcal", serving: "320g", image: "/products/pint.jpg", flavor: true, maxF: 3, sub: "pint" },
+
+  // ── 쿼터 (620g) ──
+  { name: "쿼터", desc: "4가지 맛", size: "4가지 맛 (620g)", weight: "620g", price: 18500, cal: "324~704 kcal", serving: "620g", image: "/products/quarter.jpg", flavor: true, maxF: 4, sub: "quarter" },
+  { name: "쿼터 초코", desc: "4가지 맛 초코", size: "4가지 맛 (620g)", weight: "620g", price: 18500, cal: "324~704 kcal", serving: "620g", image: "/products/quarter.jpg", flavor: true, maxF: 4, sub: "quarter" },
+  { name: "쿼터 딸기", desc: "4가지 맛 딸기", size: "4가지 맛 (620g)", weight: "620g", price: 18500, cal: "324~704 kcal", serving: "620g", image: "/products/quarter.jpg", flavor: true, maxF: 4, sub: "quarter" },
+  { name: "쿼터 민트", desc: "4가지 맛 민트", size: "4가지 맛 (620g)", weight: "620g", price: 18500, cal: "324~704 kcal", serving: "620g", image: "/products/quarter.jpg", flavor: true, maxF: 4, sub: "quarter" },
+  { name: "쿼터 바닐라", desc: "4가지 맛 바닐라", size: "4가지 맛 (620g)", weight: "620g", price: 18500, cal: "324~704 kcal", serving: "620g", image: "/products/quarter.jpg", flavor: true, maxF: 4, sub: "quarter" },
+  { name: "쿼터 망고", desc: "4가지 맛 망고", size: "4가지 맛 (620g)", weight: "620g", price: 18500, cal: "324~704 kcal", serving: "620g", image: "/products/quarter.jpg", flavor: true, maxF: 4, sub: "quarter" },
+  { name: "프리미엄 쿼터", desc: "프리미엄 4가지", size: "4가지 맛 (620g)", weight: "620g", price: 21000, cal: "350~750 kcal", serving: "620g", image: "/products/quarter.jpg", flavor: true, maxF: 4, sub: "quarter" },
+  { name: "시즌 쿼터", desc: "시즌 4가지", size: "4가지 맛 (620g)", weight: "620g", price: 19500, cal: "324~704 kcal", serving: "620g", image: "/products/quarter.jpg", flavor: true, maxF: 4, sub: "quarter" },
+
+  // ── 패밀리 (960g) ──
+  { name: "패밀리", desc: "5가지 맛", size: "5가지 맛 (960g)", weight: "960g", price: 26000, cal: "324~704 kcal", serving: "960g", image: "/products/family.jpg", flavor: true, maxF: 5, sub: "family" },
+  { name: "패밀리 초코", desc: "5가지 맛 초코", size: "5가지 맛 (960g)", weight: "960g", price: 26000, cal: "324~704 kcal", serving: "960g", image: "/products/family.jpg", flavor: true, maxF: 5, sub: "family" },
+  { name: "패밀리 딸기", desc: "5가지 맛 딸기", size: "5가지 맛 (960g)", weight: "960g", price: 26000, cal: "324~704 kcal", serving: "960g", image: "/products/family.jpg", flavor: true, maxF: 5, sub: "family" },
+  { name: "프리미엄 패밀리", desc: "프리미엄 5가지", size: "5가지 맛 (960g)", weight: "960g", price: 29000, cal: "350~750 kcal", serving: "960g", image: "/products/family.jpg", flavor: true, maxF: 5, sub: "family" },
+
+  // ── 하프갤론 (1200g) ──
+  { name: "하프갤론", desc: "6가지 맛", size: "6가지 맛 (1200g)", weight: "1200g", price: 31500, cal: "450~900 kcal", serving: "1200g", image: "/products/half-gallon.jpg", flavor: true, maxF: 6, sub: "half-gallon" },
+  { name: "하프갤론 초코", desc: "6가지 맛 초코", size: "6가지 맛 (1200g)", weight: "1200g", price: 31500, cal: "450~900 kcal", serving: "1200g", image: "/products/half-gallon.jpg", flavor: true, maxF: 6, sub: "half-gallon" },
+  { name: "하프갤론 딸기", desc: "6가지 맛 딸기", size: "6가지 맛 (1200g)", weight: "1200g", price: 31500, cal: "450~900 kcal", serving: "1200g", image: "/products/half-gallon.jpg", flavor: true, maxF: 6, sub: "half-gallon" },
+
+  // ── 팩 (싱글레귤러) ──
+  { name: "아빠왔다팩", desc: "싱글레귤러 4개", size: "싱글레귤러 4개", weight: "4개", price: 15600, cal: "150~280 kcal", serving: "4개", image: "/products/pack-4.jpg", flavor: true, maxF: 4, sub: "pack" },
+  { name: "엄마왔다팩", desc: "싱글레귤러 4개", size: "싱글레귤러 4개", weight: "4개", price: 15600, cal: "150~280 kcal", serving: "4개", image: "/products/pack-4.jpg", flavor: true, maxF: 4, sub: "pack" },
+  { name: "버라이어티팩", desc: "싱글레귤러 6개", size: "싱글레귤러 6개", weight: "6개", price: 23400, cal: "150~280 kcal", serving: "6개", image: "/products/pack-6.jpg", flavor: true, maxF: 6, sub: "pack" },
+  { name: "스페셜 버라이어티", desc: "싱글레귤러 6개", size: "싱글레귤러 6개", weight: "6개", price: 24500, cal: "150~280 kcal", serving: "6개", image: "/products/pack-6.jpg", flavor: true, maxF: 6, sub: "pack" },
+  { name: "옹기종기팩", desc: "싱글레귤러 8개", size: "싱글레귤러 8개", weight: "8개", price: 31200, cal: "150~280 kcal", serving: "8개", image: "/products/pack-8.jpg", flavor: true, maxF: 8, sub: "pack" },
+  { name: "점보 옹기종기", desc: "싱글레귤러 10개", size: "싱글레귤러 10개", weight: "10개", price: 38000, cal: "150~280 kcal", serving: "10개", image: "/products/pack-8.jpg", flavor: true, maxF: 10, sub: "pack" },
+
+  // ── 세트 ──
+  { name: "커플 파인트", desc: "2개 파인트 세트", size: "2개 세트", weight: "640g", price: 18000, cal: "400~700 kcal", serving: "640g", image: "/products/pint.jpg", flavor: true, maxF: 3, sub: "set" },
+  { name: "트윈 쿼터", desc: "2개 쿼터 세트", size: "2개 세트", weight: "1240g", price: 34000, cal: "648~1408 kcal", serving: "1240g", image: "/products/quarter.jpg", flavor: true, maxF: 4, sub: "set" },
 ])
 
 // ─── 아이스크림 케이크 (58) ── Actual BR ice cream cake menu ──
@@ -619,7 +640,7 @@ export const flavors: Flavor[] = [
   { id: "jjonkkuret", name: "진정한 쫀꾸렛", image: "/flavors/jjonkkuret.jpg", color: "hsl(30,40%,75%)", categoryId: "recommended", description: "쫀득한 초콜릿과 바삭한 크런치의 진정한 만남", badge: "이달의 맛" },
   { id: "alien-mom", name: "엄마는 외계인", image: "/flavors/alien-mom.jpg", color: "hsl(280,50%,75%)", categoryId: "recommended", description: "알록달록 솜사탕과 쿠키의 신비로운 우주 맛", badge: "1위" },
   { id: "almond-bonbon", name: "아몬드 봉봉", image: "/flavors/almond.jpg", color: "hsl(25,35%,72%)", categoryId: "recommended", description: "고소한 아몬드와 달콤한 봉봉의 만남", badge: "2위" },
-  { id: "mint-choco-chip", name: "민트 초콜릿 칩", image: "/flavors/mint-choco.jpg", color: "hsl(160,50%,75%)", categoryId: "recommended", description: "시원한 민트와 달콤한 초코칩의 조화", badge: "3위" },
+  { id: "mint-choco-chip", name: "민��� 초콜릿 칩", image: "/flavors/mint-choco.jpg", color: "hsl(160,50%,75%)", categoryId: "recommended", description: "시원한 민트와 달콤한 초코칩의 조화", badge: "3위" },
   { id: "rainbow-sherbet", name: "레인보우 샤베트", image: "/flavors/rainbow.jpg", color: "hsl(40,80%,80%)", categoryId: "recommended", description: "다채로운 과일 맛의 상큼한 샤베트 (과일 섬유질 포함)", badge: "과일 섬유질 포함" },
   { id: "ny-cheesecake", name: "뉴욕 치즈케이크", image: "/flavors/cheesecake.jpg", color: "hsl(45,50%,82%)", categoryId: "recommended", description: "진한 뉴욕 스타일 치즈케이크의 깊은 맛", badge: "5위" },
   { id: "jjonddeok-heukimja", name: "쫀떡 만난 흑임자", image: "/flavors/heukimja-jjonddeok.jpg", color: "hsl(0,0%,35%)", categoryId: "recommended", description: "고소한 흑임자와 쫄깃한 쫀떡의 전통 조화", badge: "NEW" },

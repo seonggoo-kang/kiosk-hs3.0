@@ -13,7 +13,7 @@ import { ActionBar } from "@/components/kiosk/action-bar"
 import { EventPromoBanners } from "@/components/kiosk/event-promo-banners"
 import { SubcategoryFilter } from "@/components/kiosk/subcategory-filter"
 import { useOrder } from "@/lib/order-context"
-import { categories, getProductsByCategory, cakeSubcategories, beverageSubcategories, dessertSubcategories, prepackSubcategories, partySubcategories, type Product } from "@/lib/mock-data"
+import { categories, getProductsByCategory, cakeSubcategories, beverageSubcategories, dessertSubcategories, prepackSubcategories, partySubcategories, packableSubcategories, type Product } from "@/lib/mock-data"
 
 const ITEMS_PER_PAGE = 16 // 4 cols x 4 rows
 
@@ -29,6 +29,7 @@ function MenuContent() {
   const [dessertFilter, setDessertFilter] = useState("all")
   const [prepackFilter, setPrepackFilter] = useState("all")
   const [partyFilter, setPartyFilter] = useState("all")
+  const [packableFilter, setPackableFilter] = useState("all")
   const touchStartX = useRef(0)
   const touchStartY = useRef(0)
   const isSwiping = useRef(false)
@@ -51,6 +52,7 @@ function MenuContent() {
   const isDessert = activeCategory === "dessert"
   const isPrepack = activeCategory === "prepack"
   const isParty = activeCategory === "party"
+  const isPackable = activeCategory === "packable-icecream"
 
   const categoryProducts = useMemo(() => {
     if (isEvent) return []
@@ -70,8 +72,11 @@ function MenuContent() {
     if (isParty && partyFilter !== "all") {
       return all.filter((p) => p.subcategory === partyFilter)
     }
+    if (isPackable && packableFilter !== "all") {
+      return all.filter((p) => p.subcategory === packableFilter)
+    }
     return all
-  }, [activeCategory, isEvent, isCake, cakeFilter, isBeverage, beverageFilter, isDessert, dessertFilter, isPrepack, prepackFilter, isParty, partyFilter])
+  }, [activeCategory, isEvent, isCake, cakeFilter, isBeverage, beverageFilter, isDessert, dessertFilter, isPrepack, prepackFilter, isParty, partyFilter, isPackable, packableFilter])
 
   // Event category uses promo banners (no pagination), other categories use product grid
   const totalPages = isEvent ? 1 : Math.max(1, Math.ceil(categoryProducts.length / ITEMS_PER_PAGE))
@@ -94,6 +99,7 @@ function MenuContent() {
     setDessertFilter("all")
     setPrepackFilter("all")
     setPartyFilter("all")
+    setPackableFilter("all")
     dispatch({ type: "SELECT_PRODUCT", payload: null })
   }
 
@@ -239,6 +245,18 @@ function MenuContent() {
           activeId={partyFilter}
           onSelect={(id) => {
             setPartyFilter(id)
+            setPage(0)
+          }}
+        />
+      )}
+
+      {/* Subcategory filter for packable icecream category */}
+      {isPackable && (
+        <SubcategoryFilter
+          items={packableSubcategories}
+          activeId={packableFilter}
+          onSelect={(id) => {
+            setPackableFilter(id)
             setPage(0)
           }}
         />
