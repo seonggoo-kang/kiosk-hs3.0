@@ -193,50 +193,55 @@ function MenuContent() {
         </div>
       ) : (
         /* ── Other categories: product grid with swipe pagination ── */
-        <div
-          className="relative flex-1 overflow-y-auto overflow-x-hidden bg-muted/40"
-          onTouchStart={(e) => {
-            touchStartX.current = e.touches[0].clientX
-            touchStartY.current = e.touches[0].clientY
-            isSwiping.current = false
-          }}
-          onTouchMove={(e) => {
-            if (!isSwiping.current) {
-              const dx = Math.abs(e.touches[0].clientX - touchStartX.current)
-              const dy = Math.abs(e.touches[0].clientY - touchStartY.current)
-              if (dx > 10 || dy > 10) {
-                isSwiping.current = true
+        <div className="relative flex-1 overflow-hidden bg-muted/40">
+          {/* Scrollable product area */}
+          <div
+            className="h-full overflow-y-auto overflow-x-hidden"
+            onTouchStart={(e) => {
+              touchStartX.current = e.touches[0].clientX
+              touchStartY.current = e.touches[0].clientY
+              isSwiping.current = false
+            }}
+            onTouchMove={(e) => {
+              if (!isSwiping.current) {
+                const dx = Math.abs(e.touches[0].clientX - touchStartX.current)
+                const dy = Math.abs(e.touches[0].clientY - touchStartY.current)
+                if (dx > 10 || dy > 10) {
+                  isSwiping.current = true
+                }
               }
-            }
-          }}
-          onTouchEnd={(e) => {
-            const dx = touchStartX.current - e.changedTouches[0].clientX
-            const dy = touchStartY.current - e.changedTouches[0].clientY
-            if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
-              handleSwipe(dx > 0 ? "left" : "right")
-            }
-          }}
-        >
-          <div className="flex min-h-full flex-col p-3">
-            {currentProducts.length > 0 ? (
-              <div className="grid grid-cols-4 gap-2">
-                {currentProducts.map((product, idx) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    isSelected={state.selectedProductId === product.id}
-                    onSelect={handleProductSelect}
-                    priority={page === 0}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="flex h-full flex-col items-center justify-center gap-3 text-muted-foreground">
-                <IceCreamCone className="h-12 w-12 opacity-30" />
-                <p className="text-sm">이 카테고리에 상품이 없습니다.</p>
-              </div>
-            )}
+            }}
+            onTouchEnd={(e) => {
+              const dx = touchStartX.current - e.changedTouches[0].clientX
+              const dy = touchStartY.current - e.changedTouches[0].clientY
+              if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+                handleSwipe(dx > 0 ? "left" : "right")
+              }
+            }}
+          >
+            <div className="flex min-h-full flex-col p-3">
+              {currentProducts.length > 0 ? (
+                <div className="grid grid-cols-4 gap-2">
+                  {currentProducts.map((product, idx) => (
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                      isSelected={state.selectedProductId === product.id}
+                      onSelect={handleProductSelect}
+                      priority={page === 0}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="flex h-full flex-col items-center justify-center gap-3 text-muted-foreground">
+                  <IceCreamCone className="h-12 w-12 opacity-30" />
+                  <p className="text-sm">이 카테고리에 상품이 없습니다.</p>
+                </div>
+              )}
+            </div>
           </div>
+
+          {/* Fixed overlays -- positioned relative to the non-scrolling wrapper */}
 
           {/* Pagination arrows -- chain across categories */}
           <button
@@ -258,7 +263,7 @@ function MenuContent() {
 
           {/* Page indicator */}
           {totalPages > 1 && (
-            <div className="absolute bottom-2 left-0 right-0 flex items-center justify-center gap-1.5">
+            <div className="absolute bottom-2 left-0 right-0 z-10 flex items-center justify-center gap-1.5">
               {Array.from({ length: totalPages }).map((_, i) => (
                 <button
                   key={i}
