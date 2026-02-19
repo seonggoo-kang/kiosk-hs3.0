@@ -51,7 +51,9 @@ export function ProductCard({ product, isSelected, onSelect, priority }: Product
         {product.name}
       </p>
       <p className="mt-0.5 text-center text-[10px] leading-tight text-muted-foreground">
-        {product.size}
+        {product.weight && product.weight !== "-" && !product.size.includes(product.weight)
+          ? `${product.size} (${product.weight})`
+          : product.size}
       </p>
       <p className="mt-1 text-xs font-bold text-primary">
         {product.price === 0 ? "0원" : formatPrice(product.price)}
