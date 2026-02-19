@@ -156,7 +156,7 @@ function MenuContent() {
       {isEvent ? (
         /* ── Event category: full-width promo banners, vertically scrollable ── */
         <div
-          className="relative flex-1 overflow-y-auto overflow-x-hidden bg-muted/40"
+          className="relative flex-1 overflow-hidden bg-muted/40"
           onTouchStart={(e) => {
             touchStartX.current = e.touches[0].clientX
             touchStartY.current = e.touches[0].clientY
@@ -170,7 +170,26 @@ function MenuContent() {
             }
           }}
         >
-          <EventPromoBanners />
+          <div className="h-full overflow-y-auto overflow-x-hidden">
+            <EventPromoBanners />
+          </div>
+          {/* Swipe arrows for navigating to adjacent categories */}
+          <button
+            onClick={() => handleSwipe("right")}
+            disabled={categories.findIndex((c) => c.id === activeCategory) === 0}
+            className="absolute left-0 top-1/2 z-10 flex h-10 w-6 -translate-y-1/2 items-center justify-center rounded-r-lg bg-card/80 shadow disabled:opacity-0"
+            aria-label="이전 카테고리"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </button>
+          <button
+            onClick={() => handleSwipe("left")}
+            disabled={categories.findIndex((c) => c.id === activeCategory) === categories.length - 1}
+            className="absolute right-0 top-1/2 z-10 flex h-10 w-6 -translate-y-1/2 items-center justify-center rounded-l-lg bg-card/80 shadow disabled:opacity-0"
+            aria-label="다음 카테고리"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </button>
         </div>
       ) : (
         /* ── Other categories: product grid with swipe pagination ── */
