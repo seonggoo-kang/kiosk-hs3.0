@@ -19,6 +19,7 @@ const TAG_STYLES: Record<string, string> = {
   "이달의 더블주니어": "bg-primary text-primary-foreground",
   "NEW": "bg-rose-500 text-white",
   "세트포장": "bg-violet-500 text-white",
+  "가져가기 전용": "bg-emerald-600 text-white",
 }
 
 export function ProductCard({ product, isSelected, onSelect, priority }: ProductCardProps) {

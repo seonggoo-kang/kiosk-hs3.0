@@ -1,7 +1,7 @@
 // ─── Types ────────────────────────────────────────────────
 export type Category = { id: string; name: string }
 
-export type ProductTag = "Chef Made" | "먹고가기 전용" | "20% 할인" | "이달의 더블주니어" | "NEW" | "세트포장" | "먹고가기"
+export type ProductTag = "Chef Made" | "먹고가기 전용" | "20% 할인" | "이달의 더블주니어" | "NEW" | "세트포장" | "먹고가기" | "가져가기 전용"
 
 export type Product = {
   id: string
@@ -81,7 +81,7 @@ export const categories: Category[] = [
   { id: "bingsu", name: "빙수" },
   { id: "coffee", name: "커피" },
   { id: "beverage", name: "음료\n블라스트" },
-  { id: "gelato", name: "젤라또\n쉐프디저트" },
+  { id: "gelato", name: "젤라또" },
   { id: "dessert", name: "디저트" },
   { id: "prepack", name: "프리팩" },
   { id: "party", name: "상품\n파티용품" },
@@ -181,7 +181,7 @@ const workshopProducts = generateProducts("workshop", [
   { name: "말차 아포가토", desc: "말차 아포가토", size: "1잔", weight: "200ml", price: 6400, cal: "260~360 kcal", serving: "200ml", image: "/products/affogato.jpg", flavor: false, maxF: 0, tag: "먹고가기 전용" },
   // Dessert / Plate
   { name: "두바이 스타일\n초콜릿쿠키", desc: "두바이st 디저트", size: "1개", weight: "150g", price: 6500, cal: "400~500 kcal", serving: "150g", image: "/products/dubai-cookie.jpg", flavor: false, maxF: 0 },
-  { name: "인절미 플레이트", desc: "인절미 디저트 플레이트", size: "1세트", weight: "250g", price: 14500, cal: "450~600 kcal", serving: "250g", image: "/products/injeolmi-plate.jpg", flavor: false, maxF: 0, tag: "먹고가기 전용" },
+  { name: "인절미 플레이트", desc: "��절미 디저트 플레이트", size: "1세트", weight: "250g", price: 14500, cal: "450~600 kcal", serving: "250g", image: "/products/injeolmi-plate.jpg", flavor: false, maxF: 0, tag: "먹고가기 전용" },
   { name: "모찌 라이브 인절미", desc: "라이브 모찌", size: "1개", weight: "70g", price: 4800, cal: "140~200 kcal", serving: "70g", image: "/products/mochi.jpg", flavor: false, maxF: 0 },
   { name: "모찌 라이브 흑임자", desc: "라이브 모찌", size: "1개", weight: "70g", price: 4800, cal: "140~200 kcal", serving: "70g", image: "/products/mochi.jpg", flavor: false, maxF: 0 },
   { name: "모찌 라이브\n바람과 함께 사라지다", desc: "라이브 모찌", size: "1개", weight: "70g", price: 4800, cal: "140~200 kcal", serving: "70g", image: "/products/mochi.jpg", flavor: false, maxF: 0, tag: "Chef Made" },
@@ -323,7 +323,7 @@ const bingsuProducts = generateProducts("bingsu", [
   { name: "미니 망고 빙수", desc: "미니 망고", size: "미니", weight: "300g", price: 8800, cal: "210~310 kcal", serving: "300g", image: "/products/bingsu-mango.jpg", flavor: false, maxF: 0 },
   { name: "미니 팥 빙수", desc: "미니 팥", size: "미니", weight: "300g", price: 7500, cal: "180~270 kcal", serving: "300g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
   { name: "프리미엄 딸기빙수", desc: "프리미엄 딸기", size: "프리미엄", weight: "700g", price: 16000, cal: "450~650 kcal", serving: "700g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
-  { name: "프리미엄 망고빙수", desc: "프리미엄 망고", size: "프리미엄", weight: "700g", price: 16500, cal: "460~660 kcal", serving: "700g", image: "/products/bingsu-mango.jpg", flavor: false, maxF: 0 },
+  { name: "프리미엄 망고빙수", desc: "프리미엄 망고", size: "프리미��", weight: "700g", price: 16500, cal: "460~660 kcal", serving: "700g", image: "/products/bingsu-mango.jpg", flavor: false, maxF: 0 },
   { name: "오레오 빙수", desc: "오레오 빙수", size: "레귤러", weight: "500g", price: 12500, cal: "380~540 kcal", serving: "500g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
   { name: "쿠키앤크림 빙수", desc: "쿠키 빙수", size: "레귤러", weight: "500g", price: 12000, cal: "370~530 kcal", serving: "500g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
   { name: "카라멜 빙수", desc: "카라멜 빙수", size: "레귤러", weight: "500g", price: 12000, cal: "370~530 kcal", serving: "500g", image: "/products/bingsu-mango.jpg", flavor: false, maxF: 0 },
@@ -350,7 +350,7 @@ const coffeeProducts = generateProducts("coffee", [
   { name: "수카방 커피", desc: "수카방 커피", size: "레귤러", weight: "300ml", price: 3900, cal: "80~120 kcal", serving: "300ml", image: "/products/sukabang.jpg", flavor: false, maxF: 0 },
 ])
 
-// ─── 음료 블라스트 (30) ────────────────��──────────────────
+// ─── 음료 블라스트 (30) ────────────────���──────────────────
 export const beverageSubcategories = [
   { id: "all", name: "전체" },
   { id: "signature", name: "시그니처/쉐이크" },
@@ -395,38 +395,14 @@ const beverageProducts = generateProducts("beverage", [
   { name: "클래식 바닐라 쉐이크", desc: "클래식 쉐이크", size: "레귤러", weight: "400ml", price: 6100, cal: "270~350 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0, sub: "classic-shake", tag: "NEW" },
 ])
 
-// ─── 젤라또 쉐프디저트 (30) ──────────────────────────────
+// ─── 젤라또 (6) ── Actual BR gelato menu ─────────────────
 const gelatoProducts = generateProducts("gelato", [
-  { name: "피스타치오 젤라또", desc: "프리미엄", size: "싱글", weight: "120g", price: 5500, cal: "180~280 kcal", serving: "120g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "다크초코 젤라또", desc: "프리미엄", size: "싱글", weight: "120g", price: 5500, cal: "200~300 kcal", serving: "120g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "바닐라빈 젤라또", desc: "프리미엄", size: "싱글", weight: "120g", price: 5200, cal: "170~260 kcal", serving: "120g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "딸기 젤라또", desc: "프리미엄", size: "싱글", weight: "120g", price: 5500, cal: "160~240 kcal", serving: "120g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "망고 젤라또", desc: "프리미엄", size: "싱글", weight: "120g", price: 5500, cal: "160~240 kcal", serving: "120g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "헤이즐넛 젤라또", desc: "프리미엄", size: "싱글", weight: "120g", price: 5800, cal: "190~290 kcal", serving: "120g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "레몬 소르베", desc: "소르베", size: "싱글", weight: "120g", price: 5000, cal: "100~160 kcal", serving: "120g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "라즈베리 소르베", desc: "소르베", size: "싱글", weight: "120g", price: 5200, cal: "110~170 kcal", serving: "120g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "아마레나 젤라또", desc: "이탈리안", size: "싱글", weight: "120g", price: 6000, cal: "180~280 kcal", serving: "120g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "티라미수 젤라또", desc: "이탈리안", size: "싱글", weight: "120g", price: 5800, cal: "200~300 kcal", serving: "120g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "크림브륄레", desc: "쉐프 디저트", size: "레귤러", weight: "150g", price: 7500, cal: "250~350 kcal", serving: "150g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "판나코타", desc: "쉐프 디저트", size: "레귤러", weight: "150g", price: 7200, cal: "220~310 kcal", serving: "150g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "초코 퐁당", desc: "쉐프 디저트", size: "레귤러", weight: "180g", price: 8500, cal: "300~420 kcal", serving: "180g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "아포가토 디저트", desc: "쉐프 디저트", size: "레귤러", weight: "200g", price: 8000, cal: "250~350 kcal", serving: "200g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "젤라또 트리오", desc: "3가지 젤라또", size: "트리오", weight: "360g", price: 14500, cal: "480~720 kcal", serving: "360g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "카라멜 젤라또", desc: "프리미엄", size: "싱글", weight: "120g", price: 5500, cal: "190~290 kcal", serving: "120g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "코코넛 젤라또", desc: "프리미엄", size: "싱글", weight: "120g", price: 5500, cal: "180~270 kcal", serving: "120g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "말차 젤라또", desc: "프리미엄", size: "싱글", weight: "120g", price: 5500, cal: "170~260 kcal", serving: "120g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "커피 젤라또", desc: "프리미엄", size: "싱글", weight: "120g", price: 5500, cal: "170~260 kcal", serving: "120g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "블루베리 치즈케이크", desc: "쉐프 디저트", size: "레귤러", weight: "180g", price: 8200, cal: "280~380 kcal", serving: "180g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "더블 젤라또", desc: "더블", size: "더블", weight: "240g", price: 9500, cal: "340~520 kcal", serving: "240g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "젤라또 와플", desc: "와플+젤라또", size: "레귤러", weight: "250g", price: 9800, cal: "380~520 kcal", serving: "250g", image: "/products/waffle.jpg", flavor: false, maxF: 0 },
-  { name: "젤라또 크레페", desc: "크레페+젤라또", size: "레귤러", weight: "200g", price: 8800, cal: "320~440 kcal", serving: "200g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "로즈 젤라또", desc: "프리미엄", size: "싱글", weight: "120g", price: 5800, cal: "160~240 kcal", serving: "120g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "솔티카라멜 젤라또", desc: "프리미엄", size: "싱글", weight: "120g", price: 5800, cal: "200~300 kcal", serving: "120g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "베리 소르베", desc: "소르베", size: "싱글", weight: "120g", price: 5200, cal: "100~160 kcal", serving: "120g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "패션프루트 소르베", desc: "소르베", size: "싱글", weight: "120g", price: 5200, cal: "100~160 kcal", serving: "120g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "리코타 젤라또", desc: "이탈리안", size: "싱글", weight: "120g", price: 6000, cal: "190~290 kcal", serving: "120g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "스트라치아텔라", desc: "이탈리안", size: "싱글", weight: "120g", price: 5800, cal: "180~280 kcal", serving: "120g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "젤라또 선물세트", desc: "6종 세트", size: "선물", weight: "720g", price: 28000, cal: "960~1440 kcal", serving: "720g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
+  { name: "젤라또 컵", desc: "2가지맛", size: "컵 (2가지맛)", weight: "200g", price: 5500, cal: "220~340 kcal", serving: "200g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
+  { name: "젤라또 팩", desc: "500ml / 3가지맛", size: "500ml (3가지맛)", weight: "500ml", price: 19500, cal: "600~900 kcal", serving: "500ml", image: "/products/gelato-pack.jpg", flavor: false, maxF: 0, tag: "가져가기 전용" },
+  { name: "믹스 베리 요거트", desc: "젤라또", size: "1컵", weight: "200g", price: 6300, cal: "180~280 kcal", serving: "200g", image: "/products/gelato-berry.jpg", flavor: false, maxF: 0 },
+  { name: "피스타치오\n허니요거트", desc: "젤라또", size: "1컵", weight: "200g", price: 6300, cal: "200~300 kcal", serving: "200g", image: "/products/gelato-pistachio.jpg", flavor: false, maxF: 0 },
+  { name: "카라멜 쿠키 바닐라", desc: "젤라또", size: "1컵", weight: "200g", price: 6300, cal: "220~320 kcal", serving: "200g", image: "/products/gelato-caramel.jpg", flavor: false, maxF: 0 },
+  { name: "초콜릿 바나나", desc: "젤라또", size: "1컵", weight: "200g", price: 6300, cal: "210~310 kcal", serving: "200g", image: "/products/gelato-choco-banana.jpg", flavor: false, maxF: 0 },
 ])
 
 // ─── 디저트 (30) ──────────────────────────────────────────
@@ -573,7 +549,7 @@ export const flavors: Flavor[] = [
   { id: "bam-goguma", name: "밤이 옥수로 맛있구마", image: "/flavors/sweet-potato.jpg", color: "hsl(35,60%,55%)", categoryId: "recommended", description: "고구마, 밤, 옥수수의 고소한 가을 맛", badge: "NEW" },
   { id: "honey-mochi", name: "말랑 꿀떡 모찌", image: "/flavors/honey-mochi.jpg", color: "hsl(42,50%,78%)", categoryId: "recommended", description: "꿀떡 모찌의 말랑말랑 달콤한 맛", badge: "NEW" },
   { id: "cream-cheese-peach-tart", name: "크림치즈 피치 타르트", image: "/flavors/peach-tart.jpg", color: "hsl(20,60%,80%)", categoryId: "recommended", description: "크림치즈와 복숭아 타르트의 상큼한 조화", badge: null },
-  { id: "berry-berry-strawberry", name: "베리베리 스트로베리", image: "/flavors/strawberry.jpg", color: "hsl(340,60%,78%)", categoryId: "recommended", description: "딸기의 상큼함을 가득 담은 베리 맛", badge: null },
+  { id: "berry-berry-strawberry", name: "베리베리 스트로베리", image: "/flavors/strawberry.jpg", color: "hsl(340,60%,78%)", categoryId: "recommended", description: "딸기의 상큼함을 가득 담은 ���리 맛", badge: null },
 
   // ── Page 2 flavors from photos (also categorized) ──
   { id: "love-strawberry", name: "사랑에 빠진 딸기", image: "/flavors/love-strawberry.jpg", color: "hsl(345,60%,75%)", categoryId: "fruit", description: "딸기와 초콜릿이 치즈케이크에 반해버린 사랑의 맛", badge: null },
