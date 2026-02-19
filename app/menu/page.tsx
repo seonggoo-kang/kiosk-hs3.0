@@ -10,6 +10,7 @@ import { ProductCard } from "@/components/kiosk/product-card"
 import { ProductDetailPanel } from "@/components/kiosk/product-detail-panel"
 import { CartStrip } from "@/components/kiosk/cart-strip"
 import { ActionBar } from "@/components/kiosk/action-bar"
+import { EventPromoBanners } from "@/components/kiosk/event-promo-banners"
 import { useOrder } from "@/lib/order-context"
 import { categories, getProductsByCategory, type Product } from "@/lib/mock-data"
 
@@ -38,12 +39,15 @@ function MenuContent() {
     }
   }, [justAdded, state.cart.length])
 
+  const isEvent = activeCategory === "event"
+
   const categoryProducts = useMemo(
-    () => getProductsByCategory(activeCategory),
-    [activeCategory]
+    () => (isEvent ? [] : getProductsByCategory(activeCategory)),
+    [activeCategory, isEvent]
   )
 
-  const totalPages = Math.max(1, Math.ceil(categoryProducts.length / ITEMS_PER_PAGE))
+  // Event category uses promo banners (no pagination), other categories use product grid
+  const totalPages = isEvent ? 1 : Math.max(1, Math.ceil(categoryProducts.length / ITEMS_PER_PAGE))
   const currentProducts = categoryProducts.slice(
     page * ITEMS_PER_PAGE,
     (page + 1) * ITEMS_PER_PAGE
@@ -148,100 +152,120 @@ function MenuContent() {
         onSelect={handleCategoryChange}
       />
 
-      {/* Product Grid -- swipe left/right across pages & categories, vertical scroll allowed */}
-      <div
-        className="relative flex-1 overflow-y-auto overflow-x-hidden bg-muted/40"
-        onTouchStart={(e) => {
-          touchStartX.current = e.touches[0].clientX
-          touchStartY.current = e.touches[0].clientY
-          isSwiping.current = false
-        }}
-        onTouchMove={(e) => {
-          // Determine swipe direction on first significant move
-          if (!isSwiping.current) {
-            const dx = Math.abs(e.touches[0].clientX - touchStartX.current)
-            const dy = Math.abs(e.touches[0].clientY - touchStartY.current)
-            if (dx > 10 || dy > 10) {
-              isSwiping.current = true
+      {/* Content area -- event promos OR product grid */}
+      {isEvent ? (
+        /* ── Event category: full-width promo banners, vertically scrollable ── */
+        <div
+          className="relative flex-1 overflow-y-auto overflow-x-hidden bg-muted/40"
+          onTouchStart={(e) => {
+            touchStartX.current = e.touches[0].clientX
+            touchStartY.current = e.touches[0].clientY
+            isSwiping.current = false
+          }}
+          onTouchEnd={(e) => {
+            const dx = touchStartX.current - e.changedTouches[0].clientX
+            const dy = touchStartY.current - e.changedTouches[0].clientY
+            if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+              handleSwipe(dx > 0 ? "left" : "right")
             }
-          }
-        }}
-        onTouchEnd={(e) => {
-          const dx = touchStartX.current - e.changedTouches[0].clientX
-          const dy = touchStartY.current - e.changedTouches[0].clientY
-          // Only trigger horizontal swipe if dx dominates dy and exceeds threshold
-          if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
-            handleSwipe(dx > 0 ? "left" : "right")
-          }
-        }}
-      >
-        <div className="flex min-h-full flex-col p-3">
-          {currentProducts.length > 0 ? (
-            <div className="grid grid-cols-4 gap-2">
-              {currentProducts.map((product, idx) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  isSelected={state.selectedProductId === product.id}
-                  onSelect={handleProductSelect}
-                  priority={page === 0}
+          }}
+        >
+          <EventPromoBanners />
+        </div>
+      ) : (
+        /* ── Other categories: product grid with swipe pagination ── */
+        <div
+          className="relative flex-1 overflow-y-auto overflow-x-hidden bg-muted/40"
+          onTouchStart={(e) => {
+            touchStartX.current = e.touches[0].clientX
+            touchStartY.current = e.touches[0].clientY
+            isSwiping.current = false
+          }}
+          onTouchMove={(e) => {
+            if (!isSwiping.current) {
+              const dx = Math.abs(e.touches[0].clientX - touchStartX.current)
+              const dy = Math.abs(e.touches[0].clientY - touchStartY.current)
+              if (dx > 10 || dy > 10) {
+                isSwiping.current = true
+              }
+            }
+          }}
+          onTouchEnd={(e) => {
+            const dx = touchStartX.current - e.changedTouches[0].clientX
+            const dy = touchStartY.current - e.changedTouches[0].clientY
+            if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+              handleSwipe(dx > 0 ? "left" : "right")
+            }
+          }}
+        >
+          <div className="flex min-h-full flex-col p-3">
+            {currentProducts.length > 0 ? (
+              <div className="grid grid-cols-4 gap-2">
+                {currentProducts.map((product, idx) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    isSelected={state.selectedProductId === product.id}
+                    onSelect={handleProductSelect}
+                    priority={page === 0}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="flex h-full flex-col items-center justify-center gap-3 text-muted-foreground">
+                <IceCreamCone className="h-12 w-12 opacity-30" />
+                <p className="text-sm">이 카테고리에 상품이 없습니다.</p>
+              </div>
+            )}
+          </div>
+
+          {/* Pagination arrows -- chain across categories */}
+          <button
+            onClick={() => handleSwipe("right")}
+            disabled={page === 0 && categories.findIndex((c) => c.id === activeCategory) === 0}
+            className="absolute left-0 top-1/2 z-10 flex h-10 w-6 -translate-y-1/2 items-center justify-center rounded-r-lg bg-card/80 shadow disabled:opacity-0"
+            aria-label="이전 페이지"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </button>
+          <button
+            onClick={() => handleSwipe("left")}
+            disabled={page === totalPages - 1 && categories.findIndex((c) => c.id === activeCategory) === categories.length - 1}
+            className="absolute right-0 top-1/2 z-10 flex h-10 w-6 -translate-y-1/2 items-center justify-center rounded-l-lg bg-card/80 shadow disabled:opacity-0"
+            aria-label="다음 페이지"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </button>
+
+          {/* Page indicator */}
+          {totalPages > 1 && (
+            <div className="absolute bottom-2 left-0 right-0 flex items-center justify-center gap-1.5">
+              {Array.from({ length: totalPages }).map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setPage(i)}
+                  className={`h-2 rounded-full transition-colors ${
+                    i === page ? "w-4 bg-primary" : "w-2 bg-border"
+                  }`}
+                  aria-label={`페이지 ${i + 1}`}
                 />
               ))}
             </div>
-          ) : (
-            <div className="flex h-full flex-col items-center justify-center gap-3 text-muted-foreground">
-              <IceCreamCone className="h-12 w-12 opacity-30" />
-              <p className="text-sm">이 카테고리에 상품이 없습니다.</p>
+          )}
+
+          {/* Toast notification when item was just added */}
+          {showAddedToast && (
+            <div className="absolute left-1/2 top-4 z-20 -translate-x-1/2 animate-in fade-in slide-in-from-top-2 duration-300">
+              <div className="flex items-center gap-2 rounded-full bg-foreground px-5 py-3 shadow-lg">
+                <Check className="h-4 w-4 text-primary-foreground" />
+                <span className="text-sm font-semibold text-primary-foreground">
+                  상품이 담겼습니다
+                </span>
+              </div>
             </div>
           )}
         </div>
-
-        {/* Pagination arrows -- always visible, chain across categories */}
-        <button
-          onClick={() => handleSwipe("right")}
-          disabled={page === 0 && categories.findIndex((c) => c.id === activeCategory) === 0}
-          className="absolute left-0 top-1/2 z-10 flex h-10 w-6 -translate-y-1/2 items-center justify-center rounded-r-lg bg-card/80 shadow disabled:opacity-0"
-          aria-label="이전 페이지"
-        >
-          <ChevronLeft className="h-4 w-4" />
-        </button>
-        <button
-          onClick={() => handleSwipe("left")}
-          disabled={page === totalPages - 1 && categories.findIndex((c) => c.id === activeCategory) === categories.length - 1}
-          className="absolute right-0 top-1/2 z-10 flex h-10 w-6 -translate-y-1/2 items-center justify-center rounded-l-lg bg-card/80 shadow disabled:opacity-0"
-          aria-label="다음 페이지"
-        >
-          <ChevronRight className="h-4 w-4" />
-        </button>
-
-        {/* Page indicator */}
-        {totalPages > 1 && (
-          <div className="absolute bottom-2 left-0 right-0 flex items-center justify-center gap-1.5">
-            {Array.from({ length: totalPages }).map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setPage(i)}
-                className={`h-2 rounded-full transition-colors ${
-                  i === page ? "w-4 bg-primary" : "w-2 bg-border"
-                }`}
-                aria-label={`페이지 ${i + 1}`}
-              />
-            ))}
-          </div>
-        )}
-
-        {/* Toast notification when item was just added */}
-        {showAddedToast && (
-          <div className="absolute left-1/2 top-4 z-20 -translate-x-1/2 animate-in fade-in slide-in-from-top-2 duration-300">
-            <div className="flex items-center gap-2 rounded-full bg-foreground px-5 py-3 shadow-lg">
-              <Check className="h-4 w-4 text-primary-foreground" />
-              <span className="text-sm font-semibold text-primary-foreground">
-                상품이 담겼습니다
-              </span>
-            </div>
-          </div>
-        )}
-      </div>
+      )}
 
       {/* Product detail panel -- only when a product is selected */}
       {selectedProduct && (
