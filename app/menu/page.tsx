@@ -23,6 +23,8 @@ function MenuContent() {
   const [page, setPage] = useState(0)
   const [showAddedToast, setShowAddedToast] = useState(false)
   const touchStartX = useRef(0)
+  const touchStartY = useRef(0)
+  const isSwiping = useRef(false)
 
   // Show "item added" toast when coming back from options
   const justAdded = searchParams.get("added") === "true"
@@ -57,6 +59,41 @@ function MenuContent() {
     setActiveCategory(id)
     setPage(0)
     dispatch({ type: "SELECT_PRODUCT", payload: null })
+  }
+
+  /** Swipe left/right: pages within a category, then chain to next/prev category */
+  const handleSwipe = (direction: "left" | "right") => {
+    if (direction === "left") {
+      // Swipe left = go forward
+      if (page < totalPages - 1) {
+        setPage((p) => p + 1)
+      } else {
+        // Move to next category
+        const catIdx = categories.findIndex((c) => c.id === activeCategory)
+        if (catIdx < categories.length - 1) {
+          const nextCat = categories[catIdx + 1].id
+          setActiveCategory(nextCat)
+          setPage(0)
+          dispatch({ type: "SELECT_PRODUCT", payload: null })
+        }
+      }
+    } else {
+      // Swipe right = go back
+      if (page > 0) {
+        setPage((p) => p - 1)
+      } else {
+        // Move to previous category, land on its last page
+        const catIdx = categories.findIndex((c) => c.id === activeCategory)
+        if (catIdx > 0) {
+          const prevCat = categories[catIdx - 1].id
+          const prevProducts = getProductsByCategory(prevCat)
+          const prevTotalPages = Math.max(1, Math.ceil(prevProducts.length / ITEMS_PER_PAGE))
+          setActiveCategory(prevCat)
+          setPage(prevTotalPages - 1)
+          dispatch({ type: "SELECT_PRODUCT", payload: null })
+        }
+      }
+    }
   }
 
   const handleProductSelect = (product: Product) => {
@@ -111,21 +148,36 @@ function MenuContent() {
         onSelect={handleCategoryChange}
       />
 
-      {/* Product Grid -- swipe left/right, no vertical scroll */}
+      {/* Product Grid -- swipe left/right across pages & categories, vertical scroll allowed */}
       <div
-        className="relative flex-1 overflow-hidden bg-muted/40"
-        onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX }}
+        className="relative flex-1 overflow-y-auto overflow-x-hidden bg-muted/40"
+        onTouchStart={(e) => {
+          touchStartX.current = e.touches[0].clientX
+          touchStartY.current = e.touches[0].clientY
+          isSwiping.current = false
+        }}
+        onTouchMove={(e) => {
+          // Determine swipe direction on first significant move
+          if (!isSwiping.current) {
+            const dx = Math.abs(e.touches[0].clientX - touchStartX.current)
+            const dy = Math.abs(e.touches[0].clientY - touchStartY.current)
+            if (dx > 10 || dy > 10) {
+              isSwiping.current = true
+            }
+          }
+        }}
         onTouchEnd={(e) => {
-          const diff = touchStartX.current - e.changedTouches[0].clientX
-          if (Math.abs(diff) > 50) {
-            if (diff > 0 && page < totalPages - 1) setPage((p) => p + 1)
-            if (diff < 0 && page > 0) setPage((p) => p - 1)
+          const dx = touchStartX.current - e.changedTouches[0].clientX
+          const dy = touchStartY.current - e.changedTouches[0].clientY
+          // Only trigger horizontal swipe if dx dominates dy and exceeds threshold
+          if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+            handleSwipe(dx > 0 ? "left" : "right")
           }
         }}
       >
-        <div className="flex h-full flex-col p-3">
+        <div className="flex min-h-full flex-col p-3">
           {currentProducts.length > 0 ? (
-            <div className="grid flex-1 grid-cols-4 grid-rows-4 gap-2">
+            <div className="grid grid-cols-4 gap-2">
               {currentProducts.map((product, idx) => (
                 <ProductCard
                   key={product.id}
@@ -144,37 +196,33 @@ function MenuContent() {
           )}
         </div>
 
-        {/* Pagination arrows */}
-        {totalPages > 1 && (
-          <>
-            <button
-              onClick={() => setPage((p) => Math.max(0, p - 1))}
-              disabled={page === 0}
-              className="absolute left-0 top-1/2 z-10 flex h-10 w-6 -translate-y-1/2 items-center justify-center rounded-r-lg bg-card/80 shadow disabled:opacity-0"
-              aria-label="이전 페이지"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-            <button
-              onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
-              disabled={page === totalPages - 1}
-              className="absolute right-0 top-1/2 z-10 flex h-10 w-6 -translate-y-1/2 items-center justify-center rounded-l-lg bg-card/80 shadow disabled:opacity-0"
-              aria-label="다음 페이지"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </button>
-          </>
-        )}
+        {/* Pagination arrows -- always visible, chain across categories */}
+        <button
+          onClick={() => handleSwipe("right")}
+          disabled={page === 0 && categories.findIndex((c) => c.id === activeCategory) === 0}
+          className="absolute left-0 top-1/2 z-10 flex h-10 w-6 -translate-y-1/2 items-center justify-center rounded-r-lg bg-card/80 shadow disabled:opacity-0"
+          aria-label="이전 페이지"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </button>
+        <button
+          onClick={() => handleSwipe("left")}
+          disabled={page === totalPages - 1 && categories.findIndex((c) => c.id === activeCategory) === categories.length - 1}
+          className="absolute right-0 top-1/2 z-10 flex h-10 w-6 -translate-y-1/2 items-center justify-center rounded-l-lg bg-card/80 shadow disabled:opacity-0"
+          aria-label="다음 페이지"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </button>
 
-        {/* Page dots */}
+        {/* Page indicator */}
         {totalPages > 1 && (
-          <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5">
+          <div className="absolute bottom-2 left-0 right-0 flex items-center justify-center gap-1.5">
             {Array.from({ length: totalPages }).map((_, i) => (
               <button
                 key={i}
                 onClick={() => setPage(i)}
-                className={`h-2 w-2 rounded-full transition-colors ${
-                  i === page ? "bg-primary" : "bg-border"
+                className={`h-2 rounded-full transition-colors ${
+                  i === page ? "w-4 bg-primary" : "w-2 bg-border"
                 }`}
                 aria-label={`페이지 ${i + 1}`}
               />
