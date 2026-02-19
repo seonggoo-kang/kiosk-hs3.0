@@ -84,7 +84,7 @@ export const categories: Category[] = [
   { id: "gelato", name: "젤라또" },
   { id: "dessert", name: "디저트" },
   { id: "prepack", name: "프리팩" },
-  { id: "party", name: "상품\n파티용품" },
+  { id: "party", name: "상품" },
 ]
 
 // ─── Helper to generate product arrays ────────────────────
@@ -499,38 +499,90 @@ const prepackProducts = generateProducts("prepack", [
   { name: "(Lessly) 블록팩\n엄마는 외계인", desc: "Lessly 블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/lessly-blockpack.jpg", flavor: false, maxF: 0, sub: "lessly-blockpack", tag: "NEW" },
 ])
 
-// ─── 상품 파티용품 (30) ───────────────────────────────────
+// ─── 상품 (51) ── Actual BR merchandise ───────────────────
+export const partySubcategories = [
+  { id: "all", name: "전체" },
+  { id: "tray", name: "트레이" },
+  { id: "stationery", name: "클립펜/카드/숫자초" },
+  { id: "tumbler-acc", name: "텀블러/모자/우산" },
+  { id: "brand", name: "브랜드 굿즈" },
+  { id: "scent", name: "향 제품" },
+  { id: "party-deco", name: "파티/장식/기타" },
+]
+
 const partyProducts = generateProducts("party", [
-  { name: "생일 초 세트", desc: "숫자 초", size: "1세트", weight: "50g", price: 3500, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "파티 모자 5개", desc: "파티 모자", size: "5개", weight: "100g", price: 5000, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "종이 접시 10개", desc: "파티 접시", size: "10개", weight: "200g", price: 4500, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "종이컵 10개", desc: "파티 컵", size: "10개", weight: "150g", price: 3500, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "냅킨 20장", desc: "파티 냅킨", size: "20장", weight: "100g", price: 2500, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "파티 풍선 10개", desc: "풍선 세트", size: "10개", weight: "50g", price: 5500, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "배너 세트", desc: "축하 배너", size: "1세트", weight: "150g", price: 8000, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "파티 세트 A", desc: "기본 파티 세트", size: "1세트", weight: "500g", price: 15000, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "파티 세트 B", desc: "프리미엄 파티", size: "1세트", weight: "800g", price: 25000, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "파티 세트 C", desc: "디럭스 파티", size: "1세트", weight: "1200g", price: 35000, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "아이스크림 스푼 50개", desc: "스푼 세트", size: "50개", weight: "200g", price: 3000, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "케이크 칼", desc: "케이크 나이프", size: "1개", weight: "100g", price: 2000, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "드라이아이스 추가", desc: "보냉용", size: "1봉", weight: "500g", price: 1500, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "보냉백 S", desc: "보냉백", size: "S", weight: "100g", price: 2000, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "보냉백 M", desc: "보냉백", size: "M", weight: "150g", price: 3000, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "보냉백 L", desc: "보냉백", size: "L", weight: "200g", price: 4000, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "테이블보 세트", desc: "파티 테이블보", size: "1장", weight: "300g", price: 5000, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "가랜드", desc: "장식 가랜드", size: "1세트", weight: "100g", price: 6500, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "콘페티 세트", desc: "파티 콘페티", size: "1봉", weight: "50g", price: 3500, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "포토존 세트", desc: "포토존 소품", size: "1세트", weight: "500g", price: 12000, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "선물 포장 BOX S", desc: "선물 박스", size: "S", weight: "100g", price: 2500, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "선물 포장 BOX M", desc: "선물 박스", size: "M", weight: "200g", price: 4000, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "선물 포장 BOX L", desc: "선물 박스", size: "L", weight: "300g", price: 5500, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "리본 세트", desc: "장식 리본", size: "3개", weight: "30g", price: 2000, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "축하 카드", desc: "메시지 카드", size: "1장", weight: "20g", price: 1500, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "스티커 세트", desc: "데코 스티커", size: "1시트", weight: "10g", price: 2000, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "케이크 토퍼", desc: "��이�� 장식", size: "1개", weight: "30g", price: 3500, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "파티 안경 세트", desc: "재미 안경", size: "5개", weight: "100g", price: 6000, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "파티 호루라기", desc: "호루라기", size: "5개", weight: "50g", price: 3000, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
-  { name: "올인원 파티세트", desc: "완전 파티 세트", size: "1세트", weight: "2000g", price: 45000, cal: "-", serving: "-", image: "/products/party-set.jpg", flavor: false, maxF: 0 },
+  // ── 트레이 ──
+  { name: "트레이 머스터드 / 소", desc: "트레이", size: "소", weight: "-", price: 40000, cal: "-", serving: "-", image: "/products/tray.jpg", flavor: false, maxF: 0, sub: "tray" },
+  { name: "트레이 아마존블루 / 소", desc: "트레이", size: "소", weight: "-", price: 40000, cal: "-", serving: "-", image: "/products/tray.jpg", flavor: false, maxF: 0, sub: "tray" },
+  { name: "트레이 키라임 / 소", desc: "트레이", size: "소", weight: "-", price: 40000, cal: "-", serving: "-", image: "/products/tray.jpg", flavor: false, maxF: 0, sub: "tray" },
+  { name: "트레이 서우그린 / 소", desc: "트레이", size: "소", weight: "-", price: 40000, cal: "-", serving: "-", image: "/products/tray.jpg", flavor: false, maxF: 0, sub: "tray" },
+  { name: "트레이 머스터드 / 중", desc: "트레이", size: "중", weight: "-", price: 45000, cal: "-", serving: "-", image: "/products/tray.jpg", flavor: false, maxF: 0, sub: "tray" },
+  { name: "트레이 아마존블루 / 중", desc: "트레이", size: "중", weight: "-", price: 45000, cal: "-", serving: "-", image: "/products/tray.jpg", flavor: false, maxF: 0, sub: "tray" },
+  { name: "트레이 키라임 / 중", desc: "트레이", size: "중", weight: "-", price: 45000, cal: "-", serving: "-", image: "/products/tray.jpg", flavor: false, maxF: 0, sub: "tray" },
+
+  // ── 클립펜 ──
+  { name: "클립펜 / 화이트", desc: "클립펜", size: "1개", weight: "-", price: 2500, cal: "-", serving: "-", image: "/products/clip-pen.jpg", flavor: false, maxF: 0, sub: "stationery" },
+  { name: "클립펜 / 블루", desc: "클립펜", size: "1개", weight: "-", price: 2500, cal: "-", serving: "-", image: "/products/clip-pen.jpg", flavor: false, maxF: 0, sub: "stationery" },
+  { name: "클립펜 / 옐로우", desc: "클립펜", size: "1개", weight: "-", price: 2500, cal: "-", serving: "-", image: "/products/clip-pen.jpg", flavor: false, maxF: 0, sub: "stationery" },
+  { name: "클립펜 / 그린", desc: "클립펜", size: "1개", weight: "-", price: 2500, cal: "-", serving: "-", image: "/products/clip-pen.jpg", flavor: false, maxF: 0, sub: "stationery" },
+
+  // ── 카드 ──
+  { name: "카드 LoveYouForever", desc: "카드", size: "1장", weight: "-", price: 3000, cal: "-", serving: "-", image: "/products/greeting-card.jpg", flavor: false, maxF: 0, sub: "stationery" },
+  { name: "카드 Congratulations!", desc: "카드", size: "1장", weight: "-", price: 3000, cal: "-", serving: "-", image: "/products/greeting-card.jpg", flavor: false, maxF: 0, sub: "stationery" },
+  { name: "카드 HappyBirthday", desc: "카드", size: "1장", weight: "-", price: 3000, cal: "-", serving: "-", image: "/products/greeting-card.jpg", flavor: false, maxF: 0, sub: "stationery" },
+  { name: "카드 Goodlucktoyou", desc: "카드", size: "1장", weight: "-", price: 3000, cal: "-", serving: "-", image: "/products/greeting-card.jpg", flavor: false, maxF: 0, sub: "stationery" },
+
+  // ── 숫자초 – 800원 고정 ──
+  { name: "0번 숫자초", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/number-candle.jpg", flavor: false, maxF: 0, sub: "stationery" },
+  { name: "1번 숫자초", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/number-candle.jpg", flavor: false, maxF: 0, sub: "stationery" },
+  { name: "2번 숫자초", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/number-candle.jpg", flavor: false, maxF: 0, sub: "stationery" },
+  { name: "3번 숫자초", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/number-candle.jpg", flavor: false, maxF: 0, sub: "stationery" },
+  { name: "4번 숫자초", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/number-candle.jpg", flavor: false, maxF: 0, sub: "stationery" },
+  { name: "5번 숫자초", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/number-candle.jpg", flavor: false, maxF: 0, sub: "stationery" },
+  { name: "6번 숫자초", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/number-candle.jpg", flavor: false, maxF: 0, sub: "stationery" },
+  { name: "7번 숫자초", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/number-candle.jpg", flavor: false, maxF: 0, sub: "stationery" },
+  { name: "8번 숫자초", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/number-candle.jpg", flavor: false, maxF: 0, sub: "stationery" },
+  { name: "9번 숫자초", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/number-candle.jpg", flavor: false, maxF: 0, sub: "stationery" },
+
+  // ── 텀블러 / 보틀 ──
+  { name: "데이오프 텀블러\n그레이 / 500ml", desc: "텀블러", size: "500ml", weight: "-", price: 37500, cal: "-", serving: "-", image: "/products/tumbler.jpg", flavor: false, maxF: 0, sub: "tumbler-acc" },
+  { name: "투고 텀블러\n화이트 / 360ml", desc: "텀블러", size: "360ml", weight: "-", price: 39900, cal: "-", serving: "-", image: "/products/tumbler.jpg", flavor: false, maxF: 0, sub: "tumbler-acc" },
+
+  // ── 우산 ──
+  { name: "BR 투명 우산", desc: "우산", size: "1개", weight: "-", price: 4900, cal: "-", serving: "-", image: "/products/umbrella.jpg", flavor: false, maxF: 0, sub: "tumbler-acc" },
+
+  // ── 모자 ──
+  { name: "47브랜드 모자 (핑크)", desc: "모자", size: "Free", weight: "-", price: 35000, cal: "-", serving: "-", image: "/products/cap.jpg", flavor: false, maxF: 0, sub: "tumbler-acc" },
+  { name: "47브랜드 모자 (키즈)", desc: "모자", size: "키즈", weight: "-", price: 35000, cal: "-", serving: "-", image: "/products/cap.jpg", flavor: false, maxF: 0, sub: "tumbler-acc" },
+  { name: "47브랜드 모자 (네이비)", desc: "모자", size: "Free", weight: "-", price: 35000, cal: "-", serving: "-", image: "/products/cap.jpg", flavor: false, maxF: 0, sub: "tumbler-acc" },
+
+  // ── 브랜드 굿즈 ──
+  { name: "BR 브랜드북", desc: "브랜드 굿즈", size: "1권", weight: "-", price: 31000, cal: "-", serving: "-", image: "/products/brand-goods.jpg", flavor: false, maxF: 0, sub: "brand" },
+  { name: "BR 아이스크림 스쿱", desc: "브랜드 굿즈", size: "1개", weight: "-", price: 25000, cal: "-", serving: "-", image: "/products/brand-goods.jpg", flavor: false, maxF: 0, sub: "brand" },
+
+  // ── 향 제품 (그립톡 / 방향제) ──
+  { name: "복숭아 그립톡", desc: "그립톡", size: "1개", weight: "-", price: 12000, cal: "-", serving: "-", image: "/products/griptok.jpg", flavor: false, maxF: 0, sub: "scent" },
+  { name: "레몬 그립톡", desc: "그립톡", size: "1개", weight: "-", price: 12000, cal: "-", serving: "-", image: "/products/griptok.jpg", flavor: false, maxF: 0, sub: "scent" },
+  { name: "딸기 그립톡", desc: "그립톡", size: "1개", weight: "-", price: 12000, cal: "-", serving: "-", image: "/products/griptok.jpg", flavor: false, maxF: 0, sub: "scent" },
+  { name: "망고 그립톡", desc: "그립톡", size: "1개", weight: "-", price: 12000, cal: "-", serving: "-", image: "/products/griptok.jpg", flavor: false, maxF: 0, sub: "scent" },
+  { name: "페어향 실내 방향제", desc: "방향제", size: "1개", weight: "-", price: 21000, cal: "-", serving: "-", image: "/products/air-freshener.jpg", flavor: false, maxF: 0, sub: "scent" },
+  { name: "애플향 실내 방향제", desc: "방향제", size: "1개", weight: "-", price: 21000, cal: "-", serving: "-", image: "/products/air-freshener.jpg", flavor: false, maxF: 0, sub: "scent" },
+  { name: "피치향 실내 방향제", desc: "방향제", size: "1개", weight: "-", price: 21000, cal: "-", serving: "-", image: "/products/air-freshener.jpg", flavor: false, maxF: 0, sub: "scent" },
+
+  // ── 파티 / 장식 ──
+  { name: "아이콘 케이크토퍼\n(SET)", desc: "파티 장식", size: "1세트", weight: "-", price: 21000, cal: "-", serving: "-", image: "/products/cake-topper.jpg", flavor: false, maxF: 0, sub: "party-deco" },
+  { name: "파티 타임\n후루츠 가랜드", desc: "파티 장식", size: "1세트", weight: "-", price: 26000, cal: "-", serving: "-", image: "/products/cake-topper.jpg", flavor: false, maxF: 0, sub: "party-deco" },
+  { name: "오브제캔들 (트리)", desc: "캔들", size: "1개", weight: "-", price: 13000, cal: "-", serving: "-", image: "/products/cake-topper.jpg", flavor: false, maxF: 0, sub: "party-deco" },
+  { name: "오브제캔들 (별)", desc: "캔들", size: "1개", weight: "-", price: 13000, cal: "-", serving: "-", image: "/products/cake-topper.jpg", flavor: false, maxF: 0, sub: "party-deco" },
+
+  // ── 기타 소품 ──
+  { name: "폭죽카드 (일러스트)", desc: "기타 소품", size: "1개", weight: "-", price: 8600, cal: "-", serving: "-", image: "/products/party-cracker.jpg", flavor: false, maxF: 0, sub: "party-deco" },
+  { name: "폭죽카드 (패턴)", desc: "기타 소품", size: "1개", weight: "-", price: 8600, cal: "-", serving: "-", image: "/products/party-cracker.jpg", flavor: false, maxF: 0, sub: "party-deco" },
+  { name: "썸머 후르츠\n지비츠 세트", desc: "기타 소품", size: "1세트", weight: "-", price: 44000, cal: "-", serving: "-", image: "/products/hair-clip.jpg", flavor: false, maxF: 0, sub: "party-deco" },
+  { name: "체리 집게핀", desc: "기타 소품", size: "1개", weight: "-", price: 24500, cal: "-", serving: "-", image: "/products/hair-clip.jpg", flavor: false, maxF: 0, sub: "party-deco" },
+  { name: "레몬 집게핀", desc: "기타 소품", size: "1개", weight: "-", price: 24500, cal: "-", serving: "-", image: "/products/hair-clip.jpg", flavor: false, maxF: 0, sub: "party-deco" },
+  { name: "수박 집게핀", desc: "기타 소품", size: "1개", weight: "-", price: 24500, cal: "-", serving: "-", image: "/products/hair-clip.jpg", flavor: false, maxF: 0, sub: "party-deco" },
+  { name: "오렌지 집게핀", desc: "기타 소품", size: "1개", weight: "-", price: 24500, cal: "-", serving: "-", image: "/products/hair-clip.jpg", flavor: false, maxF: 0, sub: "party-deco" },
 ])
 
 // ─── Combine all products ─────────────────────────────────
@@ -570,7 +622,7 @@ export const flavors: Flavor[] = [
   { id: "mint-choco-chip", name: "민트 초콜릿 칩", image: "/flavors/mint-choco.jpg", color: "hsl(160,50%,75%)", categoryId: "recommended", description: "시원한 민트와 달콤한 초코칩의 조화", badge: "3위" },
   { id: "rainbow-sherbet", name: "레인보우 샤베트", image: "/flavors/rainbow.jpg", color: "hsl(40,80%,80%)", categoryId: "recommended", description: "다채로운 과일 맛의 상큼한 샤베트 (과일 섬유질 포함)", badge: "과일 섬유질 포함" },
   { id: "ny-cheesecake", name: "뉴욕 치즈케이크", image: "/flavors/cheesecake.jpg", color: "hsl(45,50%,82%)", categoryId: "recommended", description: "진한 뉴욕 스타일 치즈케이크의 깊은 맛", badge: "5위" },
-  { id: "jjonddeok-heukimja", name: "쫀떡 만난 흑임자", image: "/flavors/heukimja-jjonddeok.jpg", color: "hsl(0,0%,35%)", categoryId: "recommended", description: "고소한 흑임자와 쫄깃한 쫀떡의 전통 조화", badge: "NEW" },
+  { id: "jjonddeok-heukimja", name: "쫀떡 만난 흑임자", image: "/flavors/heukimja-jjonddeok.jpg", color: "hsl(0,0%,35%)", categoryId: "recommended", description: "고소한 흑임자와 쫄깃한 ���떡의 전통 조화", badge: "NEW" },
   { id: "ice-hotteok", name: "아이스 호떡", image: "/flavors/ice-hotteok.jpg", color: "hsl(35,55%,60%)", categoryId: "recommended", description: "달콤한 호떡의 따뜻한 맛을 아이스크림으로", badge: "NEW" },
   { id: "bam-goguma", name: "밤이 옥수로 맛있구마", image: "/flavors/sweet-potato.jpg", color: "hsl(35,60%,55%)", categoryId: "recommended", description: "고구마, 밤, 옥수수의 고소한 가을 맛", badge: "NEW" },
   { id: "honey-mochi", name: "말랑 꿀떡 모찌", image: "/flavors/honey-mochi.jpg", color: "hsl(42,50%,78%)", categoryId: "recommended", description: "꿀떡 모찌의 말랑말랑 달콤한 맛", badge: "NEW" },
