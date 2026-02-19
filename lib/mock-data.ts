@@ -181,13 +181,13 @@ const workshopProducts = generateProducts("workshop", [
   { name: "말차 아포가토", desc: "말차 아포가토", size: "1잔", weight: "200ml", price: 6400, cal: "260~360 kcal", serving: "200ml", image: "/products/affogato.jpg", flavor: false, maxF: 0, tag: "먹고가기 전용" },
   // Dessert / Plate
   { name: "두바이 스타일\n초콜릿쿠키", desc: "두바이st 디저트", size: "1개", weight: "150g", price: 6500, cal: "400~500 kcal", serving: "150g", image: "/products/dubai-cookie.jpg", flavor: false, maxF: 0 },
-  { name: "인절미 플레이트", desc: "��절미 디저트 플레이트", size: "1세트", weight: "250g", price: 14500, cal: "450~600 kcal", serving: "250g", image: "/products/injeolmi-plate.jpg", flavor: false, maxF: 0, tag: "먹고가기 전용" },
+  { name: "인절미 플레이트", desc: "인절미 디저트 플레이트", size: "1세트", weight: "250g", price: 14500, cal: "450~600 kcal", serving: "250g", image: "/products/injeolmi-plate.jpg", flavor: false, maxF: 0, tag: "먹고가기 전용" },
   { name: "모찌 라이브 인절미", desc: "라이브 모찌", size: "1개", weight: "70g", price: 4800, cal: "140~200 kcal", serving: "70g", image: "/products/mochi.jpg", flavor: false, maxF: 0 },
   { name: "모찌 라이브 흑임자", desc: "라이브 모찌", size: "1개", weight: "70g", price: 4800, cal: "140~200 kcal", serving: "70g", image: "/products/mochi.jpg", flavor: false, maxF: 0 },
   { name: "모찌 라이브\n바람과 함께 사라지다", desc: "라이브 모찌", size: "1개", weight: "70g", price: 4800, cal: "140~200 kcal", serving: "70g", image: "/products/mochi.jpg", flavor: false, maxF: 0, tag: "Chef Made" },
 ])
 
-// ─── 콘/컵 (30) ────────────────────────────────��──────────
+// ─── 콘/컵 (30) ──────────────────────────────────────────
 const coneCupProducts = generateProducts("cone-cup", [
   { name: "맛보기", desc: "맛보기 스푼", size: "맛보기", weight: "-", price: 0, cal: "10~30 kcal", serving: "-", image: "/products/tasting-spoon.jpg", flavor: true, maxF: 1 },
   { name: "트리플주니어", desc: "주니어 3스쿱", size: "주니어", weight: "225g", price: 7200, cal: "300~500 kcal", serving: "225g", image: "/products/triple-junior.jpg", flavor: true, maxF: 3 },
@@ -323,7 +323,7 @@ const bingsuProducts = generateProducts("bingsu", [
   { name: "미니 망고 빙수", desc: "미니 망고", size: "미니", weight: "300g", price: 8800, cal: "210~310 kcal", serving: "300g", image: "/products/bingsu-mango.jpg", flavor: false, maxF: 0 },
   { name: "미니 팥 빙수", desc: "미니 팥", size: "미니", weight: "300g", price: 7500, cal: "180~270 kcal", serving: "300g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
   { name: "프리미엄 딸기빙수", desc: "프리미엄 딸기", size: "프리미엄", weight: "700g", price: 16000, cal: "450~650 kcal", serving: "700g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
-  { name: "프리미엄 망고빙수", desc: "프리미엄 망고", size: "프리미��", weight: "700g", price: 16500, cal: "460~660 kcal", serving: "700g", image: "/products/bingsu-mango.jpg", flavor: false, maxF: 0 },
+  { name: "프리미엄 망고빙수", desc: "프리미엄 망고", size: "프리미엄", weight: "700g", price: 16500, cal: "460~660 kcal", serving: "700g", image: "/products/bingsu-mango.jpg", flavor: false, maxF: 0 },
   { name: "오레오 빙수", desc: "오레오 빙수", size: "레귤러", weight: "500g", price: 12500, cal: "380~540 kcal", serving: "500g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
   { name: "쿠키앤크림 빙수", desc: "쿠키 빙수", size: "레귤러", weight: "500g", price: 12000, cal: "370~530 kcal", serving: "500g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
   { name: "카라멜 빙수", desc: "카라멜 빙수", size: "레귤러", weight: "500g", price: 12000, cal: "370~530 kcal", serving: "500g", image: "/products/bingsu-mango.jpg", flavor: false, maxF: 0 },
@@ -350,7 +350,7 @@ const coffeeProducts = generateProducts("coffee", [
   { name: "수카방 커피", desc: "수카방 커피", size: "레귤러", weight: "300ml", price: 3900, cal: "80~120 kcal", serving: "300ml", image: "/products/sukabang.jpg", flavor: false, maxF: 0 },
 ])
 
-// ─── 음료 블라스트 (30) ────────────────���──────────────────
+// ─── 음료 블라스트 (30) ──────────────────────────────────
 export const beverageSubcategories = [
   { id: "all", name: "전체" },
   { id: "signature", name: "시그니처/쉐이크" },
@@ -486,7 +486,7 @@ const prepackProducts = generateProducts("prepack", [
   { name: "블록팩 뉴욕치즈케이크", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "200~300 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
   { name: "블록팩 민트초코봉봉", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "190~290 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
   { name: "블록팩 슈팅스타", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "170~260 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
-  { name: "블록팩 체리쥬빌레", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "170~260 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
+  { name: "블���팩 체리쥬빌레", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "170~260 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
   { name: "블록팩 이상한 나라의\n솜사탕", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
   { name: "블록팩 쿠키앤크림", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "200~300 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
   { name: "블록팩 바람과 함께\n사라지다", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
@@ -622,17 +622,17 @@ export const flavors: Flavor[] = [
   { id: "mint-choco-chip", name: "민트 초콜릿 칩", image: "/flavors/mint-choco.jpg", color: "hsl(160,50%,75%)", categoryId: "recommended", description: "시원한 민트와 달콤한 초코칩의 조화", badge: "3위" },
   { id: "rainbow-sherbet", name: "레인보우 샤베트", image: "/flavors/rainbow.jpg", color: "hsl(40,80%,80%)", categoryId: "recommended", description: "다채로운 과일 맛의 상큼한 샤베트 (과일 섬유질 포함)", badge: "과일 섬유질 포함" },
   { id: "ny-cheesecake", name: "뉴욕 치즈케이크", image: "/flavors/cheesecake.jpg", color: "hsl(45,50%,82%)", categoryId: "recommended", description: "진한 뉴욕 스타일 치즈케이크의 깊은 맛", badge: "5위" },
-  { id: "jjonddeok-heukimja", name: "쫀떡 만난 흑임자", image: "/flavors/heukimja-jjonddeok.jpg", color: "hsl(0,0%,35%)", categoryId: "recommended", description: "고소한 흑임자와 쫄깃한 ���떡의 전통 조화", badge: "NEW" },
+  { id: "jjonddeok-heukimja", name: "쫀떡 만난 흑임자", image: "/flavors/heukimja-jjonddeok.jpg", color: "hsl(0,0%,35%)", categoryId: "recommended", description: "고소한 흑임자와 쫄깃한 쫀떡의 전통 조화", badge: "NEW" },
   { id: "ice-hotteok", name: "아이스 호떡", image: "/flavors/ice-hotteok.jpg", color: "hsl(35,55%,60%)", categoryId: "recommended", description: "달콤한 호떡의 따뜻한 맛을 아이스크림으로", badge: "NEW" },
   { id: "bam-goguma", name: "밤이 옥수로 맛있구마", image: "/flavors/sweet-potato.jpg", color: "hsl(35,60%,55%)", categoryId: "recommended", description: "고구마, 밤, 옥수수의 고소한 가을 맛", badge: "NEW" },
   { id: "honey-mochi", name: "말랑 꿀떡 모찌", image: "/flavors/honey-mochi.jpg", color: "hsl(42,50%,78%)", categoryId: "recommended", description: "꿀떡 모찌의 말랑말랑 달콤한 맛", badge: "NEW" },
   { id: "cream-cheese-peach-tart", name: "크림치즈 피치 타르트", image: "/flavors/peach-tart.jpg", color: "hsl(20,60%,80%)", categoryId: "recommended", description: "크림치즈와 복숭아 타르트의 상큼한 조화", badge: null },
-  { id: "berry-berry-strawberry", name: "베리베리 스트로베리", image: "/flavors/strawberry.jpg", color: "hsl(340,60%,78%)", categoryId: "recommended", description: "딸기의 상큼함을 가득 담은 ���리 맛", badge: null },
+  { id: "berry-berry-strawberry", name: "베리베리 스트로베리", image: "/flavors/strawberry.jpg", color: "hsl(340,60%,78%)", categoryId: "recommended", description: "딸기의 상큼함을 가득 담은 베리 맛", badge: null },
 
   // ── Page 2 flavors from photos (also categorized) ──
   { id: "love-strawberry", name: "사랑에 빠진 딸기", image: "/flavors/love-strawberry.jpg", color: "hsl(345,60%,75%)", categoryId: "fruit", description: "딸기와 초콜릿이 치즈케이크에 반해버린 사랑의 맛", badge: null },
   { id: "wonderland-cotton", name: "이상한 나라의 솜사탕", image: "/flavors/cotton-candy.jpg", color: "hsl(300,50%,80%)", categoryId: "fruit", description: "동화 속 솜사탕처럼 달콤하고 몽환적인 맛", badge: null },
-  { id: "pistachio-almond", name: "피스타치오 아몬드", image: "/flavors/pistachio.jpg", color: "hsl(90,30%,65%)", categoryId: "grain-nut", description: "고소한 피스타치오와 아몬드의 풍미", badge: null },
+  { id: "pistachio-almond", name: "피스타치오 아몬드", image: "/flavors/pistachio.jpg", color: "hsl(90,30%,65%)", categoryId: "grain-nut", description: "고소한 피스타치오와 ���몬드의 풍미", badge: null },
   { id: "31-yogurt", name: "31 요거트", image: "/flavors/yogurt.jpg", color: "hsl(50,20%,92%)", categoryId: "milk-cheese", description: "상큼하고 부드러운 31 요거트", badge: null },
   { id: "green-tea", name: "그린티", image: "/flavors/green-tea.jpg", color: "hsl(120,40%,70%)", categoryId: "vanilla-mint", description: "진한 녹차의 깊은 풍미", badge: null },
   { id: "choco-mousse", name: "초콜릿 무스", image: "/flavors/choco-mousse.jpg", color: "hsl(15,40%,25%)", categoryId: "chocolate", description: "부드럽고 진한 초콜릿 무스의 맛", badge: null },
@@ -663,7 +663,7 @@ export const flavors: Flavor[] = [
   { id: "choco-banana", name: "초코 바나나", image: "/flavors/caramel.jpg", color: "hsl(45,50%,55%)", categoryId: "chocolate", description: "바나나와 초콜릿의 클래식 조합", badge: null },
   { id: "triple-choco", name: "트리플 초콜릿", image: "/flavors/chocolate.jpg", color: "hsl(12,40%,32%)", categoryId: "chocolate", description: "세 가지 초콜릿의 진한 맛", badge: null },
   { id: "choco-strawberry", name: "초코 스트로베리", image: "/flavors/berry.jpg", color: "hsl(340,50%,60%)", categoryId: "chocolate", description: "딸기와 초콜릿의 달콤한 조합", badge: null },
-  { id: "choco-caramel", name: "초코 ���라멜", image: "/flavors/caramel.jpg", color: "hsl(25,55%,45%)", categoryId: "chocolate", description: "카라멜과 초콜릿의 달콤 쌉쌀한 맛", badge: null },
+  { id: "choco-caramel", name: "초코 카라멜", image: "/flavors/caramel.jpg", color: "hsl(25,55%,45%)", categoryId: "chocolate", description: "카라멜과 초콜릿의 달콤 쌉쌀한 맛", badge: null },
   { id: "hazelnut-choco", name: "헤이즐넛 초콜릿", image: "/flavors/almond.jpg", color: "hsl(25,40%,50%)", categoryId: "chocolate", description: "헤이즐넛과 초콜릿의 고소한 맛", badge: null },
   { id: "choco-cookie-dough", name: "초코 쿠키도우", image: "/flavors/cookies-cream.jpg", color: "hsl(20,35%,55%)", categoryId: "chocolate", description: "쿠키 도우와 초콜릿의 달콤한 만남", badge: null },
 
@@ -676,7 +676,7 @@ export const flavors: Flavor[] = [
   { id: "corn-cereal", name: "콘 시리얼", image: "/flavors/caramel.jpg", color: "hsl(45,60%,72%)", categoryId: "milk-cheese", description: "바삭한 콘 시리얼의 고소한 맛", badge: null },
   { id: "tiramisu-cheese", name: "티라미수 치즈", image: "/flavors/coffee.jpg", color: "hsl(25,35%,60%)", categoryId: "milk-cheese", description: "티라미수와 치즈의 진한 풍미", badge: null },
   { id: "waffle-cone-crunch", name: "와플콘 크런치", image: "/flavors/almond.jpg", color: "hsl(35,45%,65%)", categoryId: "milk-cheese", description: "바삭한 와플콘의 달콤한 맛", badge: null },
-  { id: "shooting-star", name: "슈팅스타", image: "/flavors/rainbow.jpg", color: "hsl(220,60%,80%)", categoryId: "milk-cheese", description: "반짝이는 캔디 조각의 달콤한 맛", badge: null },
+  { id: "shooting-star", name: "슈팅스타", image: "/flavors/rainbow.jpg", color: "hsl(220,60%,80%)", categoryId: "milk-cheese", description: "반짝이는 캔디 조각의 달��한 맛", badge: null },
 
   // ── 추가 커피/카라멜/티 flavors ──
   { id: "espresso-crunch", name: "에스프레소 크런치", image: "/flavors/coffee.jpg", color: "hsl(25,40%,35%)", categoryId: "coffee-caramel", description: "진한 에스프레소와 크런치의 조화", badge: null },
