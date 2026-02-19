@@ -132,7 +132,7 @@ function MenuContent() {
                   product={product}
                   isSelected={state.selectedProductId === product.id}
                   onSelect={handleProductSelect}
-                  priority={page === 0 && idx < 4}
+                  priority={page === 0}
                 />
               ))}
             </div>
