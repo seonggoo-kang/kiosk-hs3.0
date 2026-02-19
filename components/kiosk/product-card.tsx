@@ -15,6 +15,7 @@ const TAG_STYLES: Record<string, string> = {
   "Chef Made": "bg-amber-600 text-white",
   "먹고가기 전용": "bg-sky-500 text-white",
   "20% 할인": "bg-red-500 text-white",
+  "이달의 더블주니어": "bg-primary text-primary-foreground",
 }
 
 export function ProductCard({ product, isSelected, onSelect, priority }: ProductCardProps) {
@@ -53,7 +54,7 @@ export function ProductCard({ product, isSelected, onSelect, priority }: Product
         {product.size}
       </p>
       <p className="mt-1 text-xs font-bold text-primary">
-        {formatPrice(product.price)}
+        {product.price === 0 ? "0원" : formatPrice(product.price)}
       </p>
     </button>
   )

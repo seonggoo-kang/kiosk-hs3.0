@@ -1,7 +1,7 @@
 // ─── Types ────────────────────────────────────────────────
 export type Category = { id: string; name: string }
 
-export type ProductTag = "Chef Made" | "먹고가기 전용" | "20% 할인"
+export type ProductTag = "Chef Made" | "먹고가기 전용" | "20% 할인" | "이달의 더블주니어"
 
 export type Product = {
   id: string
@@ -187,36 +187,12 @@ const workshopProducts = generateProducts("workshop", [
 
 // ─── 콘/컵 (30) ────────────────────────────────��──────────
 const coneCupProducts = generateProducts("cone-cup", [
-  { name: "싱글 레귤러 콘", desc: "콘", size: "레귤러", weight: "120g", price: 3900, cal: "150~280 kcal", serving: "120g", image: "/products/cone-single.jpg", flavor: true, maxF: 1 },
-  { name: "더블 레귤러 콘", desc: "콘", size: "레귤러", weight: "240g", price: 6800, cal: "300~520 kcal", serving: "240g", image: "/products/cone-double.jpg", flavor: true, maxF: 2 },
-  { name: "싱글 킹 콘", desc: "킹사이즈 콘", size: "킹", weight: "180g", price: 5200, cal: "220~380 kcal", serving: "180g", image: "/products/cone-single.jpg", flavor: true, maxF: 1 },
-  { name: "더블 킹 콘", desc: "킹사이즈 콘", size: "킹", weight: "360g", price: 8900, cal: "400~680 kcal", serving: "360g", image: "/products/cone-double.jpg", flavor: true, maxF: 2 },
-  { name: "싱글 레귤러 컵", desc: "컵", size: "레귤러", weight: "120g", price: 3900, cal: "150~280 kcal", serving: "120g", image: "/products/cup-single.jpg", flavor: true, maxF: 1 },
-  { name: "더블 레귤러 컵", desc: "컵", size: "레귤러", weight: "240g", price: 6800, cal: "300~520 kcal", serving: "240g", image: "/products/cup-single.jpg", flavor: true, maxF: 2 },
-  { name: "싱글 킹 컵", desc: "킹사이즈 컵", size: "킹", weight: "180g", price: 5200, cal: "220~380 kcal", serving: "180g", image: "/products/cup-single.jpg", flavor: true, maxF: 1 },
-  { name: "더블 킹 컵", desc: "킹사이즈 컵", size: "킹", weight: "360g", price: 8900, cal: "400~680 kcal", serving: "360g", image: "/products/cup-single.jpg", flavor: true, maxF: 2 },
-  { name: "트리플 레귤러 콘", desc: "콘", size: "레귤러", weight: "360g", price: 9500, cal: "450~780 kcal", serving: "360g", image: "/products/cone-double.jpg", flavor: true, maxF: 3 },
-  { name: "트리플 킹 콘", desc: "킹사이즈 콘", size: "킹", weight: "540g", price: 12500, cal: "600~1050 kcal", serving: "540g", image: "/products/cone-double.jpg", flavor: true, maxF: 3 },
-  { name: "와플 싱글 콘", desc: "와플콘", size: "레귤러", weight: "140g", price: 4500, cal: "180~320 kcal", serving: "140g", image: "/products/cone-single.jpg", flavor: true, maxF: 1 },
-  { name: "와플 더블 콘", desc: "와플콘", size: "레귤러", weight: "280g", price: 7800, cal: "350~560 kcal", serving: "280g", image: "/products/cone-double.jpg", flavor: true, maxF: 2 },
-  { name: "슈거 싱글 콘", desc: "슈거콘", size: "레귤러", weight: "130g", price: 4200, cal: "170~300 kcal", serving: "130g", image: "/products/cone-single.jpg", flavor: true, maxF: 1 },
-  { name: "슈거 더블 콘", desc: "슈거콘", size: "레귤러", weight: "260g", price: 7200, cal: "320~540 kcal", serving: "260g", image: "/products/cone-double.jpg", flavor: true, maxF: 2 },
-  { name: "초코 딥 콘", desc: "초코콘", size: "레귤러", weight: "150g", price: 4800, cal: "200~350 kcal", serving: "150g", image: "/products/cone-single.jpg", flavor: true, maxF: 1 },
-  { name: "초코 딥 더블", desc: "초코콘", size: "레귤러", weight: "300g", price: 8200, cal: "380~600 kcal", serving: "300g", image: "/products/cone-double.jpg", flavor: true, maxF: 2 },
-  { name: "미니 컵 3개", desc: "미니 컵 세트", size: "미니", weight: "180g", price: 6500, cal: "200~350 kcal", serving: "180g", image: "/products/cup-single.jpg", flavor: true, maxF: 3 },
-  { name: "미니 컵 5개", desc: "미니 컵 세트", size: "미니", weight: "300g", price: 9800, cal: "330~580 kcal", serving: "300g", image: "/products/cup-single.jpg", flavor: true, maxF: 5 },
-  { name: "키즈 콘", desc: "어린이 콘", size: "키즈", weight: "80g", price: 2800, cal: "100~180 kcal", serving: "80g", image: "/products/cone-single.jpg", flavor: true, maxF: 1 },
-  { name: "키즈 컵", desc: "어린이 컵", size: "키즈", weight: "80g", price: 2800, cal: "100~180 kcal", serving: "80g", image: "/products/cup-single.jpg", flavor: true, maxF: 1 },
-  { name: "프리미엄 싱글 콘", desc: "프리미엄", size: "프리미엄", weight: "160g", price: 5800, cal: "200~360 kcal", serving: "160g", image: "/products/cone-single.jpg", flavor: true, maxF: 1 },
-  { name: "프리미엄 더블 콘", desc: "프리미엄", size: "프리미엄", weight: "320g", price: 9800, cal: "400~680 kcal", serving: "320g", image: "/products/cone-double.jpg", flavor: true, maxF: 2 },
-  { name: "메가 콘", desc: "메가사이즈", size: "메가", weight: "250g", price: 7500, cal: "320~560 kcal", serving: "250g", image: "/products/cone-double.jpg", flavor: true, maxF: 2 },
-  { name: "메가 컵", desc: "메가사이즈", size: "메가", weight: "250g", price: 7500, cal: "320~560 kcal", serving: "250g", image: "/products/cup-single.jpg", flavor: true, maxF: 2 },
-  { name: "플로트 컵", desc: "소다 플로트", size: "레귤러", weight: "350ml", price: 5500, cal: "250~420 kcal", serving: "350ml", image: "/products/cup-single.jpg", flavor: true, maxF: 1 },
-  { name: "선데이 컵", desc: "선데이", size: "레귤러", weight: "200g", price: 5800, cal: "280~480 kcal", serving: "200g", image: "/products/sundae.jpg", flavor: true, maxF: 2 },
-  { name: "바나나 스플릿", desc: "스플릿", size: "레귤러", weight: "300g", price: 8500, cal: "400~650 kcal", serving: "300g", image: "/products/sundae.jpg", flavor: true, maxF: 3 },
-  { name: "초코 선데이", desc: "초코 선데이", size: "레귤러", weight: "200g", price: 6200, cal: "300~500 kcal", serving: "200g", image: "/products/sundae.jpg", flavor: true, maxF: 1 },
-  { name: "딸기 선데이", desc: "딸기 선데이", size: "레귤러", weight: "200g", price: 6200, cal: "280~480 kcal", serving: "200g", image: "/products/sundae.jpg", flavor: true, maxF: 1 },
-  { name: "카라멜 선데이", desc: "카라멜 선데이", size: "레귤러", weight: "200g", price: 6200, cal: "300~520 kcal", serving: "200g", image: "/products/sundae.jpg", flavor: true, maxF: 1 },
+  { name: "맛보기", desc: "맛보기 스푼", size: "맛보기", weight: "-", price: 0, cal: "10~30 kcal", serving: "-", image: "/products/tasting-spoon.jpg", flavor: true, maxF: 1 },
+  { name: "트리플주니어", desc: "주니어 3스쿱", size: "주니어", weight: "225g", price: 7200, cal: "300~500 kcal", serving: "225g", image: "/products/triple-junior.jpg", flavor: true, maxF: 3 },
+  { name: "싱글레귤러", desc: "레귤러 1스쿱", size: "레귤러", weight: "115g", price: 3900, cal: "150~280 kcal", serving: "115g", image: "/products/cone-single.jpg", flavor: true, maxF: 1 },
+  { name: "싱글킹", desc: "킹 1스쿱", size: "킹", weight: "145g", price: 4700, cal: "200~350 kcal", serving: "145g", image: "/products/single-king.jpg", flavor: true, maxF: 1 },
+  { name: "이달의 더블주니어", desc: "이달의 더블주니어", size: "주니어", weight: "150g", price: 5100, cal: "200~350 kcal", serving: "150g", image: "/products/double-junior.jpg", flavor: true, maxF: 2, tag: "이달의 더블주니어" },
+  { name: "더블레귤러", desc: "레귤러 2스쿱", size: "레귤러", weight: "230g", price: 7300, cal: "300~520 kcal", serving: "230g", image: "/products/double-regular.jpg", flavor: true, maxF: 2 },
 ])
 
 // ─── 포장가능 아이스크림 (keep existing 12 + add 18 more = 30) ──
@@ -347,7 +323,7 @@ const coffeeProducts = generateProducts("coffee", [
   { name: "아메리카노 L", desc: "아이스/라지", size: "라지", weight: "500ml", price: 4200, cal: "7~15 kcal", serving: "500ml", image: "/products/americano.jpg", flavor: false, maxF: 0 },
   { name: "카페라떼 L", desc: "아이스/라지", size: "라지", weight: "500ml", price: 5200, cal: "170~250 kcal", serving: "500ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
   { name: "쑥 라떼", desc: "아이스/핫", size: "레귤러", weight: "350ml", price: 5200, cal: "180~260 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
-  { name: "흑당 라떼", desc: "아이스", size: "레귤러", weight: "350ml", price: 5500, cal: "220~310 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
+  { name: "��당 라떼", desc: "아이스", size: "레귤러", weight: "350ml", price: 5500, cal: "220~310 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
   { name: "연유 라떼", desc: "아이스", size: "레귤러", weight: "350ml", price: 5200, cal: "210~300 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
   { name: "디카페인 아메리카노", desc: "디카페인", size: "레귤러", weight: "350ml", price: 4000, cal: "5~10 kcal", serving: "350ml", image: "/products/americano.jpg", flavor: false, maxF: 0 },
   { name: "디카페인 라떼", desc: "디카페인", size: "레귤러", weight: "350ml", price: 5000, cal: "120~180 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
@@ -603,7 +579,7 @@ export const flavors: Flavor[] = [
   { id: "choco-banana", name: "초코 바나나", image: "/flavors/caramel.jpg", color: "hsl(45,50%,55%)", categoryId: "chocolate", description: "바나나와 초콜릿의 클래식 조합", badge: null },
   { id: "triple-choco", name: "트리플 초콜릿", image: "/flavors/chocolate.jpg", color: "hsl(12,40%,32%)", categoryId: "chocolate", description: "세 가지 초콜릿의 진한 맛", badge: null },
   { id: "choco-strawberry", name: "초코 스트로베리", image: "/flavors/berry.jpg", color: "hsl(340,50%,60%)", categoryId: "chocolate", description: "딸기와 초콜릿의 달콤한 조합", badge: null },
-  { id: "choco-caramel", name: "초코 카라멜", image: "/flavors/caramel.jpg", color: "hsl(25,55%,45%)", categoryId: "chocolate", description: "카라멜과 초콜릿의 달콤 쌉쌀한 맛", badge: null },
+  { id: "choco-caramel", name: "초코 ���라멜", image: "/flavors/caramel.jpg", color: "hsl(25,55%,45%)", categoryId: "chocolate", description: "카라멜과 초콜릿의 달콤 쌉쌀한 맛", badge: null },
   { id: "hazelnut-choco", name: "헤이즐넛 초콜릿", image: "/flavors/almond.jpg", color: "hsl(25,40%,50%)", categoryId: "chocolate", description: "헤이즐넛과 초콜릿의 고소한 맛", badge: null },
   { id: "choco-cookie-dough", name: "초코 쿠키도우", image: "/flavors/cookies-cream.jpg", color: "hsl(20,35%,55%)", categoryId: "chocolate", description: "쿠키 도우와 초콜릿의 달콤한 만남", badge: null },
 
