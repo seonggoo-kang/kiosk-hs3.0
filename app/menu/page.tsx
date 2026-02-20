@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo, useEffect, useRef, Suspense } from "react"
+import { useState, useMemo, useEffect, useRef, useCallback, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { IceCreamCone, Check } from "lucide-react"
 import { KioskHeader } from "@/components/kiosk/kiosk-header"
@@ -30,9 +30,14 @@ function MenuContent() {
   const [prepackFilter, setPrepackFilter] = useState("all")
   const [partyFilter, setPartyFilter] = useState("all")
   const [packableFilter, setPackableFilter] = useState("all")
-  const touchStartX = useRef(0)
-  const touchStartY = useRef(0)
-  const isSwiping = useRef(false)
+  // Pointer-based drag swipe with peek effect
+  const [dragOffset, setDragOffset] = useState(0)
+  const dragStartX = useRef(0)
+  const dragStartY = useRef(0)
+  const dragActive = useRef(false)
+  const dragLocked = useRef<"horizontal" | "vertical" | null>(null)
+  const dragOffsetRef = useRef(0)
+  const contentRef = useRef<HTMLDivElement>(null)
 
   // Show "item added" toast when coming back from options
   const justAdded = searchParams.get("added") === "true"
@@ -104,7 +109,7 @@ function MenuContent() {
   }
 
   /** Swipe left/right: pages within a category, then chain to next/prev category */
-  const handleSwipe = (direction: "left" | "right") => {
+  const handleSwipe = useCallback((direction: "left" | "right") => {
     if (direction === "left") {
       // Swipe left = go forward
       if (page < totalPages - 1) {
@@ -136,7 +141,52 @@ function MenuContent() {
         }
       }
     }
-  }
+  }, [page, totalPages, activeCategory, dispatch])
+
+  const onDragPointerDown = useCallback((e: React.PointerEvent) => {
+    dragStartX.current = e.clientX
+    dragStartY.current = e.clientY
+    dragActive.current = true
+    dragLocked.current = null
+    dragOffsetRef.current = 0
+    setDragOffset(0)
+    ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
+  }, [])
+
+  const onDragPointerMove = useCallback((e: React.PointerEvent) => {
+    if (!dragActive.current) return
+    const dx = e.clientX - dragStartX.current
+    const dy = e.clientY - dragStartY.current
+
+    // Lock direction on first significant movement
+    if (!dragLocked.current && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+      dragLocked.current = Math.abs(dx) > Math.abs(dy) ? "horizontal" : "vertical"
+    }
+    if (dragLocked.current === "horizontal") {
+      // Apply rubber-band dampening
+      const dampened = dx * 0.4
+      dragOffsetRef.current = dampened
+      setDragOffset(dampened)
+    }
+  }, [])
+
+  const onDragPointerUp = useCallback(
+    (e: React.PointerEvent) => {
+      if (!dragActive.current) return
+      dragActive.current = false
+      ;(e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId)
+      const dx = dragOffsetRef.current
+      dragOffsetRef.current = 0
+      setDragOffset(0)
+      dragLocked.current = null
+
+      // If dragged far enough, commit the swipe
+      if (Math.abs(dx) > 30) {
+        handleSwipe(dx < 0 ? "left" : "right")
+      }
+    },
+    [handleSwipe]
+  )
 
   const handleProductSelect = (product: Product) => {
     if (state.selectedProductId === product.id) {
@@ -266,21 +316,16 @@ function MenuContent() {
       {isEvent ? (
         /* ── Event category: full-width promo banners, vertically scrollable ── */
         <div
-          className="relative flex-1 overflow-hidden bg-muted/40"
-          onTouchStart={(e) => {
-            touchStartX.current = e.touches[0].clientX
-            touchStartY.current = e.touches[0].clientY
-            isSwiping.current = false
-          }}
-          onTouchEnd={(e) => {
-            const dx = touchStartX.current - e.changedTouches[0].clientX
-            const dy = touchStartY.current - e.changedTouches[0].clientY
-            if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
-              handleSwipe(dx > 0 ? "left" : "right")
-            }
-          }}
+          className="relative flex-1 overflow-hidden bg-muted/40 select-none touch-pan-y"
+          onPointerDown={onDragPointerDown}
+          onPointerMove={onDragPointerMove}
+          onPointerUp={onDragPointerUp}
+          onPointerCancel={onDragPointerUp}
         >
-          <div className="h-full overflow-y-auto overflow-x-hidden">
+          <div
+            className="h-full overflow-y-auto overflow-x-hidden"
+            style={dragOffset !== 0 ? { transform: `translateX(${dragOffset}px)`, transition: "none" } : { transition: "transform 200ms ease-out" }}
+          >
             <EventPromoBanners />
           </div>
           {/* Swipe edge hints */}
@@ -293,31 +338,18 @@ function MenuContent() {
         </div>
       ) : (
         /* ── Other categories: product grid with swipe pagination ── */
-        <div className="relative flex-1 overflow-hidden bg-muted/40">
+        <div
+          className="relative flex-1 overflow-hidden bg-muted/40 select-none touch-pan-y"
+          onPointerDown={onDragPointerDown}
+          onPointerMove={onDragPointerMove}
+          onPointerUp={onDragPointerUp}
+          onPointerCancel={onDragPointerUp}
+        >
           {/* Scrollable product area */}
           <div
+            ref={contentRef}
             className="h-full overflow-y-auto overflow-x-hidden"
-            onTouchStart={(e) => {
-              touchStartX.current = e.touches[0].clientX
-              touchStartY.current = e.touches[0].clientY
-              isSwiping.current = false
-            }}
-            onTouchMove={(e) => {
-              if (!isSwiping.current) {
-                const dx = Math.abs(e.touches[0].clientX - touchStartX.current)
-                const dy = Math.abs(e.touches[0].clientY - touchStartY.current)
-                if (dx > 10 || dy > 10) {
-                  isSwiping.current = true
-                }
-              }
-            }}
-            onTouchEnd={(e) => {
-              const dx = touchStartX.current - e.changedTouches[0].clientX
-              const dy = touchStartY.current - e.changedTouches[0].clientY
-              if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
-                handleSwipe(dx > 0 ? "left" : "right")
-              }
-            }}
+            style={dragOffset !== 0 ? { transform: `translateX(${dragOffset}px)`, transition: "none" } : { transition: "transform 200ms ease-out" }}
           >
             <div className="flex min-h-full flex-col p-3">
               {currentProducts.length > 0 ? (
@@ -394,7 +426,7 @@ function MenuContent() {
         <ActionBar
           onBack={() => dispatch({ type: "SELECT_PRODUCT", payload: null })}
           backLabel="이전으로"
-          primaryLabel={selectedProduct.requiresFlavor ? "맛 선택하기" : "담기"}
+          primaryLabel={selectedProduct.requiresFlavor ? "맛 선택하기" : "���기"}
           primaryDisabled={false}
           onPrimary={() => {
             if (selectedProduct.requiresFlavor) {
