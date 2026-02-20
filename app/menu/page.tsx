@@ -206,6 +206,7 @@ function MenuContent() {
       currentSlide.products.find((p) => p.id === state.selectedProductId) ||
       null
     : null
+  console.log("[v0] selectedProduct resolution:", state.selectedProductId, "found:", selectedProduct?.name ?? "null", "displaySlide products:", displaySlide.products.length, "currentSlide products:", currentSlide.products.length)
 
   const hasCart = state.cart.length > 0
 
@@ -264,16 +265,37 @@ function MenuContent() {
     return canGoRight ? flatSlides[flatIndex + 1] : null
   }, [isFiltered, filteredSlides, filteredPageIndex, canGoRight, flatSlides, flatIndex])
 
+  // Track whether a horizontal drag occurred (set in pointerMove, cleared on next pointerDown)
+  const wasDragging = useRef(false)
+
+  // Global pointerup fallback for when pointer leaves the container during drag
+  useEffect(() => {
+    const handleGlobalUp = () => {
+      if (dragActive.current) {
+        dragActive.current = false
+        const dx = dragOffsetRef.current
+        if (Math.abs(dx) > 0) {
+          setIsAnimating(true)
+          setDragOffset(0)
+          setTimeout(() => setIsAnimating(false), 250)
+        }
+        dragOffsetRef.current = 0
+      }
+    }
+    window.addEventListener("pointerup", handleGlobalUp)
+    return () => window.removeEventListener("pointerup", handleGlobalUp)
+  }, [])
+
   const onDragPointerDown = useCallback(
     (e: React.PointerEvent) => {
       if (isAnimating) return
+      wasDragging.current = false
       dragStartX.current = e.clientX
       dragStartY.current = e.clientY
       dragActive.current = true
       dragLocked.current = null
       dragOffsetRef.current = 0
       setDragOffset(0)
-      ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
     },
     [isAnimating]
   )
@@ -285,6 +307,9 @@ function MenuContent() {
 
     if (!dragLocked.current && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
       dragLocked.current = Math.abs(dx) > Math.abs(dy) ? "horizontal" : "vertical"
+      if (dragLocked.current === "horizontal") {
+        wasDragging.current = true
+      }
     }
     if (dragLocked.current !== "horizontal") return
 
@@ -304,7 +329,6 @@ function MenuContent() {
     (e: React.PointerEvent) => {
       if (!dragActive.current) return
       dragActive.current = false
-      ;(e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId)
 
       const dx = dragOffsetRef.current
       const containerWidth = containerRef.current?.offsetWidth || 400
@@ -359,8 +383,13 @@ function MenuContent() {
   // ── Product interaction ──
   const handleProductSelect = useCallback(
     (product: Product) => {
-      // If drag was significant, don't treat as a tap
-      if (Math.abs(dragOffsetRef.current) > 5) return
+      console.log("[v0] handleProductSelect called", product.id, product.name, "wasDragging:", wasDragging.current, "selectedProductId:", state.selectedProductId)
+      // If a horizontal drag just happened, ignore the click
+      if (wasDragging.current) {
+        console.log("[v0] BLOCKED by wasDragging guard")
+        wasDragging.current = false
+        return
+      }
 
       if (state.selectedProductId === product.id) {
         if (product.requiresFlavor) {
