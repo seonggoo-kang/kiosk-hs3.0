@@ -12,6 +12,7 @@ import { CartStrip } from "@/components/kiosk/cart-strip"
 import { ActionBar } from "@/components/kiosk/action-bar"
 import { EventPromoBanners } from "@/components/kiosk/event-promo-banners"
 import { SubcategoryFilter } from "@/components/kiosk/subcategory-filter"
+import { AiPickPanel } from "@/components/kiosk/ai-pick-panel"
 import { useOrder } from "@/lib/order-context"
 import {
   categories,
@@ -34,6 +35,7 @@ type Slide = {
   totalPages: number // total pages this category has
   products: Product[] // pre-sliced products for this page
   isEvent: boolean
+  isAiPick?: boolean
 }
 
 // ── Slide renderer (pure presentational) ───────────────────
@@ -52,6 +54,10 @@ function SlideContent({
         <EventPromoBanners />
       </div>
     )
+  }
+
+  if (slide.isAiPick) {
+    return <AiPickPanel />
   }
 
   return (
@@ -117,6 +123,15 @@ function MenuContent() {
           products: [],
           isEvent: true,
         })
+      } else if (cat.id === "ai-pick") {
+        slides.push({
+          categoryId: cat.id,
+          pageIndex: 0,
+          totalPages: 1,
+          products: [],
+          isEvent: false,
+          isAiPick: true,
+        })
       } else {
         const products = getProductsByCategory(cat.id)
         const totalPages = Math.max(1, Math.ceil(products.length / ITEMS_PER_PAGE))
@@ -164,7 +179,7 @@ function MenuContent() {
 
   // When a subcategory filter is active, re-paginate all matching products
   const filteredSlides = useMemo(() => {
-    if (activeFilter === "all" || currentSlide.isEvent) return null
+    if (activeFilter === "all" || currentSlide.isEvent || currentSlide.isAiPick) return null
     const allCatProducts = getProductsByCategory(activeCategory)
     const filtered = allCatProducts.filter((p) => p.subcategory === activeFilter)
     const pages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE))
@@ -206,7 +221,6 @@ function MenuContent() {
       currentSlide.products.find((p) => p.id === state.selectedProductId) ||
       null
     : null
-  console.log("[v0] selectedProduct resolution:", state.selectedProductId, "found:", selectedProduct?.name ?? "null", "displaySlide products:", displaySlide.products.length, "currentSlide products:", currentSlide.products.length)
 
   const hasCart = state.cart.length > 0
 
@@ -383,10 +397,8 @@ function MenuContent() {
   // ── Product interaction ──
   const handleProductSelect = useCallback(
     (product: Product) => {
-      console.log("[v0] handleProductSelect called", product.id, product.name, "wasDragging:", wasDragging.current, "selectedProductId:", state.selectedProductId)
       // If a horizontal drag just happened, ignore the click
       if (wasDragging.current) {
-        console.log("[v0] BLOCKED by wasDragging guard")
         wasDragging.current = false
         return
       }

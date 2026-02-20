@@ -78,13 +78,13 @@ export const categories: Category[] = [
   { id: "cone-cup", name: "콘/컵" },
   { id: "packable-icecream", name: "포장가능\n아이스크림" },
   { id: "icecream-cake", name: "아이스크림\n케이크" },
-  { id: "bingsu", name: "빙수" },
   { id: "coffee", name: "커피" },
   { id: "beverage", name: "음료\n블라스트" },
   { id: "gelato", name: "젤라또" },
   { id: "dessert", name: "디저트" },
   { id: "prepack", name: "프리팩" },
   { id: "party", name: "상품" },
+  { id: "ai-pick", name: "AI 추천" },
 ]
 
 // ─── Helper to generate product arrays ────────────────────
@@ -323,40 +323,6 @@ const cakeProducts = generateProducts("icecream-cake", [
   { name: "포니 마카롱\n원더랜드", desc: "마카롱 케이크", size: "프리미엄", weight: "1000g", price: 43000, cal: "2400~3200 kcal", serving: "1000g", image: "/products/cake-macaron.jpg", flavor: false, maxF: 0, sub: "premium" },
   { name: "소원 가득 포니\n파밀리 에그", desc: "빅에그 케이크", size: "빅에그", weight: "1100g", price: 48000, cal: "2600~3400 kcal", serving: "1100g", image: "/products/cake-egg.jpg", flavor: false, maxF: 0, sub: "premium" },
   { name: "럭키 해피 비숑", desc: "캐릭터 케이크", size: "캐릭터", weight: "900g", price: 38000, cal: "2000~2600 kcal", serving: "900g", image: "/products/cake-character.jpg", flavor: false, maxF: 0, sub: "premium" },
-])
-
-// ─── 빙수 (30) ────────────────────────────────────────────
-const bingsuProducts = generateProducts("bingsu", [
-  { name: "딸기 빙수", desc: "딸기 빙수", size: "레귤러", weight: "500g", price: 12000, cal: "350~500 kcal", serving: "500g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
-  { name: "망고 빙수", desc: "망고 빙수", size: "레귤러", weight: "500g", price: 12500, cal: "360~520 kcal", serving: "500g", image: "/products/bingsu-mango.jpg", flavor: false, maxF: 0 },
-  { name: "팥 빙수", desc: "전통 팥빙수", size: "레귤러", weight: "550g", price: 10500, cal: "320~460 kcal", serving: "550g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
-  { name: "초코 빙수", desc: "초코 빙수", size: "레귤러", weight: "500g", price: 12000, cal: "380~540 kcal", serving: "500g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
-  { name: "인절미 빙수", desc: "인절미 빙수", size: "레귤러", weight: "520g", price: 11500, cal: "340~480 kcal", serving: "520g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
-  { name: "콩가루 빙수", desc: "콩가루 빙수", size: "레귤러", weight: "500g", price: 11000, cal: "330~470 kcal", serving: "500g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
-  { name: "그린티 빙수", desc: "녹차 빙수", size: "레귤러", weight: "500g", price: 12000, cal: "320~450 kcal", serving: "500g", image: "/products/bingsu-mango.jpg", flavor: false, maxF: 0 },
-  { name: "블루베리 빙수", desc: "블루베리 빙수", size: "레귤러", weight: "500g", price: 12500, cal: "340~480 kcal", serving: "500g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
-  { name: "피치 빙수", desc: "복숭아 빙수", size: "레귤러", weight: "500g", price: 12000, cal: "330~470 kcal", serving: "500g", image: "/products/bingsu-mango.jpg", flavor: false, maxF: 0 },
-  { name: "수박 빙수", desc: "수박 빙수", size: "레귤러", weight: "550g", price: 13000, cal: "300~430 kcal", serving: "550g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
-  { name: "멜론 빙수", desc: "멜론 빙수", size: "레귤러", weight: "500g", price: 13500, cal: "340~480 kcal", serving: "500g", image: "/products/bingsu-mango.jpg", flavor: false, maxF: 0 },
-  { name: "요거트 빙수", desc: "요거트 빙수", size: "레귤러", weight: "480g", price: 11500, cal: "300~430 kcal", serving: "480g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
-  { name: "연유 빙수", desc: "연유 빙수", size: "레귤러", weight: "500g", price: 11000, cal: "350~500 kcal", serving: "500g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
-  { name: "미니 딸기 빙수", desc: "미니 딸기", size: "미니", weight: "300g", price: 8500, cal: "200~300 kcal", serving: "300g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
-  { name: "미니 망고 빙수", desc: "미니 망고", size: "미니", weight: "300g", price: 8800, cal: "210~310 kcal", serving: "300g", image: "/products/bingsu-mango.jpg", flavor: false, maxF: 0 },
-  { name: "미니 팥 빙수", desc: "미니 팥", size: "미니", weight: "300g", price: 7500, cal: "180~270 kcal", serving: "300g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
-  { name: "프리미엄 딸기빙수", desc: "프리미엄 딸기", size: "프리미엄", weight: "700g", price: 16000, cal: "450~650 kcal", serving: "700g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
-  { name: "프리미엄 망고빙수", desc: "프리미엄 망고", size: "프리미엄", weight: "700g", price: 16500, cal: "460~660 kcal", serving: "700g", image: "/products/bingsu-mango.jpg", flavor: false, maxF: 0 },
-  { name: "오레오 빙수", desc: "오레오 빙수", size: "레귤러", weight: "500g", price: 12500, cal: "380~540 kcal", serving: "500g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
-  { name: "쿠키앤크림 빙수", desc: "쿠키 빙수", size: "레귤러", weight: "500g", price: 12000, cal: "370~530 kcal", serving: "500g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
-  { name: "카라멜 빙수", desc: "카라멜 빙수", size: "레귤러", weight: "500g", price: 12000, cal: "370~530 kcal", serving: "500g", image: "/products/bingsu-mango.jpg", flavor: false, maxF: 0 },
-  { name: "흑임자 빙수", desc: "흑임자 빙수", size: "레귤러", weight: "520g", price: 11500, cal: "340~480 kcal", serving: "520g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
-  { name: "메가 딸기 빙수", desc: "메가 사이즈", size: "메가", weight: "800g", price: 18000, cal: "500~720 kcal", serving: "800g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
-  { name: "메가 초코 빙수", desc: "메가 사이즈", size: "메가", weight: "800g", price: 18000, cal: "540~760 kcal", serving: "800g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
-  { name: "코코넛 빙수", desc: "코코넛 빙수", size: "레귤러", weight: "500g", price: 12500, cal: "360~510 kcal", serving: "500g", image: "/products/bingsu-mango.jpg", flavor: false, maxF: 0 },
-  { name: "팥 크림 빙수", desc: "팥크림 빙수", size: "레귤러", weight: "520g", price: 11800, cal: "350~490 kcal", serving: "520g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
-  { name: "그래놀라 빙수", desc: "그래놀라 빙수", size: "레귤러", weight: "500g", price: 12000, cal: "360~510 kcal", serving: "500g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
-  { name: "치즈 빙수", desc: "치즈 빙수", size: "레귤러", weight: "500g", price: 12500, cal: "380~540 kcal", serving: "500g", image: "/products/bingsu-mango.jpg", flavor: false, maxF: 0 },
-  { name: "티라미수 빙수", desc: "티라미수 빙수", size: "레귤러", weight: "500g", price: 13000, cal: "390~550 kcal", serving: "500g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
-  { name: "스페셜 빙수", desc: "스페셜 에디션", size: "스페셜", weight: "600g", price: 15000, cal: "420~600 kcal", serving: "600g", image: "/products/bingsu.jpg", flavor: false, maxF: 0 },
 ])
 
 // ─── 커피 (8) ── Actual BR coffee menu ────────────────────
@@ -613,7 +579,6 @@ export const products: Product[] = [
   ...coneCupProducts,
   ...packableProducts,
   ...cakeProducts,
-  ...bingsuProducts,
   ...coffeeProducts,
   ...beverageProducts,
   ...gelatoProducts,
@@ -692,7 +657,7 @@ export const flavors: Flavor[] = [
   { id: "cookie-dough", name: "쿠키도우", image: "/flavors/cookies-cream.jpg", color: "hsl(30,40%,70%)", categoryId: "milk-cheese", description: "달콤한 쿠키 반죽의 맛", badge: null },
   { id: "cream-cheese", name: "크림치즈", image: "/flavors/cheesecake.jpg", color: "hsl(45,40%,90%)", categoryId: "milk-cheese", description: "부드러운 크림치즈의 풍미", badge: null },
   { id: "butter-cookie", name: "버터쿠키", image: "/flavors/caramel.jpg", color: "hsl(40,50%,75%)", categoryId: "milk-cheese", description: "고소한 버터쿠키의 맛", badge: null },
-  { id: "milk-tea-flavor", name: "밀크티", image: "/flavors/caramel.jpg", color: "hsl(25,30%,70%)", categoryId: "milk-cheese", description: "부드러운 밀크티의 향긋함", badge: null },
+  { id: "milk-tea-flavor", name: "밀크티", image: "/flavors/caramel.jpg", color: "hsl(25,30%,70%)", categoryId: "milk-cheese", description: "부드러운 밀크티의 향긋��", badge: null },
   { id: "condensed-milk", name: "연유", image: "/flavors/vanilla.jpg", color: "hsl(45,50%,85%)", categoryId: "milk-cheese", description: "달콤한 연유의 진한 맛", badge: null },
   { id: "corn-cereal", name: "콘 시리얼", image: "/flavors/caramel.jpg", color: "hsl(45,60%,72%)", categoryId: "milk-cheese", description: "바삭한 콘 시리얼의 고소한 맛", badge: null },
   { id: "tiramisu-cheese", name: "티라미수 치즈", image: "/flavors/coffee.jpg", color: "hsl(25,35%,60%)", categoryId: "milk-cheese", description: "티라미수와 치즈의 진한 풍미", badge: null },
