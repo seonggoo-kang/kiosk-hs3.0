@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useCallback, useState, useEffect } from "react"
+import { useRef, useCallback } from "react"
 import { cn } from "@/lib/utils"
 
 type SubcategoryFilterProps = {
@@ -10,9 +10,6 @@ type SubcategoryFilterProps = {
 }
 
 export function SubcategoryFilter({ items, activeId, onSelect }: SubcategoryFilterProps) {
-  // Prevent SSR hydration mismatch with Korean multibyte characters
-  const [mounted, setMounted] = useState(false)
-  useEffect(() => setMounted(true), [])
   const scrollRef = useRef<HTMLDivElement>(null)
   const isDragging = useRef(false)
   const startX = useRef(0)
@@ -63,7 +60,7 @@ export function SubcategoryFilter({ items, activeId, onSelect }: SubcategoryFilt
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerUp}
     >
-      {mounted && items.map((item) => (
+      {items.map((item) => (
         <button
           key={item.id}
           data-filter-id={item.id}
@@ -74,7 +71,7 @@ export function SubcategoryFilter({ items, activeId, onSelect }: SubcategoryFilt
               : "bg-muted text-muted-foreground active:bg-muted/80"
           )}
         >
-          {item.name}
+          <span suppressHydrationWarning>{item.name}</span>
         </button>
       ))}
     </div>
