@@ -138,16 +138,23 @@ export function EventPromoBanners() {
   const heroRef = useRef<HTMLDivElement>(null)
   const [dragOffset, setDragOffset] = useState(0)
   const [isAnimating, setIsAnimating] = useState(false)
+
+  // Use refs for values that the window-level listeners need,
+  // so closures always read fresh state without re-registering.
+  const idxRef = useRef(currentIdx)
+  const animatingRef = useRef(false)
   const dragStartX = useRef(0)
   const dragStartY = useRef(0)
   const dragActive = useRef(false)
   const dragLocked = useRef<"h" | "v" | null>(null)
   const offsetRef = useRef(0)
 
-  const hasPrev = currentIdx > 0
-  const hasNext = currentIdx < TOTAL - 1
+  // Keep refs in sync with state
+  useEffect(() => {
+    idxRef.current = currentIdx
+  }, [currentIdx])
 
-  // Use window-level move/up listeners so drag works even when pointer leaves the hero area
+  // Register window-level move/up listeners ONCE (no dependencies that change)
   useEffect(() => {
     const handleMove = (e: PointerEvent) => {
       if (!dragActive.current) return
@@ -161,8 +168,11 @@ export function EventPromoBanners() {
       if (dragLocked.current !== "h") return
 
       // 1:1 tracking, rubber-band at edges
+      const idx = idxRef.current
+      const atStart = idx === 0 && dx > 0
+      const atEnd = idx === TOTAL - 1 && dx < 0
       let offset = dx
-      if ((!hasPrev && dx > 0) || (!hasNext && dx < 0)) {
+      if (atStart || atEnd) {
         offset = dx * 0.15
       }
       offsetRef.current = offset
@@ -176,30 +186,39 @@ export function EventPromoBanners() {
       const dx = offsetRef.current
       const w = heroRef.current?.offsetWidth ?? 400
       const threshold = w * 0.15
+      const idx = idxRef.current
 
-      if (dx < -threshold && hasNext) {
+      if (dx < -threshold && idx < TOTAL - 1) {
         // Commit: swipe left -> next
+        animatingRef.current = true
         setIsAnimating(true)
         setDragOffset(-w)
         setTimeout(() => {
-          setCurrentIdx((i) => i + 1)
+          setCurrentIdx(idx + 1)
           setDragOffset(0)
           setIsAnimating(false)
+          animatingRef.current = false
         }, 250)
-      } else if (dx > threshold && hasPrev) {
+      } else if (dx > threshold && idx > 0) {
         // Commit: swipe right -> prev
+        animatingRef.current = true
         setIsAnimating(true)
         setDragOffset(w)
         setTimeout(() => {
-          setCurrentIdx((i) => i - 1)
+          setCurrentIdx(idx - 1)
           setDragOffset(0)
           setIsAnimating(false)
+          animatingRef.current = false
         }, 250)
       } else {
         // Snap back
+        animatingRef.current = true
         setIsAnimating(true)
         setDragOffset(0)
-        setTimeout(() => setIsAnimating(false), 200)
+        setTimeout(() => {
+          setIsAnimating(false)
+          animatingRef.current = false
+        }, 200)
       }
       offsetRef.current = 0
     }
@@ -212,20 +231,17 @@ export function EventPromoBanners() {
       window.removeEventListener("pointerup", handleUp)
       window.removeEventListener("pointercancel", handleUp)
     }
-  }, [hasPrev, hasNext])
+  }, []) // empty deps -- uses refs for all mutable state
 
-  const onHeroPointerDown = useCallback(
-    (e: React.PointerEvent) => {
-      if (isAnimating) return
-      dragStartX.current = e.clientX
-      dragStartY.current = e.clientY
-      dragActive.current = true
-      dragLocked.current = null
-      offsetRef.current = 0
-      setDragOffset(0)
-    },
-    [isAnimating]
-  )
+  const onHeroPointerDown = useCallback((e: React.PointerEvent) => {
+    if (animatingRef.current) return
+    dragStartX.current = e.clientX
+    dragStartY.current = e.clientY
+    dragActive.current = true
+    dragLocked.current = null
+    offsetRef.current = 0
+    setDragOffset(0)
+  }, [])
 
   // ── Thumbnail strip ──
   const stripRef = useRef<HTMLDivElement>(null)
@@ -264,8 +280,8 @@ export function EventPromoBanners() {
   }, [currentIdx])
 
   const selected = eventPromotions[currentIdx]
-  const prevPromo = hasPrev ? eventPromotions[currentIdx - 1] : null
-  const nextPromo = hasNext ? eventPromotions[currentIdx + 1] : null
+  const prevPromo = currentIdx > 0 ? eventPromotions[currentIdx - 1] : null
+  const nextPromo = currentIdx < TOTAL - 1 ? eventPromotions[currentIdx + 1] : null
 
   return (
     <div className="flex h-full flex-col">
@@ -313,20 +329,20 @@ export function EventPromoBanners() {
         )}
 
         {/* Swipe edge hints */}
-        {hasPrev && (
+        {prevPromo && (
           <div
             className="pointer-events-none absolute left-0 top-0 z-10 h-full w-3 bg-gradient-to-r from-black/10 to-transparent"
             aria-hidden="true"
           />
         )}
-        {hasNext && (
+        {nextPromo && (
           <div
             className="pointer-events-none absolute right-0 top-0 z-10 h-full w-3 bg-gradient-to-l from-black/10 to-transparent"
             aria-hidden="true"
           />
         )}
 
-        {/* Page dots (indicator dots) */}
+        {/* Page dots */}
         <div
           className="pointer-events-none absolute bottom-14 left-0 right-0 z-10 flex items-center justify-center gap-1.5"
           aria-hidden="true"
