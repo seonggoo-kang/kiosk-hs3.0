@@ -149,10 +149,8 @@ function MenuContent() {
   const page = currentSlide.pageIndex
   const totalPagesForCategory = currentSlide.totalPages
 
-  // ── Filtered products for current category (subcategory filters) ──
-  const filteredCurrentProducts = useMemo(() => {
-    if (currentSlide.isEvent) return []
-    const all = currentSlide.products
+  // ── Subcategory-filtered products for the active category ──
+  const activeFilter = useMemo(() => {
     const filterMap: Record<string, string> = {
       "icecream-cake": cakeFilter,
       beverage: beverageFilter,
@@ -161,15 +159,50 @@ function MenuContent() {
       party: partyFilter,
       "packable-icecream": packableFilter,
     }
-    const activeFilter = filterMap[activeCategory]
-    if (activeFilter && activeFilter !== "all") {
-      return all.filter((p) => p.subcategory === activeFilter)
+    return filterMap[activeCategory] ?? "all"
+  }, [activeCategory, cakeFilter, beverageFilter, dessertFilter, prepackFilter, partyFilter, packableFilter])
+
+  // When a subcategory filter is active, re-paginate all matching products
+  const filteredSlides = useMemo(() => {
+    if (activeFilter === "all" || currentSlide.isEvent) return null
+    const allCatProducts = getProductsByCategory(activeCategory)
+    const filtered = allCatProducts.filter((p) => p.subcategory === activeFilter)
+    const pages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE))
+    const slides: Slide[] = []
+    for (let p = 0; p < pages; p++) {
+      slides.push({
+        categoryId: activeCategory,
+        pageIndex: p,
+        totalPages: pages,
+        products: filtered.slice(p * ITEMS_PER_PAGE, (p + 1) * ITEMS_PER_PAGE),
+        isEvent: false,
+      })
     }
-    return all
-  }, [currentSlide, activeCategory, cakeFilter, beverageFilter, dessertFilter, prepackFilter, partyFilter, packableFilter])
+    return slides
+  }, [activeFilter, activeCategory, currentSlide.isEvent])
+
+  // Track page within filtered view
+  const [filteredPageIndex, setFilteredPageIndex] = useState(0)
+
+  // Reset filtered page when filter changes
+  useEffect(() => {
+    setFilteredPageIndex(0)
+  }, [activeFilter])
+
+  // The slide to display: either from filtered set or the current flat slide
+  const displaySlide = useMemo<Slide>(() => {
+    if (filteredSlides && filteredSlides.length > 0) {
+      const idx = Math.min(filteredPageIndex, filteredSlides.length - 1)
+      return filteredSlides[idx]
+    }
+    if (filteredSlides && filteredSlides.length === 0) {
+      return { categoryId: activeCategory, pageIndex: 0, totalPages: 1, products: [], isEvent: false }
+    }
+    return currentSlide
+  }, [filteredSlides, filteredPageIndex, currentSlide, activeCategory])
 
   const selectedProduct = state.selectedProductId
-    ? filteredCurrentProducts.find((p) => p.id === state.selectedProductId) ||
+    ? displaySlide.products.find((p) => p.id === state.selectedProductId) ||
       currentSlide.products.find((p) => p.id === state.selectedProductId) ||
       null
     : null
@@ -213,6 +246,24 @@ function MenuContent() {
   const canGoLeft = flatIndex > 0
   const canGoRight = flatIndex < flatSlides.length - 1
 
+  // ── Adjacent slides for rendering (must be before drag callbacks) ──
+  const isFiltered = filteredSlides !== null
+  const prevSlide = useMemo(() => {
+    if (isFiltered) {
+      return filteredPageIndex > 0 ? filteredSlides![filteredPageIndex - 1] : null
+    }
+    return canGoLeft ? flatSlides[flatIndex - 1] : null
+  }, [isFiltered, filteredSlides, filteredPageIndex, canGoLeft, flatSlides, flatIndex])
+
+  const nextSlide = useMemo(() => {
+    if (isFiltered) {
+      return filteredSlides && filteredPageIndex < filteredSlides.length - 1
+        ? filteredSlides[filteredPageIndex + 1]
+        : null
+    }
+    return canGoRight ? flatSlides[flatIndex + 1] : null
+  }, [isFiltered, filteredSlides, filteredPageIndex, canGoRight, flatSlides, flatIndex])
+
   const onDragPointerDown = useCallback(
     (e: React.PointerEvent) => {
       if (isAnimating) return
@@ -239,15 +290,15 @@ function MenuContent() {
 
     // 1:1 tracking, rubber-band at edges
     let offset = dx
-    const atLeftEdge = flatIndex === 0 && dx > 0
-    const atRightEdge = flatIndex === flatSlides.length - 1 && dx < 0
+    const atLeftEdge = !prevSlide && dx > 0
+    const atRightEdge = !nextSlide && dx < 0
     if (atLeftEdge || atRightEdge) {
       offset = dx * 0.2 // rubber-band
     }
 
     dragOffsetRef.current = offset
     setDragOffset(offset)
-  }, [flatIndex, flatSlides.length])
+  }, [prevSlide, nextSlide])
 
   const onDragPointerUp = useCallback(
     (e: React.PointerEvent) => {
@@ -261,23 +312,34 @@ function MenuContent() {
 
       dragLocked.current = null
 
+      const hasNext = nextSlide !== null
+      const hasPrev = prevSlide !== null
+
       // Decide: commit swipe or snap back
-      if (dx < -threshold && canGoRight) {
+      if (dx < -threshold && hasNext) {
         // Swipe left -> go to next slide
         setIsAnimating(true)
         setDragOffset(-containerWidth)
         setTimeout(() => {
-          setFlatIndex((prev) => prev + 1)
+          if (isFiltered) {
+            setFilteredPageIndex((prev) => prev + 1)
+          } else {
+            setFlatIndex((prev) => prev + 1)
+          }
           setDragOffset(0)
           setIsAnimating(false)
           dispatch({ type: "SELECT_PRODUCT", payload: null })
         }, 250)
-      } else if (dx > threshold && canGoLeft) {
+      } else if (dx > threshold && hasPrev) {
         // Swipe right -> go to previous slide
         setIsAnimating(true)
         setDragOffset(containerWidth)
         setTimeout(() => {
-          setFlatIndex((prev) => prev - 1)
+          if (isFiltered) {
+            setFilteredPageIndex((prev) => prev - 1)
+          } else {
+            setFlatIndex((prev) => prev - 1)
+          }
           setDragOffset(0)
           setIsAnimating(false)
           dispatch({ type: "SELECT_PRODUCT", payload: null })
@@ -291,7 +353,7 @@ function MenuContent() {
 
       dragOffsetRef.current = 0
     },
-    [canGoLeft, canGoRight, dispatch]
+    [nextSlide, prevSlide, isFiltered, dispatch]
   )
 
   // ── Product interaction ──
@@ -342,16 +404,6 @@ function MenuContent() {
       })
     }
   }
-
-  // ── Adjacent slides for rendering ──
-  const prevSlide = canGoLeft ? flatSlides[flatIndex - 1] : null
-  const nextSlide = canGoRight ? flatSlides[flatIndex + 1] : null
-
-  // Build a filtered version of the current slide for display
-  const displaySlide = useMemo<Slide>(() => {
-    if (currentSlide.isEvent) return currentSlide
-    return { ...currentSlide, products: filteredCurrentProducts }
-  }, [currentSlide, filteredCurrentProducts])
 
   // Category booleans for subcategory filter visibility
   const isCake = activeCategory === "icecream-cake"
@@ -494,13 +546,13 @@ function MenuContent() {
         </div>
 
         {/* Swipe edge hints */}
-        {canGoLeft && (
+        {prevSlide && (
           <div
             className="pointer-events-none absolute left-0 top-0 z-10 h-full w-4 bg-gradient-to-r from-foreground/5 to-transparent"
             aria-hidden="true"
           />
         )}
-        {canGoRight && (
+        {nextSlide && (
           <div
             className="pointer-events-none absolute right-0 top-0 z-10 h-full w-4 bg-gradient-to-l from-foreground/5 to-transparent"
             aria-hidden="true"
@@ -508,16 +560,16 @@ function MenuContent() {
         )}
 
         {/* Page dots for current category */}
-        {totalPagesForCategory > 1 && (
+        {displaySlide.totalPages > 1 && (
           <div
             className="pointer-events-none absolute bottom-2 left-0 right-0 z-10 flex items-center justify-center gap-1.5"
             aria-hidden="true"
           >
-            {Array.from({ length: totalPagesForCategory }).map((_, i) => (
+            {Array.from({ length: displaySlide.totalPages }).map((_, i) => (
               <span
                 key={i}
                 className={`h-1.5 rounded-full transition-all duration-300 ${
-                  i === page ? "w-4 bg-primary" : "w-1.5 bg-border"
+                  i === displaySlide.pageIndex ? "w-4 bg-primary" : "w-1.5 bg-border"
                 }`}
               />
             ))}
