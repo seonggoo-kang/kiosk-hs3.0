@@ -154,88 +154,9 @@ export function EventPromoBanners() {
     idxRef.current = currentIdx
   }, [currentIdx])
 
-  // Register window-level move/up listeners ONCE (no dependencies that change)
-  useEffect(() => {
-    const handleMove = (e: PointerEvent) => {
-      if (!dragActive.current) return
-      const dx = e.clientX - dragStartX.current
-      const dy = e.clientY - dragStartY.current
-
-      // Lock direction after 6px of movement
-      if (!dragLocked.current && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) {
-        dragLocked.current = Math.abs(dx) >= Math.abs(dy) ? "h" : "v"
-      }
-      if (dragLocked.current !== "h") return
-
-      // 1:1 tracking, rubber-band at edges
-      const idx = idxRef.current
-      const atStart = idx === 0 && dx > 0
-      const atEnd = idx === TOTAL - 1 && dx < 0
-      let offset = dx
-      if (atStart || atEnd) {
-        offset = dx * 0.15
-      }
-      offsetRef.current = offset
-      setDragOffset(offset)
-    }
-
-    const handleUp = () => {
-      if (!dragActive.current) return
-      dragActive.current = false
-
-      const dx = offsetRef.current
-      const w = heroRef.current?.offsetWidth ?? 400
-      const threshold = w * 0.15
-      const idx = idxRef.current
-
-      if (dx < -threshold && idx < TOTAL - 1) {
-        // Commit: swipe left -> next
-        animatingRef.current = true
-        setIsAnimating(true)
-        setDragOffset(-w)
-        setTimeout(() => {
-          setCurrentIdx(idx + 1)
-          setDragOffset(0)
-          setIsAnimating(false)
-          animatingRef.current = false
-        }, 250)
-      } else if (dx > threshold && idx > 0) {
-        // Commit: swipe right -> prev
-        animatingRef.current = true
-        setIsAnimating(true)
-        setDragOffset(w)
-        setTimeout(() => {
-          setCurrentIdx(idx - 1)
-          setDragOffset(0)
-          setIsAnimating(false)
-          animatingRef.current = false
-        }, 250)
-      } else {
-        // Snap back
-        animatingRef.current = true
-        setIsAnimating(true)
-        setDragOffset(0)
-        setTimeout(() => {
-          setIsAnimating(false)
-          animatingRef.current = false
-        }, 200)
-      }
-      offsetRef.current = 0
-    }
-
-    window.addEventListener("pointermove", handleMove)
-    window.addEventListener("pointerup", handleUp)
-    window.addEventListener("pointercancel", handleUp)
-    return () => {
-      window.removeEventListener("pointermove", handleMove)
-      window.removeEventListener("pointerup", handleUp)
-      window.removeEventListener("pointercancel", handleUp)
-    }
-  }, []) // empty deps -- uses refs for all mutable state
-
+  // Hero uses pointer capture so the outer category carousel never interferes
   const onHeroPointerDown = useCallback((e: React.PointerEvent) => {
     if (animatingRef.current) return
-    // Prevent the outer category carousel from also starting a drag
     e.stopPropagation()
     dragStartX.current = e.clientX
     dragStartY.current = e.clientY
@@ -243,6 +164,72 @@ export function EventPromoBanners() {
     dragLocked.current = null
     offsetRef.current = 0
     setDragOffset(0)
+    // Capture pointer so all move/up events come to the hero element
+    heroRef.current?.setPointerCapture(e.pointerId)
+  }, [])
+
+  const onHeroPointerMove = useCallback((e: React.PointerEvent) => {
+    if (!dragActive.current) return
+    const dx = e.clientX - dragStartX.current
+    const dy = e.clientY - dragStartY.current
+
+    // Lock direction after 6px of movement
+    if (!dragLocked.current && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) {
+      dragLocked.current = Math.abs(dx) >= Math.abs(dy) ? "h" : "v"
+    }
+    if (dragLocked.current !== "h") return
+
+    // 1:1 tracking, rubber-band at edges
+    const idx = idxRef.current
+    const atStart = idx === 0 && dx > 0
+    const atEnd = idx === TOTAL - 1 && dx < 0
+    let offset = dx
+    if (atStart || atEnd) offset = dx * 0.15
+    offsetRef.current = offset
+    setDragOffset(offset)
+  }, [])
+
+  const onHeroPointerUp = useCallback((e: React.PointerEvent) => {
+    if (!dragActive.current) return
+    dragActive.current = false
+    heroRef.current?.releasePointerCapture(e.pointerId)
+
+    const dx = offsetRef.current
+    const w = heroRef.current?.offsetWidth ?? 400
+    const threshold = w * 0.15
+    const idx = idxRef.current
+
+    if (dx < -threshold && idx < TOTAL - 1) {
+      animatingRef.current = true
+      setIsAnimating(true)
+      setDragOffset(-w)
+      setTimeout(() => {
+        setCurrentIdx(idx + 1)
+        setDragOffset(0)
+        setIsAnimating(false)
+        animatingRef.current = false
+      }, 250)
+    } else if (dx > threshold && idx > 0) {
+      animatingRef.current = true
+      setIsAnimating(true)
+      setDragOffset(w)
+      setTimeout(() => {
+        setCurrentIdx(idx - 1)
+        setDragOffset(0)
+        setIsAnimating(false)
+        animatingRef.current = false
+      }, 250)
+    } else {
+      animatingRef.current = true
+      setIsAnimating(true)
+      setDragOffset(0)
+      setTimeout(() => {
+        setIsAnimating(false)
+        animatingRef.current = false
+      }, 200)
+    }
+    offsetRef.current = 0
+    dragLocked.current = null
   }, [])
 
   // ── Thumbnail strip ──
@@ -292,6 +279,9 @@ export function EventPromoBanners() {
         ref={heroRef}
         className="relative flex-1 min-h-0 overflow-hidden select-none touch-pan-y"
         onPointerDown={onHeroPointerDown}
+        onPointerMove={onHeroPointerMove}
+        onPointerUp={onHeroPointerUp}
+        onPointerCancel={onHeroPointerUp}
       >
         {/* Prev slide */}
         {prevPromo && (
