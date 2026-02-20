@@ -13,202 +13,314 @@ import { ActionBar } from "@/components/kiosk/action-bar"
 import { EventPromoBanners } from "@/components/kiosk/event-promo-banners"
 import { SubcategoryFilter } from "@/components/kiosk/subcategory-filter"
 import { useOrder } from "@/lib/order-context"
-import { categories, getProductsByCategory, cakeSubcategories, beverageSubcategories, dessertSubcategories, prepackSubcategories, partySubcategories, packableSubcategories, type Product } from "@/lib/mock-data"
+import {
+  categories,
+  getProductsByCategory,
+  cakeSubcategories,
+  beverageSubcategories,
+  dessertSubcategories,
+  prepackSubcategories,
+  partySubcategories,
+  packableSubcategories,
+  type Product,
+} from "@/lib/mock-data"
 
 const ITEMS_PER_PAGE = 16 // 4 cols x 4 rows
+
+// ── Flat slide descriptor ──────────────────────────────────
+type Slide = {
+  categoryId: string
+  pageIndex: number // page within the category (0-based)
+  totalPages: number // total pages this category has
+  products: Product[] // pre-sliced products for this page
+  isEvent: boolean
+}
+
+// ── Slide renderer (pure presentational) ───────────────────
+function SlideContent({
+  slide,
+  selectedProductId,
+  onSelectProduct,
+}: {
+  slide: Slide
+  selectedProductId: string | null
+  onSelectProduct: (p: Product) => void
+}) {
+  if (slide.isEvent) {
+    return (
+      <div className="h-full overflow-y-auto overflow-x-hidden">
+        <EventPromoBanners />
+      </div>
+    )
+  }
+
+  return (
+    <div className="h-full overflow-y-auto overflow-x-hidden">
+      <div className="flex min-h-full flex-col p-3">
+        {slide.products.length > 0 ? (
+          <div className="grid grid-cols-4 gap-2">
+            {slide.products.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                isSelected={selectedProductId === product.id}
+                onSelect={onSelectProduct}
+                priority={slide.pageIndex === 0}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="flex h-full flex-col items-center justify-center gap-3 text-muted-foreground">
+            <IceCreamCone className="h-12 w-12 opacity-30" />
+            <p className="text-sm">이 카테고리에 상품이 없습니다.</p>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
 
 function MenuContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { state, dispatch } = useOrder()
-  const [activeCategory, setActiveCategory] = useState(categories[3].id)
-  const [page, setPage] = useState(0)
-  const [showAddedToast, setShowAddedToast] = useState(false)
+
+  // ── Subcategory filter states ──
   const [cakeFilter, setCakeFilter] = useState("all")
   const [beverageFilter, setBeverageFilter] = useState("all")
   const [dessertFilter, setDessertFilter] = useState("all")
   const [prepackFilter, setPrepackFilter] = useState("all")
   const [partyFilter, setPartyFilter] = useState("all")
   const [packableFilter, setPackableFilter] = useState("all")
-  // Pointer-based drag swipe with peek effect
-  const [dragOffset, setDragOffset] = useState(0)
-  const dragStartX = useRef(0)
-  const dragStartY = useRef(0)
-  const dragActive = useRef(false)
-  const dragLocked = useRef<"horizontal" | "vertical" | null>(null)
-  const dragOffsetRef = useRef(0)
-  const contentRef = useRef<HTMLDivElement>(null)
 
-  // Show "item added" toast when coming back from options
+  // ── Toast ──
+  const [showAddedToast, setShowAddedToast] = useState(false)
   const justAdded = searchParams.get("added") === "true"
   useEffect(() => {
     if (justAdded && state.cart.length > 0) {
       setShowAddedToast(true)
-      // Clear the param from URL without navigation
       window.history.replaceState(null, "", "/menu")
       const timer = setTimeout(() => setShowAddedToast(false), 2500)
       return () => clearTimeout(timer)
     }
   }, [justAdded, state.cart.length])
 
-  const isEvent = activeCategory === "event"
-  const isCake = activeCategory === "icecream-cake"
-  const isBeverage = activeCategory === "beverage"
-  const isDessert = activeCategory === "dessert"
-  const isPrepack = activeCategory === "prepack"
-  const isParty = activeCategory === "party"
-  const isPackable = activeCategory === "packable-icecream"
+  // ── Build flat slide array (unfiltered -- filters only affect display within a category) ──
+  const flatSlides = useMemo<Slide[]>(() => {
+    const slides: Slide[] = []
+    for (const cat of categories) {
+      if (cat.id === "event") {
+        slides.push({
+          categoryId: cat.id,
+          pageIndex: 0,
+          totalPages: 1,
+          products: [],
+          isEvent: true,
+        })
+      } else {
+        const products = getProductsByCategory(cat.id)
+        const totalPages = Math.max(1, Math.ceil(products.length / ITEMS_PER_PAGE))
+        for (let p = 0; p < totalPages; p++) {
+          slides.push({
+            categoryId: cat.id,
+            pageIndex: p,
+            totalPages,
+            products: products.slice(p * ITEMS_PER_PAGE, (p + 1) * ITEMS_PER_PAGE),
+            isEvent: false,
+          })
+        }
+      }
+    }
+    return slides
+  }, [])
 
-  const categoryProducts = useMemo(() => {
-    if (isEvent) return []
-    const all = getProductsByCategory(activeCategory)
-    if (isCake && cakeFilter !== "all") {
-      return all.filter((p) => p.subcategory === cakeFilter)
+  // ── Flat index state ──
+  // Start at the first slide of 4th category (index 3, "workshop")
+  const initialFlatIndex = useMemo(() => {
+    const idx = flatSlides.findIndex((s) => s.categoryId === categories[3].id)
+    return idx >= 0 ? idx : 0
+  }, [flatSlides])
+
+  const [flatIndex, setFlatIndex] = useState(initialFlatIndex)
+
+  // Derive category and page from flat index
+  const currentSlide = flatSlides[flatIndex]
+  const activeCategory = currentSlide.categoryId
+  const page = currentSlide.pageIndex
+  const totalPagesForCategory = currentSlide.totalPages
+
+  // ── Filtered products for current category (subcategory filters) ──
+  const filteredCurrentProducts = useMemo(() => {
+    if (currentSlide.isEvent) return []
+    const all = currentSlide.products
+    const filterMap: Record<string, string> = {
+      "icecream-cake": cakeFilter,
+      beverage: beverageFilter,
+      dessert: dessertFilter,
+      prepack: prepackFilter,
+      party: partyFilter,
+      "packable-icecream": packableFilter,
     }
-    if (isBeverage && beverageFilter !== "all") {
-      return all.filter((p) => p.subcategory === beverageFilter)
-    }
-    if (isDessert && dessertFilter !== "all") {
-      return all.filter((p) => p.subcategory === dessertFilter)
-    }
-    if (isPrepack && prepackFilter !== "all") {
-      return all.filter((p) => p.subcategory === prepackFilter)
-    }
-    if (isParty && partyFilter !== "all") {
-      return all.filter((p) => p.subcategory === partyFilter)
-    }
-    if (isPackable && packableFilter !== "all") {
-      return all.filter((p) => p.subcategory === packableFilter)
+    const activeFilter = filterMap[activeCategory]
+    if (activeFilter && activeFilter !== "all") {
+      return all.filter((p) => p.subcategory === activeFilter)
     }
     return all
-  }, [activeCategory, isEvent, isCake, cakeFilter, isBeverage, beverageFilter, isDessert, dessertFilter, isPrepack, prepackFilter, isParty, partyFilter, isPackable, packableFilter])
-
-  // Event category uses promo banners (no pagination), other categories use product grid
-  const totalPages = isEvent ? 1 : Math.max(1, Math.ceil(categoryProducts.length / ITEMS_PER_PAGE))
-  const currentProducts = categoryProducts.slice(
-    page * ITEMS_PER_PAGE,
-    (page + 1) * ITEMS_PER_PAGE
-  )
+  }, [currentSlide, activeCategory, cakeFilter, beverageFilter, dessertFilter, prepackFilter, partyFilter, packableFilter])
 
   const selectedProduct = state.selectedProductId
-    ? categoryProducts.find((p) => p.id === state.selectedProductId) || null
+    ? filteredCurrentProducts.find((p) => p.id === state.selectedProductId) ||
+      currentSlide.products.find((p) => p.id === state.selectedProductId) ||
+      null
     : null
 
   const hasCart = state.cart.length > 0
 
-  const handleCategoryChange = (id: string) => {
-    setActiveCategory(id)
-    setPage(0)
-    setCakeFilter("all")
-    setBeverageFilter("all")
-    setDessertFilter("all")
-    setPrepackFilter("all")
-    setPartyFilter("all")
-    setPackableFilter("all")
-    dispatch({ type: "SELECT_PRODUCT", payload: null })
-  }
+  // ── Category tab click: jump to first slide of that category ──
+  const handleCategoryChange = useCallback(
+    (id: string) => {
+      const idx = flatSlides.findIndex((s) => s.categoryId === id && s.pageIndex === 0)
+      if (idx >= 0) setFlatIndex(idx)
+      setCakeFilter("all")
+      setBeverageFilter("all")
+      setDessertFilter("all")
+      setPrepackFilter("all")
+      setPartyFilter("all")
+      setPackableFilter("all")
+      dispatch({ type: "SELECT_PRODUCT", payload: null })
+    },
+    [flatSlides, dispatch]
+  )
 
-  /** Swipe left/right: pages within a category, then chain to next/prev category */
-  const handleSwipe = useCallback((direction: "left" | "right") => {
-    if (direction === "left") {
-      // Swipe left = go forward
-      if (page < totalPages - 1) {
-        setPage((p) => p + 1)
-      } else {
-        // Move to next category
-        const catIdx = categories.findIndex((c) => c.id === activeCategory)
-        if (catIdx < categories.length - 1) {
-          const nextCat = categories[catIdx + 1].id
-          setActiveCategory(nextCat)
-          setPage(0)
-          dispatch({ type: "SELECT_PRODUCT", payload: null })
-        }
-      }
-    } else {
-      // Swipe right = go back
-      if (page > 0) {
-        setPage((p) => p - 1)
-      } else {
-        // Move to previous category, land on its last page
-        const catIdx = categories.findIndex((c) => c.id === activeCategory)
-        if (catIdx > 0) {
-          const prevCat = categories[catIdx - 1].id
-          const prevProducts = getProductsByCategory(prevCat)
-          const prevTotalPages = Math.max(1, Math.ceil(prevProducts.length / ITEMS_PER_PAGE))
-          setActiveCategory(prevCat)
-          setPage(prevTotalPages - 1)
-          dispatch({ type: "SELECT_PRODUCT", payload: null })
-        }
-      }
-    }
-  }, [page, totalPages, activeCategory, dispatch])
+  // ── Subcategory filter change: jump to first slide of current category ──
+  const jumpToFirstPageOfCategory = useCallback(() => {
+    const idx = flatSlides.findIndex(
+      (s) => s.categoryId === activeCategory && s.pageIndex === 0
+    )
+    if (idx >= 0) setFlatIndex(idx)
+  }, [flatSlides, activeCategory])
 
-  const onDragPointerDown = useCallback((e: React.PointerEvent) => {
-    dragStartX.current = e.clientX
-    dragStartY.current = e.clientY
-    dragActive.current = true
-    dragLocked.current = null
-    dragOffsetRef.current = 0
-    setDragOffset(0)
-    ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
-  }, [])
+  // ── Drag / swipe state ──
+  const [dragOffset, setDragOffset] = useState(0)
+  const [isAnimating, setIsAnimating] = useState(false)
+  const dragStartX = useRef(0)
+  const dragStartY = useRef(0)
+  const dragActive = useRef(false)
+  const dragLocked = useRef<"horizontal" | "vertical" | null>(null)
+  const dragOffsetRef = useRef(0)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  const canGoLeft = flatIndex > 0
+  const canGoRight = flatIndex < flatSlides.length - 1
+
+  const onDragPointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      if (isAnimating) return
+      dragStartX.current = e.clientX
+      dragStartY.current = e.clientY
+      dragActive.current = true
+      dragLocked.current = null
+      dragOffsetRef.current = 0
+      setDragOffset(0)
+      ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
+    },
+    [isAnimating]
+  )
 
   const onDragPointerMove = useCallback((e: React.PointerEvent) => {
     if (!dragActive.current) return
     const dx = e.clientX - dragStartX.current
     const dy = e.clientY - dragStartY.current
 
-    // Lock direction on first significant movement
     if (!dragLocked.current && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
       dragLocked.current = Math.abs(dx) > Math.abs(dy) ? "horizontal" : "vertical"
     }
-    if (dragLocked.current === "horizontal") {
-      // Apply rubber-band dampening
-      const dampened = dx * 0.4
-      dragOffsetRef.current = dampened
-      setDragOffset(dampened)
+    if (dragLocked.current !== "horizontal") return
+
+    // 1:1 tracking, rubber-band at edges
+    let offset = dx
+    const atLeftEdge = flatIndex === 0 && dx > 0
+    const atRightEdge = flatIndex === flatSlides.length - 1 && dx < 0
+    if (atLeftEdge || atRightEdge) {
+      offset = dx * 0.2 // rubber-band
     }
-  }, [])
+
+    dragOffsetRef.current = offset
+    setDragOffset(offset)
+  }, [flatIndex, flatSlides.length])
 
   const onDragPointerUp = useCallback(
     (e: React.PointerEvent) => {
       if (!dragActive.current) return
       dragActive.current = false
       ;(e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId)
+
       const dx = dragOffsetRef.current
-      dragOffsetRef.current = 0
-      setDragOffset(0)
+      const containerWidth = containerRef.current?.offsetWidth || 400
+      const threshold = containerWidth * 0.2
+
       dragLocked.current = null
 
-      // If dragged far enough, commit the swipe
-      if (Math.abs(dx) > 30) {
-        handleSwipe(dx < 0 ? "left" : "right")
+      // Decide: commit swipe or snap back
+      if (dx < -threshold && canGoRight) {
+        // Swipe left -> go to next slide
+        setIsAnimating(true)
+        setDragOffset(-containerWidth)
+        setTimeout(() => {
+          setFlatIndex((prev) => prev + 1)
+          setDragOffset(0)
+          setIsAnimating(false)
+          dispatch({ type: "SELECT_PRODUCT", payload: null })
+        }, 250)
+      } else if (dx > threshold && canGoLeft) {
+        // Swipe right -> go to previous slide
+        setIsAnimating(true)
+        setDragOffset(containerWidth)
+        setTimeout(() => {
+          setFlatIndex((prev) => prev - 1)
+          setDragOffset(0)
+          setIsAnimating(false)
+          dispatch({ type: "SELECT_PRODUCT", payload: null })
+        }, 250)
+      } else {
+        // Snap back
+        setIsAnimating(true)
+        setDragOffset(0)
+        setTimeout(() => setIsAnimating(false), 250)
       }
+
+      dragOffsetRef.current = 0
     },
-    [handleSwipe]
+    [canGoLeft, canGoRight, dispatch]
   )
 
-  const handleProductSelect = (product: Product) => {
-    if (state.selectedProductId === product.id) {
-      // Double tap = go straight to flavor selection (or cart if no flavor needed)
-      if (product.requiresFlavor) {
-        router.push(`/menu/flavors?productId=${product.id}`)
+  // ── Product interaction ──
+  const handleProductSelect = useCallback(
+    (product: Product) => {
+      // If drag was significant, don't treat as a tap
+      if (Math.abs(dragOffsetRef.current) > 5) return
+
+      if (state.selectedProductId === product.id) {
+        if (product.requiresFlavor) {
+          router.push(`/menu/flavors?productId=${product.id}`)
+        } else {
+          dispatch({
+            type: "ADD_TO_CART",
+            payload: {
+              cartId: `${product.id}-${Date.now()}`,
+              product,
+              selectedFlavors: [],
+              options: [],
+              quantity: 1,
+            },
+          })
+        }
       } else {
-        dispatch({
-          type: "ADD_TO_CART",
-          payload: {
-            cartId: `${product.id}-${Date.now()}`,
-            product,
-            selectedFlavors: [],
-            options: [],
-            quantity: 1,
-          },
-        })
+        dispatch({ type: "SELECT_PRODUCT", payload: product.id })
       }
-    } else {
-      dispatch({ type: "SELECT_PRODUCT", payload: product.id })
-    }
-  }
+    },
+    [state.selectedProductId, router, dispatch]
+  )
 
   const handleFlavorSelect = () => {
     if (selectedProduct) {
@@ -231,6 +343,24 @@ function MenuContent() {
     }
   }
 
+  // ── Adjacent slides for rendering ──
+  const prevSlide = canGoLeft ? flatSlides[flatIndex - 1] : null
+  const nextSlide = canGoRight ? flatSlides[flatIndex + 1] : null
+
+  // Build a filtered version of the current slide for display
+  const displaySlide = useMemo<Slide>(() => {
+    if (currentSlide.isEvent) return currentSlide
+    return { ...currentSlide, products: filteredCurrentProducts }
+  }, [currentSlide, filteredCurrentProducts])
+
+  // Category booleans for subcategory filter visibility
+  const isCake = activeCategory === "icecream-cake"
+  const isBeverage = activeCategory === "beverage"
+  const isDessert = activeCategory === "dessert"
+  const isPrepack = activeCategory === "prepack"
+  const isParty = activeCategory === "party"
+  const isPackable = activeCategory === "packable-icecream"
+
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
       <KioskHeader title="메뉴 선택" />
@@ -240,185 +370,181 @@ function MenuContent() {
         onSelect={handleCategoryChange}
       />
 
-      {/* Subcategory filter for cake category */}
+      {/* Subcategory filters */}
       {isCake && (
         <SubcategoryFilter
           items={cakeSubcategories}
           activeId={cakeFilter}
           onSelect={(id) => {
             setCakeFilter(id)
-            setPage(0)
+            jumpToFirstPageOfCategory()
           }}
         />
       )}
-
-      {/* Subcategory filter for beverage category */}
       {isBeverage && (
         <SubcategoryFilter
           items={beverageSubcategories}
           activeId={beverageFilter}
           onSelect={(id) => {
             setBeverageFilter(id)
-            setPage(0)
+            jumpToFirstPageOfCategory()
           }}
         />
       )}
-
-      {/* Subcategory filter for dessert category */}
       {isDessert && (
         <SubcategoryFilter
           items={dessertSubcategories}
           activeId={dessertFilter}
           onSelect={(id) => {
             setDessertFilter(id)
-            setPage(0)
+            jumpToFirstPageOfCategory()
           }}
         />
       )}
-
-      {/* Subcategory filter for prepack category */}
       {isPrepack && (
         <SubcategoryFilter
           items={prepackSubcategories}
           activeId={prepackFilter}
           onSelect={(id) => {
             setPrepackFilter(id)
-            setPage(0)
+            jumpToFirstPageOfCategory()
           }}
         />
       )}
-
-      {/* Subcategory filter for party/merchandise category */}
       {isParty && (
         <SubcategoryFilter
           items={partySubcategories}
           activeId={partyFilter}
           onSelect={(id) => {
             setPartyFilter(id)
-            setPage(0)
+            jumpToFirstPageOfCategory()
           }}
         />
       )}
-
-      {/* Subcategory filter for packable icecream category */}
       {isPackable && (
         <SubcategoryFilter
           items={packableSubcategories}
           activeId={packableFilter}
           onSelect={(id) => {
             setPackableFilter(id)
-            setPage(0)
+            jumpToFirstPageOfCategory()
           }}
         />
       )}
 
-      {/* Content area -- event promos OR product grid */}
-      {isEvent ? (
-        /* ── Event category: full-width promo banners, vertically scrollable ── */
-        <div
-          className="relative flex-1 overflow-hidden bg-muted/40 select-none touch-pan-y"
-          onPointerDown={onDragPointerDown}
-          onPointerMove={onDragPointerMove}
-          onPointerUp={onDragPointerUp}
-          onPointerCancel={onDragPointerUp}
-        >
-          <div
-            className="h-full overflow-y-auto overflow-x-hidden"
-            style={dragOffset !== 0 ? { transform: `translateX(${dragOffset}px)`, transition: "none" } : { transition: "transform 200ms ease-out" }}
-          >
-            <EventPromoBanners />
-          </div>
-          {/* Swipe edge hints */}
-          {categories.findIndex((c) => c.id === activeCategory) > 0 && (
-            <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-4 bg-gradient-to-r from-foreground/5 to-transparent" aria-hidden="true" />
-          )}
-          {categories.findIndex((c) => c.id === activeCategory) < categories.length - 1 && (
-            <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-4 bg-gradient-to-l from-foreground/5 to-transparent" aria-hidden="true" />
-          )}
-        </div>
-      ) : (
-        /* ── Other categories: product grid with swipe pagination ── */
-        <div
-          className="relative flex-1 overflow-hidden bg-muted/40 select-none touch-pan-y"
-          onPointerDown={onDragPointerDown}
-          onPointerMove={onDragPointerMove}
-          onPointerUp={onDragPointerUp}
-          onPointerCancel={onDragPointerUp}
-        >
-          {/* Scrollable product area */}
-          <div
-            ref={contentRef}
-            className="h-full overflow-y-auto overflow-x-hidden"
-            style={dragOffset !== 0 ? { transform: `translateX(${dragOffset}px)`, transition: "none" } : { transition: "transform 200ms ease-out" }}
-          >
-            <div className="flex min-h-full flex-col p-3">
-              {currentProducts.length > 0 ? (
-                <div className="grid grid-cols-4 gap-2">
-                  {currentProducts.map((product, idx) => (
-                    <ProductCard
-                      key={product.id}
-                      product={product}
-                      isSelected={state.selectedProductId === product.id}
-                      onSelect={handleProductSelect}
-                      priority={page === 0}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="flex h-full flex-col items-center justify-center gap-3 text-muted-foreground">
-                  <IceCreamCone className="h-12 w-12 opacity-30" />
-                  <p className="text-sm">이 카테고리에 상품이 없습니다.</p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Fixed overlays -- positioned relative to the non-scrolling wrapper */}
-
-          {/* Swipe edge hints */}
-          {!(page === 0 && categories.findIndex((c) => c.id === activeCategory) === 0) && (
-            <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-4 bg-gradient-to-r from-foreground/5 to-transparent" aria-hidden="true" />
-          )}
-          {!(page === totalPages - 1 && categories.findIndex((c) => c.id === activeCategory) === categories.length - 1) && (
-            <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-4 bg-gradient-to-l from-foreground/5 to-transparent" aria-hidden="true" />
-          )}
-
-          {/* Page indicator (non-interactive) */}
-          {totalPages > 1 && (
-            <div className="pointer-events-none absolute bottom-2 left-0 right-0 z-10 flex items-center justify-center gap-1.5" aria-hidden="true">
-              {Array.from({ length: totalPages }).map((_, i) => (
-                <span
-                  key={i}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
-                    i === page ? "w-4 bg-primary" : "w-1.5 bg-border"
-                  }`}
-                />
-              ))}
+      {/* ── Carousel container ── */}
+      <div
+        ref={containerRef}
+        className="relative flex-1 overflow-hidden bg-muted/40 select-none touch-pan-y"
+        onPointerDown={onDragPointerDown}
+        onPointerMove={onDragPointerMove}
+        onPointerUp={onDragPointerUp}
+        onPointerCancel={onDragPointerUp}
+      >
+        {/* Three-slide track */}
+        <div className="relative h-full w-full">
+          {/* Previous slide */}
+          {prevSlide && (
+            <div
+              className="absolute inset-0"
+              style={{
+                transform: `translateX(calc(-100% + ${dragOffset}px))`,
+                transition: isAnimating ? "transform 250ms ease-out" : "none",
+              }}
+            >
+              <SlideContent
+                slide={prevSlide}
+                selectedProductId={null}
+                onSelectProduct={() => {}}
+              />
             </div>
           )}
 
-          {/* Toast notification when item was just added */}
-          {showAddedToast && (
-            <div className="absolute left-1/2 top-4 z-20 -translate-x-1/2 animate-in fade-in slide-in-from-top-2 duration-300">
-              <div className="flex items-center gap-2 rounded-full bg-foreground px-5 py-3 shadow-lg">
-                <Check className="h-4 w-4 text-primary-foreground" />
-                <span className="text-sm font-semibold text-primary-foreground">
-                  상품이 담겼습니다
-                </span>
-              </div>
+          {/* Current slide */}
+          <div
+            className="absolute inset-0"
+            style={{
+              transform: dragOffset !== 0 ? `translateX(${dragOffset}px)` : undefined,
+              transition: isAnimating ? "transform 250ms ease-out" : "none",
+            }}
+          >
+            <SlideContent
+              slide={displaySlide}
+              selectedProductId={state.selectedProductId}
+              onSelectProduct={handleProductSelect}
+            />
+          </div>
+
+          {/* Next slide */}
+          {nextSlide && (
+            <div
+              className="absolute inset-0"
+              style={{
+                transform: `translateX(calc(100% + ${dragOffset}px))`,
+                transition: isAnimating ? "transform 250ms ease-out" : "none",
+              }}
+            >
+              <SlideContent
+                slide={nextSlide}
+                selectedProductId={null}
+                onSelectProduct={() => {}}
+              />
             </div>
           )}
         </div>
-      )}
 
-      {/* Product detail panel -- only when a product is selected */}
+        {/* Swipe edge hints */}
+        {canGoLeft && (
+          <div
+            className="pointer-events-none absolute left-0 top-0 z-10 h-full w-4 bg-gradient-to-r from-foreground/5 to-transparent"
+            aria-hidden="true"
+          />
+        )}
+        {canGoRight && (
+          <div
+            className="pointer-events-none absolute right-0 top-0 z-10 h-full w-4 bg-gradient-to-l from-foreground/5 to-transparent"
+            aria-hidden="true"
+          />
+        )}
+
+        {/* Page dots for current category */}
+        {totalPagesForCategory > 1 && (
+          <div
+            className="pointer-events-none absolute bottom-2 left-0 right-0 z-10 flex items-center justify-center gap-1.5"
+            aria-hidden="true"
+          >
+            {Array.from({ length: totalPagesForCategory }).map((_, i) => (
+              <span
+                key={i}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  i === page ? "w-4 bg-primary" : "w-1.5 bg-border"
+                }`}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Toast notification */}
+        {showAddedToast && (
+          <div className="absolute left-1/2 top-4 z-20 -translate-x-1/2 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="flex items-center gap-2 rounded-full bg-foreground px-5 py-3 shadow-lg">
+              <Check className="h-4 w-4 text-primary-foreground" />
+              <span className="text-sm font-semibold text-primary-foreground">
+                상품이 담겼습니다
+              </span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Product detail panel */}
       {selectedProduct && (
         <div className="shrink-0 border-t border-border bg-card p-3">
           <ProductDetailPanel product={selectedProduct} />
         </div>
       )}
 
-      {/* Cart strip -- always shows if cart has items */}
+      {/* Cart strip */}
       <CartStrip />
 
       {/* Action Bar */}
@@ -426,7 +552,7 @@ function MenuContent() {
         <ActionBar
           onBack={() => dispatch({ type: "SELECT_PRODUCT", payload: null })}
           backLabel="이전으로"
-          primaryLabel={selectedProduct.requiresFlavor ? "맛 선택하기" : "���기"}
+          primaryLabel={selectedProduct.requiresFlavor ? "맛 선택하기" : "담기"}
           primaryDisabled={false}
           onPrimary={() => {
             if (selectedProduct.requiresFlavor) {
