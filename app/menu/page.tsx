@@ -543,6 +543,7 @@ function MenuContent() {
 
           {/* Current slide */}
           <div
+            key={`${displaySlide.categoryId}-${displaySlide.pageIndex}-${activeFilter}`}
             className="absolute inset-0"
             style={{
               transform: dragOffset !== 0 ? `translateX(${dragOffset}px)` : undefined,
