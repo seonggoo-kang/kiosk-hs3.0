@@ -39,6 +39,7 @@ export function ProductCard({ product, isSelected, onSelect, priority }: Product
           height={80}
           className="h-[72px] w-[72px] object-contain"
           priority={priority}
+          loading={priority ? "eager" : "lazy"}
         />
         {product.tag && (
           <span
