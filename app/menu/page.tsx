@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect, useRef, useCallback, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { IceCreamCone, Check } from "lucide-react"
+import { IceCreamCone, Check, ChevronRight } from "lucide-react"
 import { KioskHeader } from "@/components/kiosk/kiosk-header"
 import { KioskFooter } from "@/components/kiosk/kiosk-footer"
 import { CategoryTabs } from "@/components/kiosk/category-tabs"
@@ -57,6 +57,7 @@ function SlideContent({
   onEventOverflowCancel?: () => void
   canOverflowLeft?: boolean
   canOverflowRight?: boolean
+  onPromoCTA?: (categoryId: string) => void
 }) {
   if (slide.isEvent) {
     return (
@@ -67,6 +68,7 @@ function SlideContent({
           onOverflowCancel={onEventOverflowCancel}
           canOverflowLeft={canOverflowLeft}
           canOverflowRight={canOverflowRight}
+          onPromoCTA={onPromoCTA}
         />
       </div>
     )
@@ -607,6 +609,7 @@ function MenuContent() {
                 setDragOffset(0)
                 setTimeout(() => setIsAnimating(false), 200)
               }}
+              onPromoCTA={handleCategorySelect}
             />
           </div>
 
@@ -679,11 +682,26 @@ function MenuContent() {
         </div>
       )}
 
-      {/* Cart strip */}
-      <CartStrip />
+      {/* Cart strip -- hidden on event page */}
+      {!displaySlide.isEvent && <CartStrip />}
 
       {/* Action Bar */}
-      {selectedProduct ? (
+      {displaySlide.isEvent ? (
+        <div className="shrink-0 border-t border-border bg-card px-4 py-3">
+          <div className="flex items-center justify-between">
+            <p className="text-xs text-muted-foreground">
+              {'프로모션은 주문 시 자동 적용됩니다'}
+            </p>
+            <button
+              onClick={() => handleCategorySelect("workshop")}
+              className="flex items-center gap-1 rounded-full bg-primary px-4 py-2 text-xs font-bold text-primary-foreground transition-transform active:scale-95"
+            >
+              {'메뉴 보기'}
+              <ChevronRight className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        </div>
+      ) : selectedProduct ? (
         <ActionBar
           onBack={() => dispatch({ type: "SELECT_PRODUCT", payload: null })}
           backLabel="이전으로"

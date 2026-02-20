@@ -13,6 +13,7 @@ export type PromoBanner = {
   detailImage: string
   accentColor: string
   overlayGradient: string
+  targetCategoryId?: string // navigates to this category when CTA tapped
 }
 
 export const eventPromotions: PromoBanner[] = [
@@ -29,6 +30,7 @@ export const eventPromotions: PromoBanner[] = [
     detailImage: "/promos/event-superweek.jpg",
     accentColor: "hsl(340, 75%, 55%)",
     overlayGradient: "from-rose-900/90 via-rose-900/60 to-transparent",
+    targetCategoryId: "cone-cup",
   },
   {
     id: "flavor-of-month",
@@ -43,6 +45,7 @@ export const eventPromotions: PromoBanner[] = [
     detailImage: "/promos/event-flavor-month.jpg",
     accentColor: "hsl(25, 60%, 45%)",
     overlayGradient: "from-amber-950/90 via-amber-950/60 to-transparent",
+    targetCategoryId: "cone-cup",
   },
   {
     id: "double-cup",
@@ -57,6 +60,7 @@ export const eventPromotions: PromoBanner[] = [
     detailImage: "/promos/event-double-cup.jpg",
     accentColor: "hsl(340, 70%, 55%)",
     overlayGradient: "from-pink-900/90 via-pink-900/60 to-transparent",
+    targetCategoryId: "cone-cup",
   },
   {
     id: "dubai-mochi",
@@ -70,6 +74,7 @@ export const eventPromotions: PromoBanner[] = [
     detailImage: "/promos/event-dubai-mochi.jpg",
     accentColor: "hsl(170, 60%, 40%)",
     overlayGradient: "from-teal-900/90 via-teal-900/60 to-transparent",
+    targetCategoryId: "dessert",
   },
   {
     id: "card-discount",
@@ -137,12 +142,14 @@ export function EventPromoBanners({
   onOverflowCancel,
   canOverflowLeft,
   canOverflowRight,
+  onPromoCTA,
 }: {
   onOverflowDrag?: (dx: number) => void
   onOverflowCommit?: (direction: "left" | "right") => void
   onOverflowCancel?: () => void
   canOverflowLeft?: boolean
   canOverflowRight?: boolean
+  onPromoCTA?: (categoryId: string) => void
 }) {
   const [currentIdx, setCurrentIdx] = useState(0)
 
@@ -370,7 +377,7 @@ export function EventPromoBanners({
               transition: heroAnimating ? "transform 250ms ease-out" : "none",
             }}
           >
-            <HeroBanner promo={prevPromo} />
+            <HeroBanner promo={prevPromo} onCTA={onPromoCTA} />
           </div>
         )}
 
@@ -382,7 +389,7 @@ export function EventPromoBanners({
             transition: heroAnimating ? "transform 250ms ease-out" : "none",
           }}
         >
-          <HeroBanner promo={selected} />
+          <HeroBanner promo={selected} onCTA={onPromoCTA} />
         </div>
 
         {/* Next slide */}
@@ -394,7 +401,7 @@ export function EventPromoBanners({
               transition: heroAnimating ? "transform 250ms ease-out" : "none",
             }}
           >
-            <HeroBanner promo={nextPromo} />
+            <HeroBanner promo={nextPromo} onCTA={onPromoCTA} />
           </div>
         )}
 
@@ -480,7 +487,13 @@ export function EventPromoBanners({
 }
 
 // ── Extracted hero banner slide ─────────────────────────────
-function HeroBanner({ promo }: { promo: PromoBanner }) {
+function HeroBanner({
+  promo,
+  onCTA,
+}: {
+  promo: PromoBanner
+  onCTA?: (categoryId: string) => void
+}) {
   return (
     <div className="relative h-full w-full">
       <Image
@@ -515,6 +528,16 @@ function HeroBanner({ promo }: { promo: PromoBanner }) {
           <span className="mt-0.5 text-[10px] font-medium text-white/60">
             {promo.period}
           </span>
+        )}
+        {promo.targetCategoryId && onCTA && (
+          <button
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={() => onCTA(promo.targetCategoryId!)}
+            className="mt-2 w-fit rounded-full px-5 py-2 text-xs font-bold text-white transition-transform active:scale-95"
+            style={{ backgroundColor: promo.accentColor }}
+          >
+            {'이 프로모션으로 주문하기'}
+          </button>
         )}
       </div>
     </div>
