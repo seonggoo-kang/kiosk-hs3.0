@@ -1,23 +1,17 @@
 "use client"
 
-import { useState, useRef, useCallback } from "react"
+import { useState, useRef, useCallback, useEffect } from "react"
 import Image from "next/image"
 
 // ── Promotion data ──────────────────────────────────────────
 export type PromoBanner = {
   id: string
-  /** Badge label */
   badge: string
-  /** Main headline */
   headline: string
-  /** Sub-description (2-3 lines) */
   description: string[]
   period?: string
-  /** Detail image shown in the top hero area */
   detailImage: string
-  /** Accent colour for badge + ring on selected thumbnail */
   accentColor: string
-  /** Gradient for the detail overlay text area */
   overlayGradient: string
 }
 
@@ -27,9 +21,9 @@ export const eventPromotions: PromoBanner[] = [
     badge: "해피오더",
     headline: "SUPER WEEK\n최대 5천원 OFF!",
     description: [
+      "새로워진 해피오더 슈퍼위크!",
       "Coupon Zone에서 원하는 브랜드 쿠폰 다운!",
-      "Bonus Zone에서 더 많은 혜택 확인하고 구매!",
-      "참여 브랜드: 쉐이크쉑, 잠바주스, 패션파이브",
+      "Bonus Zone에서 더 많은 혜택 확인하세요",
     ],
     period: "02.09 - 02.22",
     detailImage: "/promos/event-superweek.jpg",
@@ -91,76 +85,269 @@ export const eventPromotions: PromoBanner[] = [
     accentColor: "hsl(215, 80%, 55%)",
     overlayGradient: "from-blue-950/90 via-blue-950/60 to-transparent",
   },
+  {
+    id: "coupon-zone",
+    badge: "쿠폰존",
+    headline: "브랜드별 쿠폰\n최대 5,000원!",
+    description: [
+      "파스쿠찌 배달/픽업 5,000원 할인",
+      "쉐이크쉑 배달/픽업 4,000원 할인",
+      "잠바주스 배달/픽업 4,000원 할인",
+    ],
+    period: "02.09 - 02.22",
+    detailImage: "/promos/event-coupon-zone.jpg",
+    accentColor: "hsl(40, 90%, 50%)",
+    overlayGradient: "from-orange-950/90 via-orange-950/60 to-transparent",
+  },
+  {
+    id: "t-membership",
+    badge: "T멤버십",
+    headline: "T멤버십 회원이라면\n무료 배달 + 10% 할인!",
+    description: [
+      "Happy Order x T membership Grand Open!",
+      "무료배달 월 1회 + 10% 할인/적립 일 1회",
+      "T 플러스포인트 사용 상시 가능",
+    ],
+    detailImage: "/promos/event-tmembership.jpg",
+    accentColor: "hsl(280, 70%, 55%)",
+    overlayGradient: "from-purple-950/90 via-purple-950/60 to-transparent",
+  },
+  {
+    id: "free-delivery",
+    badge: "배달비 FREE",
+    headline: "패션파이브·커피앳웍스\n배달비 무료!",
+    description: [
+      "패션파이브 25,000원 이상 주문 시 배달비 FREE",
+      "커피앳웍스 18,000원 이상 주문 시 배달비 FREE",
+      "해피오더 슈퍼위크 기간 한정",
+    ],
+    period: "02.09 - 02.22",
+    detailImage: "/promos/event-free-delivery.jpg",
+    accentColor: "hsl(155, 65%, 42%)",
+    overlayGradient: "from-emerald-950/90 via-emerald-950/60 to-transparent",
+  },
 ]
+
+const TOTAL = eventPromotions.length
 
 // ── Component ───────────────────────────────────────────────
 export function EventPromoBanners() {
-  const [selectedIdx, setSelectedIdx] = useState(0)
-  const selected = eventPromotions[selectedIdx]
+  const [currentIdx, setCurrentIdx] = useState(0)
 
-  // Horizontal drag scroll for thumbnails
-  const stripRef = useRef<HTMLDivElement>(null)
-  const dragStartX = useRef(0)
-  const scrollStart = useRef(0)
-  const dragged = useRef(false)
+  // ── Hero banner swipe ──
+  const heroRef = useRef<HTMLDivElement>(null)
+  const heroDragStartX = useRef(0)
+  const heroDragActive = useRef(false)
+  const heroDragLocked = useRef<"h" | "v" | null>(null)
+  const [heroDragOffset, setHeroDragOffset] = useState(0)
+  const heroDragOffsetRef = useRef(0)
+  const [heroAnimating, setHeroAnimating] = useState(false)
 
-  const onPointerDown = useCallback((e: React.PointerEvent) => {
-    dragStartX.current = e.clientX
-    scrollStart.current = stripRef.current?.scrollLeft ?? 0
-    dragged.current = false
+  const hasPrev = currentIdx > 0
+  const hasNext = currentIdx < TOTAL - 1
+
+  const onHeroPointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      if (heroAnimating) return
+      heroDragStartX.current = e.clientX
+      heroDragActive.current = true
+      heroDragLocked.current = null
+      heroDragOffsetRef.current = 0
+      setHeroDragOffset(0)
+    },
+    [heroAnimating]
+  )
+
+  const onHeroPointerMove = useCallback(
+    (e: React.PointerEvent) => {
+      if (!heroDragActive.current || e.buttons === 0) return
+      const dx = e.clientX - heroDragStartX.current
+      const dy = e.clientY - heroDragStartX.current // rough
+
+      if (!heroDragLocked.current && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) {
+        heroDragLocked.current = Math.abs(dx) >= Math.abs(dy) ? "h" : "v"
+      }
+      if (heroDragLocked.current !== "h") return
+
+      // Rubber-band at edges
+      let offset = dx
+      if ((!hasPrev && dx > 0) || (!hasNext && dx < 0)) {
+        offset = dx * 0.15
+      }
+      heroDragOffsetRef.current = offset
+      setHeroDragOffset(offset)
+    },
+    [hasPrev, hasNext]
+  )
+
+  const onHeroPointerUp = useCallback(() => {
+    if (!heroDragActive.current) return
+    heroDragActive.current = false
+
+    const dx = heroDragOffsetRef.current
+    const w = heroRef.current?.offsetWidth ?? 400
+    const threshold = w * 0.15
+
+    if (dx < -threshold && hasNext) {
+      setHeroAnimating(true)
+      setHeroDragOffset(-w)
+      setTimeout(() => {
+        setCurrentIdx((i) => i + 1)
+        setHeroDragOffset(0)
+        setHeroAnimating(false)
+      }, 250)
+    } else if (dx > threshold && hasPrev) {
+      setHeroAnimating(true)
+      setHeroDragOffset(w)
+      setTimeout(() => {
+        setCurrentIdx((i) => i - 1)
+        setHeroDragOffset(0)
+        setHeroAnimating(false)
+      }, 250)
+    } else {
+      setHeroAnimating(true)
+      setHeroDragOffset(0)
+      setTimeout(() => setHeroAnimating(false), 200)
+    }
+    heroDragOffsetRef.current = 0
+  }, [hasPrev, hasNext])
+
+  // Global pointerup fallback
+  useEffect(() => {
+    const handler = () => {
+      if (heroDragActive.current) {
+        heroDragActive.current = false
+        if (heroDragOffsetRef.current !== 0) {
+          setHeroAnimating(true)
+          setHeroDragOffset(0)
+          setTimeout(() => setHeroAnimating(false), 200)
+        }
+        heroDragOffsetRef.current = 0
+      }
+    }
+    window.addEventListener("pointerup", handler)
+    return () => window.removeEventListener("pointerup", handler)
   }, [])
 
-  const onPointerMove = useCallback((e: React.PointerEvent) => {
+  // ── Thumbnail strip scroll ──
+  const stripRef = useRef<HTMLDivElement>(null)
+  const stripStartX = useRef(0)
+  const stripScrollStart = useRef(0)
+  const stripDragged = useRef(false)
+
+  const onStripPointerDown = useCallback((e: React.PointerEvent) => {
+    stripStartX.current = e.clientX
+    stripScrollStart.current = stripRef.current?.scrollLeft ?? 0
+    stripDragged.current = false
+  }, [])
+
+  const onStripPointerMove = useCallback((e: React.PointerEvent) => {
     if (e.buttons === 0) return
-    const dx = e.clientX - dragStartX.current
-    if (Math.abs(dx) > 4) dragged.current = true
+    const dx = e.clientX - stripStartX.current
+    if (Math.abs(dx) > 4) stripDragged.current = true
     if (stripRef.current) {
-      stripRef.current.scrollLeft = scrollStart.current - dx
+      stripRef.current.scrollLeft = stripScrollStart.current - dx
     }
   }, [])
 
-  const handleThumbClick = useCallback((idx: number) => {
-    if (!dragged.current) setSelectedIdx(idx)
-  }, [])
+  const handleThumbClick = useCallback(
+    (idx: number) => {
+      if (!stripDragged.current) setCurrentIdx(idx)
+    },
+    []
+  )
+
+  // Auto-scroll thumbnail strip to keep active one visible
+  useEffect(() => {
+    const el = stripRef.current
+    if (!el) return
+    const thumb = el.children[currentIdx] as HTMLElement | undefined
+    if (thumb) {
+      const left = thumb.offsetLeft - el.offsetWidth / 2 + thumb.offsetWidth / 2
+      el.scrollTo({ left, behavior: "smooth" })
+    }
+  }, [currentIdx])
+
+  const selected = eventPromotions[currentIdx]
+  const prevPromo = hasPrev ? eventPromotions[currentIdx - 1] : null
+  const nextPromo = hasNext ? eventPromotions[currentIdx + 1] : null
 
   return (
     <div className="flex h-full flex-col">
-      {/* ── Top: Hero detail banner ── */}
-      <div className="relative flex-1 min-h-0">
-        <Image
-          key={selected.id}
-          src={selected.detailImage}
-          alt={selected.headline}
-          fill
-          className="object-cover animate-in fade-in duration-300"
-          sizes="480px"
-          priority
-        />
-        {/* Text overlay at bottom of image */}
-        <div
-          className={`absolute inset-x-0 bottom-0 flex flex-col gap-1.5 bg-gradient-to-t ${selected.overlayGradient} px-4 pb-4 pt-16`}
-        >
-          <span
-            className="w-fit rounded-full px-2.5 py-0.5 text-[10px] font-bold text-white"
-            style={{ backgroundColor: selected.accentColor }}
+      {/* ── Top: Hero banner carousel ── */}
+      <div
+        ref={heroRef}
+        className="relative flex-1 min-h-0 overflow-hidden select-none touch-pan-y"
+        onPointerDown={onHeroPointerDown}
+        onPointerMove={onHeroPointerMove}
+        onPointerUp={onHeroPointerUp}
+      >
+        {/* Previous slide (off-screen left) */}
+        {prevPromo && (
+          <div
+            className="absolute inset-0"
+            style={{
+              transform: `translateX(calc(-100% + ${heroDragOffset}px))`,
+              transition: heroAnimating ? "transform 250ms ease-out" : "none",
+            }}
           >
-            {selected.badge}
-          </span>
-          <h2 className="whitespace-pre-line text-[18px] font-extrabold leading-tight text-white drop-shadow-md">
-            {selected.headline}
-          </h2>
-          <div className="flex flex-col gap-0.5">
-            {selected.description.map((line, i) => (
-              <p key={i} className="text-[11px] leading-snug text-white/85">
-                {line}
-              </p>
-            ))}
+            <HeroBanner promo={prevPromo} />
           </div>
-          {selected.period && (
-            <span className="mt-0.5 text-[10px] font-medium text-white/60">
-              {selected.period}
-            </span>
-          )}
+        )}
+
+        {/* Current slide */}
+        <div
+          className="absolute inset-0"
+          style={{
+            transform: heroDragOffset !== 0 ? `translateX(${heroDragOffset}px)` : undefined,
+            transition: heroAnimating ? "transform 250ms ease-out" : "none",
+          }}
+        >
+          <HeroBanner promo={selected} />
+        </div>
+
+        {/* Next slide (off-screen right) */}
+        {nextPromo && (
+          <div
+            className="absolute inset-0"
+            style={{
+              transform: `translateX(calc(100% + ${heroDragOffset}px))`,
+              transition: heroAnimating ? "transform 250ms ease-out" : "none",
+            }}
+          >
+            <HeroBanner promo={nextPromo} />
+          </div>
+        )}
+
+        {/* Swipe edge hints */}
+        {hasPrev && (
+          <div
+            className="pointer-events-none absolute left-0 top-0 z-10 h-full w-3 bg-gradient-to-r from-black/10 to-transparent"
+            aria-hidden="true"
+          />
+        )}
+        {hasNext && (
+          <div
+            className="pointer-events-none absolute right-0 top-0 z-10 h-full w-3 bg-gradient-to-l from-black/10 to-transparent"
+            aria-hidden="true"
+          />
+        )}
+
+        {/* Page dots */}
+        <div
+          className="pointer-events-none absolute bottom-14 left-0 right-0 z-10 flex items-center justify-center gap-1.5"
+          aria-hidden="true"
+        >
+          {eventPromotions.map((_, i) => (
+            <span
+              key={i}
+              className={`rounded-full transition-all duration-300 ${
+                i === currentIdx
+                  ? "h-1.5 w-4 bg-white"
+                  : "h-1.5 w-1.5 bg-white/40"
+              }`}
+            />
+          ))}
         </div>
       </div>
 
@@ -169,8 +356,8 @@ export function EventPromoBanners() {
         <div
           ref={stripRef}
           className="flex gap-2.5 overflow-x-auto px-3 py-2.5 scrollbar-hide select-none"
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
+          onPointerDown={onStripPointerDown}
+          onPointerMove={onStripPointerMove}
         >
           {eventPromotions.map((promo, idx) => (
             <button
@@ -178,10 +365,10 @@ export function EventPromoBanners() {
               onClick={() => handleThumbClick(idx)}
               className="group relative shrink-0 overflow-hidden rounded-lg transition-all duration-200"
               style={{
-                width: 80,
-                height: 100,
+                width: 72,
+                height: 90,
                 outline:
-                  idx === selectedIdx
+                  idx === currentIdx
                     ? `2.5px solid ${promo.accentColor}`
                     : "2.5px solid transparent",
                 outlineOffset: 1,
@@ -192,24 +379,64 @@ export function EventPromoBanners() {
                 alt={promo.badge}
                 fill
                 className="object-cover"
-                sizes="80px"
+                sizes="72px"
               />
-              {/* Dark overlay with badge text */}
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-1.5 pb-1.5 pt-5">
-                <p className="truncate text-[9px] font-bold leading-tight text-white">
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-1 pb-1 pt-5">
+                <p className="truncate text-[8px] font-bold leading-tight text-white">
                   {promo.badge}
                 </p>
               </div>
-              {/* Active indicator dot */}
-              {idx === selectedIdx && (
+              {idx === currentIdx && (
                 <div
-                  className="absolute right-1 top-1 h-2 w-2 rounded-full"
+                  className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full"
                   style={{ backgroundColor: promo.accentColor }}
                 />
               )}
             </button>
           ))}
         </div>
+      </div>
+    </div>
+  )
+}
+
+// ── Extracted hero banner slide ─────────────────────────────
+function HeroBanner({ promo }: { promo: PromoBanner }) {
+  return (
+    <div className="relative h-full w-full">
+      <Image
+        src={promo.detailImage}
+        alt={promo.headline}
+        fill
+        className="object-cover"
+        sizes="480px"
+        priority
+        loading="eager"
+      />
+      <div
+        className={`absolute inset-x-0 bottom-0 flex flex-col gap-1.5 bg-gradient-to-t ${promo.overlayGradient} px-4 pb-4 pt-16`}
+      >
+        <span
+          className="w-fit rounded-full px-2.5 py-0.5 text-[10px] font-bold text-white"
+          style={{ backgroundColor: promo.accentColor }}
+        >
+          {promo.badge}
+        </span>
+        <h2 className="whitespace-pre-line text-[18px] font-extrabold leading-tight text-white drop-shadow-md">
+          {promo.headline}
+        </h2>
+        <div className="flex flex-col gap-0.5">
+          {promo.description.map((line, i) => (
+            <p key={i} className="text-[11px] leading-snug text-white/85">
+              {line}
+            </p>
+          ))}
+        </div>
+        {promo.period && (
+          <span className="mt-0.5 text-[10px] font-medium text-white/60">
+            {promo.period}
+          </span>
+        )}
       </div>
     </div>
   )
