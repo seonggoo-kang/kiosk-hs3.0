@@ -235,6 +235,8 @@ export function EventPromoBanners() {
 
   const onHeroPointerDown = useCallback((e: React.PointerEvent) => {
     if (animatingRef.current) return
+    // Prevent the outer category carousel from also starting a drag
+    e.stopPropagation()
     dragStartX.current = e.clientX
     dragStartY.current = e.clientY
     dragActive.current = true
