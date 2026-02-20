@@ -71,7 +71,7 @@ export function SubcategoryFilter({ items, activeId, onSelect }: SubcategoryFilt
               : "bg-muted text-muted-foreground active:bg-muted/80"
           )}
         >
-          <span suppressHydrationWarning>{item.name}</span>
+          {item.name}
         </button>
       ))}
     </div>
