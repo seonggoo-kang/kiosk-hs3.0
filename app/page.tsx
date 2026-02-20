@@ -22,6 +22,7 @@ export default function LandingPage() {
           src="/images/landing-hero.jpg"
           alt="Baskin Robbins ice cream"
           fill
+          sizes="100vw"
           className="animate-ken-burns object-cover"
           priority
           loading="eager"
