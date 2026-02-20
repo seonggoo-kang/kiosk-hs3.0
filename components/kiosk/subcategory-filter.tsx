@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useCallback, useState, useEffect } from "react"
+import { useRef, useCallback } from "react"
 import { cn } from "@/lib/utils"
 
 type SubcategoryFilterProps = {
@@ -10,12 +10,6 @@ type SubcategoryFilterProps = {
 }
 
 export function SubcategoryFilter({ items, activeId, onSelect }: SubcategoryFilterProps) {
-  // Defer rendering Korean text to avoid SSR streaming multibyte split
-  const [ready, setReady] = useState(false)
-  useEffect(() => {
-    setReady(true)
-  }, [])
-
   const scrollRef = useRef<HTMLDivElement>(null)
   const isDragging = useRef(false)
   const startX = useRef(0)
@@ -55,14 +49,6 @@ export function SubcategoryFilter({ items, activeId, onSelect }: SubcategoryFilt
     },
     [onSelect]
   )
-
-  if (!ready) {
-    return (
-      <div className="flex w-full shrink-0 gap-1.5 overflow-x-auto border-b border-border bg-card px-3 py-2 scrollbar-hide select-none">
-        <div className="h-[26px]" />
-      </div>
-    )
-  }
 
   return (
     <div
