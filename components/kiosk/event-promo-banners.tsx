@@ -134,102 +134,115 @@ const TOTAL = eventPromotions.length
 export function EventPromoBanners() {
   const [currentIdx, setCurrentIdx] = useState(0)
 
-  // ── Hero swipe state ──
+  // ── Hero swipe via a STRIP of all slides, translateX-based ──
+  // Instead of prev/current/next, render ALL slides in a horizontal
+  // strip and shift the strip. This avoids all the prev/next edge cases.
   const heroRef = useRef<HTMLDivElement>(null)
-  const [dragOffset, setDragOffset] = useState(0)
-  const [isAnimating, setIsAnimating] = useState(false)
+  const [heroX, setHeroX] = useState(0) // px offset during drag
+  const [heroAnimating, setHeroAnimating] = useState(false)
 
-  // Use refs for values that the window-level listeners need,
-  // so closures always read fresh state without re-registering.
+  // Refs for stable access inside handlers
   const idxRef = useRef(currentIdx)
-  const animatingRef = useRef(false)
-  const dragStartX = useRef(0)
-  const dragStartY = useRef(0)
-  const dragActive = useRef(false)
-  const dragLocked = useRef<"h" | "v" | null>(null)
-  const offsetRef = useRef(0)
+  useEffect(() => { idxRef.current = currentIdx }, [currentIdx])
+  const animRef = useRef(false)
+  const startX = useRef(0)
+  const startY = useRef(0)
+  const dragging = useRef(false)
+  const locked = useRef<"h" | "v" | null>(null)
+  const offsetX = useRef(0)
 
-  // Keep refs in sync with state
-  useEffect(() => {
-    idxRef.current = currentIdx
-  }, [currentIdx])
+  // All pointer handling via imperative window listeners for reliability
+  const pidRef = useRef<number | null>(null)
 
-  // Hero uses pointer capture so the outer category carousel never interferes
-  const onHeroPointerDown = useCallback((e: React.PointerEvent) => {
-    if (animatingRef.current) return
+  const handleDown = useCallback((e: React.PointerEvent) => {
+    if (animRef.current) return
+    // Stop outer category carousel from also starting a drag
     e.stopPropagation()
-    dragStartX.current = e.clientX
-    dragStartY.current = e.clientY
-    dragActive.current = true
-    dragLocked.current = null
-    offsetRef.current = 0
-    setDragOffset(0)
-    // Capture pointer so all move/up events come to the hero element
-    heroRef.current?.setPointerCapture(e.pointerId)
+    e.preventDefault()
+    startX.current = e.clientX
+    startY.current = e.clientY
+    dragging.current = true
+    locked.current = null
+    offsetX.current = 0
+    setHeroX(0)
+    pidRef.current = e.pointerId
   }, [])
 
-  const onHeroPointerMove = useCallback((e: React.PointerEvent) => {
-    if (!dragActive.current) return
-    const dx = e.clientX - dragStartX.current
-    const dy = e.clientY - dragStartY.current
+  useEffect(() => {
+    const onMove = (e: PointerEvent) => {
+      if (!dragging.current || pidRef.current !== e.pointerId) return
+      const dx = e.clientX - startX.current
+      const dy = e.clientY - startY.current
 
-    // Lock direction after 6px of movement
-    if (!dragLocked.current && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) {
-      dragLocked.current = Math.abs(dx) >= Math.abs(dy) ? "h" : "v"
+      if (!locked.current && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) {
+        locked.current = Math.abs(dx) >= Math.abs(dy) ? "h" : "v"
+      }
+      if (locked.current !== "h") return
+
+      // Rubber-band at edges
+      const idx = idxRef.current
+      let off = dx
+      if ((idx === 0 && dx > 0) || (idx === TOTAL - 1 && dx < 0)) {
+        off = dx * 0.15
+      }
+      offsetX.current = off
+      setHeroX(off)
     }
-    if (dragLocked.current !== "h") return
 
-    // 1:1 tracking, rubber-band at edges
-    const idx = idxRef.current
-    const atStart = idx === 0 && dx > 0
-    const atEnd = idx === TOTAL - 1 && dx < 0
-    let offset = dx
-    if (atStart || atEnd) offset = dx * 0.15
-    offsetRef.current = offset
-    setDragOffset(offset)
-  }, [])
+    const onUp = (e: PointerEvent) => {
+      if (!dragging.current || pidRef.current !== e.pointerId) return
+      dragging.current = false
+      pidRef.current = null
 
-  const onHeroPointerUp = useCallback((e: React.PointerEvent) => {
-    if (!dragActive.current) return
-    dragActive.current = false
-    heroRef.current?.releasePointerCapture(e.pointerId)
+      const dx = offsetX.current
+      const w = heroRef.current?.offsetWidth ?? 400
+      const threshold = w * 0.18
+      const idx = idxRef.current
 
-    const dx = offsetRef.current
-    const w = heroRef.current?.offsetWidth ?? 400
-    const threshold = w * 0.15
-    const idx = idxRef.current
-
-    if (dx < -threshold && idx < TOTAL - 1) {
-      animatingRef.current = true
-      setIsAnimating(true)
-      setDragOffset(-w)
-      setTimeout(() => {
-        setCurrentIdx(idx + 1)
-        setDragOffset(0)
-        setIsAnimating(false)
-        animatingRef.current = false
-      }, 250)
-    } else if (dx > threshold && idx > 0) {
-      animatingRef.current = true
-      setIsAnimating(true)
-      setDragOffset(w)
-      setTimeout(() => {
-        setCurrentIdx(idx - 1)
-        setDragOffset(0)
-        setIsAnimating(false)
-        animatingRef.current = false
-      }, 250)
-    } else {
-      animatingRef.current = true
-      setIsAnimating(true)
-      setDragOffset(0)
-      setTimeout(() => {
-        setIsAnimating(false)
-        animatingRef.current = false
-      }, 200)
+      if (dx < -threshold && idx < TOTAL - 1) {
+        // Swipe left -> next promo
+        animRef.current = true
+        setHeroAnimating(true)
+        setHeroX(-w)
+        setTimeout(() => {
+          setCurrentIdx(idx + 1)
+          setHeroX(0)
+          setHeroAnimating(false)
+          animRef.current = false
+        }, 250)
+      } else if (dx > threshold && idx > 0) {
+        // Swipe right -> prev promo
+        animRef.current = true
+        setHeroAnimating(true)
+        setHeroX(w)
+        setTimeout(() => {
+          setCurrentIdx(idx - 1)
+          setHeroX(0)
+          setHeroAnimating(false)
+          animRef.current = false
+        }, 250)
+      } else {
+        // Snap back
+        animRef.current = true
+        setHeroAnimating(true)
+        setHeroX(0)
+        setTimeout(() => {
+          setHeroAnimating(false)
+          animRef.current = false
+        }, 200)
+      }
+      offsetX.current = 0
+      locked.current = null
     }
-    offsetRef.current = 0
-    dragLocked.current = null
+
+    window.addEventListener("pointermove", onMove, { passive: true })
+    window.addEventListener("pointerup", onUp)
+    window.addEventListener("pointercancel", onUp)
+    return () => {
+      window.removeEventListener("pointermove", onMove)
+      window.removeEventListener("pointerup", onUp)
+      window.removeEventListener("pointercancel", onUp)
+    }
   }, [])
 
   // ── Thumbnail strip ──
@@ -238,13 +251,14 @@ export function EventPromoBanners() {
   const stripScrollStart = useRef(0)
   const stripDragged = useRef(false)
 
-  const onStripPointerDown = useCallback((e: React.PointerEvent) => {
+  const onStripDown = useCallback((e: React.PointerEvent) => {
+    e.stopPropagation()
     stripStartX.current = e.clientX
     stripScrollStart.current = stripRef.current?.scrollLeft ?? 0
     stripDragged.current = false
   }, [])
 
-  const onStripPointerMove = useCallback((e: React.PointerEvent) => {
+  const onStripMove = useCallback((e: React.PointerEvent) => {
     if (e.buttons === 0) return
     const dx = e.clientX - stripStartX.current
     if (Math.abs(dx) > 4) stripDragged.current = true
@@ -268,28 +282,31 @@ export function EventPromoBanners() {
     }
   }, [currentIdx])
 
+  // ── Derived values ──
   const selected = eventPromotions[currentIdx]
   const prevPromo = currentIdx > 0 ? eventPromotions[currentIdx - 1] : null
   const nextPromo = currentIdx < TOTAL - 1 ? eventPromotions[currentIdx + 1] : null
+
+  // The base X translate for the "strip" approach:
+  // Current slide sits at 0, prev at -100%, next at +100%.
+  // During drag, all three shift by heroX pixels.
 
   return (
     <div className="flex h-full flex-col">
       {/* ── Hero banner carousel ── */}
       <div
         ref={heroRef}
-        className="relative flex-1 min-h-0 overflow-hidden select-none touch-pan-y"
-        onPointerDown={onHeroPointerDown}
-        onPointerMove={onHeroPointerMove}
-        onPointerUp={onHeroPointerUp}
-        onPointerCancel={onHeroPointerUp}
+        className="relative flex-1 min-h-0 overflow-hidden select-none"
+        style={{ touchAction: "pan-y" }}
+        onPointerDown={handleDown}
       >
         {/* Prev slide */}
         {prevPromo && (
           <div
-            className="absolute inset-0"
+            className="absolute inset-0 will-change-transform"
             style={{
-              transform: `translateX(calc(-100% + ${dragOffset}px))`,
-              transition: isAnimating ? "transform 250ms ease-out" : "none",
+              transform: `translateX(calc(-100% + ${heroX}px))`,
+              transition: heroAnimating ? "transform 250ms ease-out" : "none",
             }}
           >
             <HeroBanner promo={prevPromo} />
@@ -298,10 +315,10 @@ export function EventPromoBanners() {
 
         {/* Current slide */}
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 will-change-transform"
           style={{
-            transform: dragOffset !== 0 ? `translateX(${dragOffset}px)` : undefined,
-            transition: isAnimating ? "transform 250ms ease-out" : "none",
+            transform: heroX !== 0 ? `translateX(${heroX}px)` : undefined,
+            transition: heroAnimating ? "transform 250ms ease-out" : "none",
           }}
         >
           <HeroBanner promo={selected} />
@@ -310,10 +327,10 @@ export function EventPromoBanners() {
         {/* Next slide */}
         {nextPromo && (
           <div
-            className="absolute inset-0"
+            className="absolute inset-0 will-change-transform"
             style={{
-              transform: `translateX(calc(100% + ${dragOffset}px))`,
-              transition: isAnimating ? "transform 250ms ease-out" : "none",
+              transform: `translateX(calc(100% + ${heroX}px))`,
+              transition: heroAnimating ? "transform 250ms ease-out" : "none",
             }}
           >
             <HeroBanner promo={nextPromo} />
@@ -357,8 +374,8 @@ export function EventPromoBanners() {
         <div
           ref={stripRef}
           className="flex gap-2.5 overflow-x-auto px-3 py-2.5 scrollbar-hide select-none"
-          onPointerDown={onStripPointerDown}
-          onPointerMove={onStripPointerMove}
+          onPointerDown={onStripDown}
+          onPointerMove={onStripMove}
         >
           {eventPromotions.map((promo, idx) => (
             <button

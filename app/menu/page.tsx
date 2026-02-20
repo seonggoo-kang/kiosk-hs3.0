@@ -50,7 +50,7 @@ function SlideContent({
 }) {
   if (slide.isEvent) {
     return (
-      <div className="h-full overflow-y-auto overflow-x-hidden">
+      <div className="h-full">
         <EventPromoBanners />
       </div>
     )
