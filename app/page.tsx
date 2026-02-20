@@ -16,13 +16,13 @@ export default function LandingPage() {
 
   return (
     <div className="relative flex flex-1 flex-col">
-      {/* Full-screen hero image */}
-      <div className="absolute inset-0">
+      {/* Full-screen hero image with Ken Burns animation */}
+      <div className="absolute inset-0 overflow-hidden">
         <Image
           src="/images/landing-hero.jpg"
           alt="Baskin Robbins ice cream"
           fill
-          className="object-cover"
+          className="animate-ken-burns object-cover"
           priority
           loading="eager"
         />
