@@ -39,6 +39,7 @@ export function SubcategoryFilter({ items, activeId, onSelect }: SubcategoryFilt
       isDragging.current = false
       scrollRef.current?.releasePointerCapture(e.pointerId)
 
+      // If barely moved, treat as a tap - find the button under the pointer
       if (Math.abs(totalDx.current) < 5) {
         const target = document.elementFromPoint(e.clientX, e.clientY)
         const btn = target?.closest<HTMLButtonElement>("button[data-filter-id]")
