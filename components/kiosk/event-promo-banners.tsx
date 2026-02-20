@@ -134,102 +134,100 @@ const TOTAL = eventPromotions.length
 export function EventPromoBanners() {
   const [currentIdx, setCurrentIdx] = useState(0)
 
-  // ── Hero banner swipe ──
+  // ── Hero swipe state ──
   const heroRef = useRef<HTMLDivElement>(null)
-  const heroDragStartX = useRef(0)
-  const heroDragActive = useRef(false)
-  const heroDragLocked = useRef<"h" | "v" | null>(null)
-  const [heroDragOffset, setHeroDragOffset] = useState(0)
-  const heroDragOffsetRef = useRef(0)
-  const [heroAnimating, setHeroAnimating] = useState(false)
+  const [dragOffset, setDragOffset] = useState(0)
+  const [isAnimating, setIsAnimating] = useState(false)
+  const dragStartX = useRef(0)
+  const dragStartY = useRef(0)
+  const dragActive = useRef(false)
+  const dragLocked = useRef<"h" | "v" | null>(null)
+  const offsetRef = useRef(0)
 
   const hasPrev = currentIdx > 0
   const hasNext = currentIdx < TOTAL - 1
 
-  const onHeroPointerDown = useCallback(
-    (e: React.PointerEvent) => {
-      if (heroAnimating) return
-      heroDragStartX.current = e.clientX
-      heroDragActive.current = true
-      heroDragLocked.current = null
-      heroDragOffsetRef.current = 0
-      setHeroDragOffset(0)
-    },
-    [heroAnimating]
-  )
+  // Use window-level move/up listeners so drag works even when pointer leaves the hero area
+  useEffect(() => {
+    const handleMove = (e: PointerEvent) => {
+      if (!dragActive.current) return
+      const dx = e.clientX - dragStartX.current
+      const dy = e.clientY - dragStartY.current
 
-  const onHeroPointerMove = useCallback(
-    (e: React.PointerEvent) => {
-      if (!heroDragActive.current || e.buttons === 0) return
-      const dx = e.clientX - heroDragStartX.current
-      const dy = e.clientY - heroDragStartX.current // rough
-
-      if (!heroDragLocked.current && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) {
-        heroDragLocked.current = Math.abs(dx) >= Math.abs(dy) ? "h" : "v"
+      // Lock direction after 6px of movement
+      if (!dragLocked.current && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) {
+        dragLocked.current = Math.abs(dx) >= Math.abs(dy) ? "h" : "v"
       }
-      if (heroDragLocked.current !== "h") return
+      if (dragLocked.current !== "h") return
 
-      // Rubber-band at edges
+      // 1:1 tracking, rubber-band at edges
       let offset = dx
       if ((!hasPrev && dx > 0) || (!hasNext && dx < 0)) {
         offset = dx * 0.15
       }
-      heroDragOffsetRef.current = offset
-      setHeroDragOffset(offset)
-    },
-    [hasPrev, hasNext]
-  )
-
-  const onHeroPointerUp = useCallback(() => {
-    if (!heroDragActive.current) return
-    heroDragActive.current = false
-
-    const dx = heroDragOffsetRef.current
-    const w = heroRef.current?.offsetWidth ?? 400
-    const threshold = w * 0.15
-
-    if (dx < -threshold && hasNext) {
-      setHeroAnimating(true)
-      setHeroDragOffset(-w)
-      setTimeout(() => {
-        setCurrentIdx((i) => i + 1)
-        setHeroDragOffset(0)
-        setHeroAnimating(false)
-      }, 250)
-    } else if (dx > threshold && hasPrev) {
-      setHeroAnimating(true)
-      setHeroDragOffset(w)
-      setTimeout(() => {
-        setCurrentIdx((i) => i - 1)
-        setHeroDragOffset(0)
-        setHeroAnimating(false)
-      }, 250)
-    } else {
-      setHeroAnimating(true)
-      setHeroDragOffset(0)
-      setTimeout(() => setHeroAnimating(false), 200)
+      offsetRef.current = offset
+      setDragOffset(offset)
     }
-    heroDragOffsetRef.current = 0
+
+    const handleUp = () => {
+      if (!dragActive.current) return
+      dragActive.current = false
+
+      const dx = offsetRef.current
+      const w = heroRef.current?.offsetWidth ?? 400
+      const threshold = w * 0.15
+
+      if (dx < -threshold && hasNext) {
+        // Commit: swipe left -> next
+        setIsAnimating(true)
+        setDragOffset(-w)
+        setTimeout(() => {
+          setCurrentIdx((i) => i + 1)
+          setDragOffset(0)
+          setIsAnimating(false)
+        }, 250)
+      } else if (dx > threshold && hasPrev) {
+        // Commit: swipe right -> prev
+        setIsAnimating(true)
+        setDragOffset(w)
+        setTimeout(() => {
+          setCurrentIdx((i) => i - 1)
+          setDragOffset(0)
+          setIsAnimating(false)
+        }, 250)
+      } else {
+        // Snap back
+        setIsAnimating(true)
+        setDragOffset(0)
+        setTimeout(() => setIsAnimating(false), 200)
+      }
+      offsetRef.current = 0
+    }
+
+    window.addEventListener("pointermove", handleMove)
+    window.addEventListener("pointerup", handleUp)
+    window.addEventListener("pointercancel", handleUp)
+    return () => {
+      window.removeEventListener("pointermove", handleMove)
+      window.removeEventListener("pointerup", handleUp)
+      window.removeEventListener("pointercancel", handleUp)
+    }
   }, [hasPrev, hasNext])
 
-  // Global pointerup fallback
-  useEffect(() => {
-    const handler = () => {
-      if (heroDragActive.current) {
-        heroDragActive.current = false
-        if (heroDragOffsetRef.current !== 0) {
-          setHeroAnimating(true)
-          setHeroDragOffset(0)
-          setTimeout(() => setHeroAnimating(false), 200)
-        }
-        heroDragOffsetRef.current = 0
-      }
-    }
-    window.addEventListener("pointerup", handler)
-    return () => window.removeEventListener("pointerup", handler)
-  }, [])
+  const onHeroPointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      if (isAnimating) return
+      dragStartX.current = e.clientX
+      dragStartY.current = e.clientY
+      dragActive.current = true
+      dragLocked.current = null
+      offsetRef.current = 0
+      setDragOffset(0)
+    },
+    [isAnimating]
+  )
 
-  // ── Thumbnail strip scroll ──
+  // ── Thumbnail strip ──
   const stripRef = useRef<HTMLDivElement>(null)
   const stripStartX = useRef(0)
   const stripScrollStart = useRef(0)
@@ -250,14 +248,11 @@ export function EventPromoBanners() {
     }
   }, [])
 
-  const handleThumbClick = useCallback(
-    (idx: number) => {
-      if (!stripDragged.current) setCurrentIdx(idx)
-    },
-    []
-  )
+  const handleThumbClick = useCallback((idx: number) => {
+    if (!stripDragged.current) setCurrentIdx(idx)
+  }, [])
 
-  // Auto-scroll thumbnail strip to keep active one visible
+  // Auto-scroll thumbnail strip to keep active one centered
   useEffect(() => {
     const el = stripRef.current
     if (!el) return
@@ -274,21 +269,19 @@ export function EventPromoBanners() {
 
   return (
     <div className="flex h-full flex-col">
-      {/* ── Top: Hero banner carousel ── */}
+      {/* ── Hero banner carousel ── */}
       <div
         ref={heroRef}
         className="relative flex-1 min-h-0 overflow-hidden select-none touch-pan-y"
         onPointerDown={onHeroPointerDown}
-        onPointerMove={onHeroPointerMove}
-        onPointerUp={onHeroPointerUp}
       >
-        {/* Previous slide (off-screen left) */}
+        {/* Prev slide */}
         {prevPromo && (
           <div
             className="absolute inset-0"
             style={{
-              transform: `translateX(calc(-100% + ${heroDragOffset}px))`,
-              transition: heroAnimating ? "transform 250ms ease-out" : "none",
+              transform: `translateX(calc(-100% + ${dragOffset}px))`,
+              transition: isAnimating ? "transform 250ms ease-out" : "none",
             }}
           >
             <HeroBanner promo={prevPromo} />
@@ -299,20 +292,20 @@ export function EventPromoBanners() {
         <div
           className="absolute inset-0"
           style={{
-            transform: heroDragOffset !== 0 ? `translateX(${heroDragOffset}px)` : undefined,
-            transition: heroAnimating ? "transform 250ms ease-out" : "none",
+            transform: dragOffset !== 0 ? `translateX(${dragOffset}px)` : undefined,
+            transition: isAnimating ? "transform 250ms ease-out" : "none",
           }}
         >
           <HeroBanner promo={selected} />
         </div>
 
-        {/* Next slide (off-screen right) */}
+        {/* Next slide */}
         {nextPromo && (
           <div
             className="absolute inset-0"
             style={{
-              transform: `translateX(calc(100% + ${heroDragOffset}px))`,
-              transition: heroAnimating ? "transform 250ms ease-out" : "none",
+              transform: `translateX(calc(100% + ${dragOffset}px))`,
+              transition: isAnimating ? "transform 250ms ease-out" : "none",
             }}
           >
             <HeroBanner promo={nextPromo} />
@@ -333,7 +326,7 @@ export function EventPromoBanners() {
           />
         )}
 
-        {/* Page dots */}
+        {/* Page dots (indicator dots) */}
         <div
           className="pointer-events-none absolute bottom-14 left-0 right-0 z-10 flex items-center justify-center gap-1.5"
           aria-hidden="true"
@@ -351,7 +344,7 @@ export function EventPromoBanners() {
         </div>
       </div>
 
-      {/* ── Bottom: Thumbnail strip ── */}
+      {/* ── Thumbnail strip ── */}
       <div className="shrink-0 border-t border-border bg-card">
         <div
           ref={stripRef}
