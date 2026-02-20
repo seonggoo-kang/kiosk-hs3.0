@@ -43,21 +43,30 @@ function SlideContent({
   slide,
   selectedProductId,
   onSelectProduct,
-  onEventOverflowLeft,
-  onEventOverflowRight,
+  onEventOverflowDrag,
+  onEventOverflowCommit,
+  onEventOverflowCancel,
+  canOverflowLeft,
+  canOverflowRight,
 }: {
   slide: Slide
   selectedProductId: string | null
   onSelectProduct: (p: Product) => void
-  onEventOverflowLeft?: () => void
-  onEventOverflowRight?: () => void
+  onEventOverflowDrag?: (dx: number) => void
+  onEventOverflowCommit?: (direction: "left" | "right") => void
+  onEventOverflowCancel?: () => void
+  canOverflowLeft?: boolean
+  canOverflowRight?: boolean
 }) {
   if (slide.isEvent) {
     return (
       <div className="h-full">
         <EventPromoBanners
-          onOverflowLeft={onEventOverflowLeft}
-          onOverflowRight={onEventOverflowRight}
+          onOverflowDrag={onEventOverflowDrag}
+          onOverflowCommit={onEventOverflowCommit}
+          onOverflowCancel={onEventOverflowCancel}
+          canOverflowLeft={canOverflowLeft}
+          canOverflowRight={canOverflowRight}
         />
       </div>
     )
@@ -573,24 +582,31 @@ function MenuContent() {
               slide={displaySlide}
               selectedProductId={state.selectedProductId}
               onSelectProduct={handleProductSelect}
-              onEventOverflowLeft={canGoRight ? () => {
+              canOverflowLeft={canGoRight}
+              canOverflowRight={canGoLeft}
+              onEventOverflowDrag={(dx) => {
+                setDragOffset(dx)
+              }}
+              onEventOverflowCommit={(direction) => {
+                const containerWidth = containerRef.current?.offsetWidth || 400
                 setIsAnimating(true)
-                setDragOffset(0)
+                setDragOffset(direction === "left" ? -containerWidth : containerWidth)
                 setTimeout(() => {
-                  setFlatIndex((prev) => prev + 1)
+                  if (direction === "left") {
+                    setFlatIndex((prev) => prev + 1)
+                  } else {
+                    setFlatIndex((prev) => prev - 1)
+                  }
+                  setDragOffset(0)
                   setIsAnimating(false)
                   dispatch({ type: "SELECT_PRODUCT", payload: null })
-                }, 50)
-              } : undefined}
-              onEventOverflowRight={canGoLeft ? () => {
+                }, 250)
+              }}
+              onEventOverflowCancel={() => {
                 setIsAnimating(true)
                 setDragOffset(0)
-                setTimeout(() => {
-                  setFlatIndex((prev) => prev - 1)
-                  setIsAnimating(false)
-                  dispatch({ type: "SELECT_PRODUCT", payload: null })
-                }, 50)
-              } : undefined}
+                setTimeout(() => setIsAnimating(false), 200)
+              }}
             />
           </div>
 

@@ -132,17 +132,21 @@ const TOTAL = eventPromotions.length
 
 // ── Component ───────────────────────────────────────────────
 export function EventPromoBanners({
-  onOverflowLeft,
-  onOverflowRight,
+  onOverflowDrag,
+  onOverflowCommit,
+  onOverflowCancel,
+  canOverflowLeft,
+  canOverflowRight,
 }: {
-  onOverflowLeft?: () => void
-  onOverflowRight?: () => void
+  onOverflowDrag?: (dx: number) => void
+  onOverflowCommit?: (direction: "left" | "right") => void
+  onOverflowCancel?: () => void
+  canOverflowLeft?: boolean
+  canOverflowRight?: boolean
 }) {
   const [currentIdx, setCurrentIdx] = useState(0)
 
   // ── Hero swipe via a STRIP of all slides, translateX-based ──
-  // Instead of prev/current/next, render ALL slides in a horizontal
-  // strip and shift the strip. This avoids all the prev/next edge cases.
   const heroRef = useRef<HTMLDivElement>(null)
   const [heroX, setHeroX] = useState(0) // px offset during drag
   const [heroAnimating, setHeroAnimating] = useState(false)
@@ -150,11 +154,18 @@ export function EventPromoBanners({
   // Refs for stable access inside window-level handlers
   const idxRef = useRef(currentIdx)
   useEffect(() => { idxRef.current = currentIdx }, [currentIdx])
-  const overflowLeftRef = useRef(onOverflowLeft)
-  useEffect(() => { overflowLeftRef.current = onOverflowLeft }, [onOverflowLeft])
-  const overflowRightRef = useRef(onOverflowRight)
-  useEffect(() => { overflowRightRef.current = onOverflowRight }, [onOverflowRight])
+  const overflowDragRef = useRef(onOverflowDrag)
+  useEffect(() => { overflowDragRef.current = onOverflowDrag }, [onOverflowDrag])
+  const overflowCommitRef = useRef(onOverflowCommit)
+  useEffect(() => { overflowCommitRef.current = onOverflowCommit }, [onOverflowCommit])
+  const overflowCancelRef = useRef(onOverflowCancel)
+  useEffect(() => { overflowCancelRef.current = onOverflowCancel }, [onOverflowCancel])
+  const canLeftRef = useRef(canOverflowLeft)
+  useEffect(() => { canLeftRef.current = canOverflowLeft }, [canOverflowLeft])
+  const canRightRef = useRef(canOverflowRight)
+  useEffect(() => { canRightRef.current = canOverflowRight }, [canOverflowRight])
   const animRef = useRef(false)
+  const isOverflowing = useRef(false) // true when drag has passed into outer carousel
   const startX = useRef(0)
   const startY = useRef(0)
   const dragging = useRef(false)
@@ -189,17 +200,36 @@ export function EventPromoBanners({
       }
       if (locked.current !== "h") return
 
-      // At edges: dampen if no overflow callback, otherwise allow full drag
       const idx = idxRef.current
-      let off = dx
-      const atFirstAndRight = idx === 0 && dx > 0
       const atLastAndLeft = idx === TOTAL - 1 && dx < 0
-      if (atFirstAndRight && !overflowRightRef.current) {
-        off = dx * 0.15 // rubber-band, no overflow possible
-      } else if (atLastAndLeft && !overflowLeftRef.current) {
-        off = dx * 0.15 // rubber-band, no overflow possible
-      } else if (atFirstAndRight || atLastAndLeft) {
-        off = dx * 0.4 // dampened but visible -- signals "you can go further"
+      const atFirstAndRight = idx === 0 && dx > 0
+
+      // If at the edge and can overflow, pass the drag to the outer carousel
+      if (atLastAndLeft && canLeftRef.current) {
+        isOverflowing.current = true
+        overflowDragRef.current?.(dx) // negative dx -> outer moves left
+        setHeroX(0) // hero stays still
+        offsetX.current = dx
+        return
+      }
+      if (atFirstAndRight && canRightRef.current) {
+        isOverflowing.current = true
+        overflowDragRef.current?.(dx) // positive dx -> outer moves right
+        setHeroX(0)
+        offsetX.current = dx
+        return
+      }
+
+      // If we were overflowing but now dragged back into hero range, reclaim
+      if (isOverflowing.current) {
+        isOverflowing.current = false
+        overflowDragRef.current?.(0) // reset outer
+      }
+
+      // Normal hero drag within promo range
+      let off = dx
+      if ((idx === 0 && dx > 0) || (idx === TOTAL - 1 && dx < 0)) {
+        off = dx * 0.15 // rubber-band at dead edges
       }
       offsetX.current = off
       setHeroX(off)
@@ -214,6 +244,21 @@ export function EventPromoBanners({
       const w = heroRef.current?.offsetWidth ?? 400
       const threshold = w * 0.18
       const idx = idxRef.current
+
+      // If we were overflowing into the outer carousel
+      if (isOverflowing.current) {
+        isOverflowing.current = false
+        if (Math.abs(dx) > threshold) {
+          // Commit the outer carousel transition
+          overflowCommitRef.current?.(dx < 0 ? "left" : "right")
+        } else {
+          // Snap back the outer carousel
+          overflowCancelRef.current?.()
+        }
+        offsetX.current = 0
+        locked.current = null
+        return
+      }
 
       if (dx < -threshold && idx < TOTAL - 1) {
         // Swipe left -> next promo
@@ -237,26 +282,6 @@ export function EventPromoBanners({
           setHeroAnimating(false)
           animRef.current = false
         }, 250)
-      } else if (dx < -threshold && idx === TOTAL - 1 && overflowLeftRef.current) {
-        // At last promo, swiping left -> overflow to next category
-        animRef.current = true
-        setHeroAnimating(true)
-        setHeroX(0)
-        setTimeout(() => {
-          setHeroAnimating(false)
-          animRef.current = false
-        }, 150)
-        overflowLeftRef.current()
-      } else if (dx > threshold && idx === 0 && overflowRightRef.current) {
-        // At first promo, swiping right -> overflow to prev category
-        animRef.current = true
-        setHeroAnimating(true)
-        setHeroX(0)
-        setTimeout(() => {
-          setHeroAnimating(false)
-          animRef.current = false
-        }, 150)
-        overflowRightRef.current()
       } else {
         // Snap back
         animRef.current = true
