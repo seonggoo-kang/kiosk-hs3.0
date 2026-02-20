@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useCallback } from "react"
+import { useRef, useCallback, useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 
 type SubcategoryFilterProps = {
@@ -10,6 +10,9 @@ type SubcategoryFilterProps = {
 }
 
 export function SubcategoryFilter({ items, activeId, onSelect }: SubcategoryFilterProps) {
+  const [hydrated, setHydrated] = useState(false)
+  useEffect(() => { setHydrated(true) }, [])
+
   const scrollRef = useRef<HTMLDivElement>(null)
   const isDragging = useRef(false)
   const startX = useRef(0)
@@ -60,7 +63,7 @@ export function SubcategoryFilter({ items, activeId, onSelect }: SubcategoryFilt
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerUp}
     >
-      {items.map((item) => (
+      {hydrated ? items.map((item) => (
         <button
           key={item.id}
           data-filter-id={item.id}
@@ -73,7 +76,7 @@ export function SubcategoryFilter({ items, activeId, onSelect }: SubcategoryFilt
         >
           {item.name}
         </button>
-      ))}
+      )) : <div className="h-[26px]" />}
     </div>
   )
 }

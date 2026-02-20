@@ -11,11 +11,7 @@ import { ProductDetailPanel } from "@/components/kiosk/product-detail-panel"
 import { CartStrip } from "@/components/kiosk/cart-strip"
 import { ActionBar } from "@/components/kiosk/action-bar"
 import { EventPromoBanners } from "@/components/kiosk/event-promo-banners"
-import dynamic from "next/dynamic"
-const SubcategoryFilter = dynamic(
-  () => import("@/components/kiosk/subcategory-filter").then((m) => m.SubcategoryFilter),
-  { ssr: false }
-)
+import { SubcategoryFilter } from "@/components/kiosk/subcategory-filter"
 import { AiPickPanel } from "@/components/kiosk/ai-pick-panel"
 import { useOrder } from "@/lib/order-context"
 import {
