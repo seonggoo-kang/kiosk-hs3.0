@@ -131,7 +131,13 @@ export const eventPromotions: PromoBanner[] = [
 const TOTAL = eventPromotions.length
 
 // ── Component ───────────────────────────────────────────────
-export function EventPromoBanners() {
+export function EventPromoBanners({
+  onOverflowLeft,
+  onOverflowRight,
+}: {
+  onOverflowLeft?: () => void
+  onOverflowRight?: () => void
+}) {
   const [currentIdx, setCurrentIdx] = useState(0)
 
   // ── Hero swipe via a STRIP of all slides, translateX-based ──
@@ -141,9 +147,13 @@ export function EventPromoBanners() {
   const [heroX, setHeroX] = useState(0) // px offset during drag
   const [heroAnimating, setHeroAnimating] = useState(false)
 
-  // Refs for stable access inside handlers
+  // Refs for stable access inside window-level handlers
   const idxRef = useRef(currentIdx)
   useEffect(() => { idxRef.current = currentIdx }, [currentIdx])
+  const overflowLeftRef = useRef(onOverflowLeft)
+  useEffect(() => { overflowLeftRef.current = onOverflowLeft }, [onOverflowLeft])
+  const overflowRightRef = useRef(onOverflowRight)
+  useEffect(() => { overflowRightRef.current = onOverflowRight }, [onOverflowRight])
   const animRef = useRef(false)
   const startX = useRef(0)
   const startY = useRef(0)
@@ -179,11 +189,17 @@ export function EventPromoBanners() {
       }
       if (locked.current !== "h") return
 
-      // Rubber-band at edges
+      // At edges: dampen if no overflow callback, otherwise allow full drag
       const idx = idxRef.current
       let off = dx
-      if ((idx === 0 && dx > 0) || (idx === TOTAL - 1 && dx < 0)) {
-        off = dx * 0.15
+      const atFirstAndRight = idx === 0 && dx > 0
+      const atLastAndLeft = idx === TOTAL - 1 && dx < 0
+      if (atFirstAndRight && !overflowRightRef.current) {
+        off = dx * 0.15 // rubber-band, no overflow possible
+      } else if (atLastAndLeft && !overflowLeftRef.current) {
+        off = dx * 0.15 // rubber-band, no overflow possible
+      } else if (atFirstAndRight || atLastAndLeft) {
+        off = dx * 0.4 // dampened but visible -- signals "you can go further"
       }
       offsetX.current = off
       setHeroX(off)
@@ -221,6 +237,26 @@ export function EventPromoBanners() {
           setHeroAnimating(false)
           animRef.current = false
         }, 250)
+      } else if (dx < -threshold && idx === TOTAL - 1 && overflowLeftRef.current) {
+        // At last promo, swiping left -> overflow to next category
+        animRef.current = true
+        setHeroAnimating(true)
+        setHeroX(0)
+        setTimeout(() => {
+          setHeroAnimating(false)
+          animRef.current = false
+        }, 150)
+        overflowLeftRef.current()
+      } else if (dx > threshold && idx === 0 && overflowRightRef.current) {
+        // At first promo, swiping right -> overflow to prev category
+        animRef.current = true
+        setHeroAnimating(true)
+        setHeroX(0)
+        setTimeout(() => {
+          setHeroAnimating(false)
+          animRef.current = false
+        }, 150)
+        overflowRightRef.current()
       } else {
         // Snap back
         animRef.current = true

@@ -43,15 +43,22 @@ function SlideContent({
   slide,
   selectedProductId,
   onSelectProduct,
+  onEventOverflowLeft,
+  onEventOverflowRight,
 }: {
   slide: Slide
   selectedProductId: string | null
   onSelectProduct: (p: Product) => void
+  onEventOverflowLeft?: () => void
+  onEventOverflowRight?: () => void
 }) {
   if (slide.isEvent) {
     return (
       <div className="h-full">
-        <EventPromoBanners />
+        <EventPromoBanners
+          onOverflowLeft={onEventOverflowLeft}
+          onOverflowRight={onEventOverflowRight}
+        />
       </div>
     )
   }
@@ -566,6 +573,24 @@ function MenuContent() {
               slide={displaySlide}
               selectedProductId={state.selectedProductId}
               onSelectProduct={handleProductSelect}
+              onEventOverflowLeft={canGoRight ? () => {
+                setIsAnimating(true)
+                setDragOffset(0)
+                setTimeout(() => {
+                  setFlatIndex((prev) => prev + 1)
+                  setIsAnimating(false)
+                  dispatch({ type: "SELECT_PRODUCT", payload: null })
+                }, 50)
+              } : undefined}
+              onEventOverflowRight={canGoLeft ? () => {
+                setIsAnimating(true)
+                setDragOffset(0)
+                setTimeout(() => {
+                  setFlatIndex((prev) => prev - 1)
+                  setIsAnimating(false)
+                  dispatch({ type: "SELECT_PRODUCT", payload: null })
+                }, 50)
+              } : undefined}
             />
           </div>
 
