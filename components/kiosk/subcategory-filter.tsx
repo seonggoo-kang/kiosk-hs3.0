@@ -10,8 +10,11 @@ type SubcategoryFilterProps = {
 }
 
 export function SubcategoryFilter({ items, activeId, onSelect }: SubcategoryFilterProps) {
-  const [hydrated, setHydrated] = useState(false)
-  useEffect(() => { setHydrated(true) }, [])
+  // Defer rendering Korean text to avoid SSR streaming multibyte split
+  const [ready, setReady] = useState(false)
+  useEffect(() => {
+    setReady(true)
+  }, [])
 
   const scrollRef = useRef<HTMLDivElement>(null)
   const isDragging = useRef(false)
@@ -42,7 +45,6 @@ export function SubcategoryFilter({ items, activeId, onSelect }: SubcategoryFilt
       isDragging.current = false
       scrollRef.current?.releasePointerCapture(e.pointerId)
 
-      // If barely moved, treat as a tap - find the button under the pointer
       if (Math.abs(totalDx.current) < 5) {
         const target = document.elementFromPoint(e.clientX, e.clientY)
         const btn = target?.closest<HTMLButtonElement>("button[data-filter-id]")
@@ -54,6 +56,14 @@ export function SubcategoryFilter({ items, activeId, onSelect }: SubcategoryFilt
     [onSelect]
   )
 
+  if (!ready) {
+    return (
+      <div className="flex w-full shrink-0 gap-1.5 overflow-x-auto border-b border-border bg-card px-3 py-2 scrollbar-hide select-none">
+        <div className="h-[26px]" />
+      </div>
+    )
+  }
+
   return (
     <div
       ref={scrollRef}
@@ -63,7 +73,7 @@ export function SubcategoryFilter({ items, activeId, onSelect }: SubcategoryFilt
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerUp}
     >
-      {hydrated ? items.map((item) => (
+      {items.map((item) => (
         <button
           key={item.id}
           data-filter-id={item.id}
@@ -76,7 +86,7 @@ export function SubcategoryFilter({ items, activeId, onSelect }: SubcategoryFilt
         >
           {item.name}
         </button>
-      )) : <div className="h-[26px]" />}
+      ))}
     </div>
   )
 }
