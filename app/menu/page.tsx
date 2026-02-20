@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect, useRef, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { ChevronLeft, ChevronRight, IceCreamCone, Check } from "lucide-react"
+import { IceCreamCone, Check } from "lucide-react"
 import { KioskHeader } from "@/components/kiosk/kiosk-header"
 import { KioskFooter } from "@/components/kiosk/kiosk-footer"
 import { CategoryTabs } from "@/components/kiosk/category-tabs"
@@ -283,23 +283,13 @@ function MenuContent() {
           <div className="h-full overflow-y-auto overflow-x-hidden">
             <EventPromoBanners />
           </div>
-          {/* Swipe arrows for navigating to adjacent categories */}
-          <button
-            onClick={() => handleSwipe("right")}
-            disabled={categories.findIndex((c) => c.id === activeCategory) === 0}
-            className="absolute left-0 top-1/2 z-10 flex h-10 w-6 -translate-y-1/2 items-center justify-center rounded-r-lg bg-card/80 shadow disabled:opacity-0"
-            aria-label="이전 카테고리"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-          <button
-            onClick={() => handleSwipe("left")}
-            disabled={categories.findIndex((c) => c.id === activeCategory) === categories.length - 1}
-            className="absolute right-0 top-1/2 z-10 flex h-10 w-6 -translate-y-1/2 items-center justify-center rounded-l-lg bg-card/80 shadow disabled:opacity-0"
-            aria-label="다음 카테고리"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </button>
+          {/* Swipe edge hints */}
+          {categories.findIndex((c) => c.id === activeCategory) > 0 && (
+            <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-4 bg-gradient-to-r from-foreground/5 to-transparent" aria-hidden="true" />
+          )}
+          {categories.findIndex((c) => c.id === activeCategory) < categories.length - 1 && (
+            <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-4 bg-gradient-to-l from-foreground/5 to-transparent" aria-hidden="true" />
+          )}
         </div>
       ) : (
         /* ── Other categories: product grid with swipe pagination ── */
@@ -353,35 +343,23 @@ function MenuContent() {
 
           {/* Fixed overlays -- positioned relative to the non-scrolling wrapper */}
 
-          {/* Pagination arrows -- chain across categories */}
-          <button
-            onClick={() => handleSwipe("right")}
-            disabled={page === 0 && categories.findIndex((c) => c.id === activeCategory) === 0}
-            className="absolute left-0 top-1/2 z-10 flex h-10 w-6 -translate-y-1/2 items-center justify-center rounded-r-lg bg-card/80 shadow disabled:opacity-0"
-            aria-label="이전 페이지"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-          <button
-            onClick={() => handleSwipe("left")}
-            disabled={page === totalPages - 1 && categories.findIndex((c) => c.id === activeCategory) === categories.length - 1}
-            className="absolute right-0 top-1/2 z-10 flex h-10 w-6 -translate-y-1/2 items-center justify-center rounded-l-lg bg-card/80 shadow disabled:opacity-0"
-            aria-label="다음 페이지"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </button>
+          {/* Swipe edge hints */}
+          {!(page === 0 && categories.findIndex((c) => c.id === activeCategory) === 0) && (
+            <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-4 bg-gradient-to-r from-foreground/5 to-transparent" aria-hidden="true" />
+          )}
+          {!(page === totalPages - 1 && categories.findIndex((c) => c.id === activeCategory) === categories.length - 1) && (
+            <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-4 bg-gradient-to-l from-foreground/5 to-transparent" aria-hidden="true" />
+          )}
 
-          {/* Page indicator */}
+          {/* Page indicator (non-interactive) */}
           {totalPages > 1 && (
-            <div className="absolute bottom-2 left-0 right-0 z-10 flex items-center justify-center gap-1.5">
+            <div className="pointer-events-none absolute bottom-2 left-0 right-0 z-10 flex items-center justify-center gap-1.5" aria-hidden="true">
               {Array.from({ length: totalPages }).map((_, i) => (
-                <button
+                <span
                   key={i}
-                  onClick={() => setPage(i)}
-                  className={`h-2 rounded-full transition-colors ${
-                    i === page ? "w-4 bg-primary" : "w-2 bg-border"
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    i === page ? "w-4 bg-primary" : "w-1.5 bg-border"
                   }`}
-                  aria-label={`페이지 ${i + 1}`}
                 />
               ))}
             </div>
