@@ -18,6 +18,7 @@ export function CategoryTabs({ categories, activeId, onSelect }: CategoryTabsPro
           <button
             key={cat.id}
             onClick={() => onSelect(cat.id)}
+            suppressHydrationWarning
             className={cn(
               "flex h-10 items-center justify-center border-b-2 px-1 text-center text-[10px] font-medium leading-tight transition-colors",
               activeId === cat.id

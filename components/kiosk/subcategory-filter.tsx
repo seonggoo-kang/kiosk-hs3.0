@@ -64,6 +64,7 @@ export function SubcategoryFilter({ items, activeId, onSelect }: SubcategoryFilt
         <button
           key={item.id}
           data-filter-id={item.id}
+          suppressHydrationWarning
           className={cn(
             "shrink-0 rounded-full px-3 py-1 text-[11px] font-medium transition-colors",
             activeId === item.id
