@@ -609,7 +609,7 @@ function MenuContent() {
                 setDragOffset(0)
                 setTimeout(() => setIsAnimating(false), 200)
               }}
-              onPromoCTA={handleCategorySelect}
+              onPromoCTA={handleCategoryChange}
             />
           </div>
 
@@ -693,7 +693,7 @@ function MenuContent() {
               {"\uD504\uB85C\uBAA8\uC158\uC740 \uC8FC\uBB38 \uC2DC \uC790\uB3D9 \uC801\uC6A9\uB429\uB2C8\uB2E4"}
             </p>
             <button
-              onClick={() => handleCategorySelect("workshop")}
+              onClick={() => handleCategoryChange("workshop")}
               className="flex items-center gap-1 rounded-full bg-primary px-4 py-2 text-xs font-bold text-primary-foreground transition-transform active:scale-95"
             >
               {"\uBA54\uB274 \uBCF4\uAE30"}
