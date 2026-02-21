@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect, useRef, useCallback, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { IceCreamCone, Check } from "lucide-react"
+import { IceCreamCone, Check, ChevronRight } from "lucide-react"
 import { KioskHeader } from "@/components/kiosk/kiosk-header"
 import { KioskFooter } from "@/components/kiosk/kiosk-footer"
 import { CategoryTabs } from "@/components/kiosk/category-tabs"
@@ -57,6 +57,7 @@ function SlideContent({
   onEventOverflowCancel?: () => void
   canOverflowLeft?: boolean
   canOverflowRight?: boolean
+  onPromoCTA?: (categoryId: string) => void
 }) {
   if (slide.isEvent) {
     return (
@@ -67,6 +68,7 @@ function SlideContent({
           onOverflowCancel={onEventOverflowCancel}
           canOverflowLeft={canOverflowLeft}
           canOverflowRight={canOverflowRight}
+          onPromoCTA={onPromoCTA}
         />
       </div>
     )
@@ -607,6 +609,7 @@ function MenuContent() {
                 setDragOffset(0)
                 setTimeout(() => setIsAnimating(false), 200)
               }}
+              onPromoCTA={handleCategorySelect}
             />
           </div>
 
@@ -679,15 +682,30 @@ function MenuContent() {
         </div>
       )}
 
-      {/* Cart strip */}
-      <CartStrip />
+      {/* Cart strip -- hidden on event page */}
+      {!displaySlide.isEvent && <CartStrip />}
 
       {/* Action Bar */}
-      {selectedProduct ? (
+      {displaySlide.isEvent ? (
+        <div className="shrink-0 border-t border-border bg-card px-4 py-3">
+          <div className="flex items-center justify-between">
+            <p className="text-xs text-muted-foreground">
+              {"\uD504\uB85C\uBAA8\uC158\uC740 \uC8FC\uBB38 \uC2DC \uC790\uB3D9 \uC801\uC6A9\uB429\uB2C8\uB2E4"}
+            </p>
+            <button
+              onClick={() => handleCategorySelect("workshop")}
+              className="flex items-center gap-1 rounded-full bg-primary px-4 py-2 text-xs font-bold text-primary-foreground transition-transform active:scale-95"
+            >
+              {"\uBA54\uB274 \uBCF4\uAE30"}
+              <ChevronRight className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        </div>
+      ) : selectedProduct ? (
         <ActionBar
           onBack={() => dispatch({ type: "SELECT_PRODUCT", payload: null })}
-          backLabel="이전으로"
-          primaryLabel={selectedProduct.requiresFlavor ? "맛 선택하기" : "담기"}
+          backLabel={"\uC774\uC804\uC73C\uB85C"}
+          primaryLabel={selectedProduct.requiresFlavor ? "\uB9DB \uC120\uD0DD\uD558\uAE30" : "\uB2F4\uAE30"}
           primaryDisabled={false}
           onPrimary={() => {
             if (selectedProduct.requiresFlavor) {
@@ -703,8 +721,8 @@ function MenuContent() {
             dispatch({ type: "RESET_ORDER" })
             router.push("/")
           }}
-          backLabel="처음으로"
-          primaryLabel="주문하기"
+          backLabel={"\uCC98\uC74C\uC73C\uB85C"}
+          primaryLabel={"\uC8FC\uBB38\uD558\uAE30"}
           primaryDisabled={!hasCart}
           onPrimary={() => router.push("/discounts")}
         />
