@@ -13,7 +13,7 @@ import { ActionBar } from "@/components/kiosk/action-bar"
 import { EventPromoBanners } from "@/components/kiosk/event-promo-banners"
 import { SubcategoryFilter } from "@/components/kiosk/subcategory-filter"
 import { RecommendedPanel } from "@/components/kiosk/ai-pick-panel"
-import { useOrder } from "@/lib/order-context"
+import { useOrder, itemNeedsOptions } from "@/lib/order-context"
 import {
   categories,
   getProductsByCategory,
@@ -417,7 +417,7 @@ function MenuContent() {
     [nextSlide, prevSlide, isFiltered, dispatch]
   )
 
-  // ── Product interaction ──
+  // ── Product interaction: instant-add to cart ──
   const handleProductSelect = useCallback(
     (product: Product) => {
       // If a horizontal drag just happened, ignore the click
@@ -426,48 +426,11 @@ function MenuContent() {
         return
       }
 
-      if (state.selectedProductId === product.id) {
-        if (product.requiresFlavor) {
-          router.push(`/menu/flavors?productId=${product.id}`)
-        } else {
-          dispatch({
-            type: "ADD_TO_CART",
-            payload: {
-              cartId: `${product.id}-${Date.now()}`,
-              product,
-              selectedFlavors: [],
-              options: [],
-              quantity: 1,
-            },
-          })
-        }
-      } else {
-        dispatch({ type: "SELECT_PRODUCT", payload: product.id })
-      }
+      // Instantly add to mini cart (pending options if needed)
+      dispatch({ type: "ADD_TO_CART_INSTANT", payload: product })
     },
-    [state.selectedProductId, router, dispatch]
+    [dispatch]
   )
-
-  const handleFlavorSelect = () => {
-    if (selectedProduct) {
-      router.push(`/menu/flavors?productId=${selectedProduct.id}`)
-    }
-  }
-
-  const handleAddSimple = () => {
-    if (selectedProduct && !selectedProduct.requiresFlavor) {
-      dispatch({
-        type: "ADD_TO_CART",
-        payload: {
-          cartId: `${selectedProduct.id}-${Date.now()}`,
-          product: selectedProduct,
-          selectedFlavors: [],
-          options: [],
-          quantity: 1,
-        },
-      })
-    }
-  }
 
   // Category booleans for subcategory filter visibility
   const isCake = activeCategory === "icecream-cake"
@@ -679,43 +642,38 @@ function MenuContent() {
         )}
       </div>
 
-      {/* Product detail panel */}
-      {selectedProduct && (
-        <div className="shrink-0 border-t border-border bg-card p-3">
-          <ProductDetailPanel product={selectedProduct} />
-        </div>
-      )}
-
       {/* Mini Cart */}
       <MiniCart />
 
-      {/* Action Bar */}
-      {selectedProduct ? (
-        <ActionBar
-          onBack={() => dispatch({ type: "SELECT_PRODUCT", payload: null })}
-          backLabel="이전으로"
-          primaryLabel={selectedProduct.requiresFlavor ? "맛 선택하기" : "담기"}
-          primaryDisabled={false}
-          onPrimary={() => {
-            if (selectedProduct.requiresFlavor) {
-              handleFlavorSelect()
+      {/* Action Bar -- dynamic label based on pending options */}
+      <ActionBar
+        onBack={() => {
+          dispatch({ type: "RESET_ORDER" })
+          router.push("/")
+        }}
+        backLabel="처음으로"
+        primaryLabel={(() => {
+          if (!hasCart) return "주문하기"
+          const pendingCount = state.cart.filter(itemNeedsOptions).length
+          if (pendingCount === 0) return "주문하기"
+          if (pendingCount === state.cart.length) return "전체 옵션 정하기"
+          return "일부 옵션 정하기"
+        })()}
+        primaryDisabled={!hasCart}
+        onPrimary={() => {
+          const pendingItem = state.cart.find(itemNeedsOptions)
+          if (pendingItem) {
+            // Navigate to flavors page for items that need flavor, or options page
+            if (pendingItem.product.requiresFlavor && pendingItem.selectedFlavors.length === 0) {
+              router.push(`/menu/flavors?productId=${pendingItem.product.id}&cartId=${pendingItem.cartId}`)
             } else {
-              handleAddSimple()
+              router.push(`/menu/options?cartId=${pendingItem.cartId}`)
             }
-          }}
-        />
-      ) : (
-        <ActionBar
-          onBack={() => {
-            dispatch({ type: "RESET_ORDER" })
-            router.push("/")
-          }}
-          backLabel="처음으로"
-          primaryLabel="주문하기"
-          primaryDisabled={!hasCart}
-          onPrimary={() => router.push("/discounts")}
-        />
-      )}
+          } else {
+            router.push("/discounts")
+          }
+        }}
+      />
     </div>
   )
 }

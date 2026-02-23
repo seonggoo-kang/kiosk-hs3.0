@@ -18,6 +18,7 @@ export type Product = {
   maxFlavors: number
   tag?: ProductTag | null
   subcategory?: string | null
+  requiredOptions: RequiredOptionDef[]
 }
 
 export type FlavorCategory = {
@@ -50,6 +51,38 @@ export type OptionItem = {
   defaultQty?: number
   unit?: string
 }
+
+// ─── Required Option Groups (scalable per-product options) ─
+export type RequiredOptionDef = {
+  groupId: string
+  label: string
+}
+
+export type RequiredOptionGroup = {
+  id: string
+  name: string
+  options: { id: string; name: string; priceAdd: number }[]
+}
+
+export const requiredOptionGroups: RequiredOptionGroup[] = [
+  {
+    id: "serving-type",
+    name: "콘/컵 선택",
+    options: [
+      { id: "cone", name: "콘", priceAdd: 0 },
+      { id: "cup", name: "컵", priceAdd: 0 },
+      { id: "dish", name: "디쉬", priceAdd: 0 },
+    ],
+  },
+  {
+    id: "temperature",
+    name: "온도 선택",
+    options: [
+      { id: "ice", name: "아이스", priceAdd: 0 },
+      { id: "hot", name: "핫", priceAdd: 0 },
+    ],
+  },
+]
 
 export type PaymentMethod = {
   id: string
@@ -94,6 +127,7 @@ function generateProducts(
     name: string; desc: string; size: string; weight: string;
     price: number; cal: string; serving: string; image: string;
     flavor: boolean; maxF: number; tag?: ProductTag | null; sub?: string | null;
+    reqOpts?: RequiredOptionDef[];
   }>
 ): Product[] {
   return items.map((item, i) => ({
@@ -111,6 +145,7 @@ function generateProducts(
     maxFlavors: item.maxF,
     tag: item.tag ?? null,
     subcategory: item.sub ?? null,
+    requiredOptions: item.reqOpts ?? [],
   }))
 }
 
@@ -188,13 +223,16 @@ const workshopProducts = generateProducts("workshop", [
 ])
 
 // ─── 콘/컵 (30) ──────────────────────────────────────────
+const SERVING_TYPE: RequiredOptionDef = { groupId: "serving-type", label: "콘/컵 선택" }
+const TEMPERATURE: RequiredOptionDef = { groupId: "temperature", label: "온도 선택" }
+
 const coneCupProducts = generateProducts("cone-cup", [
-  { name: "맛보기", desc: "맛보기 스푼", size: "맛보기", weight: "-", price: 0, cal: "10~30 kcal", serving: "-", image: "/products/tasting-spoon.jpg", flavor: true, maxF: 1 },
-  { name: "트리플주니어", desc: "주니어 3스쿱", size: "주니어", weight: "225g", price: 7200, cal: "300~500 kcal", serving: "225g", image: "/products/triple-junior.jpg", flavor: true, maxF: 3 },
-  { name: "싱글레귤러", desc: "레귤러 1스쿱", size: "레귤러", weight: "115g", price: 3900, cal: "150~280 kcal", serving: "115g", image: "/products/cone-single.jpg", flavor: true, maxF: 1 },
-  { name: "싱글킹", desc: "킹 1스쿱", size: "킹", weight: "145g", price: 4700, cal: "200~350 kcal", serving: "145g", image: "/products/single-king.jpg", flavor: true, maxF: 1 },
-  { name: "이달의 더블주니어", desc: "이달의 더블주니어", size: "주니어", weight: "150g", price: 5100, cal: "200~350 kcal", serving: "150g", image: "/products/double-junior.jpg", flavor: true, maxF: 2, tag: "이달의 더블주니어" },
-  { name: "더블레귤러", desc: "레귤러 2스쿱", size: "레귤러", weight: "230g", price: 7300, cal: "300~520 kcal", serving: "230g", image: "/products/double-regular.jpg", flavor: true, maxF: 2 },
+  { name: "맛보기", desc: "맛보기 스푼", size: "맛보기", weight: "-", price: 0, cal: "10~30 kcal", serving: "-", image: "/products/tasting-spoon.jpg", flavor: true, maxF: 1, reqOpts: [SERVING_TYPE] },
+  { name: "트리플주니어", desc: "주니어 3스쿱", size: "주니어", weight: "225g", price: 7200, cal: "300~500 kcal", serving: "225g", image: "/products/triple-junior.jpg", flavor: true, maxF: 3, reqOpts: [SERVING_TYPE] },
+  { name: "싱글레귤러", desc: "레귤러 1스쿱", size: "레귤러", weight: "115g", price: 3900, cal: "150~280 kcal", serving: "115g", image: "/products/cone-single.jpg", flavor: true, maxF: 1, reqOpts: [SERVING_TYPE] },
+  { name: "싱글킹", desc: "킹 1스쿱", size: "킹", weight: "145g", price: 4700, cal: "200~350 kcal", serving: "145g", image: "/products/single-king.jpg", flavor: true, maxF: 1, reqOpts: [SERVING_TYPE] },
+  { name: "이달의 더블주니어", desc: "이달의 더블주니어", size: "주니어", weight: "150g", price: 5100, cal: "200~350 kcal", serving: "150g", image: "/products/double-junior.jpg", flavor: true, maxF: 2, tag: "이달의 더블주니어", reqOpts: [SERVING_TYPE] },
+  { name: "더블레귤러", desc: "레귤러 2스쿱", size: "레귤러", weight: "230g", price: 7300, cal: "300~520 kcal", serving: "230g", image: "/products/double-regular.jpg", flavor: true, maxF: 2, reqOpts: [SERVING_TYPE] },
 ])
 
 // ─── 포장가능 아이스크림 (30) ─────────────────────────────
@@ -300,7 +338,7 @@ const cakeProducts = generateProducts("icecream-cake", [
   { name: "굿럭 카피바라", desc: "프리미엄 케이크", size: "프리미엄", weight: "900g", price: 38000, cal: "2000~2600 kcal", serving: "900g", image: "/products/cake-character.jpg", flavor: false, maxF: 0, sub: "premium" },
   { name: "럭키 포니 춘식이", desc: "캐릭터 케이크", size: "캐릭터", weight: "800g", price: 30000, cal: "1700~2300 kcal", serving: "800g", image: "/products/cake-character.jpg", flavor: false, maxF: 0, sub: "premium" },
   { name: "짝짝짝 시계 보울", desc: "보울 케이크", size: "보울", weight: "350g", price: 15000, cal: "500~700 kcal", serving: "350g", image: "/products/cake-bowl.jpg", flavor: false, maxF: 0, sub: "premium" },
-  { name: "로맨틱 야수 에그", desc: "에그 케이크", size: "에그", weight: "400g", price: 15000, cal: "500~700 kcal", serving: "400g", image: "/products/cake-egg.jpg", flavor: false, maxF: 0, sub: "premium" },
+  { name: "로맨틱 야��� 에그", desc: "에그 케이크", size: "에그", weight: "400g", price: 15000, cal: "500~700 kcal", serving: "400g", image: "/products/cake-egg.jpg", flavor: false, maxF: 0, sub: "premium" },
   { name: "빵띠 케이크\n4개입 세트", desc: "세트 케이크", size: "4개입", weight: "1200g", price: 59000, cal: "3200~4200 kcal", serving: "1200g", image: "/products/cake-party.jpg", flavor: false, maxF: 0, sub: "premium", tag: "세트포장" },
   { name: "화이트 스트로베리\n캡슐", desc: "프리미엄 케이크", size: "프리미엄", weight: "1000g", price: 46000, cal: "2400~3200 kcal", serving: "1000g", image: "/products/cake-premium.jpg", flavor: false, maxF: 0, sub: "premium" },
   { name: "초코 스트로베리\n가든", desc: "프리미엄 케이크", size: "프리미엄", weight: "1000g", price: 46000, cal: "2500~3300 kcal", serving: "1000g", image: "/products/cake-premium.jpg", flavor: false, maxF: 0, sub: "premium" },
@@ -329,9 +367,9 @@ const cakeProducts = generateProducts("icecream-cake", [
 const coffeeProducts = generateProducts("coffee", [
   { name: "위티 골든 브릴레\n아이스슈페너", desc: "아이스슈페너", size: "레귤러", weight: "350ml", price: 5500, cal: "180~260 kcal", serving: "350ml", image: "/products/einspanner.jpg", flavor: false, maxF: 0 },
   { name: "카페 레이어드 라떼", desc: "레이어드 라떼", size: "레귤러", weight: "350ml", price: 5400, cal: "150~220 kcal", serving: "350ml", image: "/products/layered-latte.jpg", flavor: false, maxF: 0 },
-  { name: "아메리카노", desc: "아이스/핫", size: "레귤러", weight: "350ml", price: 4400, cal: "5~10 kcal", serving: "350ml", image: "/products/americano.jpg", flavor: false, maxF: 0 },
-  { name: "카페라떼", desc: "아이스/핫", size: "레귤러", weight: "350ml", price: 5000, cal: "120~180 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
-  { name: "바닐라라떼", desc: "아이스/핫", size: "레귤러", weight: "350ml", price: 5000, cal: "180~250 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0 },
+  { name: "아메리카노", desc: "아이스/핫", size: "레귤러", weight: "350ml", price: 4400, cal: "5~10 kcal", serving: "350ml", image: "/products/americano.jpg", flavor: false, maxF: 0, reqOpts: [TEMPERATURE] },
+  { name: "카페라떼", desc: "아이스/핫", size: "레귤러", weight: "350ml", price: 5000, cal: "120~180 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0, reqOpts: [TEMPERATURE] },
+  { name: "바닐라라떼", desc: "아이스/핫", size: "레귤러", weight: "350ml", price: 5000, cal: "180~250 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0, reqOpts: [TEMPERATURE] },
   { name: "연유라떼", desc: "아이스", size: "레귤러", weight: "350ml", price: 5000, cal: "210~300 kcal", serving: "350ml", image: "/products/condensed-latte.jpg", flavor: false, maxF: 0 },
   { name: "엄마는 외계인\n카페모카", desc: "카페모카", size: "레귤러", weight: "350ml", price: 5000, cal: "220~300 kcal", serving: "350ml", image: "/products/cafe-mocha.jpg", flavor: false, maxF: 0 },
   { name: "수카방 커피", desc: "수카방 커피", size: "레귤러", weight: "300ml", price: 3900, cal: "80~120 kcal", serving: "300ml", image: "/products/sukabang.jpg", flavor: false, maxF: 0 },

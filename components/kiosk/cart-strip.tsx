@@ -2,7 +2,7 @@
 
 import { useRef, useCallback } from "react"
 import { X } from "lucide-react"
-import { useOrder } from "@/lib/order-context"
+import { useOrder, itemNeedsOptions } from "@/lib/order-context"
 import { formatPrice } from "@/lib/mock-data"
 import { QuantityControl } from "./quantity-control"
 
@@ -86,13 +86,42 @@ export function MiniCart() {
               (sum, o) => sum + o.option.priceAdd * o.quantity,
               0
             )
-            const itemPrice = (item.product.price + optionsCost) * item.quantity
+            const reqOptsCost = (item.requiredSelections ?? []).reduce(
+              (sum, r) => sum + r.priceAdd,
+              0
+            )
+            const itemPrice = (item.product.price + optionsCost + reqOptsCost) * item.quantity
+            const isPending = itemNeedsOptions(item)
+
+            // Build options summary text
+            const optionParts: string[] = []
+            if (item.selectedFlavors.length > 0) {
+              optionParts.push(item.selectedFlavors.map((f) => f.name).join(", "))
+            }
+            if ((item.requiredSelections ?? []).length > 0) {
+              optionParts.push(item.requiredSelections.map((r) => r.selectedOptionName).join("/"))
+            }
+            if (item.options.length > 0) {
+              optionParts.push(item.options.map((o) => o.option.name).join(", "))
+            }
+            const optionSummary = optionParts.length > 0 ? optionParts.join(", ") : isPending ? "\uC635\uC158 \uBBF8\uC120\uD0DD" : item.product.size || ""
 
             return (
               <div
                 key={item.cartId}
-                className="relative flex w-40 shrink-0 flex-col rounded-xl border border-[#4a4a4a] bg-[#3a3a3a] p-2.5"
+                className={`relative flex w-40 shrink-0 flex-col rounded-xl border p-2.5 ${
+                  isPending
+                    ? "border-amber-500/60 bg-[#3a3a3a]"
+                    : "border-[#4a4a4a] bg-[#3a3a3a]"
+                }`}
               >
+                {/* Pending badge */}
+                {isPending && (
+                  <div className="absolute left-2 top-2 z-10 flex h-4 items-center rounded-full bg-amber-500 px-1.5">
+                    <span className="text-[8px] font-bold text-white">{"\uC635\uC158\uD544\uC694"}</span>
+                  </div>
+                )}
+
                 {/* X close button */}
                 <button
                   onClick={() =>
@@ -105,7 +134,7 @@ export function MiniCart() {
                 </button>
 
                 {/* Product image + name + options */}
-                <div className="flex items-start gap-2">
+                <div className={`flex items-start gap-2 ${isPending ? "mt-3" : ""}`}>
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/10">
                     <img
                       src={item.product.image}
@@ -117,12 +146,8 @@ export function MiniCart() {
                     <p className="truncate text-[10px] font-semibold text-white">
                       {item.product.name}
                     </p>
-                    <p className="truncate text-[9px] text-gray-400">
-                      {item.selectedFlavors.length > 0
-                        ? item.selectedFlavors.map((f) => f.name).join(", ")
-                        : item.options.length > 0
-                          ? item.options.map((o) => o.option.name).join(", ")
-                          : item.product.size || ""}
+                    <p className={`truncate text-[9px] ${isPending ? "text-amber-400" : "text-gray-400"}`}>
+                      {optionSummary}
                     </p>
                   </div>
                 </div>
@@ -135,7 +160,9 @@ export function MiniCart() {
                 {/* Bottom row: 옵션변경 + quantity */}
                 <div className="mt-1.5 flex items-center justify-between">
                   <button
-                    className="rounded-md bg-primary/90 px-2 py-0.5 text-[9px] font-semibold text-white active:bg-primary"
+                    className={`rounded-md px-2 py-0.5 text-[9px] font-semibold text-white active:opacity-80 ${
+                      isPending ? "bg-amber-500" : "bg-primary/90"
+                    }`}
                   >
                     {"\uC635\uC158\uBCC0\uACBD"}
                   </button>
