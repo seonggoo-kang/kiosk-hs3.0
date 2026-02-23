@@ -93,62 +93,71 @@ export function MiniCart() {
             const itemPrice = (item.product.price + optionsCost + reqOptsCost) * item.quantity
             const isPending = itemNeedsOptions(item)
 
-            // Build options summary text
-            const optionParts: string[] = []
+            // Build chosen options summary
+            const chosenParts: string[] = []
             if (item.selectedFlavors.length > 0) {
-              optionParts.push(item.selectedFlavors.map((f) => f.name).join(", "))
+              chosenParts.push(item.selectedFlavors.map((f) => f.name).join(", "))
             }
             if ((item.requiredSelections ?? []).length > 0) {
-              optionParts.push(item.requiredSelections.map((r) => r.selectedOptionName).join("/"))
+              chosenParts.push(item.requiredSelections.map((r) => r.selectedOptionName).join("/"))
             }
             if (item.options.length > 0) {
-              optionParts.push(item.options.map((o) => o.option.name).join(", "))
+              chosenParts.push(item.options.map((o) => o.option.name).join(", "))
             }
-            const optionSummary = optionParts.length > 0 ? optionParts.join(", ") : isPending ? "\uC635\uC158 \uBBF8\uC120\uD0DD" : item.product.size || ""
+            const hasChosenOptions = chosenParts.length > 0
+            const chosenSummary = chosenParts.join(", ")
+
+            // Description matching ProductCard format
+            const descText =
+              item.product.weight && item.product.weight !== "-" && !item.product.size.includes(item.product.weight)
+                ? `${item.product.size} (${item.product.weight})`
+                : item.product.size
 
             return (
               <div
                 key={item.cartId}
-                className={`relative flex w-40 shrink-0 flex-col overflow-visible rounded-xl border p-2.5 ${
-                  isPending
-                    ? "border-amber-500/60 bg-white"
-                    : "border-border bg-white"
-                }`}
+                className="relative flex w-44 shrink-0 flex-col overflow-visible rounded-xl border border-border bg-white p-2.5"
               >
-                {/* Pending badge */}
-                {isPending && (
-                  <div className="absolute left-2 top-2 z-10 flex h-4 items-center rounded-full bg-amber-500 px-1.5">
-                    <span className="text-[8px] font-bold text-white">{"\uC635\uC158\uD544\uC694"}</span>
-                  </div>
-                )}
-
                 {/* X close button */}
                 <button
                   onClick={() =>
                     dispatch({ type: "REMOVE_FROM_CART", payload: item.cartId })
                   }
                   className="absolute -right-2 -top-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-[#424242] text-white shadow"
-                  aria-label={"\uC0AD\uC81C"}
+                  aria-label="삭제"
                 >
                   <X className="h-3 w-3" />
                 </button>
 
-                {/* Product image + name + options */}
-                <div className={`flex items-start gap-2 ${isPending ? "mt-3" : ""}`}>
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gray-100">
+                {/* Image + info rows */}
+                <div className="flex items-start gap-2">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-gray-100">
                     <img
                       src={item.product.image}
                       alt={item.product.name}
-                      className="h-9 w-9 object-contain"
+                      className="h-10 w-10 object-contain"
                     />
                   </div>
                   <div className="min-w-0 flex-1">
+                    {/* Row 1: Item name */}
                     <p className="truncate text-[10px] font-semibold text-foreground">
                       {item.product.name}
                     </p>
-                    <p className={`truncate text-[9px] ${isPending ? "text-amber-600" : "text-muted-foreground"}`}>
-                      {optionSummary}
+                    {/* Row 2: Description (matching ProductCard) */}
+                    <p className="truncate text-[9px] text-muted-foreground">
+                      {descText}
                     </p>
+                    {/* Row 3: Option select/change chip */}
+                    {isPending ? (
+                      <button className="mt-0.5 rounded-md bg-primary px-2 py-0.5 text-[9px] font-semibold text-white active:opacity-80">
+                        {"옵션 선택"}
+                      </button>
+                    ) : hasChosenOptions ? (
+                      <button className="mt-0.5 flex items-center gap-0.5 rounded-md bg-primary/10 px-2 py-0.5 text-[9px] font-semibold text-primary active:opacity-80">
+                        <span className="max-w-[80px] truncate">{chosenSummary}</span>
+                        <svg className="h-2.5 w-2.5 shrink-0 opacity-60" viewBox="0 0 12 12" fill="none"><path d="M4 3l4 3-4 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                      </button>
+                    ) : null}
                   </div>
                 </div>
 
@@ -157,15 +166,8 @@ export function MiniCart() {
                   {formatPrice(itemPrice)}
                 </p>
 
-                {/* Bottom row: 옵션변경 + quantity */}
-                <div className="mt-1.5 flex items-center justify-between">
-                  <button
-                    className={`rounded-md px-2 py-0.5 text-[9px] font-semibold active:opacity-80 ${
-                      isPending ? "bg-amber-500 text-white" : "bg-primary/10 text-primary"
-                    }`}
-                  >
-                    {"\uC635\uC158\uBCC0\uACBD"}
-                  </button>
+                {/* Bottom: full-width quantity stepper */}
+                <div className="mt-1.5 flex items-center justify-center">
                   <QuantityControl
                     value={item.quantity}
                     onChange={(qty) =>
