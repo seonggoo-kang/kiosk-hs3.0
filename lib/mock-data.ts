@@ -772,7 +772,7 @@ export const discountSections: DiscountSection[] = [
   },
   {
     id: "mobile-coupon",
-    title: "모바일 교환권 / 쿠폰 / 기프티콘",
+    title: "모바일 교환권 / ��폰 / 기프티콘",
     items: [
       { id: "mobile-voucher", name: "모바일 교환권", discount: 3900, icon: "Ticket" },
       { id: "br-app-coupon", name: "배라앱 발급 쿠폰", icon: "Tag" },
@@ -807,33 +807,92 @@ export function getProductsByCategory(categoryId: string): Product[] {
   return products.filter((p) => p.categoryId === categoryId)
 }
 
-const RECOMMEND_CATEGORIES = [
-  "workshop", "cone-cup", "packable-icecream", "icecream-cake",
-  "coffee", "beverage", "gelato", "dessert", "prepack",
-]
+// Curated best-seller product names per category (expected top sellers)
+const BEST_SELLERS: Record<string, string[]> = {
+  "workshop": [
+    "모찌 바람과\n함께 사라지다", "두바이 스타일\n초콜릿쿠키",
+    "카페 아포가토", "마카롱\n피스타치오 아몬드",
+  ],
+  "cone-cup": [
+    "싱글레귤러", "이달의 더블주니어", "더블레귤러",
+  ],
+  "packable-icecream": [
+    "파인트", "쿼터", "패밀리",
+  ],
+  "icecream-cake": [
+    "레드하트\n시트론 보울", "더 듬뿍 딸기\n우유 케이크",
+    "화이트 스트로베리\n페스티벌",
+  ],
+  "coffee": [
+    "아메리카노", "카페라떼", "바닐라라떼",
+  ],
+  "beverage": [
+    "망고 패션후르츠\n블라스트", "피치요거트\n블라스트",
+  ],
+  "gelato": [
+    "젤라또 싱글", "젤라또 더블",
+  ],
+  "dessert": [
+    "브라우니 아 라 모드", "크루아상 와플",
+  ],
+  "prepack": [
+    "아이스 모찌 6개입", "아이스 모찌 10개입",
+  ],
+}
 
-export function getRecommendedProducts(count = 16): Product[] {
-  // Pick diverse products across all non-event categories (max 2 per category)
-  const pool: Product[] = []
-  const shuffledCats = [...RECOMMEND_CATEGORIES].sort(() => Math.random() - 0.5)
+export type RecommendedSection = {
+  categoryId: string
+  categoryName: string
+  products: Product[]
+}
 
-  for (const catId of shuffledCats) {
-    const catProducts = products.filter((p) => p.categoryId === catId)
+export function getRecommendedSections(): RecommendedSection[] {
+  const sections: RecommendedSection[] = []
+  const recCategories = categories.filter(
+    (c) => c.id !== "event" && c.id !== "ai-pick" && c.id !== "party"
+  )
+
+  for (const cat of recCategories) {
+    const catProducts = products.filter((p) => p.categoryId === cat.id)
+    const bestNames = BEST_SELLERS[cat.id] ?? []
+    const picked: Product[] = []
+
+    // First, add named best sellers in order
+    for (const name of bestNames) {
+      const found = catProducts.find((p) => p.name === name)
+      if (found) picked.push(found)
+    }
+
+    // If fewer than expected, fill with first available products
+    if (picked.length < 3) {
+      for (const p of catProducts) {
+        if (!picked.some((x) => x.id === p.id)) {
+          picked.push(p)
+          if (picked.length >= 3) break
+        }
+      }
+    }
+
+    if (picked.length > 0) {
+      sections.push({
+        categoryId: cat.id,
+        categoryName: cat.name.replace("\n", " "),
+        products: picked,
+      })
+    }
+  }
+
+  return sections
+}
+
+// Regenerate with shuffled order for "AI가 추천하는 오늘의 조합"
+export function shuffleRecommendedSections(): RecommendedSection[] {
+  const sections = getRecommendedSections()
+  // Shuffle products within each section
+  for (const section of sections) {
+    const catProducts = products.filter((p) => p.categoryId === section.categoryId)
     const shuffled = [...catProducts].sort(() => Math.random() - 0.5)
-    pool.push(...shuffled.slice(0, 2))
+    section.products = shuffled.slice(0, Math.max(2, Math.min(4, section.products.length)))
   }
-
-  // Shuffle the entire pool and take `count`
-  const result = [...pool].sort(() => Math.random() - 0.5).slice(0, count)
-
-  // If we still need more, fill from remaining products
-  if (result.length < count) {
-    const usedIds = new Set(result.map((p) => p.id))
-    const remaining = products
-      .filter((p) => !usedIds.has(p.id) && p.categoryId !== "event" && p.categoryId !== "party")
-      .sort(() => Math.random() - 0.5)
-    result.push(...remaining.slice(0, count - result.length))
-  }
-
-  return result
+  return sections
 }

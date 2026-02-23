@@ -12,7 +12,7 @@ import { CartStrip } from "@/components/kiosk/cart-strip"
 import { ActionBar } from "@/components/kiosk/action-bar"
 import { EventPromoBanners } from "@/components/kiosk/event-promo-banners"
 import { SubcategoryFilter } from "@/components/kiosk/subcategory-filter"
-import { AiPickPanel } from "@/components/kiosk/ai-pick-panel"
+import { RecommendedPanel } from "@/components/kiosk/ai-pick-panel"
 import { useOrder } from "@/lib/order-context"
 import {
   categories,
@@ -73,7 +73,12 @@ function SlideContent({
   }
 
   if (slide.isAiPick) {
-    return <AiPickPanel />
+    return (
+      <RecommendedPanel
+        selectedProductId={selectedProductId}
+        onSelectProduct={onSelectProduct}
+      />
+    )
   }
 
   return (
