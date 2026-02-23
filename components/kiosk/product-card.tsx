@@ -52,7 +52,7 @@ export function ProductCard({ product, isSelected, onSelect, priority }: Product
           </span>
         )}
       </div>
-      <p className="whitespace-pre-wrap text-center text-xs font-semibold leading-tight text-foreground">
+      <p className="line-clamp-2 whitespace-pre-wrap text-center text-[10px] font-semibold leading-snug text-foreground">
         {product.name}
       </p>
       <p className="mt-0.5 text-center text-[10px] leading-tight text-muted-foreground">
