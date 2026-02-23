@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useCallback } from "react"
+import { useRef, useCallback, useEffect } from "react"
 import { X } from "lucide-react"
 import { useOrder, itemNeedsOptions } from "@/lib/order-context"
 import { formatPrice } from "@/lib/mock-data"
@@ -16,6 +16,23 @@ export function MiniCart() {
   const dragStartX = useRef(0)
   const dragScrollLeft = useRef(0)
   const dragDx = useRef(0)
+
+  // Auto-scroll to the latest (last) item when a new item is added
+  const prevCartLen = useRef(state.cart.length)
+  useEffect(() => {
+    if (state.cart.length > prevCartLen.current && scrollRef.current) {
+      // Scroll to the end to show the newly added item
+      requestAnimationFrame(() => {
+        if (scrollRef.current) {
+          scrollRef.current.scrollTo({
+            left: scrollRef.current.scrollWidth,
+            behavior: "smooth",
+          })
+        }
+      })
+    }
+    prevCartLen.current = state.cart.length
+  }, [state.cart.length])
 
   const onPointerDown = useCallback((e: React.PointerEvent) => {
     // Don't capture pointer if user tapped a button or interactive element
