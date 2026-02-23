@@ -17,22 +17,32 @@ export function MiniCart() {
   const dragScrollLeft = useRef(0)
   const dragDx = useRef(0)
 
-  // Auto-scroll to the latest (last) item when a new item is added
-  const prevCartLen = useRef(state.cart.length)
+  // Auto-scroll to the last-touched item (newly added or quantity-incremented)
+  const prevTouchedId = useRef<string | null>(null)
   useEffect(() => {
-    if (state.cart.length > prevCartLen.current && scrollRef.current) {
-      // Scroll to the end to show the newly added item
-      requestAnimationFrame(() => {
-        if (scrollRef.current) {
-          scrollRef.current.scrollTo({
-            left: scrollRef.current.scrollWidth,
-            behavior: "smooth",
-          })
-        }
-      })
+    const touchedId = state.lastTouchedCartId
+    if (touchedId && touchedId !== prevTouchedId.current && scrollRef.current) {
+      const idx = state.cart.findIndex((item) => item.cartId === touchedId)
+      if (idx >= 0) {
+        requestAnimationFrame(() => {
+          const container = scrollRef.current
+          if (!container) return
+          const card = container.children[idx] as HTMLElement | undefined
+          if (card) {
+            const cardLeft = card.offsetLeft
+            const cardWidth = card.offsetWidth
+            const containerWidth = container.clientWidth
+            // Center the card in view
+            container.scrollTo({
+              left: cardLeft - (containerWidth - cardWidth) / 2,
+              behavior: "smooth",
+            })
+          }
+        })
+      }
     }
-    prevCartLen.current = state.cart.length
-  }, [state.cart.length])
+    prevTouchedId.current = touchedId
+  }, [state.lastTouchedCartId, state.cart])
 
   const onPointerDown = useCallback((e: React.PointerEvent) => {
     // Don't capture pointer if user tapped a button or interactive element

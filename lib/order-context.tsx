@@ -40,7 +40,8 @@ type OrderState = {
   cart: CartItem[]
   discounts: DiscountApplied[]
   selectedProductId: string | null
-}
+  lastTouchedCartId: string | null
+  }
 
 type OrderAction =
   | { type: "SET_ORDER_TYPE"; payload: OrderType }
@@ -81,6 +82,20 @@ function orderReducer(state: OrderState, action: OrderAction): OrderState {
       return { ...state, selectedProductId: action.payload }
     case "ADD_TO_CART_INSTANT": {
       const product = action.payload
+      const existing = state.cart.find((item) => item.product.id === product.id)
+      if (existing) {
+        // Increment quantity of existing item and mark it as last touched
+        return {
+          ...state,
+          cart: state.cart.map((item) =>
+            item.cartId === existing.cartId
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
+          ),
+          selectedProductId: null,
+          lastTouchedCartId: existing.cartId,
+        }
+      }
       const newItem: CartItem = {
         cartId: `cart-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
         product,
@@ -89,7 +104,7 @@ function orderReducer(state: OrderState, action: OrderAction): OrderState {
         requiredSelections: [],
         quantity: 1,
       }
-      return { ...state, cart: [...state.cart, newItem], selectedProductId: null }
+      return { ...state, cart: [...state.cart, newItem], selectedProductId: null, lastTouchedCartId: newItem.cartId }
     }
     case "RESOLVE_OPTIONS": {
       const { cartId, flavors, requiredSelections } = action.payload
@@ -122,7 +137,8 @@ const initialState: OrderState = {
   cart: [],
   discounts: [],
   selectedProductId: null,
-}
+  lastTouchedCartId: null,
+  }
 
 // ─── Context ──────────────────────────────────────────────
 type OrderContextValue = {
