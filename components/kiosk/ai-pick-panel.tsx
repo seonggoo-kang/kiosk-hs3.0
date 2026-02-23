@@ -1,12 +1,12 @@
 "use client"
 
-import { useState, useEffect, useCallback, useRef } from "react"
+import { useState, useEffect, useCallback, useRef, useMemo } from "react"
 import { Sparkles, RotateCcw } from "lucide-react"
 import { cn } from "@/lib/utils"
 import {
-  getRecommendedSections,
-  shuffleRecommendedSections,
-  type RecommendedSection,
+  getRankedRecommendations,
+  shuffleRankedRecommendations,
+  getRecommendedFilterCategories,
   type Product,
 } from "@/lib/mock-data"
 import { ProductCard } from "@/components/kiosk/product-card"
@@ -17,15 +17,22 @@ type RecommendedPanelProps = {
 }
 
 export function RecommendedPanel({ selectedProductId, onSelectProduct }: RecommendedPanelProps) {
-  const [sections, setSections] = useState<RecommendedSection[]>([])
+  const [allProducts, setAllProducts] = useState<Product[]>([])
   const [activeFilter, setActiveFilter] = useState("all")
   const [loading, setLoading] = useState(true)
   const scrollRef = useRef<HTMLDivElement>(null)
   const filterRef = useRef<HTMLDivElement>(null)
-  const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({})
+
+  const filterCategories = useMemo(() => getRecommendedFilterCategories(), [])
+
+  // Filtered products
+  const visibleProducts = useMemo(() => {
+    if (activeFilter === "all") return allProducts
+    return allProducts.filter((p) => p.categoryId === activeFilter)
+  }, [allProducts, activeFilter])
 
   // ── Drag-to-scroll for filter bar ──
-  const isDragging = useRef(false)
+  const isDraggingFilter = useRef(false)
   const dragStartX = useRef(0)
   const dragStartScrollLeft = useRef(0)
   const dragTotalDx = useRef(0)
@@ -34,7 +41,7 @@ export function RecommendedPanel({ selectedProductId, onSelectProduct }: Recomme
     e.stopPropagation()
     const el = filterRef.current
     if (!el) return
-    isDragging.current = true
+    isDraggingFilter.current = true
     dragTotalDx.current = 0
     dragStartX.current = e.clientX
     dragStartScrollLeft.current = el.scrollLeft
@@ -43,7 +50,7 @@ export function RecommendedPanel({ selectedProductId, onSelectProduct }: Recomme
 
   const onFilterPointerMove = useCallback((e: React.PointerEvent) => {
     e.stopPropagation()
-    if (!isDragging.current || !filterRef.current) return
+    if (!isDraggingFilter.current || !filterRef.current) return
     const dx = e.clientX - dragStartX.current
     dragTotalDx.current = dx
     filterRef.current.scrollLeft = dragStartScrollLeft.current - dx
@@ -52,26 +59,25 @@ export function RecommendedPanel({ selectedProductId, onSelectProduct }: Recomme
   const onFilterPointerUp = useCallback(
     (e: React.PointerEvent) => {
       e.stopPropagation()
-      if (!isDragging.current) return
-      isDragging.current = false
+      if (!isDraggingFilter.current) return
+      isDraggingFilter.current = false
       filterRef.current?.releasePointerCapture(e.pointerId)
 
-      // If barely moved, treat as a tap
       if (Math.abs(dragTotalDx.current) < 5) {
         const target = document.elementFromPoint(e.clientX, e.clientY)
         const btn = target?.closest<HTMLButtonElement>("button[data-filter-id]")
         if (btn?.dataset.filterId) {
-          handleFilterTap(btn.dataset.filterId)
+          setActiveFilter(btn.dataset.filterId)
+          scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" })
         }
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [sections]
+    []
   )
 
   // Initial load
   useEffect(() => {
-    setSections(getRecommendedSections())
+    setAllProducts(getRankedRecommendations())
     setLoading(false)
   }, [])
 
@@ -79,33 +85,17 @@ export function RecommendedPanel({ selectedProductId, onSelectProduct }: Recomme
   const handleRefresh = useCallback(() => {
     setLoading(true)
     setTimeout(() => {
-      setSections(shuffleRecommendedSections())
+      setAllProducts(shuffleRankedRecommendations())
       setActiveFilter("all")
       setLoading(false)
       scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" })
     }, 800)
   }, [])
 
-  // Filter tap -- scroll to the section
-  const handleFilterTap = useCallback((catId: string) => {
-    setActiveFilter(catId)
-    if (catId === "all") {
-      scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" })
-    } else {
-      const el = sectionRefs.current[catId]
-      if (el && scrollRef.current) {
-        const containerTop = scrollRef.current.getBoundingClientRect().top
-        const elTop = el.getBoundingClientRect().top
-        const offset = scrollRef.current.scrollTop + (elTop - containerTop)
-        scrollRef.current.scrollTo({ top: offset, behavior: "smooth" })
-      }
-    }
-  }, [])
-
   // Build filter items
   const filterItems = [
     { id: "all", name: "\uC804\uCCB4" },
-    ...sections.map((s) => ({ id: s.categoryId, name: s.categoryName })),
+    ...filterCategories.map((c) => ({ id: c.id, name: c.name })),
   ]
 
   return (
@@ -145,11 +135,11 @@ export function RecommendedPanel({ selectedProductId, onSelectProduct }: Recomme
             </p>
           </div>
         ) : (
-          <div className="flex flex-col gap-4 px-3 pb-4 pt-3">
+          <div className="px-3 pb-4 pt-3">
             {/* AI refresh button */}
             <button
               onClick={handleRefresh}
-              className="flex items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-2.5 transition-colors active:bg-primary/10"
+              className="mb-3 flex w-full items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-2.5 transition-colors active:bg-primary/10"
             >
               <Sparkles className="h-4 w-4 text-primary" />
               <span className="text-xs font-bold text-primary">
@@ -158,36 +148,23 @@ export function RecommendedPanel({ selectedProductId, onSelectProduct }: Recomme
               <RotateCcw className="h-3 w-3 text-primary/60" />
             </button>
 
-            {/* Sections */}
-            {sections.map((section) => (
-              <div
-                key={section.categoryId}
-                ref={(el) => { sectionRefs.current[section.categoryId] = el }}
-              >
-                {/* Section header */}
-                <div className="mb-2 flex items-center gap-2">
-                  <h3 className="text-[13px] font-bold text-foreground">
-                    {section.categoryName}
-                  </h3>
-                  <div className="h-px flex-1 bg-border" />
-                  <span className="text-[10px] text-muted-foreground">
-                    {section.products.length}{"\uAC1C"}
-                  </span>
-                </div>
+            {/* Flat product grid -- ranked by purchase likelihood */}
+            <div className="grid grid-cols-4 gap-2">
+              {visibleProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  isSelected={selectedProductId === product.id}
+                  onSelect={onSelectProduct}
+                />
+              ))}
+            </div>
 
-                {/* Product grid */}
-                <div className="grid grid-cols-4 gap-2">
-                  {section.products.map((product) => (
-                    <ProductCard
-                      key={product.id}
-                      product={product}
-                      isSelected={selectedProductId === product.id}
-                      onSelect={onSelectProduct}
-                    />
-                  ))}
-                </div>
-              </div>
-            ))}
+            {visibleProducts.length === 0 && (
+              <p className="pt-10 text-center text-xs text-muted-foreground">
+                {"\uD574\uB2F9 \uCE74\uD14C\uACE0\uB9AC\uC5D0 \uCD94\uCC9C \uC81C\uD488\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"}
+              </p>
+            )}
           </div>
         )}
       </div>

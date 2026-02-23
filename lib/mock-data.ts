@@ -807,92 +807,72 @@ export function getProductsByCategory(categoryId: string): Product[] {
   return products.filter((p) => p.categoryId === categoryId)
 }
 
-// Curated best-seller product names per category (expected top sellers)
-const BEST_SELLERS: Record<string, string[]> = {
-  "workshop": [
-    "모찌 바람과\n함께 사라지다", "두바이 스타일\n초콜릿쿠키",
-    "카페 아포가토", "마카롱\n피스타치오 아몬드",
-  ],
-  "cone-cup": [
-    "싱글레귤러", "이달의 더블주니어", "더블레귤러",
-  ],
-  "packable-icecream": [
-    "파인트", "쿼터", "패밀리",
-  ],
-  "icecream-cake": [
-    "레드하트\n시트론 보울", "더 듬뿍 딸기\n우유 케이크",
-    "화이트 스트로베리\n페스티벌",
-  ],
-  "coffee": [
-    "아메리카노", "카페라떼", "바닐라라떼",
-  ],
-  "beverage": [
-    "망고 패션후르츠\n블라스트", "피치요거트\n블라스트",
-  ],
-  "gelato": [
-    "젤라또 싱글", "젤라또 더블",
-  ],
-  "dessert": [
-    "브라우니 아 라 모드", "크루아상 와플",
-  ],
-  "prepack": [
-    "아이스 모찌 6개입", "아이스 모찌 10개입",
-  ],
+// Ranked best-seller product names in order of expected purchase likelihood
+// Mixing across all categories -- the order IS the ranking
+const RANKED_BEST_SELLERS: string[] = [
+  // #1-3: Ice cream scoops are the core business
+  "싱글레귤러",
+  "더블레귤러",
+  "이달의 더블주니어",
+  // #4-6: Workshop specials drive seasonal traffic
+  "모찌 바람과\n함께 사라지다",
+  "두바이 스타일\n초콜릿쿠키",
+  "카페 아포가토",
+  // #7-8: Beverages are high-margin impulse buys
+  "망고 패션후르츠\n블라스트",
+  "아메리카노",
+  // #9-10: Packable ice cream for take-home
+  "파인트",
+  "쿼터",
+  // #11-13: Cakes for celebrations
+  "레드하트\n시트론 보울",
+  "더 듬뿍 딸기\n우유 케이크",
+  "화이트 스트로베리\n페스티벌",
+  // #14-15: Coffee & beverage add-ons
+  "카페라떼",
+  "피치요거트\n블라스트",
+  // #16-17: Gelato premium option
+  "젤라또 싱글",
+  "젤라또 더블",
+  // #18-19: Dessert accompaniments
+  "브라우니 아 라 모드",
+  "크루아상 와플",
+  // #20-21: Workshop extras
+  "마카롱\n피스타치오 아몬드",
+  "바닐라라떼",
+  // #22-23: Prepack take-home
+  "아이스 모찌 6개입",
+  "아이스 모찌 10개입",
+  // #24: Family size
+  "패밀리",
+]
+
+export function getRankedRecommendations(): Product[] {
+  const ranked: Product[] = []
+  const usedIds = new Set<string>()
+
+  // Add products in ranked order
+  for (const name of RANKED_BEST_SELLERS) {
+    const found = products.find((p) => p.name === name && !usedIds.has(p.id))
+    if (found) {
+      ranked.push(found)
+      usedIds.add(found.id)
+    }
+  }
+
+  return ranked
 }
 
-export type RecommendedSection = {
-  categoryId: string
-  categoryName: string
-  products: Product[]
+// Shuffle for "AI가 추천하는 오늘의 조합" -- re-rank with randomization
+export function shuffleRankedRecommendations(): Product[] {
+  const base = getRankedRecommendations()
+  return [...base].sort(() => Math.random() - 0.5)
 }
 
-export function getRecommendedSections(): RecommendedSection[] {
-  const sections: RecommendedSection[] = []
-  const recCategories = categories.filter(
+// Get the category filter list for the recommended page
+export function getRecommendedFilterCategories(): { id: string; name: string }[] {
+  const recCats = categories.filter(
     (c) => c.id !== "event" && c.id !== "ai-pick" && c.id !== "party"
   )
-
-  for (const cat of recCategories) {
-    const catProducts = products.filter((p) => p.categoryId === cat.id)
-    const bestNames = BEST_SELLERS[cat.id] ?? []
-    const picked: Product[] = []
-
-    // First, add named best sellers in order
-    for (const name of bestNames) {
-      const found = catProducts.find((p) => p.name === name)
-      if (found) picked.push(found)
-    }
-
-    // If fewer than expected, fill with first available products
-    if (picked.length < 3) {
-      for (const p of catProducts) {
-        if (!picked.some((x) => x.id === p.id)) {
-          picked.push(p)
-          if (picked.length >= 3) break
-        }
-      }
-    }
-
-    if (picked.length > 0) {
-      sections.push({
-        categoryId: cat.id,
-        categoryName: cat.name.replace("\n", " "),
-        products: picked,
-      })
-    }
-  }
-
-  return sections
-}
-
-// Regenerate with shuffled order for "AI가 추천하는 오늘의 조합"
-export function shuffleRecommendedSections(): RecommendedSection[] {
-  const sections = getRecommendedSections()
-  // Shuffle products within each section
-  for (const section of sections) {
-    const catProducts = products.filter((p) => p.categoryId === section.categoryId)
-    const shuffled = [...catProducts].sort(() => Math.random() - 0.5)
-    section.products = shuffled.slice(0, Math.max(2, Math.min(4, section.products.length)))
-  }
-  return sections
+  return recCats.map((c) => ({ id: c.id, name: c.name.replace("\n", " ") }))
 }
