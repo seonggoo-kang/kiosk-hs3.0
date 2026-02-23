@@ -766,7 +766,7 @@ export default function MenuPage() {
     <Suspense
       fallback={
         <div className="flex flex-1 items-center justify-center">
-          <p className="text-muted-foreground">로딩 중...</p>
+          <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
         </div>
       }
     >
