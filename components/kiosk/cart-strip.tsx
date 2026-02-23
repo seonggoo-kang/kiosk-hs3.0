@@ -176,7 +176,7 @@ export function MiniCart() {
                         payload: { cartId: item.cartId, quantity: qty },
                       })
                     }
-                    min={0}
+                    min={1}
                     size="sm"
                   />
                 </div>

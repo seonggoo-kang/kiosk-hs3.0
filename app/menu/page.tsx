@@ -654,10 +654,8 @@ function MenuContent() {
         backLabel="처음으로"
         primaryLabel={(() => {
           if (!hasCart) return "주문하기"
-          const pendingCount = state.cart.filter(itemNeedsOptions).length
-          if (pendingCount === 0) return "주문하기"
-          if (pendingCount === state.cart.length) return "전체 옵션 정하기"
-          return "일부 옵션 정하기"
+          const hasPending = state.cart.some(itemNeedsOptions)
+          return hasPending ? "옵션 일괄 선택하기" : "주문하기"
         })()}
         primaryDisabled={!hasCart}
         onPrimary={() => {
