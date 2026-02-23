@@ -685,7 +685,7 @@ function MenuContent() {
       )}
 
       {/* Mini Cart */}
-      {!selectedProduct && <MiniCart />}
+      <MiniCart />
 
       {/* Action Bar */}
       {selectedProduct ? (
