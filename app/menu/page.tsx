@@ -711,8 +711,6 @@ function MenuContent() {
           onPrimary={() => router.push("/discounts")}
         />
       )}
-
-      <KioskFooter />
     </div>
   )
 }
