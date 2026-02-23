@@ -75,7 +75,7 @@ export function MiniCart() {
         {/* Scrollable mini item cards */}
         <div
           ref={scrollRef}
-          className="flex gap-2.5 overflow-x-auto pb-1 scrollbar-hide select-none"
+          className="flex gap-3 overflow-x-auto overflow-y-visible pt-2 pb-1 scrollbar-hide select-none"
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
@@ -109,7 +109,7 @@ export function MiniCart() {
             return (
               <div
                 key={item.cartId}
-                className={`relative flex w-40 shrink-0 flex-col rounded-xl border p-2.5 ${
+                className={`relative flex w-40 shrink-0 flex-col overflow-visible rounded-xl border p-2.5 ${
                   isPending
                     ? "border-amber-500/60 bg-white"
                     : "border-border bg-white"
@@ -127,7 +127,7 @@ export function MiniCart() {
                   onClick={() =>
                     dispatch({ type: "REMOVE_FROM_CART", payload: item.cartId })
                   }
-                  className="absolute right-1.5 top-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-gray-400 text-white shadow"
+                  className="absolute -right-2 -top-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-[#424242] text-white shadow"
                   aria-label={"\uC0AD\uC81C"}
                 >
                   <X className="h-3 w-3" />
