@@ -21,7 +21,50 @@ export function RecommendedPanel({ selectedProductId, onSelectProduct }: Recomme
   const [activeFilter, setActiveFilter] = useState("all")
   const [loading, setLoading] = useState(true)
   const scrollRef = useRef<HTMLDivElement>(null)
+  const filterRef = useRef<HTMLDivElement>(null)
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({})
+
+  // ── Drag-to-scroll for filter bar ──
+  const isDragging = useRef(false)
+  const dragStartX = useRef(0)
+  const dragStartScrollLeft = useRef(0)
+  const dragTotalDx = useRef(0)
+
+  const onFilterPointerDown = useCallback((e: React.PointerEvent) => {
+    const el = filterRef.current
+    if (!el) return
+    isDragging.current = true
+    dragTotalDx.current = 0
+    dragStartX.current = e.clientX
+    dragStartScrollLeft.current = el.scrollLeft
+    el.setPointerCapture(e.pointerId)
+  }, [])
+
+  const onFilterPointerMove = useCallback((e: React.PointerEvent) => {
+    if (!isDragging.current || !filterRef.current) return
+    const dx = e.clientX - dragStartX.current
+    dragTotalDx.current = dx
+    filterRef.current.scrollLeft = dragStartScrollLeft.current - dx
+  }, [])
+
+  const onFilterPointerUp = useCallback(
+    (e: React.PointerEvent) => {
+      if (!isDragging.current) return
+      isDragging.current = false
+      filterRef.current?.releasePointerCapture(e.pointerId)
+
+      // If barely moved, treat as a tap
+      if (Math.abs(dragTotalDx.current) < 5) {
+        const target = document.elementFromPoint(e.clientX, e.clientY)
+        const btn = target?.closest<HTMLButtonElement>("button[data-filter-id]")
+        if (btn?.dataset.filterId) {
+          handleFilterTap(btn.dataset.filterId)
+        }
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [sections]
+  )
 
   // Initial load
   useEffect(() => {
@@ -64,12 +107,19 @@ export function RecommendedPanel({ selectedProductId, onSelectProduct }: Recomme
 
   return (
     <div className="flex h-full flex-col">
-      {/* Category filter bar */}
-      <div className="flex shrink-0 gap-1.5 overflow-x-auto border-b border-border bg-card px-3 py-2 scrollbar-hide">
+      {/* Category filter bar -- swipeable */}
+      <div
+        ref={filterRef}
+        className="flex w-full shrink-0 gap-1.5 overflow-x-auto border-b border-border bg-card px-3 py-2 scrollbar-hide select-none"
+        onPointerDown={onFilterPointerDown}
+        onPointerMove={onFilterPointerMove}
+        onPointerUp={onFilterPointerUp}
+        onPointerCancel={onFilterPointerUp}
+      >
         {filterItems.map((item) => (
           <button
             key={item.id}
-            onClick={() => handleFilterTap(item.id)}
+            data-filter-id={item.id}
             className={cn(
               "shrink-0 rounded-full px-3 py-1 text-[11px] font-medium transition-colors",
               activeFilter === item.id
