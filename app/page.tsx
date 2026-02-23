@@ -84,11 +84,12 @@ export default function LandingPage() {
 
       {/* Logo at top */}
       <div className="relative z-10 flex flex-col items-center pt-14">
-        <div className="flex items-baseline gap-1.5">
-          <span className="text-7xl font-extrabold text-white drop-shadow-lg">B</span>
-          <span className="text-7xl font-extrabold text-pink-200 drop-shadow-lg">R</span>
-        </div>
-        <p className="mt-1 text-lg font-bold tracking-widest text-white/90 drop-shadow-md">
+        <img
+          src="/images/br-logo.png"
+          alt="Baskin Robbins"
+          className="h-20 w-auto drop-shadow-lg"
+        />
+        <p className="mt-2 text-lg font-bold tracking-widest text-white/90 drop-shadow-md">
           BASKIN ROBBINS
         </p>
       </div>

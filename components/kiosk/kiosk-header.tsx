@@ -11,10 +11,11 @@ export function KioskHeader({ title }: { title: string }) {
   return (
     <header className="flex h-14 shrink-0 items-center justify-between border-b border-border bg-card px-4">
       <div className="flex items-center gap-2.5">
-        <div className="flex items-baseline gap-0.5 font-extrabold leading-none">
-          <span className="text-lg text-primary">B</span>
-          <span className="text-lg" style={{ color: "hsl(220, 65%, 40%)" }}>R</span>
-        </div>
+        <img
+          src="/images/br-logo.png"
+          alt="Baskin Robbins"
+          className="h-7 w-auto"
+        />
         <h1 className="text-base font-semibold text-foreground">{title}</h1>
       </div>
       <button
