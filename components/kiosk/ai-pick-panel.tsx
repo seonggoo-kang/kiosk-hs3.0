@@ -114,7 +114,7 @@ export function RecommendedPanel({ selectedProductId, onSelectProduct }: Recomme
             key={item.id}
             data-filter-id={item.id}
             className={cn(
-              "shrink-0 rounded-full px-3 py-1 text-[11px] font-medium transition-colors",
+              "shrink-0 rounded-full px-3 py-1 text-[10px] font-medium transition-colors",
               activeFilter === item.id
                 ? "bg-primary text-primary-foreground"
                 : "bg-muted text-muted-foreground active:bg-muted/80"
