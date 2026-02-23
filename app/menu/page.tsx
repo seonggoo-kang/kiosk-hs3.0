@@ -514,7 +514,7 @@ function MenuContent() {
       {/* ── Carousel container ── */}
       <div
         ref={containerRef}
-        className="relative flex-1 overflow-hidden bg-muted/40 select-none touch-pan-y"
+        className="relative flex-1 overflow-hidden bg-[#FFFFFF] select-none touch-pan-y"
         onPointerDown={onDragPointerDown}
         onPointerMove={onDragPointerMove}
         onPointerUp={onDragPointerUp}
