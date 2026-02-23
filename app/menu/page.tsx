@@ -684,9 +684,6 @@ function MenuContent() {
         </div>
       )}
 
-      {/* Cart strip */}
-      <CartStrip />
-
       {/* Action Bar */}
       {selectedProduct ? (
         <ActionBar
