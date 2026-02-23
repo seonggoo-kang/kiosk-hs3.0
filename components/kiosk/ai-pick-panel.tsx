@@ -150,12 +150,13 @@ export function RecommendedPanel({ selectedProductId, onSelectProduct }: Recomme
 
             {/* Flat product grid -- ranked by purchase likelihood */}
             <div className="grid grid-cols-4 gap-2">
-              {visibleProducts.map((product) => (
+              {visibleProducts.map((product, idx) => (
                 <ProductCard
                   key={product.id}
                   product={product}
                   isSelected={selectedProductId === product.id}
                   onSelect={onSelectProduct}
+                  priority={idx < 4}
                 />
               ))}
             </div>
