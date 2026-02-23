@@ -17,6 +17,7 @@ import { useOrder } from "@/lib/order-context"
 import {
   categories,
   getProductsByCategory,
+  getRankedRecommendations,
   cakeSubcategories,
   beverageSubcategories,
   dessertSubcategories,
@@ -240,6 +241,7 @@ function MenuContent() {
   const selectedProduct = state.selectedProductId
     ? displaySlide.products.find((p) => p.id === state.selectedProductId) ||
       currentSlide.products.find((p) => p.id === state.selectedProductId) ||
+      getRankedRecommendations().find((p) => p.id === state.selectedProductId) ||
       null
     : null
 
