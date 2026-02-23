@@ -51,11 +51,11 @@ export function MiniCart() {
         opacity: hasItems ? 1 : 0,
       }}
     >
-      <div className="rounded-t-2xl bg-[#2a2a2a] px-4 pt-3 pb-3">
+      <div className="bg-[#F6F6FA] px-4 pt-3 pb-3">
         {/* Summary row */}
         <div className="flex items-center justify-between pb-2.5">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-bold text-white">
+            <span className="text-[10px] font-bold text-foreground">
               {"\uC8FC\uBB38\uC218\uB7C9"}
             </span>
             <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[10px] font-bold text-white">
@@ -63,7 +63,7 @@ export function MiniCart() {
             </span>
           </div>
           <div className="flex items-baseline gap-1.5">
-            <span className="text-[10px] text-gray-400">
+            <span className="text-[10px] text-muted-foreground">
               {"\uCD1D \uC8FC\uBB38\uAE08\uC561"}
             </span>
             <span className="text-base font-extrabold text-primary">
@@ -111,8 +111,8 @@ export function MiniCart() {
                 key={item.cartId}
                 className={`relative flex w-40 shrink-0 flex-col rounded-xl border p-2.5 ${
                   isPending
-                    ? "border-amber-500/60 bg-[#3a3a3a]"
-                    : "border-[#4a4a4a] bg-[#3a3a3a]"
+                    ? "border-amber-500/60 bg-white"
+                    : "border-border bg-white"
                 }`}
               >
                 {/* Pending badge */}
@@ -127,7 +127,7 @@ export function MiniCart() {
                   onClick={() =>
                     dispatch({ type: "REMOVE_FROM_CART", payload: item.cartId })
                   }
-                  className="absolute -right-1 -top-1 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-gray-500 text-white shadow"
+                  className="absolute right-1.5 top-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-gray-400 text-white shadow"
                   aria-label={"\uC0AD\uC81C"}
                 >
                   <X className="h-3 w-3" />
@@ -135,7 +135,7 @@ export function MiniCart() {
 
                 {/* Product image + name + options */}
                 <div className={`flex items-start gap-2 ${isPending ? "mt-3" : ""}`}>
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/10">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gray-100">
                     <img
                       src={item.product.image}
                       alt={item.product.name}
@@ -143,10 +143,10 @@ export function MiniCart() {
                     />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-[10px] font-semibold text-white">
+                    <p className="truncate text-[10px] font-semibold text-foreground">
                       {item.product.name}
                     </p>
-                    <p className={`truncate text-[9px] ${isPending ? "text-amber-400" : "text-gray-400"}`}>
+                    <p className={`truncate text-[9px] ${isPending ? "text-amber-600" : "text-muted-foreground"}`}>
                       {optionSummary}
                     </p>
                   </div>
@@ -160,8 +160,8 @@ export function MiniCart() {
                 {/* Bottom row: 옵션변경 + quantity */}
                 <div className="mt-1.5 flex items-center justify-between">
                   <button
-                    className={`rounded-md px-2 py-0.5 text-[9px] font-semibold text-white active:opacity-80 ${
-                      isPending ? "bg-amber-500" : "bg-primary/90"
+                    className={`rounded-md px-2 py-0.5 text-[9px] font-semibold active:opacity-80 ${
+                      isPending ? "bg-amber-500 text-white" : "bg-primary/10 text-primary"
                     }`}
                   >
                     {"\uC635\uC158\uBCC0\uACBD"}
@@ -176,7 +176,6 @@ export function MiniCart() {
                     }
                     min={0}
                     size="sm"
-                    dark
                   />
                 </div>
               </div>
