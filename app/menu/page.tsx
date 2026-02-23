@@ -115,6 +115,12 @@ function SlideContent({
 }
 
 function MenuContent() {
+  // Root-level hydration guard: render nothing during SSR to prevent
+  // Korean multibyte UTF-8 characters from being split at streaming buffer boundaries.
+  // This is a kiosk app with no SEO requirement, so client-only rendering is fine.
+  const [hydrated, setHydrated] = useState(false)
+  useEffect(() => setHydrated(true), [])
+
   const router = useRouter()
   const searchParams = useSearchParams()
   const { state, dispatch } = useOrder()
@@ -498,6 +504,14 @@ function MenuContent() {
   const isPrepack = activeCategory === "prepack"
   const isParty = activeCategory === "party"
   const isPackable = activeCategory === "packable-icecream"
+
+  if (!hydrated) {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center bg-background">
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">

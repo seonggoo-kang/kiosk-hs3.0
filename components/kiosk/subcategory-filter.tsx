@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useCallback, useState, useEffect } from "react"
+import { useRef, useCallback } from "react"
 import { cn } from "@/lib/utils"
 
 type SubcategoryFilterProps = {
@@ -10,11 +10,6 @@ type SubcategoryFilterProps = {
 }
 
 export function SubcategoryFilter({ items, activeId, onSelect }: SubcategoryFilterProps) {
-  // Defer rendering Korean text until after hydration to prevent SSR streaming
-  // from splitting multibyte UTF-8 characters at buffer boundaries
-  const [ready, setReady] = useState(false)
-  useEffect(() => setReady(true), [])
-
   const scrollRef = useRef<HTMLDivElement>(null)
   const isDragging = useRef(false)
   const startX = useRef(0)
@@ -65,22 +60,20 @@ export function SubcategoryFilter({ items, activeId, onSelect }: SubcategoryFilt
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerUp}
     >
-      {ready
-        ? items.map((item) => (
-            <button
-              key={item.id}
-              data-filter-id={item.id}
-              className={cn(
-                "shrink-0 rounded-full px-3 py-1 text-[11px] font-medium transition-colors",
-                activeId === item.id
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted text-muted-foreground active:bg-muted/80"
-              )}
-            >
-              {item.name}
-            </button>
-          ))
-        : null}
+      {items.map((item) => (
+        <button
+          key={item.id}
+          data-filter-id={item.id}
+          className={cn(
+            "shrink-0 rounded-full px-3 py-1 text-[11px] font-medium transition-colors",
+            activeId === item.id
+              ? "bg-primary text-primary-foreground"
+              : "bg-muted text-muted-foreground active:bg-muted/80"
+          )}
+        >
+          {item.name}
+        </button>
+      ))}
     </div>
   )
 }
