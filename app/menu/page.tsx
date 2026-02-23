@@ -12,11 +12,12 @@ import { CartStrip } from "@/components/kiosk/cart-strip"
 import { ActionBar } from "@/components/kiosk/action-bar"
 import { EventPromoBanners } from "@/components/kiosk/event-promo-banners"
 import { SubcategoryFilter } from "@/components/kiosk/subcategory-filter"
-import { AiPickPanel } from "@/components/kiosk/ai-pick-panel"
+import { RecommendedPanel } from "@/components/kiosk/ai-pick-panel"
 import { useOrder } from "@/lib/order-context"
 import {
   categories,
   getProductsByCategory,
+  getRecommendedProducts,
   cakeSubcategories,
   beverageSubcategories,
   dessertSubcategories,
@@ -57,6 +58,9 @@ function SlideContent({
   onEventOverflowCancel?: () => void
   canOverflowLeft?: boolean
   canOverflowRight?: boolean
+  recommendedProducts?: Product[]
+  recommendedLoading?: boolean
+  onRefreshRecommended?: () => void
 }) {
   if (slide.isEvent) {
     return (
@@ -73,7 +77,15 @@ function SlideContent({
   }
 
   if (slide.isAiPick) {
-    return <AiPickPanel />
+    return (
+      <RecommendedPanel
+        products={recommendedProducts ?? []}
+        selectedProductId={selectedProductId}
+        onSelectProduct={onSelectProduct}
+        onRefresh={onRefreshRecommended ?? (() => {})}
+        loading={recommendedLoading}
+      />
+    )
   }
 
   return (
@@ -106,6 +118,23 @@ function MenuContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { state, dispatch } = useOrder()
+
+  // ── Recommended products state ──
+  const [recommendedProducts, setRecommendedProducts] = useState<Product[]>([])
+  const [recommendedLoading, setRecommendedLoading] = useState(true)
+
+  const refreshRecommended = useCallback(() => {
+    setRecommendedLoading(true)
+    // Simulate AI processing delay
+    setTimeout(() => {
+      setRecommendedProducts(getRecommendedProducts(16))
+      setRecommendedLoading(false)
+    }, 800)
+  }, [])
+
+  useEffect(() => {
+    refreshRecommended()
+  }, [refreshRecommended])
 
   // ── Subcategory filter states ──
   const [cakeFilter, setCakeFilter] = useState("all")
@@ -607,6 +636,9 @@ function MenuContent() {
                 setDragOffset(0)
                 setTimeout(() => setIsAnimating(false), 200)
               }}
+              recommendedProducts={recommendedProducts}
+              recommendedLoading={recommendedLoading}
+              onRefreshRecommended={refreshRecommended}
             />
           </div>
 
