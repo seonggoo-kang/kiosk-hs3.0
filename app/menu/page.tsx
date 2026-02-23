@@ -8,7 +8,7 @@ import { KioskFooter } from "@/components/kiosk/kiosk-footer"
 import { CategoryTabs } from "@/components/kiosk/category-tabs"
 import { ProductCard } from "@/components/kiosk/product-card"
 import { ProductDetailPanel } from "@/components/kiosk/product-detail-panel"
-import { CartStrip } from "@/components/kiosk/cart-strip"
+import { MiniCart } from "@/components/kiosk/cart-strip"
 import { ActionBar } from "@/components/kiosk/action-bar"
 import { EventPromoBanners } from "@/components/kiosk/event-promo-banners"
 import { SubcategoryFilter } from "@/components/kiosk/subcategory-filter"
@@ -683,6 +683,9 @@ function MenuContent() {
           <ProductDetailPanel product={selectedProduct} />
         </div>
       )}
+
+      {/* Mini Cart */}
+      {!selectedProduct && <MiniCart />}
 
       {/* Action Bar */}
       {selectedProduct ? (

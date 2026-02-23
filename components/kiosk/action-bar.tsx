@@ -32,7 +32,7 @@ export function ActionBar({
           "flex h-[46px] flex-1 items-center justify-center rounded-xl text-base font-bold transition-colors active:opacity-80",
           primaryDisabled
             ? "bg-muted text-muted-foreground"
-            : "bg-primary text-primary-foreground"
+            : "bg-[#e84073] text-white"
         )}
       >
         {primaryLabel}
