@@ -18,6 +18,10 @@ export function MiniCart() {
   const dragDx = useRef(0)
 
   const onPointerDown = useCallback((e: React.PointerEvent) => {
+    // Don't capture pointer if user tapped a button or interactive element
+    const target = e.target as HTMLElement
+    if (target.closest("button")) return
+
     e.stopPropagation()
     const el = scrollRef.current
     if (!el) return
@@ -29,16 +33,16 @@ export function MiniCart() {
   }, [])
 
   const onPointerMove = useCallback((e: React.PointerEvent) => {
-    e.stopPropagation()
     if (!isDragging.current || !scrollRef.current) return
+    e.stopPropagation()
     const dx = e.clientX - dragStartX.current
     dragDx.current = dx
     scrollRef.current.scrollLeft = dragScrollLeft.current - dx
   }, [])
 
   const onPointerUp = useCallback((e: React.PointerEvent) => {
-    e.stopPropagation()
     if (!isDragging.current) return
+    e.stopPropagation()
     isDragging.current = false
     scrollRef.current?.releasePointerCapture(e.pointerId)
   }, [])
