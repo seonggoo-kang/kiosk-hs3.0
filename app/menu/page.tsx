@@ -12,12 +12,11 @@ import { CartStrip } from "@/components/kiosk/cart-strip"
 import { ActionBar } from "@/components/kiosk/action-bar"
 import { EventPromoBanners } from "@/components/kiosk/event-promo-banners"
 import { SubcategoryFilter } from "@/components/kiosk/subcategory-filter"
-import { RecommendedPanel } from "@/components/kiosk/ai-pick-panel"
+import { AiPickPanel } from "@/components/kiosk/ai-pick-panel"
 import { useOrder } from "@/lib/order-context"
 import {
   categories,
   getProductsByCategory,
-  getRecommendedProducts,
   cakeSubcategories,
   beverageSubcategories,
   dessertSubcategories,
@@ -58,9 +57,6 @@ function SlideContent({
   onEventOverflowCancel?: () => void
   canOverflowLeft?: boolean
   canOverflowRight?: boolean
-  recommendedProducts?: Product[]
-  recommendedLoading?: boolean
-  onRefreshRecommended?: () => void
 }) {
   if (slide.isEvent) {
     return (
@@ -77,15 +73,7 @@ function SlideContent({
   }
 
   if (slide.isAiPick) {
-    return (
-      <RecommendedPanel
-        products={recommendedProducts ?? []}
-        selectedProductId={selectedProductId}
-        onSelectProduct={onSelectProduct}
-        onRefresh={onRefreshRecommended ?? (() => {})}
-        loading={recommendedLoading}
-      />
-    )
+    return <AiPickPanel />
   }
 
   return (
@@ -115,32 +103,9 @@ function SlideContent({
 }
 
 function MenuContent() {
-  // Root-level hydration guard: render nothing during SSR to prevent
-  // Korean multibyte UTF-8 characters from being split at streaming buffer boundaries.
-  // This is a kiosk app with no SEO requirement, so client-only rendering is fine.
-  const [hydrated, setHydrated] = useState(false)
-  useEffect(() => setHydrated(true), [])
-
   const router = useRouter()
   const searchParams = useSearchParams()
   const { state, dispatch } = useOrder()
-
-  // ── Recommended products state ──
-  const [recommendedProducts, setRecommendedProducts] = useState<Product[]>([])
-  const [recommendedLoading, setRecommendedLoading] = useState(true)
-
-  const refreshRecommended = useCallback(() => {
-    setRecommendedLoading(true)
-    // Simulate AI processing delay
-    setTimeout(() => {
-      setRecommendedProducts(getRecommendedProducts(16))
-      setRecommendedLoading(false)
-    }, 800)
-  }, [])
-
-  useEffect(() => {
-    refreshRecommended()
-  }, [refreshRecommended])
 
   // ── Subcategory filter states ──
   const [cakeFilter, setCakeFilter] = useState("all")
@@ -505,14 +470,6 @@ function MenuContent() {
   const isParty = activeCategory === "party"
   const isPackable = activeCategory === "packable-icecream"
 
-  if (!hydrated) {
-    return (
-      <div className="flex flex-1 flex-col items-center justify-center bg-background">
-        <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-      </div>
-    )
-  }
-
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
       <KioskHeader title="메뉴 선택" />
@@ -650,9 +607,6 @@ function MenuContent() {
                 setDragOffset(0)
                 setTimeout(() => setIsAnimating(false), 200)
               }}
-              recommendedProducts={recommendedProducts}
-              recommendedLoading={recommendedLoading}
-              onRefreshRecommended={refreshRecommended}
             />
           </div>
 
@@ -766,7 +720,7 @@ export default function MenuPage() {
     <Suspense
       fallback={
         <div className="flex flex-1 items-center justify-center">
-          <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          <p className="text-muted-foreground">로딩 중...</p>
         </div>
       }
     >
