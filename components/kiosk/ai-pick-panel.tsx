@@ -31,6 +31,7 @@ export function RecommendedPanel({ selectedProductId, onSelectProduct }: Recomme
   const dragTotalDx = useRef(0)
 
   const onFilterPointerDown = useCallback((e: React.PointerEvent) => {
+    e.stopPropagation()
     const el = filterRef.current
     if (!el) return
     isDragging.current = true
@@ -41,6 +42,7 @@ export function RecommendedPanel({ selectedProductId, onSelectProduct }: Recomme
   }, [])
 
   const onFilterPointerMove = useCallback((e: React.PointerEvent) => {
+    e.stopPropagation()
     if (!isDragging.current || !filterRef.current) return
     const dx = e.clientX - dragStartX.current
     dragTotalDx.current = dx
@@ -49,6 +51,7 @@ export function RecommendedPanel({ selectedProductId, onSelectProduct }: Recomme
 
   const onFilterPointerUp = useCallback(
     (e: React.PointerEvent) => {
+      e.stopPropagation()
       if (!isDragging.current) return
       isDragging.current = false
       filterRef.current?.releasePointerCapture(e.pointerId)
