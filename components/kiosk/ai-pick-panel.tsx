@@ -12,11 +12,11 @@ import {
 import { ProductCard } from "@/components/kiosk/product-card"
 
 type RecommendedPanelProps = {
-  selectedProductId: string | null
+  cartProductIds: Set<string>
   onSelectProduct: (product: Product) => void
 }
 
-export function RecommendedPanel({ selectedProductId, onSelectProduct }: RecommendedPanelProps) {
+export function RecommendedPanel({ cartProductIds, onSelectProduct }: RecommendedPanelProps) {
   const [allProducts, setAllProducts] = useState<Product[]>([])
   const [activeFilter, setActiveFilter] = useState("all")
   const [loading, setLoading] = useState(true)
@@ -154,7 +154,7 @@ export function RecommendedPanel({ selectedProductId, onSelectProduct }: Recomme
                 <ProductCard
                   key={product.id}
                   product={product}
-                  isSelected={selectedProductId === product.id}
+                  isSelected={cartProductIds.has(product.id)}
                   onSelect={onSelectProduct}
                   priority={idx < 4}
                 />

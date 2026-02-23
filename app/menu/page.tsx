@@ -42,7 +42,7 @@ type Slide = {
 // ── Slide renderer (pure presentational) ───────────────────
 function SlideContent({
   slide,
-  selectedProductId,
+  cartProductIds,
   onSelectProduct,
   onEventOverflowDrag,
   onEventOverflowCommit,
@@ -51,7 +51,7 @@ function SlideContent({
   canOverflowRight,
 }: {
   slide: Slide
-  selectedProductId: string | null
+  cartProductIds: Set<string>
   onSelectProduct: (p: Product) => void
   onEventOverflowDrag?: (dx: number) => void
   onEventOverflowCommit?: (direction: "left" | "right") => void
@@ -76,7 +76,7 @@ function SlideContent({
   if (slide.isAiPick) {
     return (
       <RecommendedPanel
-        selectedProductId={selectedProductId}
+        cartProductIds={cartProductIds}
         onSelectProduct={onSelectProduct}
       />
     )
@@ -91,7 +91,7 @@ function SlideContent({
               <ProductCard
                 key={product.id}
                 product={product}
-                isSelected={selectedProductId === product.id}
+                isSelected={cartProductIds.has(product.id)}
                 onSelect={onSelectProduct}
                 priority={slide.pageIndex === 0}
               />
@@ -246,6 +246,7 @@ function MenuContent() {
     : null
 
   const hasCart = state.cart.length > 0
+  const cartProductIds = useMemo(() => new Set(state.cart.map((item) => item.product.id)), [state.cart])
 
   // ── Category tab click: jump to first slide of that category ──
   const handleCategoryChange = useCallback(
@@ -532,9 +533,9 @@ function MenuContent() {
               }}
             >
               <SlideContent
-                slide={prevSlide}
-                selectedProductId={null}
-                onSelectProduct={() => {}}
+  slide={prevSlide}
+  cartProductIds={cartProductIds}
+  onSelectProduct={() => {}}
               />
             </div>
           )}
@@ -549,9 +550,9 @@ function MenuContent() {
             }}
           >
             <SlideContent
-              slide={displaySlide}
-              selectedProductId={state.selectedProductId}
-              onSelectProduct={handleProductSelect}
+  slide={displaySlide}
+  cartProductIds={cartProductIds}
+  onSelectProduct={handleProductSelect}
               canOverflowLeft={canGoRight}
               canOverflowRight={canGoLeft}
               onEventOverflowDrag={(dx) => {
@@ -590,9 +591,9 @@ function MenuContent() {
               }}
             >
               <SlideContent
-                slide={nextSlide}
-                selectedProductId={null}
-                onSelectProduct={() => {}}
+  slide={nextSlide}
+  cartProductIds={cartProductIds}
+  onSelectProduct={() => {}}
               />
             </div>
           )}
