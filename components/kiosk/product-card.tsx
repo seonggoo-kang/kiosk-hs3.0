@@ -60,7 +60,7 @@ export function ProductCard({ product, isSelected, onSelect, priority }: Product
           ? `${product.size} (${product.weight})`
           : product.size}
       </p>
-      <p className="mt-1 text-xs font-bold text-primary">
+      <p className="mt-1 text-[10px] font-bold text-primary">
         {product.price === 0 ? "0원" : formatPrice(product.price)}
       </p>
     </button>
