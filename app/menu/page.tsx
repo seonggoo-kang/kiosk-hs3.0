@@ -166,9 +166,9 @@ function MenuContent() {
   }, [])
 
   // ── Flat index state ──
-  // Start at the first slide of 4th category (index 3, "workshop")
+  // Start at the first slide of "AI 추천" (index 0)
   const initialFlatIndex = useMemo(() => {
-    const idx = flatSlides.findIndex((s) => s.categoryId === categories[3].id)
+    const idx = flatSlides.findIndex((s) => s.categoryId === "ai-pick")
     return idx >= 0 ? idx : 0
   }, [flatSlides])
 
