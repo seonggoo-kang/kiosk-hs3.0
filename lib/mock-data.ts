@@ -73,7 +73,7 @@ export type DiscountItem = {
 
 // ─── Categories ───────────────────────────────────────────
 export const categories: Category[] = [
-  { id: "ai-pick", name: "AI 추천" },
+  { id: "ai-pick", name: "추천 메뉴" },
   { id: "event", name: "이벤트" },
   { id: "workshop", name: "워크샵 스페셜" },
   { id: "cone-cup", name: "콘/컵" },
@@ -286,7 +286,7 @@ const cakeProducts = generateProducts("icecream-cake", [
   { name: "골든 프랄린\n바움쿠헨 케이크", desc: "홀케이크", size: "홀", weight: "800g", price: 32000, cal: "1800~2400 kcal", serving: "800g", image: "/products/cake-round.jpg", flavor: false, maxF: 0, sub: "basic" },
   { name: "골든 브릴레\n판타지", desc: "홀케이크", size: "홀", weight: "800g", price: 32000, cal: "1800~2400 kcal", serving: "800g", image: "/products/cake-round.jpg", flavor: false, maxF: 0, sub: "basic", tag: "먹고가기" },
   { name: "홀리데이\n초콜릿 판타지", desc: "홀케이크", size: "홀", weight: "800g", price: 32000, cal: "1900~2500 kcal", serving: "800g", image: "/products/cake-round.jpg", flavor: false, maxF: 0, sub: "basic" },
-  { name: "피넛 라떼 브릭", desc: "홀케이크", size: "홀", weight: "750g", price: 28000, cal: "1600~2200 kcal", serving: "750g", image: "/products/cake-round.jpg", flavor: false, maxF: 0, sub: "basic" },
+  { name: "피넛 라떼 브릭", desc: "홀케이크", size: "��", weight: "750g", price: 28000, cal: "1600~2200 kcal", serving: "750g", image: "/products/cake-round.jpg", flavor: false, maxF: 0, sub: "basic" },
   { name: "스노우 초코아몬드\n바움쿠헨", desc: "홀케이크", size: "홀", weight: "800g", price: 31000, cal: "1800~2400 kcal", serving: "800g", image: "/products/cake-round.jpg", flavor: false, maxF: 0, sub: "basic" },
   { name: "스노우 초코베리\n바움쿠헨", desc: "홀케이크", size: "홀", weight: "800g", price: 31000, cal: "1800~2400 kcal", serving: "800g", image: "/products/cake-round.jpg", flavor: false, maxF: 0, sub: "basic" },
   { name: "진정한 크림치즈\n레드벨벳", desc: "홀케이크", size: "홀", weight: "750g", price: 28000, cal: "1600~2200 kcal", serving: "750g", image: "/products/cake-round.jpg", flavor: false, maxF: 0, sub: "basic" },
@@ -476,7 +476,7 @@ const prepackProducts = generateProducts("prepack", [
   { name: "블록팩 체리쥬빌레", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "170~260 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
   { name: "블록팩 이상한 나라의\n솜사탕", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
   { name: "블록팩 쿠키앤크림", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "200~300 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
-  { name: "블록팩 바람과 함께\n사라지다", desc: "블��팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
+  { name: "블록팩 바람과 함께\n사라지다", desc: "블���팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
   { name: "블록팩 엄마는 외계인", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
 
   // ── (Lessly) 블록팩 – NEW 라인 ──
