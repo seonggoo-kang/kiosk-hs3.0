@@ -668,7 +668,7 @@ export const flavors: Flavor[] = [
   { id: "espresso-crunch", name: "에스프레소 크런치", image: "/flavors/coffee.jpg", color: "hsl(25,40%,35%)", categoryId: "coffee-caramel", description: "진한 에스프레소와 크런치의 조화", badge: null },
   { id: "salted-caramel", name: "솔티드 카라멜", image: "/flavors/caramel.jpg", color: "hsl(30,55%,55%)", categoryId: "coffee-caramel", description: "달콤 짭조름한 솔티드 카라멜", badge: null },
   { id: "cafe-mocha", name: "카페 모카", image: "/flavors/coffee.jpg", color: "hsl(20,40%,40%)", categoryId: "coffee-caramel", description: "커피와 초콜릿의 진한 모카", badge: null },
-  { id: "earl-grey", name: "얼그레이", image: "/flavors/caramel.jpg", color: "hsl(30,25%,60%)", categoryId: "coffee-caramel", description: "향긋한 얼그레이 티의 풍미", badge: null },
+  { id: "earl-grey", name: "���그레이", image: "/flavors/caramel.jpg", color: "hsl(30,25%,60%)", categoryId: "coffee-caramel", description: "향긋한 얼그레이 티의 풍미", badge: null },
   { id: "caramel-macchiato", name: "카라멜 마끼아또", image: "/flavors/caramel.jpg", color: "hsl(28,50%,50%)", categoryId: "coffee-caramel", description: "달콤한 카라멜과 커피의 만남", badge: null },
   { id: "cold-brew", name: "콜드브루", image: "/flavors/coffee.jpg", color: "hsl(20,30%,30%)", categoryId: "coffee-caramel", description: "차갑게 추출한 진한 커피의 맛", badge: null },
   { id: "butterscotch", name: "버터스카치", image: "/flavors/caramel.jpg", color: "hsl(35,55%,60%)", categoryId: "coffee-caramel", description: "달콤한 버터스카치의 풍미", badge: null },
@@ -805,4 +805,35 @@ export function formatPrice(price: number): string {
 
 export function getProductsByCategory(categoryId: string): Product[] {
   return products.filter((p) => p.categoryId === categoryId)
+}
+
+const RECOMMEND_CATEGORIES = [
+  "workshop", "cone-cup", "packable-icecream", "icecream-cake",
+  "coffee", "beverage", "gelato", "dessert", "prepack",
+]
+
+export function getRecommendedProducts(count = 16): Product[] {
+  // Pick diverse products across all non-event categories (max 2 per category)
+  const pool: Product[] = []
+  const shuffledCats = [...RECOMMEND_CATEGORIES].sort(() => Math.random() - 0.5)
+
+  for (const catId of shuffledCats) {
+    const catProducts = products.filter((p) => p.categoryId === catId)
+    const shuffled = [...catProducts].sort(() => Math.random() - 0.5)
+    pool.push(...shuffled.slice(0, 2))
+  }
+
+  // Shuffle the entire pool and take `count`
+  const result = [...pool].sort(() => Math.random() - 0.5).slice(0, count)
+
+  // If we still need more, fill from remaining products
+  if (result.length < count) {
+    const usedIds = new Set(result.map((p) => p.id))
+    const remaining = products
+      .filter((p) => !usedIds.has(p.id) && p.categoryId !== "event" && p.categoryId !== "party")
+      .sort(() => Math.random() - 0.5)
+    result.push(...remaining.slice(0, count - result.length))
+  }
+
+  return result
 }
