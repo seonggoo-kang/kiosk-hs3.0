@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback, useRef, useMemo } from "react"
+import { useState, useCallback, useRef, useMemo } from "react"
 import { Sparkles, RotateCcw } from "lucide-react"
 import { cn } from "@/lib/utils"
 import {
@@ -17,9 +17,9 @@ type RecommendedPanelProps = {
 }
 
 export function RecommendedPanel({ cartProductIds, onSelectProduct }: RecommendedPanelProps) {
-  const [allProducts, setAllProducts] = useState<Product[]>([])
+  const [allProducts, setAllProducts] = useState<Product[]>(() => getRankedRecommendations())
   const [activeFilter, setActiveFilter] = useState("all")
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
   const filterRef = useRef<HTMLDivElement>(null)
 
@@ -74,12 +74,6 @@ export function RecommendedPanel({ cartProductIds, onSelectProduct }: Recommende
     },
     []
   )
-
-  // Initial load
-  useEffect(() => {
-    setAllProducts(getRankedRecommendations())
-    setLoading(false)
-  }, [])
 
   // AI refresh
   const handleRefresh = useCallback(() => {
