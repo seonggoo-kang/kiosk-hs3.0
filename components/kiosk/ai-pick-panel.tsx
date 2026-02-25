@@ -199,6 +199,7 @@ export function RecommendedPanel({ cartProductIds, cartProductMap, onSelectProdu
                   onRemove={onRemoveProduct}
                   priority={idx < 4}
                   size={cardSizeForCount(visibleProducts.length, zoomLevel)}
+                  rank={visibleProducts.length >= 11 ? (idx + 1 <= (visibleProducts.length >= 16 ? 10 : 5) ? idx + 1 : null) : null}
                 />
               ))}
             </div>

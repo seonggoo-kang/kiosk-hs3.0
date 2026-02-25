@@ -85,6 +85,7 @@ function SlideContent({
   autoReturnSeconds,
   onCancelAutoReturn,
   zoomLevel,
+  rankMap = new Map<string, number>(),
 }: {
   slide: Slide
   cartProductIds: Set<string>
@@ -98,6 +99,7 @@ function SlideContent({
   autoReturnSeconds?: number | null
   onCancelAutoReturn?: () => void
   zoomLevel?: ZoomLevel
+  rankMap?: Map<string, number>
 }) {
   if (slide.isAiPick) {
     return (
@@ -127,6 +129,7 @@ function SlideContent({
                 onRemove={onRemoveProduct}
                 priority={slide.pageIndex === 0}
                 size={cardSizeForCount(slide.totalCategoryProducts, zoomLevel)}
+                rank={rankMap.get(product.id)}
               />
             ))}
           </div>
@@ -625,6 +628,20 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
 
   const cancelAutoReturn = useCallback(() => setAutoReturnTimer(null), [])
 
+  // Build ranking map for active category: product id -> rank (1-based)
+  // Only ranks top N products: top 5 for categories with 11-15 items, top 10 for 16+
+  const rankMap = useMemo(() => {
+    const map = new Map<string, number>()
+    const allProducts = getProductsByCategory(activeCategory, state.orderType)
+    const total = allProducts.length
+    if (total < 11) return map
+    const topN = total >= 16 ? 10 : 5
+    for (let i = 0; i < Math.min(topN, total); i++) {
+      map.set(allProducts[i].id, i + 1)
+    }
+    return map
+  }, [activeCategory, state.orderType])
+
   const isCake = activeCategory === "icecream-cake"
   const isBeverage = activeCategory === "beverage"
   const isDessert = activeCategory === "dessert"
@@ -696,7 +713,7 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
         <div className="relative h-full w-full">
           {prevSlide && (
             <div className="absolute inset-0" style={{ transform: `translateX(calc(-100% + ${dragOffset}px))`, transition: isAnimating ? "transform 250ms ease-out" : "none" }}>
-              <SlideContent slide={prevSlide} cartProductIds={cartProductIds} cartProductMap={cartProductMap} onSelectProduct={() => {}} onRemoveProduct={handleRemoveProduct} orderType={state.orderType} zoomLevel={zoomLevel} />
+              <SlideContent slide={prevSlide} cartProductIds={cartProductIds} cartProductMap={cartProductMap} onSelectProduct={() => {}} onRemoveProduct={handleRemoveProduct} orderType={state.orderType} zoomLevel={zoomLevel} rankMap={rankMap} />
             </div>
           )}
           <div
@@ -717,11 +734,12 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
               autoReturnSeconds={autoReturnTimer}
               onCancelAutoReturn={cancelAutoReturn}
               zoomLevel={zoomLevel}
+              rankMap={rankMap}
             />
           </div>
           {nextSlide && (
             <div className="absolute inset-0" style={{ transform: `translateX(calc(100% + ${dragOffset}px))`, transition: isAnimating ? "transform 250ms ease-out" : "none" }}>
-              <SlideContent slide={nextSlide} cartProductIds={cartProductIds} cartProductMap={cartProductMap} onSelectProduct={() => {}} onRemoveProduct={handleRemoveProduct} orderType={state.orderType} zoomLevel={zoomLevel} />
+              <SlideContent slide={nextSlide} cartProductIds={cartProductIds} cartProductMap={cartProductMap} onSelectProduct={() => {}} onRemoveProduct={handleRemoveProduct} orderType={state.orderType} zoomLevel={zoomLevel} rankMap={rankMap} />
             </div>
           )}
         </div>

@@ -15,6 +15,15 @@ type ProductCardProps = {
   onRemove?: (product: Product) => void
   priority?: boolean
   size?: CardSize
+  rank?: number | null
+}
+
+const RANK_BADGE_SIZE: Record<CardSize, string> = {
+  xs: "h-3 w-3 text-[6px]",
+  sm: "h-3.5 w-3.5 text-[7px]",
+  md: "h-4 w-4 text-[8px]",
+  lg: "h-5 w-5 text-[9px]",
+  xl: "h-6 w-6 text-xs",
 }
 
 const SIZE_CONFIG: Record<CardSize, {
@@ -92,7 +101,7 @@ const TAG_STYLES: Record<string, string> = {
   "가져가기 전용": "bg-emerald-600 text-white",
 }
 
-export function ProductCard({ product, isSelected, quantity, onSelect, onRemove, priority, size = "sm" }: ProductCardProps) {
+export function ProductCard({ product, isSelected, quantity, onSelect, onRemove, priority, size = "sm", rank }: ProductCardProps) {
   const s = SIZE_CONFIG[size]
   const inCart = (quantity ?? 0) > 0
   return (
@@ -144,6 +153,20 @@ export function ProductCard({ product, isSelected, quantity, onSelect, onRemove,
             )}
           >
             {product.tag}
+          </span>
+        )}
+        {rank != null && rank >= 1 && !inCart && (
+          <span
+            className={cn(
+              "absolute right-0 top-0 flex items-center justify-center rounded-bl-lg rounded-tr-lg font-bold leading-none",
+              RANK_BADGE_SIZE[size],
+              rank === 1 && "bg-amber-500 text-white",
+              rank === 2 && "bg-slate-400 text-white",
+              rank === 3 && "bg-amber-700 text-white",
+              rank >= 4 && "bg-muted-foreground/20 text-foreground"
+            )}
+          >
+            {rank}
           </span>
         )}
       </div>
