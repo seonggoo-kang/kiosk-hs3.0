@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback, useRef } from "react"
 import Image from "next/image"
 import { HelpCircle, X, ChevronLeft, ChevronRight } from "lucide-react"
 import { KioskHeader } from "@/components/kiosk/kiosk-header"
+import { ProgressStepper } from "@/components/kiosk/progress-stepper"
 import { KioskFooter } from "@/components/kiosk/kiosk-footer"
 import { ActionBar } from "@/components/kiosk/action-bar"
 import {
@@ -24,9 +25,11 @@ interface FlavorsScreenProps {
   onBack: () => void
   onComplete: (productId: string, flavors: Flavor[]) => void
   onHome: () => void
+  currentStep: 1 | 2 | 3 | 4 | 5
+  elapsedSeconds: number
 }
 
-export function FlavorsScreen({ productId, onBack, onComplete, onHome }: FlavorsScreenProps) {
+export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentStep, elapsedSeconds }: FlavorsScreenProps) {
   const product = useMemo(() => products.find((p) => p.id === productId), [productId])
 
   const [activeCategory, setActiveCategory] = useState("all")
@@ -80,6 +83,7 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome }: Flavors
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
       <KioskHeader title="맛 선택" onHome={onHome} />
+<ProgressStepper currentStep={currentStep} elapsedSeconds={elapsedSeconds} />
 
       <div className="shrink-0 border-b border-border bg-card">
         <div className="grid grid-cols-4">

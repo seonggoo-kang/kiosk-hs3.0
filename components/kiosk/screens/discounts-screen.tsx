@@ -6,6 +6,7 @@ import {
   Circle, Hexagon, Car, Shield,
 } from "lucide-react"
 import { KioskHeader } from "@/components/kiosk/kiosk-header"
+import { ProgressStepper } from "@/components/kiosk/progress-stepper"
 import { KioskFooter } from "@/components/kiosk/kiosk-footer"
 import { ActionBar } from "@/components/kiosk/action-bar"
 import { NumpadModal } from "@/components/kiosk/numpad-modal"
@@ -21,9 +22,11 @@ interface DiscountsScreenProps {
   onBack: () => void
   onGoToPayment: () => void
   onHome: () => void
+  currentStep: 1 | 2 | 3 | 4 | 5
+  elapsedSeconds: number
 }
 
-export function DiscountsScreen({ onBack, onGoToPayment, onHome }: DiscountsScreenProps) {
+export function DiscountsScreen({ onBack, onGoToPayment, onHome, currentStep, elapsedSeconds }: DiscountsScreenProps) {
   const { state, dispatch, subtotal, totalDiscount, finalAmount } = useOrder()
   const [numpadOpen, setNumpadOpen] = useState(false)
   const [activeItems, setActiveItems] = useState<Set<string>>(new Set())
@@ -47,6 +50,7 @@ export function DiscountsScreen({ onBack, onGoToPayment, onHome }: DiscountsScre
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
       <KioskHeader title="할인/적립" onHome={onHome} />
+      <ProgressStepper currentStep={currentStep} elapsedSeconds={elapsedSeconds} />
 
       <div className="flex-1 overflow-y-auto bg-muted/40 p-4">
         {discountSections.map((section) => (

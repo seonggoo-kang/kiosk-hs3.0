@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react"
 import { KioskHeader } from "@/components/kiosk/kiosk-header"
+import { ProgressStepper } from "@/components/kiosk/progress-stepper"
 import { KioskFooter } from "@/components/kiosk/kiosk-footer"
 import { ActionBar } from "@/components/kiosk/action-bar"
 import { ProductDetailPanel } from "@/components/kiosk/product-detail-panel"
@@ -15,9 +16,11 @@ interface OptionsScreenProps {
   onBack: () => void
   onComplete: () => void
   onHome: () => void
+  currentStep: 1 | 2 | 3 | 4 | 5
+  elapsedSeconds: number
 }
 
-export function OptionsScreen({ productId, flavorIds, onBack, onComplete, onHome }: OptionsScreenProps) {
+export function OptionsScreen({ productId, flavorIds, onBack, onComplete, onHome, currentStep, elapsedSeconds }: OptionsScreenProps) {
   const { dispatch } = useOrder()
 
   const product = useMemo(() => products.find((p) => p.id === productId), [productId])
@@ -95,6 +98,7 @@ export function OptionsScreen({ productId, flavorIds, onBack, onComplete, onHome
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
       <KioskHeader title="옵션 선택" onHome={onHome} />
+<ProgressStepper currentStep={currentStep} elapsedSeconds={elapsedSeconds} />
 
       <div className="flex-1 overflow-y-auto bg-muted/40">
         <div className="p-4">

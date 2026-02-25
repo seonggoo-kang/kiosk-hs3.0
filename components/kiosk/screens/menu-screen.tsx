@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from "react"
 import { IceCreamCone, Check } from "lucide-react"
 import { KioskHeader } from "@/components/kiosk/kiosk-header"
+import { ProgressStepper } from "@/components/kiosk/progress-stepper"
 import { KioskFooter } from "@/components/kiosk/kiosk-footer"
 import { CategoryTabs } from "@/components/kiosk/category-tabs"
 import { ProductCard } from "@/components/kiosk/product-card"
@@ -110,9 +111,11 @@ interface MenuScreenProps {
   onGoToOptions: (cartId: string) => void
   onGoToDiscounts: () => void
   showAddedToast?: boolean
+  currentStep: 1 | 2 | 3 | 4 | 5
+  elapsedSeconds: number
 }
 
-export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscounts, showAddedToast: externalToast }: MenuScreenProps) {
+export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscounts, showAddedToast: externalToast, currentStep, elapsedSeconds }: MenuScreenProps) {
   const { state, dispatch } = useOrder()
 
   const [cakeFilter, setCakeFilter] = useState("all")
@@ -340,6 +343,7 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
       <KioskHeader title="메뉴 선택" onHome={onBack} />
+      <ProgressStepper currentStep={currentStep} elapsedSeconds={elapsedSeconds} />
       <CategoryTabs categories={categories} activeId={activeCategory} onSelect={handleCategoryChange} />
 
       {isCake && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={cakeFilter} onSelect={(id) => { setCakeFilter(id); jumpToFirstPageOfCategory() }} />}

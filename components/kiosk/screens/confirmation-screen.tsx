@@ -4,12 +4,15 @@ import { useEffect, useState } from "react"
 import { CheckCircle2 } from "lucide-react"
 import { useOrder } from "@/lib/order-context"
 import { formatPrice } from "@/lib/mock-data"
+import { ProgressStepper } from "@/components/kiosk/progress-stepper"
 
 interface ConfirmationScreenProps {
   onReset: () => void
+  currentStep: 1 | 2 | 3 | 4 | 5
+  elapsedSeconds: number
 }
 
-export function ConfirmationScreen({ onReset }: ConfirmationScreenProps) {
+export function ConfirmationScreen({ onReset, currentStep, elapsedSeconds }: ConfirmationScreenProps) {
   const { state, finalAmount, totalItems, dispatch } = useOrder()
   const [orderNumber] = useState(() => Math.floor(Math.random() * 900) + 100)
 
@@ -22,7 +25,9 @@ export function ConfirmationScreen({ onReset }: ConfirmationScreenProps) {
   }, [dispatch, onReset])
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center bg-card px-6">
+    <div className="flex flex-1 flex-col bg-card">
+      <ProgressStepper currentStep={currentStep} elapsedSeconds={elapsedSeconds} />
+      <div className="flex flex-1 flex-col items-center justify-center px-6">
       <div className="flex flex-col items-center gap-6">
         <div className="flex h-24 w-24 items-center justify-center rounded-full bg-accent">
           <CheckCircle2 className="h-14 w-14 text-primary" />
@@ -62,6 +67,7 @@ export function ConfirmationScreen({ onReset }: ConfirmationScreenProps) {
         </button>
 
         <p className="text-[11px] text-muted-foreground">15초 후 자동으로 처음 화면으로 이동합니다.</p>
+      </div>
       </div>
     </div>
   )

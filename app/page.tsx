@@ -37,6 +37,29 @@ export default function KioskApp() {
   const [slideDir, setSlideDir] = useState<"left" | "right">("left")
   const [animating, setAnimating] = useState(false)
 
+  // ── Session timer ──
+  const [sessionStart, setSessionStart] = useState<number | null>(null)
+  const [elapsedSeconds, setElapsedSeconds] = useState(0)
+
+  useEffect(() => {
+    if (sessionStart === null) { setElapsedSeconds(0); return }
+    const interval = setInterval(() => {
+      setElapsedSeconds(Math.floor((Date.now() - sessionStart) / 1000))
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [sessionStart])
+
+  // ── Compute current step from active screen ──
+  const currentStep: 1 | 2 | 3 | 4 | 5 = (() => {
+    switch (activeScreen) {
+      case SCREEN.MENU: case SCREEN.FLAVORS: case SCREEN.OPTIONS: return 2
+      case SCREEN.DISCOUNTS: return 3
+      case SCREEN.PAYMENT: return 4
+      case SCREEN.CONFIRMATION: return 5
+      default: return 1
+    }
+  })()
+
   // ── Navigation params passed between screens ──
   const [navProductId, setNavProductId] = useState<string | null>(null)
   const [navCartId, setNavCartId] = useState<string | null>(null)
@@ -78,12 +101,14 @@ export default function KioskApp() {
     setNavCartId(null)
     setNavFlavorIds([])
     setShowMenuToast(false)
+    setSessionStart(null)
   }, [])
 
   // ── Navigation callbacks ──
   const handleOrderType = useCallback(
     (type: "takeout" | "dine-in") => {
       dispatch({ type: "SET_ORDER_TYPE", payload: type })
+      setSessionStart(Date.now())
       navigateTo(SCREEN.MENU, "left")
     },
     [dispatch, navigateTo]
@@ -230,6 +255,8 @@ export default function KioskApp() {
         onGoToOptions={handleGoToOptions}
         onGoToDiscounts={handleGoToDiscounts}
         showAddedToast={showMenuToast}
+        currentStep={currentStep}
+        elapsedSeconds={elapsedSeconds}
       />
     ),
     [SCREEN.FLAVORS]: (
@@ -238,6 +265,8 @@ export default function KioskApp() {
         onBack={() => navigateTo(SCREEN.MENU, "right")}
         onComplete={handleFlavorsComplete}
         onHome={goToLanding}
+        currentStep={currentStep}
+        elapsedSeconds={elapsedSeconds}
       />
     ),
     [SCREEN.OPTIONS]: (
@@ -247,6 +276,8 @@ export default function KioskApp() {
         onBack={() => navigateTo(SCREEN.FLAVORS, "right")}
         onComplete={handleOptionsComplete}
         onHome={goToLanding}
+        currentStep={currentStep}
+        elapsedSeconds={elapsedSeconds}
       />
     ),
     [SCREEN.DISCOUNTS]: (
@@ -254,6 +285,8 @@ export default function KioskApp() {
         onBack={() => navigateTo(SCREEN.MENU, "right")}
         onGoToPayment={handleGoToPayment}
         onHome={goToLanding}
+        currentStep={currentStep}
+        elapsedSeconds={elapsedSeconds}
       />
     ),
     [SCREEN.PAYMENT]: (
@@ -261,10 +294,16 @@ export default function KioskApp() {
         onBack={() => navigateTo(SCREEN.DISCOUNTS, "right")}
         onComplete={handlePaymentComplete}
         onHome={goToLanding}
+        currentStep={currentStep}
+        elapsedSeconds={elapsedSeconds}
       />
     ),
     [SCREEN.CONFIRMATION]: (
-      <ConfirmationScreen onReset={handleReset} />
+      <ConfirmationScreen
+        onReset={handleReset}
+        currentStep={currentStep}
+        elapsedSeconds={elapsedSeconds}
+      />
     ),
   }
 
