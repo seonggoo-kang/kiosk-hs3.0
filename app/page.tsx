@@ -25,6 +25,10 @@ const SCREEN = {
 type ScreenIndex = (typeof SCREEN)[keyof typeof SCREEN]
 
 export default function KioskApp() {
+  // ── Client-only guard to avoid SSR hydration mismatch with Korean text ──
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+
   const { dispatch } = useOrder()
 
   // ── Screen navigation state ──
@@ -262,6 +266,10 @@ export default function KioskApp() {
     [SCREEN.CONFIRMATION]: (
       <ConfirmationScreen onReset={handleReset} />
     ),
+  }
+
+  if (!mounted) {
+    return <div className="relative flex-1 overflow-hidden bg-background" />
   }
 
   return (
