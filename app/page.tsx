@@ -141,12 +141,8 @@ export default function LandingPage() {
                 <img
                   src={src}
                   alt={`Promotional banner ${i + 1}`}
-                  className="h-full w-full object-contain"
+                  className="h-full w-full object-contain object-top"
                   draggable={false}
-                  onLoad={(e) => {
-                    const img = e.currentTarget
-                    console.log(`[v0] Banner ${i}: ${img.naturalWidth}x${img.naturalHeight} ratio=${(img.naturalWidth / img.naturalHeight).toFixed(3)} file=${src}`)
-                  }}
                 />
               </div>
             ))}
@@ -206,25 +202,29 @@ export default function LandingPage() {
         className="flex shrink-0 flex-col bg-background transition-all duration-500 ease-out overflow-hidden"
         style={{
           opacity: isIdle ? 0 : 1,
-          maxHeight: isIdle ? "0px" : "220px",
+          maxHeight: isIdle ? "0px" : "260px",
           transform: isIdle ? "translateY(20px)" : "translateY(0)",
           pointerEvents: isIdle ? "none" : "auto",
         }}
       >
         {/* Order type buttons */}
-        <div className="flex gap-3 px-4 pt-4 pb-3">
+        <div className="flex flex-1 gap-3 px-4 pt-5 pb-4">
           <button
             onClick={() => handleOrderType("takeout")}
-            className="flex flex-1 items-center justify-center gap-2.5 rounded-xl bg-card py-4 shadow-sm ring-1 ring-border transition-all active:scale-[0.97]"
+            className="flex flex-1 flex-col items-center justify-center gap-2 rounded-2xl bg-card py-6 shadow-sm ring-1 ring-border transition-all active:scale-[0.97]"
           >
-            <ShoppingBag className="h-5 w-5 text-primary" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+              <ShoppingBag className="h-6 w-6 text-primary" />
+            </div>
             <span className="text-sm font-bold text-foreground">{"가져가기"}</span>
           </button>
           <button
             onClick={() => handleOrderType("dine-in")}
-            className="flex flex-1 items-center justify-center gap-2.5 rounded-xl bg-card py-4 shadow-sm ring-1 ring-border transition-all active:scale-[0.97]"
+            className="flex flex-1 flex-col items-center justify-center gap-2 rounded-2xl bg-card py-6 shadow-sm ring-1 ring-border transition-all active:scale-[0.97]"
           >
-            <Store className="h-5 w-5 text-primary" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+              <Store className="h-6 w-6 text-primary" />
+            </div>
             <span className="text-sm font-bold text-foreground">{"먹고가기"}</span>
           </button>
         </div>
