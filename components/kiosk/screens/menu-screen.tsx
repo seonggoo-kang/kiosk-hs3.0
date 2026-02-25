@@ -27,20 +27,24 @@ import {
 const ITEMS_4COL = 16
 const ITEMS_3COL = 9
 const ITEMS_2COL = 4
+const ITEMS_1COL = 1
 
 function perPageForCount(count: number) {
+  if (count <= 1) return ITEMS_1COL
   if (count <= 4) return ITEMS_2COL
   if (count <= 9) return ITEMS_3COL
   return ITEMS_4COL
 }
 
 function gridClassForCount(count: number) {
+  if (count <= 1) return "grid grid-cols-1 gap-4 px-6"
   if (count <= 4) return "grid grid-cols-2 gap-4 px-2"
   if (count <= 9) return "grid grid-cols-3 gap-3 px-1"
   return "grid grid-cols-4 gap-2"
 }
 
-function cardSizeForCount(count: number): "sm" | "md" | "lg" {
+function cardSizeForCount(count: number): "sm" | "md" | "lg" | "xl" {
+  if (count <= 1) return "xl"
   if (count <= 4) return "lg"
   if (count <= 9) return "md"
   return "sm"

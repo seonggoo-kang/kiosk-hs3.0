@@ -12,12 +12,14 @@ import {
 import { ProductCard } from "@/components/kiosk/product-card"
 
 function gridClassForCount(count: number) {
+  if (count <= 1) return "grid grid-cols-1 gap-4 px-6"
   if (count <= 4) return "grid grid-cols-2 gap-4 px-2"
   if (count <= 9) return "grid grid-cols-3 gap-3 px-1"
   return "grid grid-cols-4 gap-2"
 }
 
-function cardSizeForCount(count: number): "sm" | "md" | "lg" {
+function cardSizeForCount(count: number): "sm" | "md" | "lg" | "xl" {
+  if (count <= 1) return "xl"
   if (count <= 4) return "lg"
   if (count <= 9) return "md"
   return "sm"

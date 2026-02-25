@@ -4,7 +4,7 @@ import Image from "next/image"
 import { cn } from "@/lib/utils"
 import { formatPrice, type Product } from "@/lib/mock-data"
 
-type CardSize = "sm" | "md" | "lg"
+type CardSize = "sm" | "md" | "lg" | "xl"
 
 type ProductCardProps = {
   product: Product
@@ -53,6 +53,16 @@ const SIZE_CONFIG: Record<CardSize, {
     price: "text-sm",
     tag: "text-[9px]",
     padding: "p-3 pb-3.5",
+  },
+  xl: {
+    container: "h-56",
+    image: "h-[200px] w-[200px]",
+    imgPx: 220,
+    name: "text-lg",
+    detail: "text-sm",
+    price: "text-lg",
+    tag: "text-xs",
+    padding: "p-5 pb-6",
   },
 }
 
