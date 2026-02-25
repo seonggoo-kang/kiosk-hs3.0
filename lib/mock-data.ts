@@ -176,56 +176,63 @@ const bingsuProducts = generateProducts("bingsu", [
 ])
 
 // ─── 스폐셜 디저트 (41) ── Actual BR special dessert menu ────────
+export const workshopSubcategories = [
+  { id: "all", name: "전체" },
+  { id: "mochi-macaron", name: "모찌/마카롱" },
+  { id: "affogato", name: "아포가토" },
+  { id: "dubai", name: "두바이 스타일" },
+  { id: "snack-nuts", name: "팝콘/넛츠" },
+  { id: "icecream-set", name: "아이스크림 팩" },
+  { id: "brulée-bakery", name: "브륄레/베이커리" },
+]
 const workshopProducts = generateProducts("workshop", [
   // Chef Made - 모찌 & 마카롱
-  { name: "도곡 모찌\n바람과 함께 사라지다", desc: "Chef Made 모찌", size: "1개", weight: "60g", price: 3800, cal: "120~180 kcal", serving: "60g", image: "/products/스폐셜 디저트/도곡모찌바람과함께사라지다_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
-  { name: "도곡 모찌\n엄마는 외계인", desc: "Chef Made 모찌", size: "1개", weight: "60g", price: 3800, cal: "120~180 kcal", serving: "60g", image: "/products/스폐셜 디저트/도곡모찌엄마는외계인_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
-  { name: "도곡 모찌 선물세트", desc: "Chef Made 모찌 세트", size: "1세트", weight: "360g", price: 19800, cal: "720~1080 kcal", serving: "360g", image: "/products/스폐셜 디저트/도곡모찌선물세트_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
-  { name: "마카롱\n피스타치오 아몬드", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/스폐셜 디저트/도곡마카롱피스타치오아몬드_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
-  { name: "마카롱\n베리베리 스트로베리", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/스폐셜 디저트/도곡마카롱베리베리스트로베리_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
-  { name: "마카롱\n초콜릿 무스", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/스폐셜 디저트/도곡마카롱초콜릿무스_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
-  { name: "마카롱\n체리 쥬빌레", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/스폐셜 디저트/도곡마카롱체리쥬빌레_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
-  { name: "마카롱\n자모카 아몬드 훠지", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/스폐셜 디저트/도곡마카롱자모카아몬드훠지_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
-  { name: "도곡 마카롱 선물세트", desc: "Chef Made 마카롱 세트", size: "1세트", weight: "300g", price: 22000, cal: "900~1200 kcal", serving: "300g", image: "/products/스폐셜 디저트/도곡마카롱선물세트_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
-  // Snack / Bakery
-  { name: "머핀", desc: "머핀", size: "1개", weight: "100g", price: 3000, cal: "250~320 kcal", serving: "100g", image: "/products/스폐셜 디저트/(워크샵)머핀_0.png", flavor: false, maxF: 0 },
-  { name: "머핀 커피 세트", desc: "머핀 + 커피 세트", size: "세트", weight: "200g", price: 5900, cal: "500~640 kcal", serving: "200g", image: "/products/스폐셜 디저트/머핀커피SET_0.png", flavor: false, maxF: 0, tag: "20% 할인" },
-  // Popcorn
-  { name: "초코 카라멜 팝콘", desc: "달콤한 초코 카라멜", size: "1봉", weight: "80g", price: 4200, cal: "300~400 kcal", serving: "80g", image: "/products/스폐셜 디저트/초코카라멜팝콘_0.png", flavor: false, maxF: 0 },
-  { name: "시나몬 카라멜 팝콘", desc: "시나몬 향 카라멜", size: "1봉", weight: "80g", price: 4200, cal: "300~400 kcal", serving: "80g", image: "/products/스폐셜 디저트/시나몬카라멜팝콘_0.png", flavor: false, maxF: 0 },
-  { name: "스윗 카라멜 팝콘", desc: "클래식 카라멜", size: "1봉", weight: "80g", price: 4200, cal: "300~400 kcal", serving: "80g", image: "/products/스폐셜 디저트/스윗카라멜팝콘_0.png", flavor: false, maxF: 0 },
-  // Affogato (위스키)
-  { name: "위스키 아포가토\n바닐라", desc: "위스키 아포가토", size: "1잔", weight: "250ml", price: 9500, cal: "350~450 kcal", serving: "250ml", image: "/products/스폐셜 디저트/위스키아포가토바닐라_0.png", flavor: false, maxF: 0, tag: "먹고가기 전용" },
-  { name: "위스키 아포가토\n크렘드 마롱", desc: "위스키 아포가토", size: "1잔", weight: "250ml", price: 9500, cal: "380~480 kcal", serving: "250ml", image: "/products/스폐셜 디저트/위스키아포가토크렘드마롱_0.png", flavor: false, maxF: 0, tag: "먹고가기 전용" },
-  { name: "위스키 아포가토\n브라우니 쥬빌레", desc: "위스키 아포가토", size: "1잔", weight: "250ml", price: 9500, cal: "400~500 kcal", serving: "250ml", image: "/products/스폐셜 디저트/위스키아포가토브라우니쥬빌레_0.png", flavor: false, maxF: 0, tag: "먹고가기 전용" },
-  { name: "위스키 샘플러 싱글", desc: "위스키 샘플러", size: "1잔", weight: "150ml", price: 7500, cal: "200~300 kcal", serving: "150ml", image: "/products/스폐셜 디저트/위스키샘플러싱글_0.png", flavor: false, maxF: 0, tag: "먹고가기 전용" },
-  // Gift Set / Nuts
-  { name: "카라멜 로스티드넛츠\n선물세트", desc: "선물세트", size: "1세트", weight: "360g", price: 16600, cal: "840~1050 kcal", serving: "360g", image: "/products/스폐셜 디저트/카라멜로스티드넛츠선물세트_0.png", flavor: false, maxF: 0 },
-  { name: "카라멜 로스티드넛츠\n피칸 마카다미아", desc: "넛츠", size: "1봉", weight: "120g", price: 5200, cal: "280~350 kcal", serving: "120g", image: "/products/스폐셜 디저트/카라멜로스티드넛츠피칸마카다미아_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
-  { name: "카라멜 로스티드넛츠\n피칸 아몬드", desc: "넛츠", size: "1봉", weight: "120g", price: 5200, cal: "280~350 kcal", serving: "120g", image: "/products/스폐셜 디저트/카라멜로스티드넛츠피칸아몬드_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
+  { name: "도곡 모찌\n바람과 함께 사라지다", desc: "Chef Made 모찌", size: "1개", weight: "60g", price: 3800, cal: "120~180 kcal", serving: "60g", image: "/products/스폐셜 디저트/도곡모찌바람과함께사라지다_0.png", flavor: false, maxF: 0, tag: "Chef Made", sub: "mochi-macaron" },
+  { name: "도곡 모찌\n엄마는 외계인", desc: "Chef Made 모찌", size: "1개", weight: "60g", price: 3800, cal: "120~180 kcal", serving: "60g", image: "/products/스폐셜 디저트/도곡모찌엄마는외계인_0.png", flavor: false, maxF: 0, tag: "Chef Made", sub: "mochi-macaron" },
+  { name: "도곡 모찌 선물세트", desc: "Chef Made 모찌 세트", size: "1세트", weight: "360g", price: 19800, cal: "720~1080 kcal", serving: "360g", image: "/products/스폐셜 디저트/도곡모찌선물세트_0.png", flavor: false, maxF: 0, tag: "Chef Made", sub: "mochi-macaron" },
+  { name: "마카롱\n피스타치오 아몬드", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/스폐셜 디저트/도곡마카롱피스타치오아몬드_0.png", flavor: false, maxF: 0, tag: "Chef Made", sub: "mochi-macaron" },
+  { name: "마카롱\n베리베리 스트로베리", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/스폐셜 디저트/도곡마카롱베리베리스트로베리_0.png", flavor: false, maxF: 0, tag: "Chef Made", sub: "mochi-macaron" },
+  { name: "마카롱\n초콜릿 무스", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/스폐셜 디저트/도곡마카롱초콜릿무스_0.png", flavor: false, maxF: 0, tag: "Chef Made", sub: "mochi-macaron" },
+  { name: "마카롱\n체리 쥬빌레", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/스폐셜 디저트/도곡마카롱체리쥬빌레_0.png", flavor: false, maxF: 0, tag: "Chef Made", sub: "mochi-macaron" },
+  { name: "마카롱\n자모카 아몬드 훠지", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/스폐셜 디저트/도곡마카롱자모카아몬드훠지_0.png", flavor: false, maxF: 0, tag: "Chef Made", sub: "mochi-macaron" },
+  { name: "도곡 마카롱 선물세트", desc: "Chef Made 마카롱 세트", size: "1세트", weight: "300g", price: 22000, cal: "900~1200 kcal", serving: "300g", image: "/products/스폐셜 디저트/도곡마카롱선물세트_0.png", flavor: false, maxF: 0, tag: "Chef Made", sub: "mochi-macaron" },
+  { name: "모찌 라이브 인절미", desc: "라이브 모찌", size: "1개", weight: "70g", price: 4800, cal: "140~200 kcal", serving: "70g", image: "/products/스폐셜 디저트/모찌라이브인절미_0.png", flavor: false, maxF: 0, sub: "mochi-macaron" },
+  { name: "모찌 라이브 흑임자", desc: "라이브 모찌", size: "1개", weight: "70g", price: 4800, cal: "140~200 kcal", serving: "70g", image: "/products/스폐셜 디저트/모찌라이브흑임자_1.png", flavor: false, maxF: 0, sub: "mochi-macaron" },
+  { name: "모찌 라이브 가을감", desc: "라이브 모찌", size: "1개", weight: "70g", price: 4800, cal: "140~200 kcal", serving: "70g", image: "/products/스폐셜 디저트/모찌라이브가을감_1.png", flavor: false, maxF: 0, sub: "mochi-macaron" },
+  // Affogato
+  { name: "위스키 아포가토\n바닐라", desc: "위스키 아포가토", size: "1잔", weight: "250ml", price: 9500, cal: "350~450 kcal", serving: "250ml", image: "/products/스폐셜 디저트/위스키아포가토바닐라_0.png", flavor: false, maxF: 0, tag: "먹고가기 전용", sub: "affogato" },
+  { name: "위스키 아포가토\n크렘드 마롱", desc: "위스키 아포가토", size: "1잔", weight: "250ml", price: 9500, cal: "380~480 kcal", serving: "250ml", image: "/products/스폐셜 디저트/위스키아포가토크렘드마롱_0.png", flavor: false, maxF: 0, tag: "먹고가기 전용", sub: "affogato" },
+  { name: "위스키 아포가토\n브라우니 쥬빌레", desc: "위스키 아포가토", size: "1잔", weight: "250ml", price: 9500, cal: "400~500 kcal", serving: "250ml", image: "/products/스폐셜 디저트/위스키아포가토브라우니쥬빌레_0.png", flavor: false, maxF: 0, tag: "먹고가기 전용", sub: "affogato" },
+  { name: "위스키 샘플러 싱글", desc: "위스키 샘플러", size: "1잔", weight: "150ml", price: 7500, cal: "200~300 kcal", serving: "150ml", image: "/products/스폐셜 디저트/위스키샘플러싱글_0.png", flavor: false, maxF: 0, tag: "먹고가기 전용", sub: "affogato" },
+  { name: "카페 아포가토", desc: "에스프레소 아포가토", size: "1잔", weight: "200ml", price: 6400, cal: "250~350 kcal", serving: "200ml", image: "/products/스폐셜 디저트/카페아포가토_0.png", flavor: false, maxF: 0, tag: "먹고가기 전용", sub: "affogato" },
+  { name: "쇼콜라 아포가토", desc: "초콜릿 아포가토", size: "1잔", weight: "200ml", price: 6400, cal: "280~380 kcal", serving: "200ml", image: "/products/스폐셜 디저트/쇼콜라아포가토_0.png", flavor: false, maxF: 0, tag: "먹고가기 전용", sub: "affogato" },
+  { name: "말차 아포가토", desc: "말차 아포가토", size: "1잔", weight: "200ml", price: 6400, cal: "260~360 kcal", serving: "200ml", image: "/products/스폐셜 디저트/말차아포가토_0.png", flavor: false, maxF: 0, tag: "먹고가기 전용", sub: "affogato" },
+  // Dubai style
+  { name: "두바이 스타일\n초코쿠키", desc: "두바이st 디저트", size: "1개", weight: "150g", price: 6500, cal: "400~500 kcal", serving: "150g", image: "/products/스폐셜 디저트/두바이식초코쿠키(수정)_0.png", flavor: false, maxF: 0, sub: "dubai" },
+  { name: "두바이 스타일\n초코모찌", desc: "두바이st 디저트", size: "1개", weight: "80g", price: 4800, cal: "200~300 kcal", serving: "80g", image: "/products/스폐셜 디저트/두바이스타일초코모찌_0.png", flavor: false, maxF: 0, sub: "dubai" },
+  { name: "두바이 파르페", desc: "두바이st 디저트", size: "1개", weight: "250g", price: 9500, cal: "400~600 kcal", serving: "250g", image: "/products/스폐셜 디저트/두바이파르페_0.png", flavor: false, maxF: 0, tag: "먹고가기 전용", sub: "dubai" },
+  { name: "두쫀모", desc: "두바이st 모찌", size: "1개", weight: "80g", price: 4800, cal: "200~300 kcal", serving: "80g", image: "/products/스폐셜 디저트/두쫀모_0.png", flavor: false, maxF: 0, sub: "dubai" },
+  // Popcorn / Nuts
+  { name: "초코 카라멜 팝콘", desc: "달콤한 초코 카라멜", size: "1봉", weight: "80g", price: 4200, cal: "300~400 kcal", serving: "80g", image: "/products/스폐셜 디저트/초코카라멜팝콘_0.png", flavor: false, maxF: 0, sub: "snack-nuts" },
+  { name: "시나몬 카라멜 팝콘", desc: "시나몬 향 카라멜", size: "1봉", weight: "80g", price: 4200, cal: "300~400 kcal", serving: "80g", image: "/products/스폐셜 디저트/시나몬카라멜팝콘_0.png", flavor: false, maxF: 0, sub: "snack-nuts" },
+  { name: "스윗 카라멜 팝콘", desc: "클래식 카라멜", size: "1봉", weight: "80g", price: 4200, cal: "300~400 kcal", serving: "80g", image: "/products/스폐셜 디저트/스윗카라멜팝콘_0.png", flavor: false, maxF: 0, sub: "snack-nuts" },
+  { name: "카라멜 로스티드넛츠\n선물세트", desc: "선물세트", size: "1세트", weight: "360g", price: 16600, cal: "840~1050 kcal", serving: "360g", image: "/products/스폐셜 디저트/카라멜로스티드넛츠선물세트_0.png", flavor: false, maxF: 0, sub: "snack-nuts" },
+  { name: "카라멜 로스티드넛츠\n피칸 마카다미아", desc: "넛츠", size: "1봉", weight: "120g", price: 5200, cal: "280~350 kcal", serving: "120g", image: "/products/스폐셜 디저트/카라멜로스티드넛츠피칸마카다미아_0.png", flavor: false, maxF: 0, tag: "Chef Made", sub: "snack-nuts" },
+  { name: "카라멜 로스티드넛츠\n피칸 아몬드", desc: "넛츠", size: "1봉", weight: "120g", price: 5200, cal: "280~350 kcal", serving: "120g", image: "/products/스폐셜 디저트/카라멜로스티드넛츠피칸아몬드_0.png", flavor: false, maxF: 0, tag: "Chef Made", sub: "snack-nuts" },
   // Ice Cream Sets
-  { name: "버라이어티팩", desc: "싱글레귤러 팩", size: "팩", weight: "480g", price: 15600, cal: "600~1120 kcal", serving: "480g", image: "/products/스폐셜 디저트/워크샵버라이어티팩_0.png", flavor: true, maxF: 4 },
-  { name: "아빠왔다팩", desc: "싱글레귤러 팩", size: "팩", weight: "480g", price: 15600, cal: "600~1120 kcal", serving: "480g", image: "/products/스폐셜 디저트/워크샵아빠왔다팩_0.png", flavor: true, maxF: 4 },
-  { name: "옹기종기팩", desc: "싱글레귤러 팩", size: "팩", weight: "960g", price: 31200, cal: "1200~2240 kcal", serving: "960g", image: "/products/스폐셜 디저트/워크샵옹기종기팩_0.png", flavor: true, maxF: 8 },
-  { name: "에디션 샘플러", desc: "에디션 샘플러", size: "1세트", weight: "300g", price: 14500, cal: "450~700 kcal", serving: "300g", image: "/products/스폐셜 디저트/워크샵에디션샘플러_0.png", flavor: false, maxF: 0 },
-  { name: "레슬리 샘플러", desc: "레슬리 샘플러", size: "1세트", weight: "300g", price: 14500, cal: "450~700 kcal", serving: "300g", image: "/products/스폐셜 디저트/레슬리샘플러_수정_0.png", flavor: false, maxF: 0 },
-  // Affogato (일반)
-  { name: "카페 아포가토", desc: "에스프레소 아포가토", size: "1잔", weight: "200ml", price: 6400, cal: "250~350 kcal", serving: "200ml", image: "/products/스폐셜 디저트/카페아포가토_0.png", flavor: false, maxF: 0, tag: "먹고가기 전용" },
-  { name: "쇼콜라 아포가토", desc: "초콜릿 아포가토", size: "1잔", weight: "200ml", price: 6400, cal: "280~380 kcal", serving: "200ml", image: "/products/스폐셜 디저트/쇼콜라아포가토_0.png", flavor: false, maxF: 0, tag: "먹고가기 전용" },
-  { name: "말차 아포가토", desc: "말차 아포가토", size: "1잔", weight: "200ml", price: 6400, cal: "260~360 kcal", serving: "200ml", image: "/products/스폐셜 디저트/말차아포가토_0.png", flavor: false, maxF: 0, tag: "먹고가기 전용" },
-  // Dessert / Plate
-  { name: "두바이 스타일\n초코쿠키", desc: "두바이st 디저트", size: "1개", weight: "150g", price: 6500, cal: "400~500 kcal", serving: "150g", image: "/products/스폐셜 디저트/두바이식초코쿠키(수정)_0.png", flavor: false, maxF: 0 },
-  { name: "두바이 스타일\n초코모찌", desc: "두바이st 디저트", size: "1개", weight: "80g", price: 4800, cal: "200~300 kcal", serving: "80g", image: "/products/스폐셜 디저트/두바이스타일초코모찌_0.png", flavor: false, maxF: 0 },
-  { name: "두바이 파르페", desc: "두바이st 디저트", size: "1개", weight: "250g", price: 9500, cal: "400~600 kcal", serving: "250g", image: "/products/스폐셜 디저트/두바이파르페_0.png", flavor: false, maxF: 0, tag: "먹고가기 전용" },
-  { name: "두쫀모", desc: "두바이st 모찌", size: "1개", weight: "80g", price: 4800, cal: "200~300 kcal", serving: "80g", image: "/products/스폐셜 디저트/두쫀모_0.png", flavor: false, maxF: 0 },
-  { name: "인절미 플레이트", desc: "인절미 디저트 플레이트", size: "1세트", weight: "250g", price: 14500, cal: "450~600 kcal", serving: "250g", image: "/products/스폐셜 디저트/인절미플레이트_0.png", flavor: false, maxF: 0, tag: "먹고가기 전용" },
-  { name: "모찌 라이브 인절미", desc: "라이브 모찌", size: "1개", weight: "70g", price: 4800, cal: "140~200 kcal", serving: "70g", image: "/products/스폐셜 디저트/모찌라이브인절미_0.png", flavor: false, maxF: 0 },
-  { name: "모찌 라이브 흑임자", desc: "라이브 모찌", size: "1개", weight: "70g", price: 4800, cal: "140~200 kcal", serving: "70g", image: "/products/스폐셜 디저트/모찌라이브흑임자_1.png", flavor: false, maxF: 0 },
-  { name: "모찌 라이브 가을감", desc: "라이브 모찌", size: "1개", weight: "70g", price: 4800, cal: "140~200 kcal", serving: "70g", image: "/products/스폐셜 디저트/모찌라이브가을감_1.png", flavor: false, maxF: 0 },
-  { name: "고구마 브륄레\n위드 아이스크림", desc: "브륄레 디저트", size: "1세트", weight: "200g", price: 8500, cal: "350~500 kcal", serving: "200g", image: "/products/스폐셜 디저트/고구마브륄레위드아이스크림_1.png", flavor: false, maxF: 0, tag: "먹고가기 전용" },
-  { name: "군고구마 브륄레 (3ea)", desc: "브륄레", size: "3개입", weight: "240g", price: 9500, cal: "450~600 kcal", serving: "240g", image: "/products/스폐셜 디저트/군고구마브륄레(3ea)_0.png", flavor: false, maxF: 0 },
-  { name: "군고구마 브륄레 (5ea)", desc: "브륄레", size: "5개입", weight: "400g", price: 14500, cal: "750~1000 kcal", serving: "400g", image: "/products/스폐셜 디저트/군고구마브륄레(5ea)_0.png", flavor: false, maxF: 0 },
-  { name: "군고구마 브륄레", desc: "브륄레", size: "1개", weight: "80g", price: 3500, cal: "150~200 kcal", serving: "80g", image: "/products/스폐셜 디저트/군고구마브륄레(HS누끼)_0.png", flavor: false, maxF: 0 },
+  { name: "버라이어티팩", desc: "싱글레귤러 팩", size: "팩", weight: "480g", price: 15600, cal: "600~1120 kcal", serving: "480g", image: "/products/스폐셜 디저트/워크샵버라이어티팩_0.png", flavor: true, maxF: 4, sub: "icecream-set" },
+  { name: "아빠왔다팩", desc: "싱글레귤러 팩", size: "팩", weight: "480g", price: 15600, cal: "600~1120 kcal", serving: "480g", image: "/products/스폐셜 디저트/워크샵아빠왔다팩_0.png", flavor: true, maxF: 4, sub: "icecream-set" },
+  { name: "옹기종기팩", desc: "싱글레귤러 팩", size: "팩", weight: "960g", price: 31200, cal: "1200~2240 kcal", serving: "960g", image: "/products/스폐셜 디저트/워크샵옹기종기팩_0.png", flavor: true, maxF: 8, sub: "icecream-set" },
+  { name: "에디션 샘플러", desc: "에디션 샘플러", size: "1세트", weight: "300g", price: 14500, cal: "450~700 kcal", serving: "300g", image: "/products/스폐셜 디저트/워크샵에디션샘플러_0.png", flavor: false, maxF: 0, sub: "icecream-set" },
+  { name: "레슬리 샘플러", desc: "레슬리 샘플러", size: "1세트", weight: "300g", price: 14500, cal: "450~700 kcal", serving: "300g", image: "/products/스폐셜 디저트/레슬리샘플러_수정_0.png", flavor: false, maxF: 0, sub: "icecream-set" },
+  // Brûlée / Bakery
+  { name: "머핀", desc: "머핀", size: "1개", weight: "100g", price: 3000, cal: "250~320 kcal", serving: "100g", image: "/products/스폐셜 디저트/(워크샵)머핀_0.png", flavor: false, maxF: 0, sub: "brulée-bakery" },
+  { name: "머핀 커피 세트", desc: "머핀 + 커피 세트", size: "세트", weight: "200g", price: 5900, cal: "500~640 kcal", serving: "200g", image: "/products/스폐셜 디저트/머핀커피SET_0.png", flavor: false, maxF: 0, tag: "20% 할인", sub: "brulée-bakery" },
+  { name: "인절미 플레이트", desc: "인절미 디저트 플레이트", size: "1세트", weight: "250g", price: 14500, cal: "450~600 kcal", serving: "250g", image: "/products/스폐셜 디저트/인절미플레이트_0.png", flavor: false, maxF: 0, tag: "먹고가기 전용", sub: "brulée-bakery" },
+  { name: "고구마 브륄레\n위드 아이스크림", desc: "브륄레 디저트", size: "1세트", weight: "200g", price: 8500, cal: "350~500 kcal", serving: "200g", image: "/products/스폐셜 디저트/고구마브륄레위드아이스크림_1.png", flavor: false, maxF: 0, tag: "먹고가기 전용", sub: "brulée-bakery" },
+  { name: "군고구마 브륄레 (3ea)", desc: "브륄레", size: "3개입", weight: "240g", price: 9500, cal: "450~600 kcal", serving: "240g", image: "/products/스폐셜 디저트/군고구마브륄레(3ea)_0.png", flavor: false, maxF: 0, sub: "brulée-bakery" },
+  { name: "군고구마 브륄레 (5ea)", desc: "브륄레", size: "5개입", weight: "400g", price: 14500, cal: "750~1000 kcal", serving: "400g", image: "/products/스폐셜 디저트/군고구마브륄레(5ea)_0.png", flavor: false, maxF: 0, sub: "brulée-bakery" },
+  { name: "군고구마 브륄레", desc: "브륄레", size: "1개", weight: "80g", price: 3500, cal: "150~200 kcal", serving: "80g", image: "/products/스폐셜 디저트/군고구마브륄레(HS누끼)_0.png", flavor: false, maxF: 0, sub: "brulée-bakery" },
 ])
 
 // ─── 콘/컵 (30) ──────────────────────────────────────────
@@ -383,7 +390,7 @@ const beverageProducts = generateProducts("beverage", [
   { name: "딸기연유 블라스트", desc: "블라스트", size: "레귤러", weight: "400ml", price: 6800, cal: "280~360 kcal", serving: "400ml", image: "/products/음료&블라스트/딸기연유블라스트_0.png", flavor: false, maxF: 0, sub: "signature" },
 
   // ── Tea / Hot Beverage ──
-  { name: "페어 엘더플라워", desc: "프루트티", size: "레귤러", weight: "350ml", price: 6200, cal: "80~130 kcal", serving: "350ml", image: "/products/음료&블라스트/(워크샵)페어엘더플라워_0.png", flavor: false, maxF: 0, sub: "tea" },
+  { name: "페어 엘더플라워", desc: "프루트티", size: "��귤러", weight: "350ml", price: 6200, cal: "80~130 kcal", serving: "350ml", image: "/products/음료&블라스트/(워크샵)페어엘더플라워_0.png", flavor: false, maxF: 0, sub: "tea" },
   { name: "위스키\n아이리쉬 커피", desc: "위스키 커피", size: "레귤러", weight: "250ml", price: 9500, cal: "200~300 kcal", serving: "250ml", image: "/products/음료&블라스트/위스키아이리쉬커피_0.png", flavor: false, maxF: 0, sub: "tea", tag: "먹고가기 전용" },
   { name: "피치 캐모마일\n아이스티", desc: "아이스티", size: "레귤러", weight: "400ml", price: 6200, cal: "60~100 kcal", serving: "400ml", image: "/products/음료&블라스트/피치캐모마일아이스티_0.png", flavor: false, maxF: 0, sub: "tea" },
   { name: "오생수 라벨프리", desc: "생수", size: "500ml", weight: "500ml", price: 1500, cal: "0 kcal", serving: "500ml", image: "/products/음료&블라스트/오생수라벨프리_0.png", flavor: false, maxF: 0, sub: "tea" },
@@ -497,7 +504,7 @@ const prepackProducts = generateProducts("prepack", [
   // ── (Lessly) 블록팩 – NEW 라인 ──
   { name: "블록팩 레슬리\n초코나무숲", desc: "Lessly 블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "200~300 kcal", serving: "200ml", image: "/products/레디팩 블록팩/블록팩_레슬리초코나무숲_0.png", flavor: false, maxF: 0, sub: "lessly-blockpack", tag: "NEW" },
   { name: "블록팩 레슬리\n민트초콜릿칩", desc: "Lessly 블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "190~290 kcal", serving: "200ml", image: "/products/레디팩 블록팩/블록팩_레슬리민트초콜릿칩_0.png", flavor: false, maxF: 0, sub: "lessly-blockpack", tag: "NEW" },
-  { name: "블록팩 레슬리\n아몬드봉봉", desc: "Lessly 블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/레디팩 블록팩/블록팩_레슬리아몬드봉봉_0.png", flavor: false, maxF: 0, sub: "lessly-blockpack", tag: "NEW" },
+  { name: "블록팩 레슬리\n아몬드봉봉", desc: "Lessly 블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/레디팩 블록���/블록팩_레슬리아몬드봉봉_0.png", flavor: false, maxF: 0, sub: "lessly-blockpack", tag: "NEW" },
   { name: "블록팩 레슬리\n엄마는 외계인", desc: "Lessly 블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/레디팩 블록팩/블록팩_레슬리엄마는외계인_0.png", flavor: false, maxF: 0, sub: "lessly-blockpack", tag: "NEW" },
 ])
 
@@ -594,8 +601,8 @@ export const flavors: Flavor[] = [
   { id: "jjonkkuret", name: "진정한 쫀꾸렛", image: "/flavors/진정한쫀꾸렛_0.png", color: "hsl(30,40%,75%)", categoryId: "recommended", description: "쫀득한 초콜릿과 바삭한 크런치의 진정한 만남", badge: "이달의 맛" },
   { id: "alien-mom", name: "엄마는 외계인", image: "/flavors/엄마는외계인_0.png", color: "hsl(280,50%,75%)", categoryId: "recommended", description: "알록달록 솜사탕과 쿠키의 신비로운 우주 맛", badge: "1위" },
   { id: "almond-bonbon", name: "아몬드봉봉", image: "/flavors/아몬드봉봉_수정_0.png", color: "hsl(25,35%,72%)", categoryId: "recommended", description: "고소한 아몬드와 달콤한 봉봉의 만남", badge: "2위" },
-  { id: "mint-choco-chip", name: "민트 초콜릿칩", image: "/flavors/민트초콜릿칩_0.png", color: "hsl(160,50%,75%)", categoryId: "recommended", description: "시원한 민트와 달콤한 초코칩의 조화", badge: "3위" },
-  { id: "rainbow-sherbet", name: "레인보우 샤베트", image: "/flavors/레인보우샤베트_0.png", color: "hsl(40,80%,80%)", categoryId: "recommended", description: "다채로운 과일 맛의 상큼한 샤베트", badge: "과일 섬유질 포함" },
+  { id: "mint-choco-chip", name: "민��� 초콜릿칩", image: "/flavors/민트초콜릿칩_0.png", color: "hsl(160,50%,75%)", categoryId: "recommended", description: "시원한 민트와 달콤한 초코칩의 조화", badge: "3위" },
+  { id: "rainbow-sherbet", name: "레인보우 샤베트", image: "/flavors/레인보우샤베트_0.png", color: "hsl(40,80%,80%)", categoryId: "recommended", description: "다채로운 과일 맛�� 상큼한 샤베트", badge: "과일 섬유질 포함" },
   { id: "ny-cheesecake", name: "뉴욕 치즈케이크", image: "/flavors/뉴욕치즈케이크_0.png", color: "hsl(45,50%,82%)", categoryId: "recommended", description: "진한 뉴욕 스타일 치즈케이크의 깊은 맛", badge: "5위" },
   { id: "jjonddeok-heukimja", name: "쫀떡 만난 흑임자", image: "/flavors/쫀떡만난흑임자_0.png", color: "hsl(0,0%,35%)", categoryId: "recommended", description: "고소한 흑임자와 쫄깃한 쫀떡의 전통 조화", badge: "NEW" },
   { id: "ice-hotteok", name: "아이스 호떡", image: "/flavors/아이스호떡_1.png", color: "hsl(35,55%,60%)", categoryId: "recommended", description: "달콤한 호떡의 따뜻한 맛을 아이스크림으로", badge: "NEW" },
@@ -633,7 +640,7 @@ export const flavors: Flavor[] = [
   { id: "oreo-cookies-cream", name: "오레오 쿠키 앤 크림", image: "/flavors/오레오쿠키앤크림(BR)_0.png", color: "hsl(0,0%,50%)", categoryId: "milk-cheese", description: "바삭한 오레오 쿠키와 부드러운 크림의 조화", badge: null },
   { id: "yogurt", name: "요거트", image: "/flavors/요거트_0.png", color: "hsl(50,20%,92%)", categoryId: "milk-cheese", description: "상큼하고 부드러운 요거트", badge: null },
   { id: "salt-milk", name: "소금 우유", image: "/flavors/소금우유_0.png", color: "hsl(45,30%,90%)", categoryId: "milk-cheese", description: "은은한 소금과 부드러운 우유의 조화", badge: null },
-  { id: "banana-pudding-cake", name: "바나나 푸딩 케이크", image: "/flavors/바나나푸딩케이크_0.png", color: "hsl(48,65%,75%)", categoryId: "milk-cheese", description: "바나나 푸딩과 케이크의 달콤한 맛", badge: null },
+  { id: "banana-pudding-cake", name: "바나나 푸딩 케이크", image: "/flavors/바���나푸딩케이크_0.png", color: "hsl(48,65%,75%)", categoryId: "milk-cheese", description: "바나나 푸딩과 케이크의 달콤한 맛", badge: null },
   { id: "cream-cheese-tart", name: "크림 치즈 타르트", image: "/flavors/크림치즈타르트_0.png", color: "hsl(40,40%,85%)", categoryId: "milk-cheese", description: "부드러운 크림치즈 타르트의 풍미", badge: null },
   { id: "blue-vanilla-brulee", name: "블루 바닐라 브륄레", image: "/flavors/블루바닐라브륄레_0.png", color: "hsl(210,50%,78%)", categoryId: "milk-cheese", description: "블루 바닐라와 브륄레의 달콤한 조화", badge: null },
   { id: "shooting-star", name: "뉴 슈팅스타", image: "/flavors/뉴슈팅스타_1.png", color: "hsl(220,60%,80%)", categoryId: "milk-cheese", description: "반짝이는 캔디 조각의 달콤한 맛", badge: null },
@@ -673,7 +680,7 @@ export const flavors: Flavor[] = [
   { id: "cherry-jubilee", name: "체리 쥬빌레", image: "/flavors/체리쥬빌레(플레이버1)_0.png", color: "hsl(340,50%,70%)", categoryId: "fruit", description: "달콤한 체리의 풍성한 맛", badge: null },
   { id: "yogurt-gelato", name: "요거트 젤라또", image: "/flavors/요거트젤라또_0.png", color: "hsl(50,25%,90%)", categoryId: "milk-cheese", description: "상큼한 요거트 젤라또의 맛", badge: null },
   { id: "tiramisu-gelato", name: "티라미수 젤라또", image: "/flavors/티라미수젤라또_0.png", color: "hsl(25,35%,55%)", categoryId: "coffee-caramel", description: "이탈리안 티라미수 젤라또의 진한 맛", badge: null },
-  { id: "lessly-almond-bonbon", name: "Lessly Edition 아몬드봉봉", image: "/flavors/LesslyEdition_아몬드봉봉_1.png", color: "hsl(28,38%,68%)", categoryId: "grain-nut", description: "레슬리 에디션 아몬드봉봉의 고소한 맛", badge: null },
+  { id: "lessly-almond-bonbon", name: "Lessly Edition 아몬드봉봉", image: "/flavors/LesslyEdition_아몬드봉봉_1.png", color: "hsl(28,38%,68%)", categoryId: "grain-nut", description: "레슬리 에디션 ��몬드봉봉의 고소한 맛", badge: null },
   { id: "lessly-alien-mom", name: "Lessly Edition 엄마는 외계인", image: "/flavors/LesslyEdition_엄마는외계인_1.png", color: "hsl(280,45%,72%)", categoryId: "grain-nut", description: "레슬리 에디션 엄마는 외계인의 특별한 맛", badge: null },
   { id: "lessly-chocolate", name: "Lessly Edition 초콜릿", image: "/flavors/LesslyEdition_초콜릿_1.png", color: "hsl(20,45%,38%)", categoryId: "chocolate", description: "레슬리 에디션 초콜릿의 진한 맛", badge: null },
 ]

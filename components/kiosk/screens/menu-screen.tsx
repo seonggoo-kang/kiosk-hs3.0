@@ -21,6 +21,7 @@ import {
   prepackSubcategories,
   partySubcategories,
   packableSubcategories,
+  workshopSubcategories,
   type Product,
 } from "@/lib/mock-data"
 
@@ -130,6 +131,7 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
   const [prepackFilter, setPrepackFilter] = useState("all")
   const [partyFilter, setPartyFilter] = useState("all")
   const [packableFilter, setPackableFilter] = useState("all")
+  const [workshopFilter, setWorkshopFilter] = useState("all")
 
   const [showAddedToast, setShowAddedToast] = useState(false)
 
@@ -172,9 +174,10 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
     const filterMap: Record<string, string> = {
       "icecream-cake": cakeFilter, beverage: beverageFilter, dessert: dessertFilter,
       prepack: prepackFilter, party: partyFilter, "packable-icecream": packableFilter,
+      workshop: workshopFilter,
     }
     return filterMap[activeCategory] ?? "all"
-  }, [activeCategory, cakeFilter, beverageFilter, dessertFilter, prepackFilter, partyFilter, packableFilter])
+  }, [activeCategory, cakeFilter, beverageFilter, dessertFilter, prepackFilter, partyFilter, packableFilter, workshopFilter])
 
   const filteredSlides = useMemo(() => {
     if (activeFilter === "all" || currentSlide.isAiPick) return null
@@ -218,7 +221,7 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
       const idx = flatSlides.findIndex((s) => s.categoryId === id && s.pageIndex === 0)
       if (idx >= 0) setFlatIndex(idx)
       setCakeFilter("all"); setBeverageFilter("all"); setDessertFilter("all")
-      setPrepackFilter("all"); setPartyFilter("all"); setPackableFilter("all")
+      setPrepackFilter("all"); setPartyFilter("all"); setPackableFilter("all"); setWorkshopFilter("all")
       dispatch({ type: "SELECT_PRODUCT", payload: null })
     },
     [flatSlides, dispatch]
@@ -326,6 +329,7 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
   const isPrepack = activeCategory === "prepack"
   const isParty = activeCategory === "party"
   const isPackable = activeCategory === "packable-icecream"
+  const isWorkshop = activeCategory === "workshop"
 
   // Filter out subcategories that have zero matching products.
   // Hide the entire filter bar when 0 or 1 distinct subcategory groups remain
@@ -338,6 +342,7 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
       prepack: prepackSubcategories,
       party: partySubcategories,
       "packable-icecream": packableSubcategories,
+      workshop: workshopSubcategories,
     }
     const subcats = filterMap[activeCategory]
     if (!subcats) return null
@@ -359,6 +364,7 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
       if (isPrepack && prepackFilter !== "all") setPrepackFilter("all")
       if (isParty && partyFilter !== "all") setPartyFilter("all")
       if (isPackable && packableFilter !== "all") setPackableFilter("all")
+      if (isWorkshop && workshopFilter !== "all") setWorkshopFilter("all")
     }
   }
 
@@ -373,6 +379,7 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
       {isPrepack && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={prepackFilter} onSelect={(id) => { setPrepackFilter(id); jumpToFirstPageOfCategory() }} />}
       {isParty && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={partyFilter} onSelect={(id) => { setPartyFilter(id); jumpToFirstPageOfCategory() }} />}
       {isPackable && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={packableFilter} onSelect={(id) => { setPackableFilter(id); jumpToFirstPageOfCategory() }} />}
+      {isWorkshop && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={workshopFilter} onSelect={(id) => { setWorkshopFilter(id); jumpToFirstPageOfCategory() }} />}
 
       {/* Carousel */}
       <div
