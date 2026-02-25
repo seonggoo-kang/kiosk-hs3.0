@@ -11,6 +11,18 @@ import {
 } from "@/lib/mock-data"
 import { ProductCard } from "@/components/kiosk/product-card"
 
+function gridClassForCount(count: number) {
+  if (count <= 4) return "grid grid-cols-2 gap-4 px-2"
+  if (count <= 9) return "grid grid-cols-3 gap-3 px-1"
+  return "grid grid-cols-4 gap-2"
+}
+
+function cardSizeForCount(count: number): "sm" | "md" | "lg" {
+  if (count <= 4) return "lg"
+  if (count <= 9) return "md"
+  return "sm"
+}
+
 type RecommendedPanelProps = {
   cartProductIds: Set<string>
   onSelectProduct: (product: Product) => void
@@ -86,11 +98,16 @@ export function RecommendedPanel({ cartProductIds, onSelectProduct }: Recommende
     }, 800)
   }, [])
 
-  // Build filter items
-  const filterItems = [
-    { id: "all", name: "\uC804\uCCB4" },
-    ...filterCategories.map((c) => ({ id: c.id, name: c.name })),
-  ]
+  // Build filter items -- hide categories with zero matching products
+  const filterItems = useMemo(() => {
+    const items = [
+      { id: "all", name: "\uC804\uCCB4" },
+      ...filterCategories
+        .filter((c) => allProducts.some((p) => p.categoryId === c.id))
+        .map((c) => ({ id: c.id, name: c.name })),
+    ]
+    return items
+  }, [filterCategories, allProducts])
 
   return (
     <div className="flex h-full flex-col">
@@ -143,7 +160,7 @@ export function RecommendedPanel({ cartProductIds, onSelectProduct }: Recommende
             </button>
 
             {/* Flat product grid -- ranked by purchase likelihood */}
-            <div className="grid grid-cols-4 gap-2">
+            <div className={gridClassForCount(visibleProducts.length)}>
               {visibleProducts.map((product, idx) => (
                 <ProductCard
                   key={product.id}
@@ -151,6 +168,7 @@ export function RecommendedPanel({ cartProductIds, onSelectProduct }: Recommende
                   isSelected={cartProductIds.has(product.id)}
                   onSelect={onSelectProduct}
                   priority={idx < 4}
+                  size={cardSizeForCount(visibleProducts.length)}
                 />
               ))}
             </div>
