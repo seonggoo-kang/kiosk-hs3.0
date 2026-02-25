@@ -40,6 +40,12 @@ function gridClassForCount(count: number) {
   return "grid grid-cols-4 gap-2"
 }
 
+function cardSizeForCount(count: number): "sm" | "md" | "lg" {
+  if (count <= 4) return "lg"
+  if (count <= 9) return "md"
+  return "sm"
+}
+
 type Slide = {
   categoryId: string
   pageIndex: number
@@ -79,6 +85,7 @@ function SlideContent({
                 isSelected={cartProductIds.has(product.id)}
                 onSelect={onSelectProduct}
                 priority={slide.pageIndex === 0}
+                size={cardSizeForCount(slide.totalCategoryProducts)}
               />
             ))}
           </div>

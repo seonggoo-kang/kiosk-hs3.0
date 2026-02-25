@@ -4,11 +4,56 @@ import Image from "next/image"
 import { cn } from "@/lib/utils"
 import { formatPrice, type Product } from "@/lib/mock-data"
 
+type CardSize = "sm" | "md" | "lg"
+
 type ProductCardProps = {
   product: Product
   isSelected?: boolean
   onSelect: (product: Product) => void
   priority?: boolean
+  size?: CardSize
+}
+
+const SIZE_CONFIG: Record<CardSize, {
+  container: string
+  image: string
+  imgPx: number
+  name: string
+  detail: string
+  price: string
+  tag: string
+  padding: string
+}> = {
+  sm: {
+    container: "h-20",
+    image: "h-[72px] w-[72px]",
+    imgPx: 80,
+    name: "text-[10px]",
+    detail: "text-[10px]",
+    price: "text-[10px]",
+    tag: "text-[7px]",
+    padding: "p-2 pb-2.5",
+  },
+  md: {
+    container: "h-28",
+    image: "h-[100px] w-[100px]",
+    imgPx: 110,
+    name: "text-xs",
+    detail: "text-[11px]",
+    price: "text-xs",
+    tag: "text-[8px]",
+    padding: "p-2.5 pb-3",
+  },
+  lg: {
+    container: "h-36",
+    image: "h-[128px] w-[128px]",
+    imgPx: 140,
+    name: "text-sm",
+    detail: "text-xs",
+    price: "text-sm",
+    tag: "text-[9px]",
+    padding: "p-3 pb-3.5",
+  },
 }
 
 const TAG_STYLES: Record<string, string> = {
@@ -22,29 +67,32 @@ const TAG_STYLES: Record<string, string> = {
   "가져가기 전용": "bg-emerald-600 text-white",
 }
 
-export function ProductCard({ product, isSelected, onSelect, priority }: ProductCardProps) {
+export function ProductCard({ product, isSelected, onSelect, priority, size = "sm" }: ProductCardProps) {
+  const s = SIZE_CONFIG[size]
   return (
     <button
       onClick={() => onSelect(product)}
       className={cn(
-        "flex flex-col items-center rounded-xl border-2 bg-card p-2 pb-2.5 transition-all active:scale-[0.97]",
+        "flex flex-col items-center rounded-xl border-2 bg-card transition-all active:scale-[0.97]",
+        s.padding,
         isSelected ? "border-primary shadow-md" : "border-transparent shadow-sm"
       )}
     >
-      <div className="relative mb-2 flex h-20 w-full items-center justify-center rounded-lg bg-muted/30">
+      <div className={cn("relative mb-2 flex w-full items-center justify-center rounded-lg bg-muted/30", s.container)}>
         <Image
           src={product.image}
           alt={product.name}
-          width={80}
-          height={80}
-          className="h-[72px] w-[72px] object-contain"
+          width={s.imgPx}
+          height={s.imgPx}
+          className={cn("object-contain", s.image)}
           priority={priority}
           loading={priority ? "eager" : "lazy"}
         />
         {product.tag && (
           <span
             className={cn(
-              "absolute left-0 top-0 rounded-br-lg rounded-tl-lg px-1 py-px text-[7px] font-bold leading-tight",
+              "absolute left-0 top-0 rounded-br-lg rounded-tl-lg px-1 py-px font-bold leading-tight",
+              s.tag,
               TAG_STYLES[product.tag] ?? "bg-muted text-foreground"
             )}
           >
@@ -52,15 +100,15 @@ export function ProductCard({ product, isSelected, onSelect, priority }: Product
           </span>
         )}
       </div>
-      <p className="line-clamp-2 whitespace-pre-wrap text-center text-[10px] font-semibold leading-snug text-foreground">
+      <p className={cn("line-clamp-2 whitespace-pre-wrap text-center font-semibold leading-snug text-foreground", s.name)}>
         {product.name}
       </p>
-      <p className="mt-0.5 text-center text-[10px] leading-tight text-muted-foreground">
+      <p className={cn("mt-0.5 text-center leading-tight text-muted-foreground", s.detail)}>
         {product.weight && product.weight !== "-" && !product.size.includes(product.weight)
           ? `${product.size} (${product.weight})`
           : product.size}
       </p>
-      <p className="mt-1 text-[10px] font-bold text-primary">
+      <p className={cn("mt-1 font-bold text-primary", s.price)}>
         {product.price === 0 ? "0원" : formatPrice(product.price)}
       </p>
     </button>
