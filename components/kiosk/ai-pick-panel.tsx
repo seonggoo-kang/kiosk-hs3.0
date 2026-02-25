@@ -109,43 +109,44 @@ export function RecommendedPanel({ cartProductIds, onSelectProduct, orderType }:
     }, 800)
   }, [])
 
-  // Build filter items -- hide categories with zero matching products
+  // Build filter items -- hide categories with zero matching products.
+  // Hide entire filter bar when 0 or 1 category groups have items (no filtering value).
   const filterItems = useMemo(() => {
-    const items = [
-      { id: "all", name: "\uC804\uCCB4" },
-      ...filterCategories
-        .filter((c) => allProducts.some((p) => p.categoryId === c.id))
-        .map((c) => ({ id: c.id, name: c.name })),
-    ]
-    return items
+    const withItems = filterCategories
+      .filter((c) => allProducts.some((p) => p.categoryId === c.id))
+      .map((c) => ({ id: c.id, name: c.name }))
+    if (withItems.length <= 1) return null
+    return [{ id: "all", name: "\uC804\uCCB4" }, ...withItems]
   }, [filterCategories, allProducts])
 
   return (
     <div className="flex h-full flex-col">
-      {/* Category filter bar -- swipeable */}
-      <div
-        ref={filterRef}
-        className="flex w-full shrink-0 gap-1.5 overflow-x-auto border-b border-border bg-card px-3 py-2 scrollbar-hide select-none"
-        onPointerDown={onFilterPointerDown}
-        onPointerMove={onFilterPointerMove}
-        onPointerUp={onFilterPointerUp}
-        onPointerCancel={onFilterPointerUp}
-      >
-        {filterItems.map((item) => (
-          <button
-            key={item.id}
-            data-filter-id={item.id}
-            className={cn(
-              "shrink-0 rounded-full px-3 py-1 text-[10px] font-medium transition-colors",
-              activeFilter === item.id
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground active:bg-muted/80"
-            )}
-          >
-            {item.name}
-          </button>
-        ))}
-      </div>
+      {/* Category filter bar -- swipeable; hidden when <=1 category has items */}
+      {filterItems && (
+        <div
+          ref={filterRef}
+          className="flex w-full shrink-0 gap-1.5 overflow-x-auto border-b border-border bg-card px-3 py-2 scrollbar-hide select-none"
+          onPointerDown={onFilterPointerDown}
+          onPointerMove={onFilterPointerMove}
+          onPointerUp={onFilterPointerUp}
+          onPointerCancel={onFilterPointerUp}
+        >
+          {filterItems.map((item) => (
+            <button
+              key={item.id}
+              data-filter-id={item.id}
+              className={cn(
+                "shrink-0 rounded-full px-3 py-1 text-[10px] font-medium transition-colors",
+                activeFilter === item.id
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground active:bg-muted/80"
+              )}
+            >
+              {item.name}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Scrollable content */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto bg-[#FFFFFF]">

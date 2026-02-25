@@ -327,7 +327,9 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
   const isParty = activeCategory === "party"
   const isPackable = activeCategory === "packable-icecream"
 
-  // Filter out subcategories that have zero matching products
+  // Filter out subcategories that have zero matching products.
+  // Hide the entire filter bar when 0 or 1 distinct subcategory groups remain
+  // (showing a single filter adds no value to the customer).
   const visibleSubcats = useMemo(() => {
     const filterMap: Record<string, Array<{ id: string; name: string }>> = {
       "icecream-cake": cakeSubcategories,
@@ -340,11 +342,25 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
     const subcats = filterMap[activeCategory]
     if (!subcats) return null
     const products = getProductsByCategory(activeCategory, state.orderType)
-    return subcats.filter((sc) => {
-      if (sc.id === "all") return true
-      return products.some((p) => p.subcategory === sc.id)
-    })
+    const withItems = subcats.filter((sc) => sc.id !== "all" && products.some((p) => p.subcategory === sc.id))
+    // Need at least 2 distinct groups to make filters useful
+    if (withItems.length <= 1) return null
+    return [{ id: "all", name: "전체" }, ...withItems]
   }, [activeCategory, state.orderType])
+
+  // Reset active filter to "all" when filter bar disappears
+  const prevVisibleSubcats = useRef(visibleSubcats)
+  if (prevVisibleSubcats.current !== visibleSubcats) {
+    prevVisibleSubcats.current = visibleSubcats
+    if (!visibleSubcats) {
+      if (isCake && cakeFilter !== "all") setCakeFilter("all")
+      if (isBeverage && beverageFilter !== "all") setBeverageFilter("all")
+      if (isDessert && dessertFilter !== "all") setDessertFilter("all")
+      if (isPrepack && prepackFilter !== "all") setPrepackFilter("all")
+      if (isParty && partyFilter !== "all") setPartyFilter("all")
+      if (isPackable && packableFilter !== "all") setPackableFilter("all")
+    }
+  }
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
