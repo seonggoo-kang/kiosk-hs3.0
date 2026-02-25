@@ -2,7 +2,6 @@
 
 import { useState, useMemo, useEffect, useRef, useCallback } from "react"
 import { IceCreamCone, Check } from "lucide-react"
-import { KioskHeader } from "@/components/kiosk/kiosk-header"
 import { ProgressStepper } from "@/components/kiosk/progress-stepper"
 import { KioskFooter } from "@/components/kiosk/kiosk-footer"
 import { CategoryTabs } from "@/components/kiosk/category-tabs"
@@ -342,8 +341,7 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
-      <KioskHeader title="메뉴 선택" onHome={onBack} />
-      <ProgressStepper currentStep={currentStep} elapsedSeconds={elapsedSeconds} />
+      <ProgressStepper currentStep={currentStep} elapsedSeconds={elapsedSeconds} onHome={onBack} />
       <CategoryTabs categories={categories} activeId={activeCategory} onSelect={handleCategoryChange} />
 
       {isCake && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={cakeFilter} onSelect={(id) => { setCakeFilter(id); jumpToFirstPageOfCategory() }} />}

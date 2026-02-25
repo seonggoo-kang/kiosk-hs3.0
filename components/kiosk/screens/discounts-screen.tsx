@@ -5,7 +5,6 @@ import {
   Store, Ticket, Tag, Signal, Wifi,
   Circle, Hexagon, Car, Shield,
 } from "lucide-react"
-import { KioskHeader } from "@/components/kiosk/kiosk-header"
 import { ProgressStepper } from "@/components/kiosk/progress-stepper"
 import { KioskFooter } from "@/components/kiosk/kiosk-footer"
 import { ActionBar } from "@/components/kiosk/action-bar"
@@ -49,8 +48,7 @@ export function DiscountsScreen({ onBack, onGoToPayment, onHome, currentStep, el
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
-      <KioskHeader title="할인/적립" onHome={onHome} />
-      <ProgressStepper currentStep={currentStep} elapsedSeconds={elapsedSeconds} />
+      <ProgressStepper currentStep={currentStep} elapsedSeconds={elapsedSeconds} onHome={onHome} />
 
       <div className="flex-1 overflow-y-auto bg-muted/40 p-4">
         {discountSections.map((section) => (

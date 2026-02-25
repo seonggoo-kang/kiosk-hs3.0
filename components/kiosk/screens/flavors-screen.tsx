@@ -3,7 +3,6 @@
 import { useState, useMemo, useCallback, useRef } from "react"
 import Image from "next/image"
 import { HelpCircle, X, ChevronLeft, ChevronRight } from "lucide-react"
-import { KioskHeader } from "@/components/kiosk/kiosk-header"
 import { ProgressStepper } from "@/components/kiosk/progress-stepper"
 import { KioskFooter } from "@/components/kiosk/kiosk-footer"
 import { ActionBar } from "@/components/kiosk/action-bar"
@@ -82,8 +81,7 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
-      <KioskHeader title="맛 선택" onHome={onHome} />
-<ProgressStepper currentStep={currentStep} elapsedSeconds={elapsedSeconds} />
+      <ProgressStepper currentStep={currentStep} elapsedSeconds={elapsedSeconds} onHome={onHome} />
 
       <div className="shrink-0 border-b border-border bg-card">
         <div className="grid grid-cols-4">

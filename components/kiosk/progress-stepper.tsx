@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect, useCallback } from "react"
-import { Check, ChevronDown, Hourglass } from "lucide-react"
+import { Home, Check, ChevronDown, Hourglass } from "lucide-react"
 import { useOrder } from "@/lib/order-context"
 import { cn } from "@/lib/utils"
 
@@ -16,14 +16,14 @@ const STEPS = [
 interface ProgressStepperProps {
   currentStep: 1 | 2 | 3 | 4 | 5
   elapsedSeconds: number
+  onHome?: () => void
 }
 
-export function ProgressStepper({ currentStep, elapsedSeconds }: ProgressStepperProps) {
+export function ProgressStepper({ currentStep, elapsedSeconds, onHome }: ProgressStepperProps) {
   const { state, dispatch } = useOrder()
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  // Close dropdown on outside click
   useEffect(() => {
     if (!dropdownOpen) return
     const handler = (e: PointerEvent) => {
@@ -44,10 +44,24 @@ export function ProgressStepper({ currentStep, elapsedSeconds }: ProgressStepper
   )
 
   return (
-    <div className="relative shrink-0 border-b border-border bg-card px-2 py-1.5">
-      <div className="flex items-center">
-        {/* Steps */}
-        <div className="flex flex-1 items-center gap-0">
+    <div className="relative shrink-0 border-b border-border bg-card">
+      <div className="flex h-10 items-center px-1.5">
+        {/* Home button */}
+        {onHome && (
+          <button
+            onClick={() => {
+              dispatch({ type: "RESET_ORDER" })
+              onHome()
+            }}
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-primary transition-colors active:bg-accent"
+            aria-label="홈으로"
+          >
+            <Home className="h-4 w-4" />
+          </button>
+        )}
+
+        {/* Steps flow */}
+        <div className="flex flex-1 items-center overflow-hidden">
           {STEPS.map((step, i) => {
             const stepNum = (i + 1) as 1 | 2 | 3 | 4 | 5
             const isCompleted = stepNum < currentStep
@@ -56,61 +70,56 @@ export function ProgressStepper({ currentStep, elapsedSeconds }: ProgressStepper
 
             return (
               <div key={i} className="flex items-center">
-                {/* Connector line (before each step except the first) */}
-                {i > 0 && (
-                  <div
-                    className={cn(
-                      "mx-0.5 h-px w-2",
-                      isCompleted || isActive ? "bg-primary" : "bg-border"
-                    )}
-                    style={isUpcoming ? { backgroundImage: "repeating-linear-gradient(90deg, hsl(var(--border)) 0 3px, transparent 3px 6px)", backgroundColor: "transparent" } : undefined}
-                  />
+                {/* Arrow separator */}
+                <span
+                  className={cn(
+                    "mx-0.5 text-[9px] leading-none",
+                    isCompleted || isActive ? "text-primary/60" : "text-border"
+                  )}
+                >
+                  {">"}
+                </span>
+
+                {/* Step circle */}
+                {isCompleted ? (
+                  <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-primary">
+                    <Check className="h-2.5 w-2.5 text-primary-foreground" strokeWidth={3} />
+                  </div>
+                ) : isActive ? (
+                  <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-[1.5px] border-primary bg-background">
+                    <span className="text-[8px] font-bold leading-none text-primary">{stepNum}</span>
+                  </div>
+                ) : (
+                  <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-border bg-background">
+                    <span className="text-[8px] font-medium leading-none text-muted-foreground">{stepNum}</span>
+                  </div>
                 )}
 
-                <div className="flex flex-col items-center gap-0.5">
-                  {/* Circle */}
-                  <div className="relative flex items-center gap-0.5">
-                    {isCompleted ? (
-                      <div className="flex h-4 w-4 items-center justify-center rounded-full bg-primary">
-                        <Check className="h-2.5 w-2.5 text-primary-foreground" strokeWidth={3} />
-                      </div>
-                    ) : isActive ? (
-                      <div className="flex h-4 w-4 items-center justify-center rounded-full border-[1.5px] border-primary bg-background">
-                        <span className="text-[8px] font-bold leading-none text-primary">{stepNum}</span>
-                      </div>
-                    ) : (
-                      <div className="flex h-4 w-4 items-center justify-center rounded-full border border-border bg-background">
-                        <span className="text-[8px] font-medium leading-none text-muted-foreground">{stepNum}</span>
-                      </div>
-                    )}
+                {/* Step label */}
+                <span
+                  className={cn(
+                    "ml-0.5 whitespace-nowrap leading-none",
+                    isCompleted ? "text-[9px] font-medium text-primary" :
+                    isActive ? "text-[9px] font-bold text-foreground" :
+                    "text-[9px] font-normal text-muted-foreground"
+                  )}
+                >
+                  {step.label}
+                </span>
 
-                    {/* Step 1 dropdown trigger */}
-                    {i === 0 && (
-                      <button
-                        onClick={() => setDropdownOpen((o) => !o)}
-                        className={cn(
-                          "flex h-3.5 w-3.5 items-center justify-center rounded-full border transition-colors",
-                          dropdownOpen ? "border-primary bg-primary/10" : "border-border bg-background"
-                        )}
-                        aria-label="주문 유형 변경"
-                      >
-                        <ChevronDown className={cn("h-2 w-2 transition-transform", dropdownOpen && "rotate-180")} />
-                      </button>
-                    )}
-                  </div>
-
-                  {/* Label */}
-                  <span
+                {/* Step 1 dropdown trigger (right of text) */}
+                {i === 0 && (
+                  <button
+                    onClick={() => setDropdownOpen((o) => !o)}
                     className={cn(
-                      "whitespace-nowrap text-center leading-none",
-                      isCompleted ? "text-[7px] font-medium text-primary" :
-                      isActive ? "text-[7px] font-bold text-foreground" :
-                      "text-[7px] font-normal text-muted-foreground"
+                      "ml-0.5 flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full border transition-colors",
+                      dropdownOpen ? "border-primary bg-primary/10" : "border-border bg-background"
                     )}
+                    aria-label="주문 유형 변경"
                   >
-                    {step.label}
-                  </span>
-                </div>
+                    <ChevronDown className={cn("h-2 w-2 transition-transform", dropdownOpen && "rotate-180")} />
+                  </button>
+                )}
               </div>
             )
           })}
@@ -130,7 +139,7 @@ export function ProgressStepper({ currentStep, elapsedSeconds }: ProgressStepper
       {dropdownOpen && (
         <div
           ref={dropdownRef}
-          className="absolute left-2 top-full z-50 mt-0.5 w-32 rounded-lg border border-border bg-card p-1 shadow-lg"
+          className="absolute left-8 top-full z-50 mt-0.5 w-32 rounded-lg border border-border bg-card p-1 shadow-lg"
         >
           <button
             onClick={() => handleSwitchOrderType("takeout")}
