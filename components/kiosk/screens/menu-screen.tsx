@@ -243,7 +243,23 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
   }, [flatSlides])
 
   const [flatIndex, setFlatIndex] = useState(initialFlatIndex)
-  const currentSlide = flatSlides[flatIndex]
+
+  // When flatSlides recomputes (e.g. order type change), the current
+  // flatIndex may point to a wrong slide. Re-sync to the first page
+  // of whatever category we were on.
+  const prevSlidesRef = useRef(flatSlides)
+  if (prevSlidesRef.current !== flatSlides) {
+    const oldCat = prevSlidesRef.current[flatIndex]?.categoryId
+    prevSlidesRef.current = flatSlides
+    if (oldCat) {
+      const corrected = flatSlides.findIndex((s) => s.categoryId === oldCat && s.pageIndex === 0)
+      if (corrected >= 0 && corrected !== flatIndex) {
+        setFlatIndex(corrected)
+      }
+    }
+  }
+
+  const currentSlide = flatSlides[Math.min(flatIndex, flatSlides.length - 1)]
   const activeCategory = currentSlide.categoryId
   const totalPagesForCategory = currentSlide.totalPages
 
