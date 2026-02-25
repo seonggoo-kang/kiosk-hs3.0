@@ -67,6 +67,11 @@ function SlideContent({
   onSelectProduct,
   onRemoveProduct,
   orderType,
+  categoryName,
+  crossSellProducts,
+  onSwitchOrderType,
+  autoReturnSeconds,
+  onCancelAutoReturn,
 }: {
   slide: Slide
   cartProductIds: Set<string>
@@ -74,6 +79,11 @@ function SlideContent({
   onSelectProduct: (p: Product) => void
   onRemoveProduct: (p: Product) => void
   orderType?: "takeout" | "dine-in" | null
+  categoryName?: string
+  crossSellProducts?: Product[]
+  onSwitchOrderType?: () => void
+  autoReturnSeconds?: number | null
+  onCancelAutoReturn?: () => void
 }) {
   if (slide.isAiPick) {
     return (
@@ -105,13 +115,72 @@ function SlideContent({
               />
             ))}
           </div>
+        ) : orderType && crossSellProducts && crossSellProducts.length > 0 ? (
+          <div className="flex h-full flex-col">
+            {/* Friendly explanation */}
+            <div className="flex flex-col items-center gap-2 px-6 pt-4 pb-2 text-center">
+              <p className="text-xs font-semibold text-foreground leading-relaxed">
+                {`'${categoryName}' 메뉴는 '${orderType === "takeout" ? "매장(먹고가기)" : "포장(가져가기)"}' 전용이에요`}
+              </p>
+              {onSwitchOrderType && (
+                <button
+                  onClick={onSwitchOrderType}
+                  className="rounded-full bg-primary px-4 py-1.5 text-[11px] font-bold text-primary-foreground shadow-sm transition-colors active:bg-primary/80"
+                >
+                  {orderType === "takeout" ? "먹고가기로 변경하기" : "가져가기로 변경하기"}
+                </button>
+              )}
+            </div>
+
+            {/* Cross-sell products */}
+            <div className="flex flex-1 flex-col px-3 pb-2">
+              <p className="mb-2 text-center text-[10px] font-medium text-muted-foreground">
+                {`'${categoryName}' 좋아하시는 고객님들이 대신 많이 구매하시는 제품들`}
+              </p>
+              <div className="grid grid-cols-2 gap-3 px-1">
+                {crossSellProducts.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    isSelected={cartProductIds.has(product.id)}
+                    quantity={cartProductMap.get(product.id)?.quantity}
+                    onSelect={(p) => { onCancelAutoReturn?.(); onSelectProduct(p) }}
+                    onRemove={onRemoveProduct}
+                    size="md"
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Auto-return countdown */}
+            {autoReturnSeconds !== null && autoReturnSeconds !== undefined && autoReturnSeconds > 0 && (
+              <div className="flex shrink-0 flex-col items-center gap-1.5 border-t border-border bg-muted/30 px-4 py-2.5">
+                <p className="text-center text-[10px] leading-relaxed text-muted-foreground">
+                  {"마음에 드시는 대체 제품이 없으시면,"}
+                  <br />
+                  <span className="font-bold text-foreground">{autoReturnSeconds}{"초"}</span>
+                  {" 후 이전 메뉴로 돌아갑니다"}
+                </p>
+                <div className="h-1 w-full overflow-hidden rounded-full bg-border">
+                  <div
+                    className="h-full rounded-full bg-primary transition-all duration-1000 ease-linear"
+                    style={{ width: `${(autoReturnSeconds / 5) * 100}%` }}
+                  />
+                </div>
+                <button
+                  onClick={onCancelAutoReturn}
+                  className="mt-0.5 rounded-full border border-border bg-card px-4 py-1 text-[10px] font-medium text-foreground shadow-sm transition-colors active:bg-muted"
+                >
+                  {"여기서 더 볼게요"}
+                </button>
+              </div>
+            )}
+          </div>
         ) : (
           <div className="flex h-full flex-col items-center justify-center gap-3 text-muted-foreground">
             <IceCreamCone className="h-12 w-12 opacity-30" />
             <p className="text-center text-sm leading-relaxed px-6">
-              {orderType
-                ? `이 카테고리에는 '${orderType === "takeout" ? "가져가기" : "먹고가기"}'가 가능한 상품이 없습니다.`
-                : "이 카테고리에 상품이 없습니다."}
+              {"이 카테고리에 상품이 없습니다."}
             </p>
           </div>
         )}
@@ -238,15 +307,28 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
   // Keep a Set version for backwards-compat with components that just need has()
   const cartProductIds = useMemo(() => new Set(cartProductMap.keys()), [cartProductMap])
 
+  // Categories with zero products under current order type
+  const emptyCategoryIds = useMemo(() => {
+    const s = new Set<string>()
+    for (const cat of categories) {
+      if (cat.id === "ai-pick") continue
+      if (getProductsByCategory(cat.id, state.orderType).length === 0) s.add(cat.id)
+    }
+    return s
+  }, [state.orderType])
+
+  const prevCategoryRef = useRef<string>("ai-pick")
+
   const handleCategoryChange = useCallback(
     (id: string) => {
+      prevCategoryRef.current = activeCategory
       const idx = flatSlides.findIndex((s) => s.categoryId === id && s.pageIndex === 0)
       if (idx >= 0) setFlatIndex(idx)
       setCakeFilter("all"); setBeverageFilter("all"); setDessertFilter("all")
       setPrepackFilter("all"); setPartyFilter("all"); setPackableFilter("all"); setWorkshopFilter("all")
       dispatch({ type: "SELECT_PRODUCT", payload: null })
     },
-    [flatSlides, dispatch]
+    [flatSlides, dispatch, activeCategory]
   )
 
   const jumpToFirstPageOfCategory = useCallback(() => {
@@ -350,6 +432,59 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
     if (entry) dispatch({ type: "REMOVE_FROM_CART", payload: entry.cartId })
   }, [cartProductMap, dispatch])
 
+  // Cross-sell products for empty state recovery
+  const crossSellProducts = useMemo(() => {
+    return getRankedRecommendations(state.orderType).slice(0, 4)
+  }, [state.orderType])
+
+  const activeCategoryName = useMemo(() => {
+    return categories.find((c) => c.id === activeCategory)?.name ?? ""
+  }, [activeCategory])
+
+  // Order type switch from empty state
+  const handleSwitchOrderType = useCallback(() => {
+    const next = state.orderType === "takeout" ? "dine-in" : "takeout"
+    dispatch({ type: "SET_ORDER_TYPE", payload: next as "takeout" | "dine-in" })
+    setAutoReturnTimer(null)
+  }, [state.orderType, dispatch])
+
+  // Auto-return timer for empty categories
+  const [autoReturnTimer, setAutoReturnTimer] = useState<number | null>(null)
+  const autoReturnRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  const isCurrentCategoryEmpty = emptyCategoryIds.has(activeCategory)
+
+  // Start timer when landing on an empty category
+  useEffect(() => {
+    if (isCurrentCategoryEmpty && state.orderType) {
+      setAutoReturnTimer(5)
+    } else {
+      setAutoReturnTimer(null)
+    }
+  }, [isCurrentCategoryEmpty, state.orderType, activeCategory])
+
+  // Countdown interval
+  useEffect(() => {
+    if (autoReturnRef.current) { clearInterval(autoReturnRef.current); autoReturnRef.current = null }
+    if (autoReturnTimer === null || autoReturnTimer <= 0) {
+      if (autoReturnTimer === 0) {
+        // Timer reached zero -- navigate back
+        const prev = prevCategoryRef.current
+        if (prev && prev !== activeCategory) {
+          handleCategoryChange(prev)
+        }
+        setAutoReturnTimer(null)
+      }
+      return
+    }
+    autoReturnRef.current = setInterval(() => {
+      setAutoReturnTimer((prev) => (prev !== null && prev > 0 ? prev - 1 : null))
+    }, 1000)
+    return () => { if (autoReturnRef.current) clearInterval(autoReturnRef.current) }
+  }, [autoReturnTimer, activeCategory, handleCategoryChange])
+
+  const cancelAutoReturn = useCallback(() => setAutoReturnTimer(null), [])
+
   const isCake = activeCategory === "icecream-cake"
   const isBeverage = activeCategory === "beverage"
   const isDessert = activeCategory === "dessert"
@@ -398,7 +533,7 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
       <ProgressStepper currentStep={currentStep} elapsedSeconds={elapsedSeconds} onHome={onBack} />
-      <CategoryTabs categories={categories} activeId={activeCategory} onSelect={handleCategoryChange} />
+      <CategoryTabs categories={categories} activeId={activeCategory} onSelect={handleCategoryChange} emptyCategoryIds={emptyCategoryIds} />
 
       {isCake && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={cakeFilter} onSelect={(id) => { setCakeFilter(id); jumpToFirstPageOfCategory() }} />}
       {isBeverage && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={beverageFilter} onSelect={(id) => { setBeverageFilter(id); jumpToFirstPageOfCategory() }} />}
@@ -428,7 +563,19 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
             className="absolute inset-0"
             style={{ transform: dragOffset !== 0 ? `translateX(${dragOffset}px)` : undefined, transition: isAnimating ? "transform 250ms ease-out" : "none" }}
           >
-            <SlideContent slide={displaySlide} cartProductIds={cartProductIds} cartProductMap={cartProductMap} onSelectProduct={handleProductSelect} onRemoveProduct={handleRemoveProduct} orderType={state.orderType} />
+            <SlideContent
+              slide={displaySlide}
+              cartProductIds={cartProductIds}
+              cartProductMap={cartProductMap}
+              onSelectProduct={handleProductSelect}
+              onRemoveProduct={handleRemoveProduct}
+              orderType={state.orderType}
+              categoryName={activeCategoryName}
+              crossSellProducts={crossSellProducts}
+              onSwitchOrderType={handleSwitchOrderType}
+              autoReturnSeconds={autoReturnTimer}
+              onCancelAutoReturn={cancelAutoReturn}
+            />
           </div>
           {nextSlide && (
             <div className="absolute inset-0" style={{ transform: `translateX(calc(100% + ${dragOffset}px))`, transition: isAnimating ? "transform 250ms ease-out" : "none" }}>
