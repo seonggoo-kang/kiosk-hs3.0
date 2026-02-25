@@ -11,14 +11,27 @@ import {
 } from "@/lib/mock-data"
 import { ProductCard } from "@/components/kiosk/product-card"
 
-function gridClassForCount(count: number) {
-  if (count <= 1) return "grid grid-cols-1 gap-4 px-6"
-  if (count <= 4) return "grid grid-cols-2 gap-4 px-2"
-  if (count <= 9) return "grid grid-cols-3 gap-3 px-1"
-  return "grid grid-cols-4 gap-2"
+type ZoomLevel = 1 | 2 | 3 | 4 | 5 | null
+
+const ZOOM_GRID: Record<number, string> = {
+  1: "grid grid-cols-1 gap-4 px-6",
+  2: "grid grid-cols-2 gap-4 px-2",
+  3: "grid grid-cols-3 gap-3 px-1",
+  4: "grid grid-cols-4 gap-2",
+  5: "grid grid-cols-5 gap-1.5",
+}
+const ZOOM_SIZE: Record<number, "xs" | "sm" | "md" | "lg" | "xl"> = { 1: "xl", 2: "lg", 3: "md", 4: "sm", 5: "xs" }
+
+function gridClassForCount(count: number, zoom: ZoomLevel = null) {
+  if (zoom) return ZOOM_GRID[zoom]
+  if (count <= 1) return ZOOM_GRID[1]
+  if (count <= 4) return ZOOM_GRID[2]
+  if (count <= 9) return ZOOM_GRID[3]
+  return ZOOM_GRID[4]
 }
 
-function cardSizeForCount(count: number): "sm" | "md" | "lg" | "xl" {
+function cardSizeForCount(count: number, zoom: ZoomLevel = null): "xs" | "sm" | "md" | "lg" | "xl" {
+  if (zoom) return ZOOM_SIZE[zoom]
   if (count <= 1) return "xl"
   if (count <= 4) return "lg"
   if (count <= 9) return "md"
@@ -31,9 +44,10 @@ type RecommendedPanelProps = {
   onSelectProduct: (product: Product) => void
   onRemoveProduct: (product: Product) => void
   orderType?: "takeout" | "dine-in" | null
+  zoomLevel?: ZoomLevel
 }
 
-export function RecommendedPanel({ cartProductIds, cartProductMap, onSelectProduct, onRemoveProduct, orderType }: RecommendedPanelProps) {
+export function RecommendedPanel({ cartProductIds, cartProductMap, onSelectProduct, onRemoveProduct, orderType, zoomLevel }: RecommendedPanelProps) {
   const [allProducts, setAllProducts] = useState<Product[]>(() => getRankedRecommendations(orderType))
   const [activeFilter, setActiveFilter] = useState("all")
   const [loading, setLoading] = useState(false)
@@ -174,7 +188,7 @@ export function RecommendedPanel({ cartProductIds, cartProductMap, onSelectProdu
             </button>
 
             {/* Flat product grid -- ranked by purchase likelihood */}
-            <div className={gridClassForCount(visibleProducts.length)}>
+            <div className={gridClassForCount(visibleProducts.length, zoomLevel)}>
               {visibleProducts.map((product, idx) => (
                 <ProductCard
                   key={product.id}
@@ -184,7 +198,7 @@ export function RecommendedPanel({ cartProductIds, cartProductMap, onSelectProdu
                   onSelect={onSelectProduct}
                   onRemove={onRemoveProduct}
                   priority={idx < 4}
-                  size={cardSizeForCount(visibleProducts.length)}
+                  size={cardSizeForCount(visibleProducts.length, zoomLevel)}
                 />
               ))}
             </div>

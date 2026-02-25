@@ -107,6 +107,7 @@ function SlideContent({
         onSelectProduct={onSelectProduct}
         onRemoveProduct={onRemoveProduct}
         orderType={orderType}
+        zoomLevel={zoomLevel}
       />
     )
   }
