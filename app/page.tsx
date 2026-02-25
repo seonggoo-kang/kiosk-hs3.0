@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useEffect, useRef } from "react"
+import { useState, useCallback, useEffect } from "react"
 import { useOrder } from "@/lib/order-context"
 import { LandingScreen } from "@/components/kiosk/screens/landing-screen"
 import { MenuScreen } from "@/components/kiosk/screens/menu-screen"
@@ -29,8 +29,9 @@ export default function KioskApp() {
 
   // ── Screen navigation state ──
   const [activeScreen, setActiveScreen] = useState<ScreenIndex>(SCREEN.LANDING)
-  const [isTransitioning, setIsTransitioning] = useState(false)
-  const [direction, setDirection] = useState<"left" | "right">("left")
+  const [prevScreen, setPrevScreen] = useState<ScreenIndex | null>(null)
+  const [slideDir, setSlideDir] = useState<"left" | "right">("left")
+  const [animating, setAnimating] = useState(false)
 
   // ── Navigation params passed between screens ──
   const [navProductId, setNavProductId] = useState<string | null>(null)
@@ -51,29 +52,31 @@ export default function KioskApp() {
   // ── Navigate with slide animation ──
   const navigateTo = useCallback(
     (screen: ScreenIndex, dir: "left" | "right" = "left") => {
-      if (isTransitioning) return
-      setDirection(dir)
-      setIsTransitioning(true)
-      // Allow a single frame for the direction class to be applied, then set screen
-      requestAnimationFrame(() => {
-        setActiveScreen(screen)
-        // Clear transitioning flag after the CSS transition completes
-        setTimeout(() => setIsTransitioning(false), 320)
-      })
+      if (animating) return
+      setSlideDir(dir)
+      setPrevScreen(activeScreen)
+      setActiveScreen(screen)
+      setAnimating(true)
+      setTimeout(() => {
+        setPrevScreen(null)
+        setAnimating(false)
+      }, 300)
     },
-    [isTransitioning]
+    [animating, activeScreen]
   )
 
-  // ── Navigation callbacks ──
+  // ── Instant reset (no animation) ──
   const goToLanding = useCallback(() => {
+    setPrevScreen(null)
+    setAnimating(false)
     setActiveScreen(SCREEN.LANDING)
-    setIsTransitioning(false)
     setNavProductId(null)
     setNavCartId(null)
     setNavFlavorIds([])
     setShowMenuToast(false)
   }, [])
 
+  // ── Navigation callbacks ──
   const handleOrderType = useCallback(
     (type: "takeout" | "dine-in") => {
       dispatch({ type: "SET_ORDER_TYPE", payload: type })
@@ -93,7 +96,6 @@ export default function KioskApp() {
 
   const handleGoToOptions = useCallback(
     (cartId: string) => {
-      // Find the cart item to get productId
       setNavCartId(cartId)
       navigateTo(SCREEN.OPTIONS, "left")
     },
@@ -112,7 +114,6 @@ export default function KioskApp() {
   const handleOptionsComplete = useCallback(() => {
     setShowMenuToast(true)
     navigateTo(SCREEN.MENU, "right")
-    // Clear toast after a delay
     setTimeout(() => setShowMenuToast(false), 3000)
   }, [navigateTo])
 
@@ -132,10 +133,89 @@ export default function KioskApp() {
     goToLanding()
   }, [goToLanding])
 
-  // ── Determine which screens to render ──
-  // We always render the current screen. For performance, we also keep
-  // the adjacent screens mounted for instant sliding.
-  const screenComponents: Record<ScreenIndex, React.ReactNode> = {
+  // ── Compute slide positions ──
+  // Active screen: starts offset, slides to center (0%)
+  // Previous screen: starts at center, slides away
+  const getScreenStyle = (
+    screenIdx: ScreenIndex
+  ): React.CSSProperties => {
+    const isActive = screenIdx === activeScreen
+    const isPrev = screenIdx === prevScreen
+
+    if (!isActive && !isPrev) {
+      // Off-screen, hidden
+      return {
+        position: "absolute",
+        inset: 0,
+        transform: "translateX(100%)",
+        visibility: "hidden",
+        pointerEvents: "none",
+      }
+    }
+
+    if (isActive && !animating) {
+      // Settled in place
+      return {
+        position: "absolute",
+        inset: 0,
+        transform: "translateX(0%)",
+        visibility: "visible",
+        pointerEvents: "auto",
+      }
+    }
+
+    if (isActive && animating) {
+      // Sliding into view
+      const from = slideDir === "left" ? "100%" : "-100%"
+      return {
+        position: "absolute",
+        inset: 0,
+        transform: "translateX(0%)",
+        visibility: "visible",
+        pointerEvents: "none",
+        transition: "transform 300ms ease-out",
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        "--slide-from": from,
+      } as any
+    }
+
+    if (isPrev && animating) {
+      // Sliding out of view
+      const to = slideDir === "left" ? "-100%" : "100%"
+      return {
+        position: "absolute",
+        inset: 0,
+        transform: `translateX(${to})`,
+        visibility: "visible",
+        pointerEvents: "none",
+        transition: "transform 300ms ease-out",
+      }
+    }
+
+    return {
+      position: "absolute",
+      inset: 0,
+      visibility: "hidden",
+      pointerEvents: "none",
+    }
+  }
+
+  // We need a ref-based approach for the "slide in" animation:
+  // On first render the active screen is at the offset, then we
+  // animate it to 0. We use a key trick to trigger re-render.
+  const [slideKey, setSlideKey] = useState(0)
+
+  // When activeScreen changes while animating, kick a re-render
+  // to trigger the CSS transition from offset → 0
+  useEffect(() => {
+    if (animating) {
+      // Force the incoming screen to start at offset
+      setSlideKey((k) => k + 1)
+    }
+  }, [activeScreen, animating])
+
+  // Build screen elements
+  const screens: Record<ScreenIndex, React.ReactNode> = {
     [SCREEN.LANDING]: (
       <LandingScreen onSelectOrderType={handleOrderType} />
     ),
@@ -185,25 +265,91 @@ export default function KioskApp() {
   }
 
   return (
-    <div className="relative flex flex-1 overflow-hidden">
-      {/* Render all screens in a horizontal track */}
-      <div
-        className="flex h-full transition-transform duration-300 ease-out"
-        style={{
-          width: `${Object.keys(SCREEN).length * 100}%`,
-          transform: `translateX(-${activeScreen * (100 / Object.keys(SCREEN).length)}%)`,
-        }}
-      >
-        {Object.values(SCREEN).map((screenIdx) => (
-          <div
-            key={screenIdx}
-            className="flex h-full shrink-0 flex-col"
-            style={{ width: `${100 / Object.keys(SCREEN).length}%` }}
+    <div className="relative flex-1 overflow-hidden">
+      {Object.values(SCREEN).map((idx) => {
+        const isActive = idx === activeScreen
+        const isPrev = idx === prevScreen
+        if (!isActive && !isPrev) {
+          // Keep mounted but invisible for instant access
+          return (
+            <div
+              key={idx}
+              className="absolute inset-0 flex flex-col overflow-hidden"
+              style={{ visibility: "hidden", pointerEvents: "none" }}
+            >
+              {screens[idx]}
+            </div>
+          )
+        }
+
+        if (isPrev && animating) {
+          // Sliding out
+          const to = slideDir === "left" ? "-100%" : "100%"
+          return (
+            <div
+              key={idx}
+              className="absolute inset-0 flex flex-col overflow-hidden"
+              style={{
+                transform: `translateX(${to})`,
+                transition: "transform 300ms ease-out",
+                pointerEvents: "none",
+              }}
+            >
+              {screens[idx]}
+            </div>
+          )
+        }
+
+        // Active screen
+        return (
+          <SlideIn
+            key={`${idx}-${slideKey}`}
+            from={animating ? (slideDir === "left" ? "100%" : "-100%") : "0%"}
+            active
           >
-            {screenComponents[screenIdx]}
-          </div>
-        ))}
-      </div>
+            {screens[idx]}
+          </SlideIn>
+        )
+      })}
+    </div>
+  )
+}
+
+/**
+ * A wrapper that slides its children from `from` → 0% on mount.
+ * Uses requestAnimationFrame to ensure the initial offset is painted
+ * before transitioning to 0%.
+ */
+function SlideIn({
+  from,
+  active,
+  children,
+}: {
+  from: string
+  active: boolean
+  children: React.ReactNode
+}) {
+  const [offset, setOffset] = useState(from)
+
+  useEffect(() => {
+    if (from === "0%") return
+    // After the first paint with the offset, transition to 0
+    const raf = requestAnimationFrame(() => {
+      setOffset("0%")
+    })
+    return () => cancelAnimationFrame(raf)
+  }, [from])
+
+  return (
+    <div
+      className="absolute inset-0 flex flex-col overflow-hidden"
+      style={{
+        transform: `translateX(${offset})`,
+        transition: offset === from && from !== "0%" ? "none" : "transform 300ms ease-out",
+        pointerEvents: active ? "auto" : "none",
+      }}
+    >
+      {children}
     </div>
   )
 }
