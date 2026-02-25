@@ -164,7 +164,7 @@ function SlideContent({
                 <div className="h-1 w-full overflow-hidden rounded-full bg-border">
                   <div
                     className="h-full rounded-full bg-primary transition-all duration-1000 ease-linear"
-                    style={{ width: `${(autoReturnSeconds / 5) * 100}%` }}
+                    style={{ width: `${(autoReturnSeconds / 10) * 100}%` }}
                   />
                 </div>
                 <button
@@ -457,7 +457,7 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
   // Start timer when landing on an empty category
   useEffect(() => {
     if (isCurrentCategoryEmpty && state.orderType) {
-      setAutoReturnTimer(5)
+      setAutoReturnTimer(10)
     } else {
       setAutoReturnTimer(null)
     }
