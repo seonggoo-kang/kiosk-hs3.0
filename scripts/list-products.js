@@ -1,7 +1,11 @@
-const { readdirSync, statSync } = require('fs')
-const { join } = require('path')
+import { readdirSync, statSync } from 'fs'
+import { join } from 'path'
 
-const base = '/vercel/share/v0-project/public/products'
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+const base = join(__dirname, '..', 'public', 'products')
 
 function walk(dir, prefix) {
   prefix = prefix || ''
