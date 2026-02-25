@@ -314,17 +314,36 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
   const isParty = activeCategory === "party"
   const isPackable = activeCategory === "packable-icecream"
 
+  // Filter out subcategories that have zero matching products
+  const visibleSubcats = useMemo(() => {
+    const filterMap: Record<string, Array<{ id: string; name: string }>> = {
+      "icecream-cake": cakeSubcategories,
+      beverage: beverageSubcategories,
+      dessert: dessertSubcategories,
+      prepack: prepackSubcategories,
+      party: partySubcategories,
+      "packable-icecream": packableSubcategories,
+    }
+    const subcats = filterMap[activeCategory]
+    if (!subcats) return null
+    const products = getProductsByCategory(activeCategory)
+    return subcats.filter((sc) => {
+      if (sc.id === "all") return true
+      return products.some((p) => p.subcategory === sc.id)
+    })
+  }, [activeCategory])
+
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
       <KioskHeader title="메뉴 선택" onHome={onBack} />
       <CategoryTabs categories={categories} activeId={activeCategory} onSelect={handleCategoryChange} />
 
-      {isCake && <SubcategoryFilter items={cakeSubcategories} activeId={cakeFilter} onSelect={(id) => { setCakeFilter(id); jumpToFirstPageOfCategory() }} />}
-      {isBeverage && <SubcategoryFilter items={beverageSubcategories} activeId={beverageFilter} onSelect={(id) => { setBeverageFilter(id); jumpToFirstPageOfCategory() }} />}
-      {isDessert && <SubcategoryFilter items={dessertSubcategories} activeId={dessertFilter} onSelect={(id) => { setDessertFilter(id); jumpToFirstPageOfCategory() }} />}
-      {isPrepack && <SubcategoryFilter items={prepackSubcategories} activeId={prepackFilter} onSelect={(id) => { setPrepackFilter(id); jumpToFirstPageOfCategory() }} />}
-      {isParty && <SubcategoryFilter items={partySubcategories} activeId={partyFilter} onSelect={(id) => { setPartyFilter(id); jumpToFirstPageOfCategory() }} />}
-      {isPackable && <SubcategoryFilter items={packableSubcategories} activeId={packableFilter} onSelect={(id) => { setPackableFilter(id); jumpToFirstPageOfCategory() }} />}
+      {isCake && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={cakeFilter} onSelect={(id) => { setCakeFilter(id); jumpToFirstPageOfCategory() }} />}
+      {isBeverage && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={beverageFilter} onSelect={(id) => { setBeverageFilter(id); jumpToFirstPageOfCategory() }} />}
+      {isDessert && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={dessertFilter} onSelect={(id) => { setDessertFilter(id); jumpToFirstPageOfCategory() }} />}
+      {isPrepack && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={prepackFilter} onSelect={(id) => { setPrepackFilter(id); jumpToFirstPageOfCategory() }} />}
+      {isParty && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={partyFilter} onSelect={(id) => { setPartyFilter(id); jumpToFirstPageOfCategory() }} />}
+      {isPackable && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={packableFilter} onSelect={(id) => { setPackableFilter(id); jumpToFirstPageOfCategory() }} />}
 
       {/* Carousel */}
       <div
