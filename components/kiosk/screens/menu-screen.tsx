@@ -26,6 +26,19 @@ import {
 
 const ITEMS_4COL = 16
 const ITEMS_3COL = 9
+const ITEMS_2COL = 4
+
+function perPageForCount(count: number) {
+  if (count <= 4) return ITEMS_2COL
+  if (count <= 9) return ITEMS_3COL
+  return ITEMS_4COL
+}
+
+function gridClassForCount(count: number) {
+  if (count <= 4) return "grid grid-cols-2 gap-4 px-2"
+  if (count <= 9) return "grid grid-cols-3 gap-3 px-1"
+  return "grid grid-cols-4 gap-2"
+}
 
 type Slide = {
   categoryId: string
@@ -54,13 +67,11 @@ function SlideContent({
     )
   }
 
-  const useCompact = slide.totalCategoryProducts <= 9
-
   return (
     <div className="h-full overflow-y-auto overflow-x-hidden">
       <div className="flex min-h-full flex-col p-3">
         {slide.products.length > 0 ? (
-          <div className={useCompact ? "grid grid-cols-3 gap-3 px-1" : "grid grid-cols-4 gap-2"}>
+          <div className={gridClassForCount(slide.totalCategoryProducts)}>
             {slide.products.map((product) => (
               <ProductCard
                 key={product.id}
@@ -117,7 +128,7 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
         slides.push({ categoryId: cat.id, pageIndex: 0, totalPages: 1, products: [], totalCategoryProducts: 0, isAiPick: true })
       } else {
         const products = getProductsByCategory(cat.id)
-        const perPage = products.length <= 9 ? ITEMS_3COL : ITEMS_4COL
+        const perPage = perPageForCount(products.length)
         const totalPages = Math.max(1, Math.ceil(products.length / perPage))
         for (let p = 0; p < totalPages; p++) {
           slides.push({ categoryId: cat.id, pageIndex: p, totalPages, products: products.slice(p * perPage, (p + 1) * perPage), totalCategoryProducts: products.length })
@@ -149,7 +160,7 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
     if (activeFilter === "all" || currentSlide.isAiPick) return null
     const allCatProducts = getProductsByCategory(activeCategory)
     const filtered = allCatProducts.filter((p) => p.subcategory === activeFilter)
-    const perPage = filtered.length <= 9 ? ITEMS_3COL : ITEMS_4COL
+    const perPage = perPageForCount(filtered.length)
     const pages = Math.max(1, Math.ceil(filtered.length / perPage))
     const slides: Slide[] = []
     for (let p = 0; p < pages; p++) {
