@@ -5,16 +5,6 @@ import { useState, useEffect, useRef, useCallback } from "react"
 import { ShoppingBag, Store, Accessibility, Sun, Search, Languages } from "lucide-react"
 import { useOrder } from "@/lib/order-context"
 
-// ── Banner images from public/banners/ ──────────────────────
-// Add your promotional banner image paths here.
-// Recommended size: 1080x1920 (9:16 portrait) for best results.
-// Any aspect ratio will work -- images use object-fit:cover.
-const BANNERS = [
-  "/banners/banner-01.png",
-  "/banners/banner-02.png",
-  "/banners/banner-03.png",
-]
-
 const SLIDE_INTERVAL = 5000 // 5 seconds per banner
 const IDLE_TIMEOUT = 60000 // 60 seconds to return to idle
 
@@ -23,8 +13,21 @@ export default function LandingPage() {
   const { dispatch } = useOrder()
 
   // ── State ──
+  const [banners, setBanners] = useState<string[]>([])
   const [isIdle, setIsIdle] = useState(true)
   const [currentIndex, setCurrentIndex] = useState(0)
+
+  // ── Fetch banners dynamically from public/banners/ ──
+  useEffect(() => {
+    fetch("/api/banners")
+      .then((r) => r.json())
+      .then((imgs: string[]) => {
+        if (imgs.length > 0) setBanners(imgs)
+      })
+      .catch(() => {
+        // silently fail -- no banners to show
+      })
+  }, [])
   const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const slideTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
@@ -35,14 +38,14 @@ export default function LandingPage() {
 
   // ── Auto-slide: always runs, loops infinitely ──
   useEffect(() => {
-    if (BANNERS.length <= 1) return
+    if (banners.length <= 1) return
     slideTimerRef.current = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % BANNERS.length)
+      setCurrentIndex((prev) => (prev + 1) % banners.length)
     }, SLIDE_INTERVAL)
     return () => {
       if (slideTimerRef.current) clearInterval(slideTimerRef.current)
     }
-  }, [])
+  }, [banners.length])
 
   // ── Wake up: dismiss idle on any interaction ──
   const wake = useCallback(() => {
@@ -91,7 +94,7 @@ export default function LandingPage() {
     setIsDragging(false)
     const threshold = 60
 
-    if (touchDelta.current < -threshold && currentIndex < BANNERS.length - 1) {
+    if (touchDelta.current < -threshold && currentIndex < banners.length - 1) {
       setCurrentIndex((prev) => prev + 1)
     } else if (touchDelta.current > threshold && currentIndex > 0) {
       setCurrentIndex((prev) => prev - 1)
@@ -119,30 +122,40 @@ export default function LandingPage() {
         onPointerCancel={onBannerPointerUp}
       >
         {/* Slide strip */}
-        <div
-          className="flex h-full"
-          style={{
-            width: `${BANNERS.length * 100}%`,
-            transform: `translateX(calc(-${currentIndex * (100 / BANNERS.length)}% + ${isDragging && !isIdle ? dragX : 0}px))`,
-            transition: isDragging ? "none" : "transform 600ms ease-out",
-          }}
-        >
-          {BANNERS.map((src, i) => (
-            <div
-              key={src}
-              className="relative h-full shrink-0"
-              style={{ width: `${100 / BANNERS.length}%` }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={src}
-                alt={`Promotional banner ${i + 1}`}
-                className="h-full w-full object-cover object-top"
-                draggable={false}
-              />
-            </div>
-          ))}
-        </div>
+        {banners.length > 0 ? (
+          <div
+            className="flex h-full"
+            style={{
+              width: `${banners.length * 100}%`,
+              transform: `translateX(calc(-${currentIndex * (100 / banners.length)}% + ${isDragging && !isIdle ? dragX : 0}px))`,
+              transition: isDragging ? "none" : "transform 600ms ease-out",
+            }}
+          >
+            {banners.map((src, i) => (
+              <div
+                key={src}
+                className="relative h-full shrink-0"
+                style={{ width: `${100 / banners.length}%` }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={src}
+                  alt={`Promotional banner ${i + 1}`}
+                  className="h-full w-full object-cover object-top"
+                  draggable={false}
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="flex h-full w-full items-center justify-center bg-primary/5">
+            <img
+              src="/images/br-logo.png"
+              alt="Baskin Robbins"
+              className="h-20 w-auto opacity-40"
+            />
+          </div>
+        )}
 
         {/* Gradient overlay for idle mode prompt */}
         <div
@@ -151,13 +164,13 @@ export default function LandingPage() {
         />
 
         {/* Page indicator dots */}
-        {BANNERS.length > 1 && (
+        {banners.length > 1 && (
           <div
             className="absolute bottom-4 left-0 right-0 z-10 flex items-center justify-center gap-2 transition-all duration-500"
             style={{ bottom: isIdle ? "48px" : "10px" }}
             aria-hidden="true"
           >
-            {BANNERS.map((_, i) => (
+            {banners.map((_, i) => (
               <span
                 key={i}
                 className={`rounded-full transition-all duration-400 ${
