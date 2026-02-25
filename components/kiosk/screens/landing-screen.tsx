@@ -2,40 +2,99 @@
 
 import { useState, useEffect, useRef, useCallback } from "react"
 import { ShoppingBag, Store, Accessibility, Sun, Search, Languages } from "lucide-react"
+import type { BannerItem } from "@/app/api/banners/route"
 
-const SLIDE_INTERVAL = 5000
-const IDLE_TIMEOUT = 60000
+const SLIDE_INTERVAL = 5000 // images: 5 seconds
+const IDLE_TIMEOUT = 60000 // 60 seconds to return to idle
+const SHORT_VIDEO_THRESHOLD = 3000 // videos shorter than 3s loop once before advancing
 
 interface LandingScreenProps {
   onSelectOrderType: (type: "takeout" | "dine-in") => void
 }
 
 export function LandingScreen({ onSelectOrderType }: LandingScreenProps) {
-  const [banners, setBanners] = useState<string[]>([])
+  const [banners, setBanners] = useState<BannerItem[]>([])
   const [isIdle, setIsIdle] = useState(true)
   const [currentIndex, setCurrentIndex] = useState(0)
+
+  // Track which short videos have completed their first loop
+  const shortVideoLoopedRef = useRef(false)
+
+  // Refs for video elements so we can listen to ended events
+  const videoRefs = useRef<Map<number, HTMLVideoElement>>(new Map())
 
   useEffect(() => {
     fetch("/api/banners")
       .then((r) => r.json())
-      .then((imgs: string[]) => {
-        if (imgs.length > 0) setBanners(imgs)
+      .then((items: BannerItem[]) => {
+        if (items.length > 0) setBanners(items)
       })
       .catch(() => {})
   }, [])
 
-  const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const slideTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  // ── Duration-aware auto-advance ──
+  const slideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  const advanceSlide = useCallback(() => {
+    if (banners.length <= 1) return
+    setCurrentIndex((prev) => (prev + 1) % banners.length)
+    shortVideoLoopedRef.current = false
+  }, [banners.length])
+
+  const clearSlideTimer = useCallback(() => {
+    if (slideTimerRef.current) {
+      clearTimeout(slideTimerRef.current)
+      slideTimerRef.current = null
+    }
+  }, [])
+
+  // Schedule next advance based on current slide type
   useEffect(() => {
     if (banners.length <= 1) return
-    slideTimerRef.current = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % banners.length)
-    }, SLIDE_INTERVAL)
-    return () => {
-      if (slideTimerRef.current) clearInterval(slideTimerRef.current)
+
+    const current = banners[currentIndex]
+
+    if (current.type === "image") {
+      // Images use fixed timer
+      clearSlideTimer()
+      slideTimerRef.current = setTimeout(advanceSlide, SLIDE_INTERVAL)
     }
-  }, [banners.length])
+    // Videos use their `ended` event (handled in onVideoEnded)
+
+    return clearSlideTimer
+  }, [currentIndex, banners, advanceSlide, clearSlideTimer])
+
+  const onVideoEnded = useCallback(
+    (index: number) => {
+      if (index !== currentIndex) return
+
+      // Check if video is short -- if so, loop once before advancing
+      const video = videoRefs.current.get(index)
+      if (video && video.duration * 1000 < SHORT_VIDEO_THRESHOLD && !shortVideoLoopedRef.current) {
+        shortVideoLoopedRef.current = true
+        video.play()
+        return
+      }
+
+      advanceSlide()
+    },
+    [currentIndex, advanceSlide]
+  )
+
+  // Ensure the current video plays when we land on it
+  useEffect(() => {
+    const current = banners[currentIndex]
+    if (current?.type === "video") {
+      const video = videoRefs.current.get(currentIndex)
+      if (video) {
+        video.currentTime = 0
+        video.play().catch(() => {})
+      }
+    }
+  }, [currentIndex, banners])
+
+  // ── Idle / Wake ──
+  const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const wake = useCallback(() => {
     if (isIdle) setIsIdle(false)
@@ -53,25 +112,32 @@ export function LandingScreen({ onSelectOrderType }: LandingScreenProps) {
     }
   }, [wake])
 
+  // ── Swipe gestures ──
   const touchStartX = useRef(0)
   const touchDelta = useRef(0)
   const [dragX, setDragX] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
 
-  const onBannerPointerDown = useCallback((e: React.PointerEvent) => {
-    if (isIdle) return
-    touchStartX.current = e.clientX
-    touchDelta.current = 0
-    setIsDragging(true)
-    setDragX(0)
-  }, [isIdle])
+  const onBannerPointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      if (isIdle) return
+      touchStartX.current = e.clientX
+      touchDelta.current = 0
+      setIsDragging(true)
+      setDragX(0)
+    },
+    [isIdle]
+  )
 
-  const onBannerPointerMove = useCallback((e: React.PointerEvent) => {
-    if (!isDragging) return
-    const dx = e.clientX - touchStartX.current
-    touchDelta.current = dx
-    setDragX(dx)
-  }, [isDragging])
+  const onBannerPointerMove = useCallback(
+    (e: React.PointerEvent) => {
+      if (!isDragging) return
+      const dx = e.clientX - touchStartX.current
+      touchDelta.current = dx
+      setDragX(dx)
+    },
+    [isDragging]
+  )
 
   const onBannerPointerUp = useCallback(() => {
     if (!isDragging) return
@@ -79,8 +145,10 @@ export function LandingScreen({ onSelectOrderType }: LandingScreenProps) {
     const threshold = 60
     if (touchDelta.current < -threshold && currentIndex < banners.length - 1) {
       setCurrentIndex((prev) => prev + 1)
+      shortVideoLoopedRef.current = false
     } else if (touchDelta.current > threshold && currentIndex > 0) {
       setCurrentIndex((prev) => prev - 1)
+      shortVideoLoopedRef.current = false
     }
     setDragX(0)
     touchDelta.current = 0
@@ -106,15 +174,32 @@ export function LandingScreen({ onSelectOrderType }: LandingScreenProps) {
               transition: isDragging ? "none" : "transform 600ms ease-out",
             }}
           >
-            {banners.map((src, i) => (
-              <div key={src} className="relative h-full shrink-0" style={{ width: `${100 / banners.length}%` }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={src}
-                  alt={`Promotional banner ${i + 1}`}
-                  className="h-full w-full object-contain object-top"
-                  draggable={false}
-                />
+            {banners.map((item, i) => (
+              <div key={item.src} className="relative h-full shrink-0" style={{ width: `${100 / banners.length}%` }}>
+                {item.type === "video" ? (
+                  <video
+                    ref={(el) => {
+                      if (el) videoRefs.current.set(i, el)
+                      else videoRefs.current.delete(i)
+                    }}
+                    src={item.src}
+                    autoPlay={i === 0}
+                    muted
+                    playsInline
+                    preload="auto"
+                    onEnded={() => onVideoEnded(i)}
+                    className="h-full w-full object-contain object-top"
+                    draggable={false}
+                  />
+                ) : (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={item.src}
+                    alt={`Promotional banner ${i + 1}`}
+                    className="h-full w-full object-contain object-top"
+                    draggable={false}
+                  />
+                )}
               </div>
             ))}
           </div>
@@ -124,11 +209,13 @@ export function LandingScreen({ onSelectOrderType }: LandingScreenProps) {
           </div>
         )}
 
+        {/* Idle gradient overlay */}
         <div
           className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent transition-opacity duration-500"
           style={{ opacity: isIdle ? 1 : 0 }}
         />
 
+        {/* Dot indicators */}
         {banners.length > 1 && (
           <div
             className="absolute left-0 right-0 z-10 flex items-center justify-center gap-1.5 transition-all duration-500"
@@ -146,6 +233,7 @@ export function LandingScreen({ onSelectOrderType }: LandingScreenProps) {
           </div>
         )}
 
+        {/* Idle "touch to start" prompt */}
         <div
           className="absolute inset-x-0 bottom-5 flex justify-center transition-opacity duration-500"
           style={{ opacity: isIdle ? 1 : 0, pointerEvents: isIdle ? "auto" : "none" }}
