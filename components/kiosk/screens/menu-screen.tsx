@@ -224,8 +224,8 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
   const [packableFilter, setPackableFilter] = useState("all")
   const [workshopFilter, setWorkshopFilter] = useState("all")
 
-  // ── Grid zoom ──
-  const [zoomLevel, setZoomLevel] = useState<ZoomLevel>(null)
+  // ── Grid zoom (per-category) ──
+  const [zoomMap, setZoomMap] = useState<Record<string, ZoomLevel>>({})
   const [showZoomHint, setShowZoomHint] = useState(false)
   const [zoomIndicator, setZoomIndicator] = useState<number | null>(null)
   const zoomIndicatorTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -261,7 +261,8 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
         slides.push({ categoryId: cat.id, pageIndex: 0, totalPages: 1, products: [], totalCategoryProducts: 0, isAiPick: true })
       } else {
         const products = getProductsByCategory(cat.id, state.orderType)
-        const perPage = perPageForCount(products.length, zoomLevel)
+        const catZoom = zoomMap[cat.id] ?? null
+        const perPage = perPageForCount(products.length, catZoom)
         const totalPages = Math.max(1, Math.ceil(products.length / perPage))
         for (let p = 0; p < totalPages; p++) {
           slides.push({ categoryId: cat.id, pageIndex: p, totalPages, products: products.slice(p * perPage, (p + 1) * perPage), totalCategoryProducts: products.length })
@@ -269,7 +270,7 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
       }
     }
     return slides
-  }, [state.orderType, zoomLevel])
+  }, [state.orderType, zoomMap])
 
   const initialFlatIndex = useMemo(() => {
     const idx = flatSlides.findIndex((s) => s.categoryId === "ai-pick")
@@ -299,6 +300,7 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
 
   const currentSlide = flatSlides[correctedFlatIndex]
   const activeCategory = currentSlide.categoryId
+  const zoomLevel = zoomMap[activeCategory] ?? null
   const totalPagesForCategory = currentSlide.totalPages
 
   const activeFilter = useMemo(() => {
@@ -314,14 +316,15 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
     if (activeFilter === "all" || currentSlide.isAiPick) return null
     const allCatProducts = getProductsByCategory(activeCategory, state.orderType)
     const filtered = allCatProducts.filter((p) => p.subcategory === activeFilter)
-    const perPage = perPageForCount(filtered.length, zoomLevel)
+    const catZoom = zoomMap[activeCategory] ?? null
+    const perPage = perPageForCount(filtered.length, catZoom)
     const pages = Math.max(1, Math.ceil(filtered.length / perPage))
     const slides: Slide[] = []
     for (let p = 0; p < pages; p++) {
       slides.push({ categoryId: activeCategory, pageIndex: p, totalPages: pages, products: filtered.slice(p * perPage, (p + 1) * perPage), totalCategoryProducts: filtered.length })
     }
     return slides
-  }, [activeFilter, activeCategory, currentSlide.isAiPick, state.orderType])
+  }, [activeFilter, activeCategory, currentSlide.isAiPick, state.orderType, zoomMap])
 
   const [filteredPageIndex, setFilteredPageIndex] = useState(0)
   useEffect(() => { setFilteredPageIndex(0) }, [activeFilter])
@@ -513,11 +516,12 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
       if (Math.abs(delta) > 60) {
         pinchFired.current = true
         dismissZoomHint()
-        setZoomLevel((prev) => {
-          const cur = prev ?? 4
+        setZoomMap((prev) => {
+          const cat = activeCategory
+          const cur = prev[cat] ?? 4
           const next = delta > 0 ? Math.max(1, cur - 1) : Math.min(5, cur + 1)
           showZoomBadge(next)
-          return next as 1 | 2 | 3 | 4 | 5
+          return { ...prev, [cat]: next as 1 | 2 | 3 | 4 | 5 }
         })
       }
     }
@@ -530,23 +534,33 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
 
   const handleZoomIn = useCallback(() => {
     dismissZoomHint()
-    setZoomLevel((prev) => {
-      const cur = prev ?? 4
+    setZoomMap((prev) => {
+      const cur = prev[activeCategory] ?? 4
       const next = Math.max(1, cur - 1) as 1 | 2 | 3 | 4 | 5
       showZoomBadge(next)
-      return next
+      return { ...prev, [activeCategory]: next }
     })
-  }, [dismissZoomHint, showZoomBadge])
+  }, [dismissZoomHint, showZoomBadge, activeCategory])
 
   const handleZoomOut = useCallback(() => {
     dismissZoomHint()
-    setZoomLevel((prev) => {
-      const cur = prev ?? 4
+    setZoomMap((prev) => {
+      const cur = prev[activeCategory] ?? 4
       const next = Math.min(5, cur + 1) as 1 | 2 | 3 | 4 | 5
       showZoomBadge(next)
-      return next
+      return { ...prev, [activeCategory]: next }
     })
-  }, [dismissZoomHint, showZoomBadge])
+  }, [dismissZoomHint, showZoomBadge, activeCategory])
+
+  const handleApplyZoomToAll = useCallback(() => {
+    const current = zoomMap[activeCategory] ?? null
+    if (!current) return
+    setZoomMap(() => {
+      const m: Record<string, ZoomLevel> = {}
+      for (const cat of categories) m[cat.id] = current
+      return m
+    })
+  }, [zoomMap, activeCategory])
 
   // Cross-sell products for empty state recovery
   const crossSellProducts = useMemo(() => {
@@ -739,6 +753,14 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
             >
               <Minus className="h-4 w-4" strokeWidth={2.5} />
             </button>
+            {zoomLevel !== null && (
+              <button
+                onClick={handleApplyZoomToAll}
+                className="mt-1 mb-1 px-1 text-[7px] font-medium text-primary leading-tight text-center active:text-primary/70"
+              >
+                {"전체\n적용"}
+              </button>
+            )}
         </div>
 
         {/* Zoom level indicator (brief flash on change) */}
