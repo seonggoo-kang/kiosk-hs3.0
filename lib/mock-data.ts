@@ -167,7 +167,7 @@ const workshopProducts = generateProducts("workshop", [
   { name: "도곡 모찌\n바람과 함께 사라지다", desc: "Chef Made 모찌", size: "1개", weight: "60g", price: 3800, cal: "120~180 kcal", serving: "60g", image: "/products/스폐셜 디저트/도곡모찌바람과함께사라지다_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
   { name: "도곡 모찌\n엄마는 외계인", desc: "Chef Made 모찌", size: "1개", weight: "60g", price: 3800, cal: "120~180 kcal", serving: "60g", image: "/products/스폐셜 디저트/도곡모찌엄마는외계인_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
   { name: "도곡 모찌 선물세트", desc: "Chef Made 모찌 세트", size: "1세트", weight: "360g", price: 19800, cal: "720~1080 kcal", serving: "360g", image: "/products/스폐셜 디저트/도곡모찌선물세트_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
-  { name: "마카롱\n피스타치오 아몬드", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/스폐셜 디저트/도곡마카롱피스타치오아몬드_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
+  { name: "마카롱\n피스타치오 아몬드", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/스폐셜 디저트/도곡마카롱피스���치오아몬드_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
   { name: "마카롱\n베리베리 스트로베리", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/스폐셜 디저트/도곡마카롱베리베리스트로베리_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
   { name: "마카롱\n초콜릿 무스", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/스폐셜 디저트/도곡마카롱초콜릿무스_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
   { name: "마카롱\n체리 쥬빌레", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/스폐셜 디저트/도곡마카롱체리쥬빌레_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
@@ -335,14 +335,15 @@ const cakeProducts = generateProducts("icecream-cake", [
 
 // ─── 커피 (8) ── Actual BR coffee menu ────────────────────
 const coffeeProducts = generateProducts("coffee", [
-  { name: "위티 골든 브릴레\n아이스슈페너", desc: "아이스슈페너", size: "레귤러", weight: "350ml", price: 5500, cal: "180~260 kcal", serving: "350ml", image: "/products/einspanner.jpg", flavor: false, maxF: 0 },
-  { name: "카페 레이어드 라떼", desc: "레이어드 라떼", size: "레귤러", weight: "350ml", price: 5400, cal: "150~220 kcal", serving: "350ml", image: "/products/layered-latte.jpg", flavor: false, maxF: 0 },
-  { name: "아메리카노", desc: "아이스/핫", size: "레귤러", weight: "350ml", price: 4400, cal: "5~10 kcal", serving: "350ml", image: "/products/americano.jpg", flavor: false, maxF: 0, reqOpts: [TEMPERATURE] },
-  { name: "카페라떼", desc: "아이스/핫", size: "레귤러", weight: "350ml", price: 5000, cal: "120~180 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0, reqOpts: [TEMPERATURE] },
-  { name: "바닐라라떼", desc: "아이스/핫", size: "레귤러", weight: "350ml", price: 5000, cal: "180~250 kcal", serving: "350ml", image: "/products/cafe-latte.jpg", flavor: false, maxF: 0, reqOpts: [TEMPERATURE] },
-  { name: "연유라떼", desc: "아이스", size: "레귤러", weight: "350ml", price: 5000, cal: "210~300 kcal", serving: "350ml", image: "/products/condensed-latte.jpg", flavor: false, maxF: 0 },
-  { name: "엄마는 외계인\n카페모카", desc: "카페모카", size: "레귤러", weight: "350ml", price: 5000, cal: "220~300 kcal", serving: "350ml", image: "/products/cafe-mocha.jpg", flavor: false, maxF: 0 },
-  { name: "수카방 커피", desc: "수카방 커피", size: "레귤러", weight: "300ml", price: 3900, cal: "80~120 kcal", serving: "300ml", image: "/products/sukabang.jpg", flavor: false, maxF: 0 },
+  { name: "에쉬레 윈터 골든\n브륄레 아인슈페너", desc: "아인슈페너", size: "레귤러", weight: "350ml", price: 5500, cal: "180~260 kcal", serving: "350ml", image: "/products/커피/[HS]제품이미지-에쉬레-윈터-골든-브륄레-아인슈페너-204X160px_1.png", flavor: false, maxF: 0 },
+  { name: "카페 레이어드", desc: "레이어드 라떼", size: "레귤러", weight: "350ml", price: 5400, cal: "150~220 kcal", serving: "350ml", image: "/products/커피/(워크샵)카페레이어드카테고리_0.png", flavor: false, maxF: 0 },
+  { name: "아메리카노", desc: "아이스/핫", size: "레귤러", weight: "350ml", price: 4400, cal: "5~10 kcal", serving: "350ml", image: "/products/커피/아메리카노링크_0.png", flavor: false, maxF: 0, reqOpts: [TEMPERATURE] },
+  { name: "카페라떼", desc: "아이스/핫", size: "레귤러", weight: "350ml", price: 5000, cal: "120~180 kcal", serving: "350ml", image: "/products/커피/카페라떼_0.png", flavor: false, maxF: 0, reqOpts: [TEMPERATURE] },
+  { name: "바닐라빈 라떼", desc: "아이스/핫", size: "레귤러", weight: "350ml", price: 5000, cal: "180~250 kcal", serving: "350ml", image: "/products/커피/[HS]제품이미지-바닐라빈-라떼-147X115px_0.png", flavor: false, maxF: 0, reqOpts: [TEMPERATURE] },
+  { name: "연유라떼", desc: "아이스", size: "레귤러", weight: "350ml", price: 5000, cal: "210~300 kcal", serving: "350ml", image: "/products/커피/[HS]제품이미지-연유라떼-147X115px_0.png", flavor: false, maxF: 0 },
+  { name: "엄마는 외계인\n카페모카", desc: "카페모카", size: "레귤러", weight: "350ml", price: 5000, cal: "220~300 kcal", serving: "350ml", image: "/products/커피/엄마는외계인(카페모카)_1.png", flavor: false, maxF: 0 },
+  { name: "슈가밤 커피", desc: "슈가밤 커피", size: "레귤러", weight: "300ml", price: 3900, cal: "80~120 kcal", serving: "300ml", image: "/products/커피/슈가밤커피_1.png", flavor: false, maxF: 0 },
+  { name: "미샷추", desc: "미샷추", size: "레귤러", weight: "300ml", price: 3500, cal: "60~100 kcal", serving: "300ml", image: "/products/커피/미샷추_0.png", flavor: false, maxF: 0 },
 ])
 
 // ─── 음료 블라스트 (30) ──────────────────────────────────
@@ -356,48 +357,48 @@ export const beverageSubcategories = [
 
 const beverageProducts = generateProducts("beverage", [
   // ── 시그니처 / 쉐이크 / 블라스트 ──
-  { name: "레슬리 민트\n초콜릿칩 쉐이크", desc: "시그니처 쉐이크", size: "레귤러", weight: "400ml", price: 6200, cal: "320~400 kcal", serving: "400ml", image: "/products/shake-mint.jpg", flavor: false, maxF: 0, sub: "signature" },
-  { name: "레슬리 엄마는\n외계인 쉐이크", desc: "시그니처 쉐이크", size: "레귤러", weight: "400ml", price: 6200, cal: "310~390 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0, sub: "signature" },
-  { name: "엄마는 외계인\n블라스트", desc: "블라스트", size: "레귤러", weight: "400ml", price: 6200, cal: "300~380 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0, sub: "signature" },
-  { name: "우주 라이크\n봉봉 블라스트", desc: "블라스트", size: "레귤러", weight: "400ml", price: 5800, cal: "280~350 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0, sub: "signature" },
-  { name: "카푸치노 블라스트\n오리지널", desc: "카푸치노 블라스트", size: "레귤러", weight: "400ml", price: 5800, cal: "260~340 kcal", serving: "400ml", image: "/products/cappuccino-blast.jpg", flavor: false, maxF: 0, sub: "signature" },
-  { name: "카푸치노 블라스트\n모카", desc: "카푸치노 블라스트", size: "레귤러", weight: "400ml", price: 6100, cal: "290~370 kcal", serving: "400ml", image: "/products/cappuccino-blast.jpg", flavor: false, maxF: 0, sub: "signature" },
-  { name: "설향딸기 블라스트", desc: "블라스트", size: "레귤러", weight: "400ml", price: 5000, cal: "220~300 kcal", serving: "400ml", image: "/products/strawberry-blast.jpg", flavor: false, maxF: 0, sub: "signature" },
-  { name: "딸기 연유 블라스트", desc: "블라스트", size: "레귤러", weight: "400ml", price: 6800, cal: "280~360 kcal", serving: "400ml", image: "/products/strawberry-blast.jpg", flavor: false, maxF: 0, sub: "signature" },
+  { name: "레슬리 민초", desc: "시그니처 쉐이크", size: "레귤러", weight: "400ml", price: 6200, cal: "320~400 kcal", serving: "400ml", image: "/products/음료&블라스트/레슬리민초_0.png", flavor: false, maxF: 0, sub: "signature" },
+  { name: "레슬리 엄마는\n외계인", desc: "시그니처 쉐이크", size: "레귤러", weight: "400ml", price: 6200, cal: "310~390 kcal", serving: "400ml", image: "/products/음료&블라스트/레슬리엄마는외계인_0.png", flavor: false, maxF: 0, sub: "signature" },
+  { name: "레슬리 아봉", desc: "시그니처 쉐이크", size: "레귤러", weight: "400ml", price: 6200, cal: "300~380 kcal", serving: "400ml", image: "/products/음료&블라스트/레슬리아봉_0.png", flavor: false, maxF: 0, sub: "signature" },
+  { name: "레슬리 초콜릿 쉐이크", desc: "시그니처 쉐이크", size: "레귤러", weight: "400ml", price: 6200, cal: "340~420 kcal", serving: "400ml", image: "/products/음료&블라스트/레슬리초콜릿쉐이크_0.png", flavor: false, maxF: 0, sub: "signature" },
+  { name: "엄마는 외계인\n블라스트", desc: "블라스트", size: "레귤러", weight: "400ml", price: 6200, cal: "300~380 kcal", serving: "400ml", image: "/products/음료&블라스트/엄마는외계인블라스트_1.png", flavor: false, maxF: 0, sub: "signature" },
+  { name: "우주 라이크봉봉\n블라스트", desc: "블라스트", size: "레귤러", weight: "400ml", price: 5800, cal: "280~350 kcal", serving: "400ml", image: "/products/음료&블라스트/우주라이크봉봉블라스트_0.png", flavor: false, maxF: 0, sub: "signature" },
+  { name: "카푸치노 블라스트\n오리지널", desc: "카푸치노 블라스트", size: "레귤러", weight: "400ml", price: 5800, cal: "260~340 kcal", serving: "400ml", image: "/products/음료&블라스트/카푸치노-블라스트_오리지널_1.png", flavor: false, maxF: 0, sub: "signature" },
+  { name: "카푸치노 블라스트\n모카", desc: "카푸치노 블라스트", size: "레귤러", weight: "400ml", price: 6100, cal: "290~370 kcal", serving: "400ml", image: "/products/음료&블라스트/카푸치노-블라스트_모카_1.png", flavor: false, maxF: 0, sub: "signature" },
+  { name: "설향딸기 블렌디드", desc: "블렌디드", size: "레귤러", weight: "400ml", price: 5000, cal: "220~300 kcal", serving: "400ml", image: "/products/음료&블라스트/BR_제품이미지_설향딸기블렌디드_100X86px_1.png", flavor: false, maxF: 0, sub: "signature" },
+  { name: "딸기연유 블라스트", desc: "블라스트", size: "레귤러", weight: "400ml", price: 6800, cal: "280~360 kcal", serving: "400ml", image: "/products/음료&블라스트/딸기연유블라스트_0.png", flavor: false, maxF: 0, sub: "signature" },
 
   // ── Tea / Hot Beverage ──
-  { name: "자몽 히비스커스티", desc: "허브티", size: "레귤러", weight: "350ml", price: 3500, cal: "40~80 kcal", serving: "350ml", image: "/products/hibiscus-tea.jpg", flavor: false, maxF: 0, sub: "tea" },
-  { name: "레드향 캐모마일티", desc: "허브티", size: "레귤러", weight: "350ml", price: 3500, cal: "30~60 kcal", serving: "350ml", image: "/products/hibiscus-tea.jpg", flavor: false, maxF: 0, sub: "tea" },
-  { name: "얼그레이", desc: "차", size: "레귤러", weight: "350ml", price: 4900, cal: "5~10 kcal", serving: "350ml", image: "/products/hibiscus-tea.jpg", flavor: false, maxF: 0, sub: "tea" },
-  { name: "캐모마일", desc: "허브티", size: "레귤러", weight: "350ml", price: 4900, cal: "5~10 kcal", serving: "350ml", image: "/products/hibiscus-tea.jpg", flavor: false, maxF: 0, sub: "tea" },
-  { name: "위스키\n아이리쉬 커피", desc: "위스키 커피", size: "레귤러", weight: "250ml", price: 9500, cal: "200~300 kcal", serving: "250ml", image: "/products/irish-coffee.jpg", flavor: false, maxF: 0, sub: "tea", tag: "먹고가기 전용" },
-  { name: "한라봉\n커즈마인 티", desc: "프루트티", size: "레귤러", weight: "350ml", price: 6200, cal: "80~130 kcal", serving: "350ml", image: "/products/hibiscus-tea.jpg", flavor: false, maxF: 0, sub: "tea" },
-  { name: "피치 캐모마일\n아이스티", desc: "아이스티", size: "레귤러", weight: "400ml", price: 6200, cal: "60~100 kcal", serving: "400ml", image: "/products/hibiscus-tea.jpg", flavor: false, maxF: 0, sub: "tea" },
+  { name: "페어 엘더플라워", desc: "프루트티", size: "레귤러", weight: "350ml", price: 6200, cal: "80~130 kcal", serving: "350ml", image: "/products/음료&블라스트/(워크샵)페어엘더플라워_0.png", flavor: false, maxF: 0, sub: "tea" },
+  { name: "위스키\n아이리쉬 커피", desc: "위스키 커피", size: "레귤러", weight: "250ml", price: 9500, cal: "200~300 kcal", serving: "250ml", image: "/products/음료&블라스트/위스키아이리쉬커피_0.png", flavor: false, maxF: 0, sub: "tea", tag: "먹고가기 전용" },
+  { name: "피치 캐모마일\n아이스티", desc: "아이스티", size: "레귤러", weight: "400ml", price: 6200, cal: "60~100 kcal", serving: "400ml", image: "/products/음료&블라스트/피치캐모마일아이스티_0.png", flavor: false, maxF: 0, sub: "tea" },
+  { name: "오생수 라벨프리", desc: "생수", size: "500ml", weight: "500ml", price: 1500, cal: "0 kcal", serving: "500ml", image: "/products/음료&블라스트/오생수라벨프리_0.png", flavor: false, maxF: 0, sub: "tea" },
 
   // ── K-Drink / Specialty Drink ──
-  { name: "식혜 K-Drink", desc: "전통 음료", size: "레귤러", weight: "350ml", price: 6200, cal: "120~180 kcal", serving: "350ml", image: "/products/sikhye.jpg", flavor: false, maxF: 0, sub: "k-drink" },
-  { name: "수정과 K-Drink", desc: "전통 음료", size: "레귤러", weight: "350ml", price: 6200, cal: "100~160 kcal", serving: "350ml", image: "/products/sikhye.jpg", flavor: false, maxF: 0, sub: "k-drink" },
-  { name: "미숫가루 라떼", desc: "곡물 라떼", size: "레귤러", weight: "350ml", price: 3800, cal: "180~260 kcal", serving: "350ml", image: "/products/misugaru.jpg", flavor: false, maxF: 0, sub: "k-drink", tag: "NEW" },
-  { name: "우리 인절미\n곡물쉐이크", desc: "곡물 쉐이크", size: "레귤러", weight: "400ml", price: 6900, cal: "300~400 kcal", serving: "400ml", image: "/products/misugaru.jpg", flavor: false, maxF: 0, sub: "k-drink" },
-  { name: "두바이 스타일\n초코라떼", desc: "스페셜 라떼", size: "레귤러", weight: "350ml", price: 5800, cal: "250~340 kcal", serving: "350ml", image: "/products/dubai-choco.jpg", flavor: false, maxF: 0, sub: "k-drink" },
+  { name: "식혜", desc: "전통 음료", size: "레귤러", weight: "350ml", price: 6200, cal: "120~180 kcal", serving: "350ml", image: "/products/음료&블라스트/식혜kdrink_0.png", flavor: false, maxF: 0, sub: "k-drink" },
+  { name: "수정과", desc: "전통 음료", size: "레귤러", weight: "350ml", price: 6200, cal: "100~160 kcal", serving: "350ml", image: "/products/음료&블라스트/수정과kdrink_1.png", flavor: false, maxF: 0, sub: "k-drink" },
+  { name: "식혜 블라스트", desc: "전통 블라스트", size: "레귤러", weight: "400ml", price: 6800, cal: "200~300 kcal", serving: "400ml", image: "/products/음료&블라스트/식혜블라스트_0.png", flavor: false, maxF: 0, sub: "k-drink" },
+  { name: "미숫가루 라떼", desc: "곡물 라떼", size: "레귤러", weight: "350ml", price: 3800, cal: "180~260 kcal", serving: "350ml", image: "/products/음료&블라스트/미숫가루라떼_0.png", flavor: false, maxF: 0, sub: "k-drink" },
+  { name: "인절미 곡물 쉐이크", desc: "곡물 쉐이크", size: "레귤러", weight: "400ml", price: 6900, cal: "300~400 kcal", serving: "400ml", image: "/products/음료&블라스트/인절미곡물쉐이크_1.png", flavor: false, maxF: 0, sub: "k-drink" },
+  { name: "두바이 스타일\n초코라떼", desc: "스페셜 라떼", size: "레귤러", weight: "350ml", price: 5800, cal: "250~340 kcal", serving: "350ml", image: "/products/음료&블라스트/두바이스타일초코라떼(수정)_0.png", flavor: false, maxF: 0, sub: "k-drink" },
 
   // ── Classic Shake Line – NEW ──
-  { name: "딸기&바나나\n더블쉐이크", desc: "클래식 쉐이크", size: "레귤러", weight: "400ml", price: 6900, cal: "320~420 kcal", serving: "400ml", image: "/products/double-shake.jpg", flavor: false, maxF: 0, sub: "classic-shake", tag: "NEW" },
-  { name: "초콜릿&바나나\n더블쉐이크", desc: "클래식 쉐이크", size: "레귤러", weight: "400ml", price: 6900, cal: "340~440 kcal", serving: "400ml", image: "/products/double-shake.jpg", flavor: false, maxF: 0, sub: "classic-shake", tag: "NEW" },
-  { name: "클래식 초콜릿 쉐이크", desc: "클래식 쉐이크", size: "레귤러", weight: "400ml", price: 6100, cal: "300~390 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0, sub: "classic-shake", tag: "NEW" },
-  { name: "클래식 딸기 쉐이크", desc: "클래식 쉐이크", size: "레귤러", weight: "400ml", price: 6100, cal: "280~360 kcal", serving: "400ml", image: "/products/strawberry-blast.jpg", flavor: false, maxF: 0, sub: "classic-shake", tag: "NEW" },
-  { name: "클래식 바나나 쉐이크", desc: "클래식 쉐이크", size: "레귤러", weight: "400ml", price: 6100, cal: "290~370 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0, sub: "classic-shake", tag: "NEW" },
-  { name: "클래식 바닐라 쉐이크", desc: "클래식 쉐이크", size: "레귤러", weight: "400ml", price: 6100, cal: "270~350 kcal", serving: "400ml", image: "/products/smoothie.jpg", flavor: false, maxF: 0, sub: "classic-shake", tag: "NEW" },
+  { name: "딸기 더블쉐이크", desc: "클래식 쉐이크", size: "레귤러", weight: "400ml", price: 6900, cal: "280~360 kcal", serving: "400ml", image: "/products/음료&블라스트/HS_딸기더블쉐이크_0.png", flavor: false, maxF: 0, sub: "classic-shake", tag: "NEW" },
+  { name: "딸기바나나\n더블쉐이크", desc: "클래식 쉐이크", size: "레귤러", weight: "400ml", price: 6900, cal: "320~420 kcal", serving: "400ml", image: "/products/음료&블라스트/HS_딸기바나나더블쉐이크_0.png", flavor: false, maxF: 0, sub: "classic-shake", tag: "NEW" },
+  { name: "바나나 더블쉐이크", desc: "클래식 쉐이크", size: "레귤러", weight: "400ml", price: 6900, cal: "290~370 kcal", serving: "400ml", image: "/products/음료&블라스트/HS_바나나더블쉐이크_0.png", flavor: false, maxF: 0, sub: "classic-shake", tag: "NEW" },
+  { name: "바닐라 더블쉐이크", desc: "클래식 쉐이크", size: "레귤러", weight: "400ml", price: 6100, cal: "270~350 kcal", serving: "400ml", image: "/products/음료&블라스트/HS_바닐라더블쉐이크_0.png", flavor: false, maxF: 0, sub: "classic-shake", tag: "NEW" },
+  { name: "초콜릿 더블쉐이크", desc: "클래식 쉐이크", size: "레귤러", weight: "400ml", price: 6100, cal: "300~390 kcal", serving: "400ml", image: "/products/음료&블라스트/HS_초콜릿더블쉐이크_0.png", flavor: false, maxF: 0, sub: "classic-shake", tag: "NEW" },
+  { name: "초콜릿바나나\n더블쉐이크", desc: "클래식 쉐이크", size: "레귤러", weight: "400ml", price: 6900, cal: "340~440 kcal", serving: "400ml", image: "/products/음료&블라스트/HS_초콜릿바나나더블쉐이크_0.png", flavor: false, maxF: 0, sub: "classic-shake", tag: "NEW" },
 ])
 
 // ─── 젤라또 (6) ── Actual BR gelato menu ─────────────────
 const gelatoProducts = generateProducts("gelato", [
-  { name: "젤라또 컵", desc: "2가지맛", size: "컵 (2가지맛)", weight: "200g", price: 5500, cal: "220~340 kcal", serving: "200g", image: "/products/gelato-cup.jpg", flavor: false, maxF: 0 },
-  { name: "젤라또 팩", desc: "500ml / 3가지맛", size: "500ml (3가지맛)", weight: "500ml", price: 19500, cal: "600~900 kcal", serving: "500ml", image: "/products/gelato-pack.jpg", flavor: false, maxF: 0, tag: "가져가기 전용" },
-  { name: "믹스 베리 요거트", desc: "젤라또", size: "1컵", weight: "200g", price: 6300, cal: "180~280 kcal", serving: "200g", image: "/products/gelato-berry.jpg", flavor: false, maxF: 0 },
-  { name: "피스타치오\n허니요거트", desc: "젤라또", size: "1컵", weight: "200g", price: 6300, cal: "200~300 kcal", serving: "200g", image: "/products/gelato-pistachio.jpg", flavor: false, maxF: 0 },
-  { name: "카라멜 쿠키 바닐라", desc: "젤라또", size: "1컵", weight: "200g", price: 6300, cal: "220~320 kcal", serving: "200g", image: "/products/gelato-caramel.jpg", flavor: false, maxF: 0 },
-  { name: "초콜릿 바나나", desc: "젤라또", size: "1컵", weight: "200g", price: 6300, cal: "210~310 kcal", serving: "200g", image: "/products/gelato-choco-banana.jpg", flavor: false, maxF: 0 },
+  { name: "젤라또컵 (2가지맛)", desc: "2가지맛", size: "컵 (2가지맛)", weight: "200g", price: 5500, cal: "220~340 kcal", serving: "200g", image: "/products/젤라또/젤라또컵(2가지맛)_수정_0.png", flavor: false, maxF: 0 },
+  { name: "젤라또팩", desc: "500ml / 3가지맛", size: "500ml (3가지맛)", weight: "500ml", price: 19500, cal: "600~900 kcal", serving: "500ml", image: "/products/젤라또/(W)젤라또팩_0.png", flavor: false, maxF: 0, tag: "가져가기 전용" },
+  { name: "젤라스\n믹스베리 요거트", desc: "젤라또", size: "1컵", weight: "200g", price: 6300, cal: "180~280 kcal", serving: "200g", image: "/products/젤라또/젤라스BC믹스베리요거트_1.png", flavor: false, maxF: 0 },
+  { name: "젤라스 피스타치오\n허니요거트", desc: "젤라또", size: "1컵", weight: "200g", price: 6300, cal: "200~300 kcal", serving: "200g", image: "/products/젤라또/젤라스BC피스타치오허니요거트_1.png", flavor: false, maxF: 0 },
+  { name: "젤라스\n카라멜쿠키 바닐라", desc: "젤라또", size: "1컵", weight: "200g", price: 6300, cal: "220~320 kcal", serving: "200g", image: "/products/젤라또/젤라스BC카라멜쿠키바닐라_1.png", flavor: false, maxF: 0 },
+  { name: "젤라스 초콜릿바나나", desc: "젤라또", size: "1컵", weight: "200g", price: 6300, cal: "210~310 kcal", serving: "200g", image: "/products/젤라또/젤라스BC초콜릿바나나_1.png", flavor: false, maxF: 0 },
 ])
 
 // ─── 디저트 (31) ── Actual BR dessert menu ────────────────
@@ -407,52 +408,49 @@ export const dessertSubcategories = [
   { id: "cookie-bagel-sand", name: "쿠키/베이글/샌드" },
   { id: "set-menu", name: "세트 메뉴" },
   { id: "churros-cake", name: "츄러스/케이크" },
-  { id: "choco-hangwa", name: "초콜릿바/한과/선물" },
+  { id: "choco-hangwa", name: "초콜릿바/스틱바" },
   { id: "etc", name: "기타" },
 ]
 
 const dessertProducts = generateProducts("dessert", [
   // ── 바움쿠헨 / 모나카 / 모찌 라인 ──
-  { name: "아이스 바움쿠헨\n아몬드봉봉", desc: "바움쿠헨", size: "1개", weight: "120g", price: 4500, cal: "280~380 kcal", serving: "120g", image: "/products/baumkuchen.jpg", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
-  { name: "아이스 모나카 우유", desc: "모나카", size: "1개", weight: "100g", price: 3800, cal: "180~260 kcal", serving: "100g", image: "/products/monaka.jpg", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
-  { name: "아이스 모나카\n쫀떡 인절미", desc: "모나카", size: "1개", weight: "100g", price: 3800, cal: "200~280 kcal", serving: "100g", image: "/products/monaka.jpg", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
-  { name: "아이스모찌 소금우유", desc: "모찌", size: "1개", weight: "60g", price: 3300, cal: "100~150 kcal", serving: "60g", image: "/products/mochi.jpg", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
-  { name: "아이스 모찌\n스트로베리", desc: "모찌", size: "1개", weight: "60g", price: 3300, cal: "100~150 kcal", serving: "60g", image: "/products/mochi.jpg", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
-  { name: "아이스 모찌\n아몬드봉봉", desc: "모찌", size: "1개", weight: "60g", price: 3300, cal: "110~160 kcal", serving: "60g", image: "/products/mochi.jpg", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
-  { name: "아이스 모찌 그린티", desc: "모찌", size: "1개", weight: "60g", price: 3300, cal: "100~150 kcal", serving: "60g", image: "/products/mochi.jpg", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
-  { name: "아이스 모찌\n초코바닐라", desc: "모찌", size: "1개", weight: "60g", price: 3300, cal: "110~160 kcal", serving: "60g", image: "/products/mochi.jpg", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
-  { name: "아이스 모찌 크림치즈", desc: "모찌", size: "1개", weight: "60g", price: 3300, cal: "110~160 kcal", serving: "60g", image: "/products/mochi.jpg", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
+  { name: "바움쿠헨\n아몬드봉봉", desc: "바움쿠헨", size: "1개", weight: "120g", price: 4500, cal: "280~380 kcal", serving: "120g", image: "/products/디저트/바움쿠헨아몬드봉봉_0.png", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
+  { name: "아이스 모나카 우유", desc: "모나카", size: "1개", weight: "100g", price: 3800, cal: "180~260 kcal", serving: "100g", image: "/products/디저트/아이스모나카우유_0.png", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
+  { name: "모나카 쫀떡 인절미", desc: "모나카", size: "1개", weight: "100g", price: 3800, cal: "200~280 kcal", serving: "100g", image: "/products/디저트/모나카쫀떡인절미_0.png", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
+  { name: "아이스 모찌 소금우유", desc: "모찌", size: "1개", weight: "60g", price: 3300, cal: "100~150 kcal", serving: "60g", image: "/products/디저트/아이스모찌_소금우유_0.png", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
+  { name: "아이스 모찌\n스트로베리", desc: "모찌", size: "1개", weight: "60g", price: 3300, cal: "100~150 kcal", serving: "60g", image: "/products/디저트/BR_제품이미지_아이스-모찌-스트로베리_100x86px_0.png", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
+  { name: "아이스 모찌\n아몬드봉봉", desc: "모찌", size: "1개", weight: "60g", price: 3300, cal: "110~160 kcal", serving: "60g", image: "/products/디저트/아이스모찌(아몬드봉봉)_0.png", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
+  { name: "아이스 모찌 그린티", desc: "모찌", size: "1개", weight: "60g", price: 3300, cal: "100~150 kcal", serving: "60g", image: "/products/디저트/BR_제품이미지_아이스-모찌-그린티_100x86px_0.png", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
+  { name: "아이스 모찌\n초코바닐라", desc: "모찌", size: "1개", weight: "60g", price: 3300, cal: "110~160 kcal", serving: "60g", image: "/products/디저트/BR_제품이미지_아이스-모찌-초코바닐라_100x86px_0.png", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
+  { name: "아이스 모찌 크림치즈", desc: "모찌", size: "1개", weight: "60g", price: 3300, cal: "110~160 kcal", serving: "60g", image: "/products/디저트/BR_제품이미지_아이스-모찌-크림치즈_100x86px_0.png", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
+  { name: "아이스 마카롱\n크림 브륄레", desc: "마카롱", size: "1개", weight: "60g", price: 3800, cal: "130~180 kcal", serving: "60g", image: "/products/디저트/아이스마카롱크림브륄레_0.png", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
 
   // ── 쿠키 / 베이글 / 샌드 ──
-  { name: "솔티드 초콜릿칩\n쿠키", desc: "쿠키", size: "1개", weight: "90g", price: 3800, cal: "200~280 kcal", serving: "90g", image: "/products/choco-cookie.jpg", flavor: false, maxF: 0, sub: "cookie-bagel-sand" },
-  { name: "다크 초콜릿 칩\n쿠키", desc: "쿠키", size: "1개", weight: "90g", price: 3800, cal: "210~290 kcal", serving: "90g", image: "/products/choco-cookie.jpg", flavor: false, maxF: 0, sub: "cookie-bagel-sand" },
-  { name: "블루베리 베이글", desc: "베이글", size: "1개", weight: "110g", price: 3000, cal: "240~320 kcal", serving: "110g", image: "/products/bagel.jpg", flavor: false, maxF: 0, sub: "cookie-bagel-sand" },
-  { name: "플레인 베이글", desc: "베이글", size: "1개", weight: "100g", price: 3000, cal: "220~300 kcal", serving: "100g", image: "/products/bagel.jpg", flavor: false, maxF: 0, sub: "cookie-bagel-sand" },
-  { name: "버터 쿠키 샌드\n바닐라 카라멜", desc: "쿠키 샌드", size: "1개", weight: "100g", price: 4300, cal: "220~310 kcal", serving: "100g", image: "/products/cookie-sand.jpg", flavor: false, maxF: 0, sub: "cookie-bagel-sand" },
-  { name: "버터 쿠키 샌드\n스트로베리", desc: "쿠키 샌드", size: "1개", weight: "100g", price: 4300, cal: "210~300 kcal", serving: "100g", image: "/products/cookie-sand.jpg", flavor: false, maxF: 0, sub: "cookie-bagel-sand" },
+  { name: "솔티드 초콜릿칩\n쿠키", desc: "쿠키", size: "1개", weight: "90g", price: 3800, cal: "200~280 kcal", serving: "90g", image: "/products/디저트/솔티드초콜릿칩쿠키_0.png", flavor: false, maxF: 0, sub: "cookie-bagel-sand" },
+  { name: "다크 초콜릿칩 쿠키", desc: "쿠키", size: "1개", weight: "90g", price: 3800, cal: "210~290 kcal", serving: "90g", image: "/products/디저트/다크초콜릿칩쿠키(청담)_0.png", flavor: false, maxF: 0, sub: "cookie-bagel-sand" },
+  { name: "블루베리 베이글 세트", desc: "베이글 세트", size: "1세트", weight: "260g", price: 5900, cal: "370~500 kcal", serving: "260g", image: "/products/디저트/블루베리베이글SET_0.png", flavor: false, maxF: 0, sub: "cookie-bagel-sand" },
+  { name: "플레인 베이글 세트", desc: "베이글 세트", size: "1세트", weight: "250g", price: 5900, cal: "350~480 kcal", serving: "250g", image: "/products/디저트/플레인베이글SET_0.png", flavor: false, maxF: 0, sub: "cookie-bagel-sand" },
+  { name: "버터쿠키\n바닐라 카라멜", desc: "쿠키 샌드", size: "1개", weight: "100g", price: 4300, cal: "220~310 kcal", serving: "100g", image: "/products/디저트/버터쿠키바닐라카라멜_0.png", flavor: false, maxF: 0, sub: "cookie-bagel-sand" },
+  { name: "버터쿠키샌드\n스트로베리", desc: "쿠키 샌드", size: "1개", weight: "100g", price: 4300, cal: "210~300 kcal", serving: "100g", image: "/products/디저트/버터쿠키샌드스트로베리_0.png", flavor: false, maxF: 0, sub: "cookie-bagel-sand" },
+  { name: "아이스 쿠키샌드\n바닐라", desc: "쿠키 샌드", size: "1개", weight: "100g", price: 4300, cal: "220~310 kcal", serving: "100g", image: "/products/디저트/아이스쿠키샌드바닐라_0.png", flavor: false, maxF: 0, sub: "cookie-bagel-sand" },
 
   // ── 세트 메뉴 – 20% 할인 ──
-  { name: "스윗 시나몬\n츄러스 SET", desc: "세트 메뉴", size: "1세트", weight: "250g", price: 7100, cal: "380~520 kcal", serving: "250g", image: "/products/churros.jpg", flavor: false, maxF: 0, sub: "set-menu", tag: "20% 할인" },
-  { name: "젤라또 하트\n츄러스 SET", desc: "세트 메뉴", size: "1세트", weight: "300g", price: 9500, cal: "480~650 kcal", serving: "300g", image: "/products/churros.jpg", flavor: false, maxF: 0, sub: "set-menu", tag: "20% 할인" },
-  { name: "플레인 베이글 SET", desc: "세트 메뉴", size: "1세트", weight: "250g", price: 5900, cal: "350~480 kcal", serving: "250g", image: "/products/bagel.jpg", flavor: false, maxF: 0, sub: "set-menu", tag: "20% 할인" },
-  { name: "블루베리 베이글 SET", desc: "세트 메뉴", size: "1세트", weight: "260g", price: 5900, cal: "370~500 kcal", serving: "260g", image: "/products/bagel.jpg", flavor: false, maxF: 0, sub: "set-menu", tag: "20% 할인" },
+  { name: "스윗 시나몬\n츄러스 세트", desc: "세트 메뉴", size: "1세트", weight: "250g", price: 7100, cal: "380~520 kcal", serving: "250g", image: "/products/디저트/스윗시나몬츄러스세트_0.png", flavor: false, maxF: 0, sub: "set-menu", tag: "20% 할인" },
+  { name: "젤라또 츄러스 세트", desc: "세트 메뉴", size: "1세트", weight: "300g", price: 9500, cal: "480~650 kcal", serving: "300g", image: "/products/디저트/젤라또츄러스세트_0.png", flavor: false, maxF: 0, sub: "set-menu", tag: "20% 할인" },
 
   // ── 츄러스 / 케이크 단품 ──
-  { name: "스윗 시나몬 츄러스", desc: "츄러스", size: "1개", weight: "100g", price: 4500, cal: "250~350 kcal", serving: "100g", image: "/products/churros.jpg", flavor: false, maxF: 0, sub: "churros-cake" },
-  { name: "젤라또 하트 츄러스", desc: "츄러스", size: "1개", weight: "150g", price: 7500, cal: "380~500 kcal", serving: "150g", image: "/products/churros.jpg", flavor: false, maxF: 0, sub: "churros-cake" },
-  { name: "바스크 치즈 케이크", desc: "치즈케이크", size: "1개", weight: "150g", price: 7500, cal: "350~480 kcal", serving: "150g", image: "/products/basque-cheese.jpg", flavor: false, maxF: 0, sub: "churros-cake" },
+  { name: "스윗 시나몬 츄러스", desc: "츄러스", size: "1개", weight: "100g", price: 4500, cal: "250~350 kcal", serving: "100g", image: "/products/디저트/스윗시나몬츄러스_0.png", flavor: false, maxF: 0, sub: "churros-cake" },
+  { name: "젤라또 하트 츄러스", desc: "츄러스", size: "1개", weight: "150g", price: 7500, cal: "380~500 kcal", serving: "150g", image: "/products/디저트/젤라또하트츄러스_0.png", flavor: false, maxF: 0, sub: "churros-cake" },
+  { name: "바스크 치즈케이크", desc: "치즈케이크", size: "1개", weight: "150g", price: 7500, cal: "350~480 kcal", serving: "150g", image: "/products/디저트/BR_바스크치즈케이크-204X160px_0.png", flavor: false, maxF: 0, sub: "churros-cake" },
 
-  // ── 초콜릿 바 / 한과 / 선물세트 ──
-  { name: "스윗 초콜릿 바\n(2개입)", desc: "초콜릿 바", size: "2개입", weight: "120g", price: 5800, cal: "280~380 kcal", serving: "120g", image: "/products/choco-bar.jpg", flavor: false, maxF: 0, sub: "choco-hangwa" },
-  { name: "스윗 초콜릿바\n세트 (4개입)", desc: "초콜릿 바 세트", size: "4개입", weight: "240g", price: 11600, cal: "560~760 kcal", serving: "240g", image: "/products/choco-bar.jpg", flavor: false, maxF: 0, sub: "choco-hangwa", tag: "NEW" },
-  { name: "찹쌀 한과 선물\n세트 (4개입)", desc: "한과 세트", size: "4개입", weight: "320g", price: 27200, cal: "600~800 kcal", serving: "320g", image: "/products/hangwa.jpg", flavor: false, maxF: 0, sub: "choco-hangwa", tag: "NEW" },
-  { name: "아이스 찹쌀 한과\n조청", desc: "한과", size: "1개", weight: "80g", price: 6800, cal: "150~220 kcal", serving: "80g", image: "/products/hangwa.jpg", flavor: false, maxF: 0, sub: "choco-hangwa", tag: "NEW" },
-  { name: "아이스 찹쌀 한과\n고구마", desc: "한과", size: "1개", weight: "80g", price: 6800, cal: "150~220 kcal", serving: "80g", image: "/products/hangwa.jpg", flavor: false, maxF: 0, sub: "choco-hangwa", tag: "NEW" },
-  { name: "아이스 찹쌀 한과\n흑임자", desc: "한과", size: "1개", weight: "80g", price: 6800, cal: "150~220 kcal", serving: "80g", image: "/products/hangwa.jpg", flavor: false, maxF: 0, sub: "choco-hangwa", tag: "NEW" },
-  { name: "아이스 찹쌀 한과\n쌀", desc: "한과", size: "1개", weight: "80g", price: 6800, cal: "140~210 kcal", serving: "80g", image: "/products/hangwa.jpg", flavor: false, maxF: 0, sub: "choco-hangwa", tag: "NEW" },
+  // ── 초콜릿 바 / 스틱바 / 선물세트 ──
+  { name: "스윗 초콜릿바", desc: "초콜릿 바", size: "1개", weight: "120g", price: 5800, cal: "280~380 kcal", serving: "120g", image: "/products/디저트/스윗초콜릿바_0.png", flavor: false, maxF: 0, sub: "choco-hangwa" },
+  { name: "스윗 초콜릿바\n세트 (4개입)", desc: "초콜릿 바 세트", size: "4개입", weight: "240g", price: 11600, cal: "560~760 kcal", serving: "240g", image: "/products/디저트/스윗초콜릿바세트(4개입)_0.png", flavor: false, maxF: 0, sub: "choco-hangwa" },
+  { name: "맥심 스틱바\n슈프림 골드", desc: "스틱바", size: "1개", weight: "100g", price: 4500, cal: "250~350 kcal", serving: "100g", image: "/products/디저트/맥심스틱바슈프림골드_0.png", flavor: false, maxF: 0, sub: "choco-hangwa" },
+  { name: "미니 아이스 스틱바\n바닐라", desc: "스틱바", size: "1개", weight: "60g", price: 2800, cal: "120~180 kcal", serving: "60g", image: "/products/디저트/미니아이스스틱바(바닐라)_0.png", flavor: false, maxF: 0, sub: "choco-hangwa" },
 
   // ── 기타 디저트 ──
-  { name: "베리 크럼블 스푼업", desc: "스푼업", size: "1개", weight: "200g", price: 6300, cal: "280~380 kcal", serving: "200g", image: "/products/berry-crumble.jpg", flavor: false, maxF: 0, sub: "etc", tag: "NEW" },
+  { name: "베리 크럼블 스푼업", desc: "스푼업", size: "1개", weight: "200g", price: 6300, cal: "280~380 kcal", serving: "200g", image: "/products/디저트/베리크럼블스푼업_0.png", flavor: false, maxF: 0, sub: "etc", tag: "NEW" },
 ])
 
 // ─── 프리팩 (23) ── Actual BR prepack menu ────────────────
@@ -465,124 +463,93 @@ export const prepackSubcategories = [
 
 const prepackProducts = generateProducts("prepack", [
   // ── 레디팩 (대용량 컵형) – 10,800원 고정 ──
-  { name: "레디팩 아몬드 봉봉", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "600~900 kcal", serving: "660ml", image: "/products/readypack.jpg", flavor: false, maxF: 0, sub: "readypack" },
-  { name: "레디팩 오레오\n쿠키앤크림", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "650~950 kcal", serving: "660ml", image: "/products/readypack.jpg", flavor: false, maxF: 0, sub: "readypack" },
-  { name: "레디팩 베리베리\n스트로베리", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "550~850 kcal", serving: "660ml", image: "/products/readypack.jpg", flavor: false, maxF: 0, sub: "readypack" },
-  { name: "레디팩 초코나무숲", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "650~950 kcal", serving: "660ml", image: "/products/readypack.jpg", flavor: false, maxF: 0, sub: "readypack" },
-  { name: "레디팩 엄마는 외계인", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "600~900 kcal", serving: "660ml", image: "/products/readypack.jpg", flavor: false, maxF: 0, sub: "readypack" },
-  { name: "레디팩 31 요거트", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "500~800 kcal", serving: "660ml", image: "/products/readypack.jpg", flavor: false, maxF: 0, sub: "readypack" },
-  { name: "레디팩 체리쥬빌레", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "550~850 kcal", serving: "660ml", image: "/products/readypack.jpg", flavor: false, maxF: 0, sub: "readypack" },
-  { name: "레디팩 민트\n초콜릿 칩", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "600~900 kcal", serving: "660ml", image: "/products/readypack.jpg", flavor: false, maxF: 0, sub: "readypack" },
-  { name: "레디팩 소금우유", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "500~800 kcal", serving: "660ml", image: "/products/readypack.jpg", flavor: false, maxF: 0, sub: "readypack" },
-  { name: "레디팩 레인보우\n샤베트", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "450~700 kcal", serving: "660ml", image: "/products/readypack.jpg", flavor: false, maxF: 0, sub: "readypack" },
+  { name: "레디팩 아몬드봉봉", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "600~900 kcal", serving: "660ml", image: "/products/레디팩 블록팩/N89940_레디팩_아몬드봉봉봉_0.png", flavor: false, maxF: 0, sub: "readypack" },
+  { name: "오레오 쿠키앤크림", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "650~950 kcal", serving: "660ml", image: "/products/레디팩 블록팩/오레오_쿠키앤크림_0.png", flavor: false, maxF: 0, sub: "readypack" },
+  { name: "베리베리 스트로베리\n레디팩", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "550~850 kcal", serving: "660ml", image: "/products/레디팩 블록팩/베리베리-스트로베리-레디팩_0.png", flavor: false, maxF: 0, sub: "readypack" },
+  { name: "초코나무숲 레디팩", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "650~950 kcal", serving: "660ml", image: "/products/레디팩 블록팩/초코나무숲레디팩_0.png", flavor: false, maxF: 0, sub: "readypack" },
+  { name: "엄마는 외계인\n레디팩", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "600~900 kcal", serving: "660ml", image: "/products/레디팩 블록팩/엄마는외계인레디팩_0.png", flavor: false, maxF: 0, sub: "readypack" },
+  { name: "레디팩 요거트", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "500~800 kcal", serving: "660ml", image: "/products/레디팩 블록팩/레디팩31요거트_0.png", flavor: false, maxF: 0, sub: "readypack" },
+  { name: "체리 쥬빌레 레디팩", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "550~850 kcal", serving: "660ml", image: "/products/레디팩 블록팩/체리-쥬빌레-레디팩_0.png", flavor: false, maxF: 0, sub: "readypack" },
+  { name: "민트 초콜릿칩\n레디팩", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "600~900 kcal", serving: "660ml", image: "/products/레디팩 블록팩/민트-초콜릿-칩-레디팩_0.png", flavor: false, maxF: 0, sub: "readypack" },
+  { name: "레디팩 소금우유", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "500~800 kcal", serving: "660ml", image: "/products/레디팩 블록팩/레디팩_소금우유_0.png", flavor: false, maxF: 0, sub: "readypack" },
+  { name: "레인보우 샤베트\n레디팩", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "450~700 kcal", serving: "660ml", image: "/products/레디팩 블록팩/레인보우샤베트레디팩_0.png", flavor: false, maxF: 0, sub: "readypack" },
 
   // ── 블록팩 (소용량 컵형) – 4,000원 고정 ──
-  { name: "블록팩 아몬드봉봉", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
-  { name: "블록팩 뉴욕치즈케이크", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "200~300 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
-  { name: "블록팩 민트초코봉봉", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "190~290 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
-  { name: "블록팩 슈팅스타", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "170~260 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
-  { name: "블록팩 체리쥬빌레", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "170~260 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
-  { name: "블록팩 이상한 나라의\n솜사탕", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
-  { name: "블록팩 쿠키앤크림", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "200~300 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
-  { name: "블록팩 바람과 함께\n사라지다", desc: "블���팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
-  { name: "블록팩 엄마는 외계인", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/blockpack.jpg", flavor: false, maxF: 0, sub: "blockpack" },
+  { name: "블록팩 레인보우\n샤베트", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "150~250 kcal", serving: "200ml", image: "/products/레디팩 블록팩/블록팩레인보우샤베트_0.png", flavor: false, maxF: 0, sub: "blockpack" },
+  { name: "블록팩 베리베리\n스트로베리", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "170~260 kcal", serving: "200ml", image: "/products/레디팩 블록팩/블록팩베리베리스트로베리_0.png", flavor: false, maxF: 0, sub: "blockpack" },
+  { name: "블록팩 이상한 나라의\n솜사탕", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/레디팩 블록팩/NEW블록팩(이상한나라의솜사탕)_0.png", flavor: false, maxF: 0, sub: "blockpack" },
+  { name: "블록팩 바람과 함께\n사라지다", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/레디팩 블록팩/NEW블록팩(바람과함께사라지다)_0.png", flavor: false, maxF: 0, sub: "blockpack" },
 
   // ── (Lessly) 블록팩 – NEW 라인 ──
-  { name: "(Lessly) 블록팩\n초코나무숲", desc: "Lessly 블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "200~300 kcal", serving: "200ml", image: "/products/lessly-blockpack.jpg", flavor: false, maxF: 0, sub: "lessly-blockpack", tag: "NEW" },
-  { name: "(Lessly) 블록팩\n민트 초콜릿 칩", desc: "Lessly 블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "190~290 kcal", serving: "200ml", image: "/products/lessly-blockpack.jpg", flavor: false, maxF: 0, sub: "lessly-blockpack", tag: "NEW" },
-  { name: "(Lessly) 블록팩\n아몬드봉봉", desc: "Lessly 블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/lessly-blockpack.jpg", flavor: false, maxF: 0, sub: "lessly-blockpack", tag: "NEW" },
-  { name: "(Lessly) 블록팩\n엄마는 외계인", desc: "Lessly 블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/lessly-blockpack.jpg", flavor: false, maxF: 0, sub: "lessly-blockpack", tag: "NEW" },
+  { name: "블록팩 레슬리\n초코나무숲", desc: "Lessly 블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "200~300 kcal", serving: "200ml", image: "/products/레디팩 블록팩/블록팩_레슬리초코나무숲_0.png", flavor: false, maxF: 0, sub: "lessly-blockpack", tag: "NEW" },
+  { name: "블록팩 레슬리\n민트초콜릿칩", desc: "Lessly 블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "190~290 kcal", serving: "200ml", image: "/products/레디팩 블록팩/블록팩_레슬리민트초콜릿칩_0.png", flavor: false, maxF: 0, sub: "lessly-blockpack", tag: "NEW" },
+  { name: "블록팩 레슬리\n아몬드봉봉", desc: "Lessly 블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/레디팩 블록팩/블록팩_레슬리아몬드봉봉_0.png", flavor: false, maxF: 0, sub: "lessly-blockpack", tag: "NEW" },
+  { name: "블록팩 레슬리\n엄마는 외계인", desc: "Lessly 블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/레디팩 블록팩/블록팩_레슬리엄마는외계인_0.png", flavor: false, maxF: 0, sub: "lessly-blockpack", tag: "NEW" },
 ])
 
 // ─── 상품 (51) ── Actual BR merchandise ───────────────────
 export const partySubcategories = [
   { id: "all", name: "전체" },
-  { id: "tray", name: "트레이" },
-  { id: "stationery", name: "클립펜/카드/숫자초" },
-  { id: "tumbler-acc", name: "텀블러/모자/우산" },
+  { id: "stationery", name: "숫자초" },
+  { id: "tumbler-acc", name: "모자/우산" },
   { id: "brand", name: "브랜드 굿즈" },
-  { id: "scent", name: "향 제품" },
+  { id: "scent", name: "그립톡/방향제" },
   { id: "party-deco", name: "파티/장식/기타" },
 ]
 
 const partyProducts = generateProducts("party", [
-  // ── 트레이 ──
-  { name: "트레이 머스터드 / 소", desc: "트레이", size: "소", weight: "-", price: 40000, cal: "-", serving: "-", image: "/products/tray.jpg", flavor: false, maxF: 0, sub: "tray" },
-  { name: "트레이 아마존블루 / 소", desc: "트레이", size: "소", weight: "-", price: 40000, cal: "-", serving: "-", image: "/products/tray.jpg", flavor: false, maxF: 0, sub: "tray" },
-  { name: "트레이 키라임 / 소", desc: "트레이", size: "소", weight: "-", price: 40000, cal: "-", serving: "-", image: "/products/tray.jpg", flavor: false, maxF: 0, sub: "tray" },
-  { name: "트레이 서우그린 / 소", desc: "트레이", size: "소", weight: "-", price: 40000, cal: "-", serving: "-", image: "/products/tray.jpg", flavor: false, maxF: 0, sub: "tray" },
-  { name: "트레이 머스터드 / 중", desc: "트레이", size: "중", weight: "-", price: 45000, cal: "-", serving: "-", image: "/products/tray.jpg", flavor: false, maxF: 0, sub: "tray" },
-  { name: "트레이 아마존블루 / 중", desc: "트레이", size: "중", weight: "-", price: 45000, cal: "-", serving: "-", image: "/products/tray.jpg", flavor: false, maxF: 0, sub: "tray" },
-  { name: "트레이 키라임 / 중", desc: "트레이", size: "중", weight: "-", price: 45000, cal: "-", serving: "-", image: "/products/tray.jpg", flavor: false, maxF: 0, sub: "tray" },
-
-  // ── 클립펜 ──
-  { name: "클립펜 / 화이트", desc: "클립펜", size: "1개", weight: "-", price: 2500, cal: "-", serving: "-", image: "/products/clip-pen.jpg", flavor: false, maxF: 0, sub: "stationery" },
-  { name: "클립펜 / 블루", desc: "클립펜", size: "1개", weight: "-", price: 2500, cal: "-", serving: "-", image: "/products/clip-pen.jpg", flavor: false, maxF: 0, sub: "stationery" },
-  { name: "클립펜 / 옐로우", desc: "클립펜", size: "1개", weight: "-", price: 2500, cal: "-", serving: "-", image: "/products/clip-pen.jpg", flavor: false, maxF: 0, sub: "stationery" },
-  { name: "클립펜 / 그린", desc: "클립펜", size: "1개", weight: "-", price: 2500, cal: "-", serving: "-", image: "/products/clip-pen.jpg", flavor: false, maxF: 0, sub: "stationery" },
-
-  // ── 카드 ──
-  { name: "카드 LoveYouForever", desc: "카드", size: "1장", weight: "-", price: 3000, cal: "-", serving: "-", image: "/products/greeting-card.jpg", flavor: false, maxF: 0, sub: "stationery" },
-  { name: "카드 Congratulations!", desc: "카드", size: "1장", weight: "-", price: 3000, cal: "-", serving: "-", image: "/products/greeting-card.jpg", flavor: false, maxF: 0, sub: "stationery" },
-  { name: "카드 HappyBirthday", desc: "카드", size: "1장", weight: "-", price: 3000, cal: "-", serving: "-", image: "/products/greeting-card.jpg", flavor: false, maxF: 0, sub: "stationery" },
-  { name: "카드 Goodlucktoyou", desc: "카드", size: "1장", weight: "-", price: 3000, cal: "-", serving: "-", image: "/products/greeting-card.jpg", flavor: false, maxF: 0, sub: "stationery" },
-
   // ── 숫자초 – 800원 고정 ──
-  { name: "0번 숫자초", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/number-candle.jpg", flavor: false, maxF: 0, sub: "stationery" },
-  { name: "1번 숫자초", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/number-candle.jpg", flavor: false, maxF: 0, sub: "stationery" },
-  { name: "2번 숫자초", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/number-candle.jpg", flavor: false, maxF: 0, sub: "stationery" },
-  { name: "3번 숫자초", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/number-candle.jpg", flavor: false, maxF: 0, sub: "stationery" },
-  { name: "4번 숫자초", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/number-candle.jpg", flavor: false, maxF: 0, sub: "stationery" },
-  { name: "5번 숫자초", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/number-candle.jpg", flavor: false, maxF: 0, sub: "stationery" },
-  { name: "6번 숫자초", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/number-candle.jpg", flavor: false, maxF: 0, sub: "stationery" },
-  { name: "7번 숫자초", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/number-candle.jpg", flavor: false, maxF: 0, sub: "stationery" },
-  { name: "8번 숫자초", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/number-candle.jpg", flavor: false, maxF: 0, sub: "stationery" },
-  { name: "9번 숫자초", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/number-candle.jpg", flavor: false, maxF: 0, sub: "stationery" },
-
-  // ── 텀블러 / 보틀 ──
-  { name: "데이오프 텀블러\n그레이 / 500ml", desc: "텀블러", size: "500ml", weight: "-", price: 37500, cal: "-", serving: "-", image: "/products/tumbler.jpg", flavor: false, maxF: 0, sub: "tumbler-acc" },
-  { name: "투고 텀블러\n화이트 / 360ml", desc: "텀블러", size: "360ml", weight: "-", price: 39900, cal: "-", serving: "-", image: "/products/tumbler.jpg", flavor: false, maxF: 0, sub: "tumbler-acc" },
+  { name: "숫자초 0번", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/파티상품/BR숫자초(0번)_0.png", flavor: false, maxF: 0, sub: "stationery" },
+  { name: "숫자초 1번", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/파티상품/BR숫자초(1번)_0.png", flavor: false, maxF: 0, sub: "stationery" },
+  { name: "숫자초 2번", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/파티상품/BR숫자초(2번)_0.png", flavor: false, maxF: 0, sub: "stationery" },
+  { name: "숫자초 3번", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/파티상품/BR숫자초(3번)_0.png", flavor: false, maxF: 0, sub: "stationery" },
+  { name: "숫자초 4번", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/파티상품/BR숫자초(4번)_0.png", flavor: false, maxF: 0, sub: "stationery" },
+  { name: "숫자초 5번", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/파티상품/BR숫자초(5번)_0.png", flavor: false, maxF: 0, sub: "stationery" },
+  { name: "숫자초 6번", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/파티상품/BR숫자초(6번)_0.png", flavor: false, maxF: 0, sub: "stationery" },
+  { name: "숫자초 7번", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/파티상품/BR숫자초(7번)_0.png", flavor: false, maxF: 0, sub: "stationery" },
+  { name: "숫자초 8번", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/파티상품/BR숫자초(8번)_0.png", flavor: false, maxF: 0, sub: "stationery" },
+  { name: "숫자초 9번", desc: "숫자초", size: "1개", weight: "-", price: 800, cal: "-", serving: "-", image: "/products/파티상품/BR숫자초(9번)_0.png", flavor: false, maxF: 0, sub: "stationery" },
 
   // ── 우산 ──
-  { name: "BR 투명 우산", desc: "우산", size: "1개", weight: "-", price: 4900, cal: "-", serving: "-", image: "/products/umbrella.jpg", flavor: false, maxF: 0, sub: "tumbler-acc" },
+  { name: "투명우산", desc: "우산", size: "1개", weight: "-", price: 4900, cal: "-", serving: "-", image: "/products/파티상품/BR투명우산(상시)_0.png", flavor: false, maxF: 0, sub: "tumbler-acc" },
 
   // ── 모자 ──
-  { name: "47브랜드 모자 (핑크)", desc: "모자", size: "Free", weight: "-", price: 35000, cal: "-", serving: "-", image: "/products/cap.jpg", flavor: false, maxF: 0, sub: "tumbler-acc" },
-  { name: "47브랜드 모자 (키즈)", desc: "모자", size: "키즈", weight: "-", price: 35000, cal: "-", serving: "-", image: "/products/cap.jpg", flavor: false, maxF: 0, sub: "tumbler-acc" },
-  { name: "47브랜드 모자 (네이비)", desc: "모자", size: "Free", weight: "-", price: 35000, cal: "-", serving: "-", image: "/products/cap.jpg", flavor: false, maxF: 0, sub: "tumbler-acc" },
+  { name: "47모자 핑크", desc: "모자", size: "Free", weight: "-", price: 35000, cal: "-", serving: "-", image: "/products/파티상품/47모자(핑크)_0.png", flavor: false, maxF: 0, sub: "tumbler-acc" },
+  { name: "47모자 키즈", desc: "모자", size: "키즈", weight: "-", price: 35000, cal: "-", serving: "-", image: "/products/파티상품/47모자(키즈)_0.png", flavor: false, maxF: 0, sub: "tumbler-acc" },
+  { name: "47모자 네이비", desc: "모자", size: "Free", weight: "-", price: 35000, cal: "-", serving: "-", image: "/products/파티상품/47모자(네이비)_0.png", flavor: false, maxF: 0, sub: "tumbler-acc" },
 
   // ── 브랜드 굿즈 ──
-  { name: "BR 브랜드북", desc: "브랜드 굿즈", size: "1권", weight: "-", price: 31000, cal: "-", serving: "-", image: "/products/brand-goods.jpg", flavor: false, maxF: 0, sub: "brand" },
-  { name: "BR 아이스크림 스쿱", desc: "브랜드 굿즈", size: "1개", weight: "-", price: 25000, cal: "-", serving: "-", image: "/products/brand-goods.jpg", flavor: false, maxF: 0, sub: "brand" },
+  { name: "브랜드북", desc: "브랜드 굿즈", size: "1권", weight: "-", price: 31000, cal: "-", serving: "-", image: "/products/파티상품/브랜드북_0.png", flavor: false, maxF: 0, sub: "brand" },
+  { name: "아이스크림 스쿱퍼", desc: "브랜드 굿즈", size: "1개", weight: "-", price: 25000, cal: "-", serving: "-", image: "/products/파티상품/아이스크림스쿱퍼_0.png", flavor: false, maxF: 0, sub: "brand" },
 
   // ── 향 제품 (그립톡 / 방향제) ──
-  { name: "복숭아 그립톡", desc: "그립톡", size: "1개", weight: "-", price: 12000, cal: "-", serving: "-", image: "/products/griptok.jpg", flavor: false, maxF: 0, sub: "scent" },
-  { name: "레몬 그립톡", desc: "그립톡", size: "1개", weight: "-", price: 12000, cal: "-", serving: "-", image: "/products/griptok.jpg", flavor: false, maxF: 0, sub: "scent" },
-  { name: "딸기 그립톡", desc: "그립톡", size: "1개", weight: "-", price: 12000, cal: "-", serving: "-", image: "/products/griptok.jpg", flavor: false, maxF: 0, sub: "scent" },
-  { name: "망고 그립톡", desc: "그립톡", size: "1개", weight: "-", price: 12000, cal: "-", serving: "-", image: "/products/griptok.jpg", flavor: false, maxF: 0, sub: "scent" },
-  { name: "페어향 실내 방향제", desc: "방향제", size: "1개", weight: "-", price: 21000, cal: "-", serving: "-", image: "/products/air-freshener.jpg", flavor: false, maxF: 0, sub: "scent" },
-  { name: "애플향 실내 방향제", desc: "방향제", size: "1개", weight: "-", price: 21000, cal: "-", serving: "-", image: "/products/air-freshener.jpg", flavor: false, maxF: 0, sub: "scent" },
-  { name: "피치향 실내 방향제", desc: "방향제", size: "1개", weight: "-", price: 21000, cal: "-", serving: "-", image: "/products/air-freshener.jpg", flavor: false, maxF: 0, sub: "scent" },
+  { name: "복숭아 그립톡", desc: "그립톡", size: "1개", weight: "-", price: 12000, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-복숭아-그립톡-200X160px_0.png", flavor: false, maxF: 0, sub: "scent" },
+  { name: "레몬 그립톡", desc: "그립톡", size: "1개", weight: "-", price: 12000, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-레몬-그립톡-200X160px_0.png", flavor: false, maxF: 0, sub: "scent" },
+  { name: "딸기 그립톡", desc: "그립톡", size: "1개", weight: "-", price: 12000, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-딸기-그립톡-200X160px_0.png", flavor: false, maxF: 0, sub: "scent" },
+  { name: "망고 그립톡", desc: "그립톡", size: "1개", weight: "-", price: 12000, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-망고-그립톡-200X160px_0.png", flavor: false, maxF: 0, sub: "scent" },
+  { name: "페어향 실내방향제", desc: "방향제", size: "1개", weight: "-", price: 21000, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-페어향-실내방향제-200X160px_0.png", flavor: false, maxF: 0, sub: "scent" },
+  { name: "애플향 실내방향제", desc: "방향제", size: "1개", weight: "-", price: 21000, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-애플향-실내방향제-200X160px_0.png", flavor: false, maxF: 0, sub: "scent" },
+  { name: "피치향 실내방향제", desc: "방향제", size: "1개", weight: "-", price: 21000, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-피치향-실내방향제-200X160px_0.png", flavor: false, maxF: 0, sub: "scent" },
 
   // ── 파티 / 장식 ──
-  { name: "아이콘 케이크토퍼\n(SET)", desc: "파티 장식", size: "1세트", weight: "-", price: 21000, cal: "-", serving: "-", image: "/products/cake-topper.jpg", flavor: false, maxF: 0, sub: "party-deco" },
-  { name: "파티 타임\n후루츠 가랜드", desc: "파티 장식", size: "1세트", weight: "-", price: 26000, cal: "-", serving: "-", image: "/products/cake-topper.jpg", flavor: false, maxF: 0, sub: "party-deco" },
-  { name: "오브제캔들 (트리)", desc: "캔들", size: "1개", weight: "-", price: 13000, cal: "-", serving: "-", image: "/products/cake-topper.jpg", flavor: false, maxF: 0, sub: "party-deco" },
-  { name: "오브제캔들 (별)", desc: "캔들", size: "1개", weight: "-", price: 13000, cal: "-", serving: "-", image: "/products/cake-topper.jpg", flavor: false, maxF: 0, sub: "party-deco" },
+  { name: "아이콘 케익토퍼", desc: "파티 장식", size: "1세트", weight: "-", price: 21000, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-아이콘케익토퍼-200X160px_0.png", flavor: false, maxF: 0, sub: "party-deco" },
+  { name: "파티타임\n후르츠 가랜드", desc: "파티 장식", size: "1세트", weight: "-", price: 26000, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-파티타임-후르츠가랜드-200X160px_0.png", flavor: false, maxF: 0, sub: "party-deco" },
+  { name: "오브제 캔들 트리", desc: "캔들", size: "1개", weight: "-", price: 13000, cal: "-", serving: "-", image: "/products/파티상품/오브제캔들(트리)_0.png", flavor: false, maxF: 0, sub: "party-deco" },
+  { name: "오브제 캔들 별", desc: "캔들", size: "1개", weight: "-", price: 13000, cal: "-", serving: "-", image: "/products/파티상품/오브제캔들(별)_0.png", flavor: false, maxF: 0, sub: "party-deco" },
 
   // ── 기타 소품 ──
-  { name: "폭죽카드 (일러스트)", desc: "기타 소품", size: "1개", weight: "-", price: 8600, cal: "-", serving: "-", image: "/products/party-cracker.jpg", flavor: false, maxF: 0, sub: "party-deco" },
-  { name: "폭죽카드 (패턴)", desc: "기타 소품", size: "1개", weight: "-", price: 8600, cal: "-", serving: "-", image: "/products/party-cracker.jpg", flavor: false, maxF: 0, sub: "party-deco" },
-  { name: "썸머 후르츠\n지비츠 세트", desc: "기타 소품", size: "1세트", weight: "-", price: 44000, cal: "-", serving: "-", image: "/products/hair-clip.jpg", flavor: false, maxF: 0, sub: "party-deco" },
-  { name: "체리 집게핀", desc: "기타 소품", size: "1개", weight: "-", price: 24500, cal: "-", serving: "-", image: "/products/hair-clip.jpg", flavor: false, maxF: 0, sub: "party-deco" },
-  { name: "레몬 집게핀", desc: "기타 소품", size: "1개", weight: "-", price: 24500, cal: "-", serving: "-", image: "/products/hair-clip.jpg", flavor: false, maxF: 0, sub: "party-deco" },
-  { name: "수박 집게핀", desc: "기타 소품", size: "1개", weight: "-", price: 24500, cal: "-", serving: "-", image: "/products/hair-clip.jpg", flavor: false, maxF: 0, sub: "party-deco" },
-  { name: "오렌지 집게핀", desc: "기타 소품", size: "1개", weight: "-", price: 24500, cal: "-", serving: "-", image: "/products/hair-clip.jpg", flavor: false, maxF: 0, sub: "party-deco" },
+  { name: "폭죽카드 일러스트", desc: "기타 소품", size: "1개", weight: "-", price: 8600, cal: "-", serving: "-", image: "/products/파티상품/폭죽카드(일러스트)_0.png", flavor: false, maxF: 0, sub: "party-deco" },
+  { name: "폭죽카드 패턴", desc: "기타 소품", size: "1개", weight: "-", price: 8600, cal: "-", serving: "-", image: "/products/파티상품/폭죽카드(패턴)_0.png", flavor: false, maxF: 0, sub: "party-deco" },
+  { name: "썸머 후르츠\n지비츠 세트", desc: "기타 소품", size: "1세트", weight: "-", price: 44000, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-썸머-후르츠-지비츠-세트-200X160px_0.png", flavor: false, maxF: 0, sub: "party-deco" },
+  { name: "체리 집게핀", desc: "기타 소품", size: "1개", weight: "-", price: 24500, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-체리-집게핀-200X160px_0.png", flavor: false, maxF: 0, sub: "party-deco" },
+  { name: "레몬 집게핀", desc: "기타 소품", size: "1개", weight: "-", price: 24500, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-레몬-집게핀-200X160px_0.png", flavor: false, maxF: 0, sub: "party-deco" },
+  { name: "수박 집게핀", desc: "기타 소품", size: "1개", weight: "-", price: 24500, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-수박-집게핀-200X160px_0.png", flavor: false, maxF: 0, sub: "party-deco" },
+  { name: "오렌지 집게핀", desc: "기타 소품", size: "1개", weight: "-", price: 24500, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-오렌지-집게핀-200X160px_0.png", flavor: false, maxF: 0, sub: "party-deco" },
 ])
 
 // ─── Combine all products ─────────────────────────────────
 export const products: Product[] = [
-  ...eventProducts,
+  ...bingsuProducts,
   ...workshopProducts,
   ...coneCupProducts,
   ...packableProducts,
@@ -632,7 +599,7 @@ export const flavors: Flavor[] = [
   { id: "wonderland-cotton", name: "이상한 나라의 솜사탕", image: "/flavors/이상한나라의솜사탕_1.png", color: "hsl(300,50%,80%)", categoryId: "fruit", description: "동화 속 솜사탕처럼 달콤하고 몽환적인 맛", badge: null },
   { id: "orange-sherbet", name: "오렌지 샤베트", image: "/flavors/오렌지샤베트50802_1.png", color: "hsl(25,80%,70%)", categoryId: "fruit", description: "상큼한 오렌지의 시원한 샤베트", badge: null },
   { id: "strawberry-choco-chip", name: "스트로베리 초콜릿칩", image: "/flavors/스트로베리초콜릿칩.png", color: "hsl(345,55%,72%)", categoryId: "fruit", description: "딸기와 초콜릿칩의 달콤한 조합", badge: null },
-  { id: "strawberry-cream", name: "스트로베리 앤 크림", image: "/flavors/스트로베리앤크림_1.png", color: "hsl(348,60%,78%)", categoryId: "fruit", description: "딸기와 크림의 클래식 조합", badge: null },
+  { id: "strawberry-cream", name: "스트로베리 앤 크림", image: "/flavors/스트로베리앤���림_1.png", color: "hsl(348,60%,78%)", categoryId: "fruit", description: "딸기와 크림의 클래식 조합", badge: null },
   { id: "apple-mint", name: "애플민트", image: "/flavors/애플민트.png", color: "hsl(140,45%,72%)", categoryId: "fruit", description: "사과와 민트의 상쾌한 조화", badge: null },
   { id: "peach-yogurt", name: "피치 요거트", image: "/flavors/피치요거트-100x86px_0.png", color: "hsl(20,70%,82%)", categoryId: "fruit", description: "복숭아와 요거트의 상큼한 조화", badge: null },
   { id: "pink-berry-matcha", name: "핑크베리 말차", image: "/flavors/핑크베리말차(수정)_0.png", color: "hsl(340,45%,72%)", categoryId: "fruit", description: "핑크베리와 말차의 조화로운 맛", badge: null },
@@ -640,7 +607,7 @@ export const flavors: Flavor[] = [
   { id: "dino-jelly", name: "디노젤리", image: "/flavors/디노젤리누끼_0.png", color: "hsl(120,50%,70%)", categoryId: "fruit", description: "말랑말랑 디노 젤리의 달콤한 맛", badge: null },
 
   // ── 초콜릿 ──
-  { id: "chocolate", name: "초콜릿", image: "/flavors/초콜릿_1.png", color: "hsl(20,50%,40%)", categoryId: "chocolate", description: "진하고 부드러운 클래식 초콜릿의 맛", badge: null },
+  { id: "chocolate", name: "초콜릿", image: "/flavors/초콜릿_1.png", color: "hsl(20,50%,40%)", categoryId: "chocolate", description: "진하고 부드러운 클래식 초콜릿�� 맛", badge: null },
   { id: "choco-mousse", name: "초콜릿 무스", image: "/flavors/초콜릿무스_0.png", color: "hsl(15,40%,25%)", categoryId: "chocolate", description: "부드럽고 진한 초콜릿 무스의 맛", badge: null },
   { id: "choco-poki-hae", name: "초코포키해", image: "/flavors/초코포키해_0.png", color: "hsl(18,45%,42%)", categoryId: "chocolate", description: "초코와 포키의 달콤한 만남", badge: null },
   { id: "brownie-jubilee", name: "브라우니 쥬빌레", image: "/flavors/(W)브라우니쥬빌레_1.png", color: "hsl(15,35%,38%)", categoryId: "chocolate", description: "촉촉한 브라우니 쥬빌레의 깊은 맛", badge: null },
@@ -671,7 +638,7 @@ export const flavors: Flavor[] = [
   { id: "creme-de-marron", name: "크렘드 마롱", image: "/flavors/크렘드마롱_0.png", color: "hsl(28,42%,52%)", categoryId: "coffee-caramel", description: "프렌치 마롱 크림의 달콤한 맛", badge: null },
   { id: "earl-grey-orange", name: "얼그레이 오렌지", image: "/flavors/(W)얼그레이오렌지_0.png", color: "hsl(30,50%,65%)", categoryId: "coffee-caramel", description: "얼그레이와 오렌지의 향긋한 조화", badge: null },
   { id: "green-tea-earl-grey", name: "그린티 얼그레이", image: "/flavors/(W)그린티얼그레이_0.png", color: "hsl(120,35%,65%)", categoryId: "coffee-caramel", description: "그린티와 얼그레이의 깊은 풍미", badge: null },
-  { id: "green-tea-orange-jasmine", name: "그린티 오렌지 자스민", image: "/flavors/(W)그린티오렌지자스민_0.png", color: "hsl(110,40%,68%)", categoryId: "coffee-caramel", description: "그린티, 오렌지, 자스민의 향긋한 조화", badge: null },
+  { id: "green-tea-orange-jasmine", name: "그린티 오렌지 자스민", image: "/flavors/(W)그린티오렌지자스민_0.png", color: "hsl(110,40%,68%)", categoryId: "coffee-caramel", description: "그린티, 오렌지, ���스민의 향긋한 조화", badge: null },
   { id: "green-tea-caramel", name: "그린티 카라멜", image: "/flavors/(W)그린티카라멜_0.png", color: "hsl(115,35%,60%)", categoryId: "coffee-caramel", description: "그린티와 카라멜의 달콤한 조화", badge: null },
 
   // ── 바닐라/민트 ──
@@ -865,7 +832,7 @@ export function shuffleRankedRecommendations(): Product[] {
 // Get the category filter list for the recommended page
 export function getRecommendedFilterCategories(): { id: string; name: string }[] {
   const recCats = categories.filter(
-    (c) => c.id !== "event" && c.id !== "ai-pick" && c.id !== "party"
+    (c) => c.id !== "bingsu" && c.id !== "ai-pick" && c.id !== "party"
   )
   return recCats.map((c) => ({ id: c.id, name: c.name.replace("\n", " ") }))
 }

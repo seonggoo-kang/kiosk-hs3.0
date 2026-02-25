@@ -45,8 +45,8 @@
 // PK: id (VARCHAR)
 // ─────────────────────────────────────────────────────────────────────
 export const CATEGORIES = [
-  { id: "event",             display_name: "이벤트",                    sort_order: 1,  is_special: true,  note: "Promotional / seasonal event page (no product grid, uses EventPromoBanners)" },
-  { id: "workshop",          display_name: "워크샵 스페셜",              sort_order: 2,  is_special: false, note: "Workshop-exclusive items: mochi, macarons, affogato, gift sets" },
+  { id: "bingsu",             display_name: "빙수",                      sort_order: 1,  is_special: false,  note: "Shaved ice desserts: strawberry, melon, pat (red bean)" },
+  { id: "workshop",          display_name: "스폐셜\n디저트",             sort_order: 2,  is_special: false, note: "Special desserts: mochi, macarons, affogato, dubai-style, gift sets" },
   { id: "cone-cup",          display_name: "콘/컵",                     sort_order: 3,  is_special: false, note: "In-store cone/cup scoops" },
   { id: "packable-icecream", display_name: "포장가능\n아이스크림",        sort_order: 4,  is_special: false, note: "Take-home packaged ice cream: pints, quarters, family, packs" },
   { id: "icecream-cake",     display_name: "아이스크림\n케이크",          sort_order: 5,  is_special: false, note: "Ice cream cakes: bowl, egg, hol, premium, character" },
@@ -228,7 +228,7 @@ export const FLAVOR_CATEGORIES = [
 //   has_quantity   BOOLEAN       – whether user can adjust qty
 //   default_qty   INT NULL      – default quantity if has_quantity
 //   unit          VARCHAR NULL  – display unit ("개", "분")
-// ─────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────��─────────────────────
 export const OPTION_GROUPS = [
   {
     id: "spoon",

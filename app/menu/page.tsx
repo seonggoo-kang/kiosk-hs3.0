@@ -137,15 +137,7 @@ function MenuContent() {
   const flatSlides = useMemo<Slide[]>(() => {
     const slides: Slide[] = []
     for (const cat of categories) {
-      if (cat.id === "event") {
-        slides.push({
-          categoryId: cat.id,
-          pageIndex: 0,
-          totalPages: 1,
-          products: [],
-          isEvent: true,
-        })
-      } else if (cat.id === "ai-pick") {
+      if (cat.id === "ai-pick") {
         slides.push({
           categoryId: cat.id,
           pageIndex: 0,
