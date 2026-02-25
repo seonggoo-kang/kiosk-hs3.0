@@ -141,8 +141,12 @@ export default function LandingPage() {
                 <img
                   src={src}
                   alt={`Promotional banner ${i + 1}`}
-                  className="h-full w-full object-cover object-top"
+                  className="h-full w-full object-contain"
                   draggable={false}
+                  onLoad={(e) => {
+                    const img = e.currentTarget
+                    console.log(`[v0] Banner ${i}: ${img.naturalWidth}x${img.naturalHeight} ratio=${(img.naturalWidth / img.naturalHeight).toFixed(3)} file=${src}`)
+                  }}
                 />
               </div>
             ))}
