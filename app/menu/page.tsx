@@ -10,7 +10,6 @@ import { ProductCard } from "@/components/kiosk/product-card"
 import { ProductDetailPanel } from "@/components/kiosk/product-detail-panel"
 import { MiniCart } from "@/components/kiosk/cart-strip"
 import { ActionBar } from "@/components/kiosk/action-bar"
-import { EventPromoBanners } from "@/components/kiosk/event-promo-banners"
 import { SubcategoryFilter } from "@/components/kiosk/subcategory-filter"
 import { RecommendedPanel } from "@/components/kiosk/ai-pick-panel"
 import { useOrder, itemNeedsOptions } from "@/lib/order-context"
@@ -35,7 +34,6 @@ type Slide = {
   pageIndex: number // page within the category (0-based)
   totalPages: number // total pages this category has
   products: Product[] // pre-sliced products for this page
-  isEvent: boolean
   isAiPick?: boolean
 }
 
@@ -44,35 +42,11 @@ function SlideContent({
   slide,
   cartProductIds,
   onSelectProduct,
-  onEventOverflowDrag,
-  onEventOverflowCommit,
-  onEventOverflowCancel,
-  canOverflowLeft,
-  canOverflowRight,
 }: {
   slide: Slide
   cartProductIds: Set<string>
   onSelectProduct: (p: Product) => void
-  onEventOverflowDrag?: (dx: number) => void
-  onEventOverflowCommit?: (direction: "left" | "right") => void
-  onEventOverflowCancel?: () => void
-  canOverflowLeft?: boolean
-  canOverflowRight?: boolean
 }) {
-  if (slide.isEvent) {
-    return (
-      <div className="h-full">
-        <EventPromoBanners
-          onOverflowDrag={onEventOverflowDrag}
-          onOverflowCommit={onEventOverflowCommit}
-          onOverflowCancel={onEventOverflowCancel}
-          canOverflowLeft={canOverflowLeft}
-          canOverflowRight={canOverflowRight}
-        />
-      </div>
-    )
-  }
-
   if (slide.isAiPick) {
     return (
       <RecommendedPanel
@@ -143,7 +117,6 @@ function MenuContent() {
           pageIndex: 0,
           totalPages: 1,
           products: [],
-          isEvent: false,
           isAiPick: true,
         })
       } else {
@@ -155,7 +128,6 @@ function MenuContent() {
             pageIndex: p,
             totalPages,
             products: products.slice(p * ITEMS_PER_PAGE, (p + 1) * ITEMS_PER_PAGE),
-            isEvent: false,
           })
         }
       }
@@ -193,7 +165,7 @@ function MenuContent() {
 
   // When a subcategory filter is active, re-paginate all matching products
   const filteredSlides = useMemo(() => {
-    if (activeFilter === "all" || currentSlide.isEvent || currentSlide.isAiPick) return null
+    if (activeFilter === "all" || currentSlide.isAiPick) return null
     const allCatProducts = getProductsByCategory(activeCategory)
     const filtered = allCatProducts.filter((p) => p.subcategory === activeFilter)
     const pages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE))
@@ -204,11 +176,10 @@ function MenuContent() {
         pageIndex: p,
         totalPages: pages,
         products: filtered.slice(p * ITEMS_PER_PAGE, (p + 1) * ITEMS_PER_PAGE),
-        isEvent: false,
       })
     }
     return slides
-  }, [activeFilter, activeCategory, currentSlide.isEvent])
+  }, [activeFilter, activeCategory, currentSlide.isAiPick])
 
   // Track page within filtered view
   const [filteredPageIndex, setFilteredPageIndex] = useState(0)
@@ -225,7 +196,7 @@ function MenuContent() {
       return filteredSlides[idx]
     }
     if (filteredSlides && filteredSlides.length === 0) {
-      return { categoryId: activeCategory, pageIndex: 0, totalPages: 1, products: [], isEvent: false }
+      return { categoryId: activeCategory, pageIndex: 0, totalPages: 1, products: [] }
     }
     return currentSlide
   }, [filteredSlides, filteredPageIndex, currentSlide, activeCategory])
@@ -542,34 +513,9 @@ function MenuContent() {
             }}
           >
             <SlideContent
-  slide={displaySlide}
-  cartProductIds={cartProductIds}
-  onSelectProduct={handleProductSelect}
-              canOverflowLeft={canGoRight}
-              canOverflowRight={canGoLeft}
-              onEventOverflowDrag={(dx) => {
-                setDragOffset(dx)
-              }}
-              onEventOverflowCommit={(direction) => {
-                const containerWidth = containerRef.current?.offsetWidth || 400
-                setIsAnimating(true)
-                setDragOffset(direction === "left" ? -containerWidth : containerWidth)
-                setTimeout(() => {
-                  if (direction === "left") {
-                    setFlatIndex((prev) => prev + 1)
-                  } else {
-                    setFlatIndex((prev) => prev - 1)
-                  }
-                  setDragOffset(0)
-                  setIsAnimating(false)
-                  dispatch({ type: "SELECT_PRODUCT", payload: null })
-                }, 250)
-              }}
-              onEventOverflowCancel={() => {
-                setIsAnimating(true)
-                setDragOffset(0)
-                setTimeout(() => setIsAnimating(false), 200)
-              }}
+              slide={displaySlide}
+              cartProductIds={cartProductIds}
+              onSelectProduct={handleProductSelect}
             />
           </div>
 
