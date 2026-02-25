@@ -1,40 +1,38 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
 import { CheckCircle2 } from "lucide-react"
 import { useOrder } from "@/lib/order-context"
 import { formatPrice } from "@/lib/mock-data"
 
-export default function ConfirmationPage() {
-  const router = useRouter()
+interface ConfirmationScreenProps {
+  onReset: () => void
+}
+
+export function ConfirmationScreen({ onReset }: ConfirmationScreenProps) {
   const { state, finalAmount, totalItems, dispatch } = useOrder()
   const [orderNumber] = useState(() => Math.floor(Math.random() * 900) + 100)
 
-  // Auto-redirect after 15 seconds
   useEffect(() => {
     const timer = setTimeout(() => {
       dispatch({ type: "RESET_ORDER" })
-      router.push("/")
+      onReset()
     }, 15000)
     return () => clearTimeout(timer)
-  }, [dispatch, router])
+  }, [dispatch, onReset])
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center bg-card px-6">
       <div className="flex flex-col items-center gap-6">
-        {/* Success icon */}
         <div className="flex h-24 w-24 items-center justify-center rounded-full bg-accent">
           <CheckCircle2 className="h-14 w-14 text-primary" />
         </div>
 
-        {/* Order number */}
         <div className="text-center">
           <p className="text-sm text-muted-foreground">주문번호</p>
           <p className="mt-1 text-5xl font-extrabold text-foreground">{orderNumber}</p>
         </div>
 
-        {/* Summary */}
         <div className="w-full max-w-xs rounded-xl border border-border bg-muted/50 p-5">
           <div className="flex items-center justify-between border-b border-border pb-3">
             <span className="text-sm text-muted-foreground">주문유형</span>
@@ -53,16 +51,11 @@ export default function ConfirmationPage() {
         </div>
 
         <p className="text-center text-xs leading-relaxed text-muted-foreground">
-          주문이 완료되었습니다.
-          <br />
-          카운터에서 주문번호를 확인해 주세요.
+          주문이 완료되었습니다.<br />카운터에서 주문번호를 확인해 주세요.
         </p>
 
         <button
-          onClick={() => {
-            dispatch({ type: "RESET_ORDER" })
-            router.push("/")
-          }}
+          onClick={() => { dispatch({ type: "RESET_ORDER" }); onReset() }}
           className="mt-4 flex h-14 w-full max-w-xs items-center justify-center rounded-xl bg-primary text-base font-bold text-primary-foreground transition-colors active:opacity-80"
         >
           처음으로

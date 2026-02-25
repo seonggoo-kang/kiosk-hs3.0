@@ -1,11 +1,14 @@
 "use client"
 
 import { Home } from "lucide-react"
-import { useRouter } from "next/navigation"
 import { useOrder } from "@/lib/order-context"
 
-export function KioskHeader({ title }: { title: string }) {
-  const router = useRouter()
+interface KioskHeaderProps {
+  title: string
+  onHome?: () => void
+}
+
+export function KioskHeader({ title, onHome }: KioskHeaderProps) {
   const { dispatch } = useOrder()
 
   return (
@@ -18,16 +21,18 @@ export function KioskHeader({ title }: { title: string }) {
         />
         <h1 className="text-base font-semibold text-foreground">{title}</h1>
       </div>
-      <button
-        onClick={() => {
-          dispatch({ type: "RESET_ORDER" })
-          router.push("/")
-        }}
-        className="flex h-10 w-10 items-center justify-center rounded-lg text-primary transition-colors active:bg-accent"
-        aria-label="홈으로"
-      >
-        <Home className="h-6 w-6" />
-      </button>
+      {onHome && (
+        <button
+          onClick={() => {
+            dispatch({ type: "RESET_ORDER" })
+            onHome()
+          }}
+          className="flex h-10 w-10 items-center justify-center rounded-lg text-primary transition-colors active:bg-accent"
+          aria-label="홈으로"
+        >
+          <Home className="h-6 w-6" />
+        </button>
+      )}
     </header>
   )
 }
