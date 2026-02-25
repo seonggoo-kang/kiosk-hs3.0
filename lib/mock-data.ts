@@ -181,7 +181,7 @@ const workshopProducts = generateProducts("workshop", [
   { name: "도곡 모찌\n바람과 함께 사라지다", desc: "Chef Made 모찌", size: "1개", weight: "60g", price: 3800, cal: "120~180 kcal", serving: "60g", image: "/products/스폐셜 디저트/도곡모찌바람과함께사라지다_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
   { name: "도곡 모찌\n엄마는 외계인", desc: "Chef Made 모찌", size: "1개", weight: "60g", price: 3800, cal: "120~180 kcal", serving: "60g", image: "/products/스폐셜 디저트/도곡모찌엄마는외계인_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
   { name: "도곡 모찌 선물세트", desc: "Chef Made 모찌 세트", size: "1세트", weight: "360g", price: 19800, cal: "720~1080 kcal", serving: "360g", image: "/products/스폐셜 디저트/도곡모찌선물세트_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
-  { name: "마카롱\n피스타치오 아몬드", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/스폐셜 디저트/도곡마카롱피스���치오아몬드_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
+  { name: "마카롱\n피스타치오 아몬드", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/스폐셜 디저트/도곡마카롱피스타치오아몬드_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
   { name: "마카롱\n베리베리 스트로베리", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/스폐셜 디저트/도곡마카롱베리베리스트로베리_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
   { name: "마카롱\n초콜릿 무스", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/스폐셜 디저트/도곡마카롱초콜릿무스_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
   { name: "마카롱\n체리 쥬빌레", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/스폐셜 디저트/도곡마카롱체리쥬빌레_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
@@ -314,7 +314,7 @@ const cakeProducts = generateProducts("icecream-cake", [
   { name: "황금빛 촛불\n눌 케이크", desc: "홀케이크", size: "홀", weight: "800g", price: 30000, cal: "1700~2300 kcal", serving: "800g", image: "/products/아이스크림케이크/황금빛촛불눌케이크_0.png", flavor: false, maxF: 0, sub: "basic" },
 
   // ── 프리미엄/캐릭터/테마 라인 ──
-  { name: "굿럭 카��바라", desc: "프리미엄 케이크", size: "프리미엄", weight: "900g", price: 38000, cal: "2000~2600 kcal", serving: "900g", image: "/products/아이스크림케이크/굿럭카피바라_0.png", flavor: false, maxF: 0, sub: "premium" },
+  { name: "굿럭 카피바라", desc: "프리미엄 케이크", size: "프리미엄", weight: "900g", price: 38000, cal: "2000~2600 kcal", serving: "900g", image: "/products/아이스크림케이크/굿럭카피바라_0.png", flavor: false, maxF: 0, sub: "premium" },
   { name: "럭키 포니\n춘식이 케이크", desc: "캐릭터 케이크", size: "캐릭터", weight: "800g", price: 30000, cal: "1700~2300 kcal", serving: "800g", image: "/products/아이스크림케이크/럭키포니춘식이케이크_0.png", flavor: false, maxF: 0, sub: "premium" },
   { name: "시계 보블 케이크", desc: "보블 케이크", size: "보블", weight: "350g", price: 15000, cal: "500~700 kcal", serving: "350g", image: "/products/아이스크림케이크/시계보블케이크_0.png", flavor: false, maxF: 0, sub: "premium" },
   { name: "로맨틱 야수\n에그 케이크", desc: "에그 케이크", size: "에그", weight: "400g", price: 15000, cal: "500~700 kcal", serving: "400g", image: "/products/아이스크림케이크/로맨틱야수에그케이크_0.png", flavor: false, maxF: 0, sub: "premium" },
@@ -384,7 +384,7 @@ const beverageProducts = generateProducts("beverage", [
 
   // ── Tea / Hot Beverage ──
   { name: "페어 엘더플라워", desc: "프루트티", size: "레귤러", weight: "350ml", price: 6200, cal: "80~130 kcal", serving: "350ml", image: "/products/음료&블라스트/(워크샵)페어엘더플라워_0.png", flavor: false, maxF: 0, sub: "tea" },
-  { name: "위스키\n아이리쉬 커피", desc: "위스키 커피", size: "���귤러", weight: "250ml", price: 9500, cal: "200~300 kcal", serving: "250ml", image: "/products/음료&블라스트/위스키아이리쉬커피_0.png", flavor: false, maxF: 0, sub: "tea", tag: "먹고가기 전용" },
+  { name: "위스키\n아이리쉬 커피", desc: "위스키 커피", size: "레귤러", weight: "250ml", price: 9500, cal: "200~300 kcal", serving: "250ml", image: "/products/음료&블라스트/위스키아이리쉬커피_0.png", flavor: false, maxF: 0, sub: "tea", tag: "먹고가기 전용" },
   { name: "피치 캐모마일\n아이스티", desc: "아이스티", size: "레귤러", weight: "400ml", price: 6200, cal: "60~100 kcal", serving: "400ml", image: "/products/음료&블라스트/피치캐모마일아이스티_0.png", flavor: false, maxF: 0, sub: "tea" },
   { name: "오생수 라벨프리", desc: "생수", size: "500ml", weight: "500ml", price: 1500, cal: "0 kcal", serving: "500ml", image: "/products/음료&블라스트/오생수라벨프리_0.png", flavor: false, maxF: 0, sub: "tea" },
 
@@ -430,7 +430,7 @@ const dessertProducts = generateProducts("dessert", [
   // ── 바움쿠헨 / 모나카 / 모찌 라인 ──
   { name: "바움쿠헨\n아몬드봉봉", desc: "바움쿠헨", size: "1개", weight: "120g", price: 4500, cal: "280~380 kcal", serving: "120g", image: "/products/디저트/바움쿠헨아몬드봉봉_0.png", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
   { name: "아이스 모나카 우유", desc: "모나카", size: "1개", weight: "100g", price: 3800, cal: "180~260 kcal", serving: "100g", image: "/products/디저트/아이스모나카우유_0.png", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
-  { name: "모나카 쫀떡 인절미", desc: "모나카", size: "1개", weight: "100g", price: 3800, cal: "200~280 kcal", serving: "100g", image: "/products/디저트/모나���쫀떡인절미_0.png", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
+  { name: "모나카 쫀떡 인절미", desc: "모나카", size: "1개", weight: "100g", price: 3800, cal: "200~280 kcal", serving: "100g", image: "/products/디저트/모나카쫀떡인절미_0.png", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
   { name: "아이스 모찌 소금우유", desc: "모찌", size: "1개", weight: "60g", price: 3300, cal: "100~150 kcal", serving: "60g", image: "/products/디저트/아이스모찌_소금우유_0.png", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
   { name: "아이스 모찌\n스트로베리", desc: "모찌", size: "1개", weight: "60g", price: 3300, cal: "100~150 kcal", serving: "60g", image: "/products/디저트/BR_제품이미지_아이스-모찌-스트로베리_100x86px_0.png", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
   { name: "아이스 모찌\n아몬드봉봉", desc: "모찌", size: "1개", weight: "60g", price: 3300, cal: "110~160 kcal", serving: "60g", image: "/products/디저트/아이스모찌(아몬드봉봉)_0.png", flavor: false, maxF: 0, sub: "baum-monaka-mochi" },
