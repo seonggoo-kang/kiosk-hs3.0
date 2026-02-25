@@ -167,7 +167,7 @@ const workshopProducts = generateProducts("workshop", [
   { name: "도곡 모찌\n바람과 함께 사라지다", desc: "Chef Made 모찌", size: "1개", weight: "60g", price: 3800, cal: "120~180 kcal", serving: "60g", image: "/products/스폐셜 디저트/도곡모찌바람과함께사라지다_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
   { name: "도곡 모찌\n엄마는 외계인", desc: "Chef Made 모찌", size: "1개", weight: "60g", price: 3800, cal: "120~180 kcal", serving: "60g", image: "/products/스폐셜 디저트/도곡모찌엄마는외계인_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
   { name: "도곡 모찌 선물세트", desc: "Chef Made 모찌 세트", size: "1세트", weight: "360g", price: 19800, cal: "720~1080 kcal", serving: "360g", image: "/products/스폐셜 디저트/도곡모찌선물세트_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
-  { name: "마카롱\n피스타치오 아몬드", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/스폐셜 디저트/도곡마카롱피스���치오아몬드_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
+  { name: "마카롱\n피스타치오 아몬드", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/스폐셜 디저트/도곡마카롱피스타치오아몬드_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
   { name: "마카롱\n베리베리 스트로베리", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/스폐셜 디저트/도곡마카롱베리베리스트로베리_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
   { name: "마카롱\n초콜릿 무스", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/스폐셜 디저트/도곡마카롱초콜릿무스_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
   { name: "마카롱\n체리 쥬빌레", desc: "Chef Made 마카롱", size: "1개", weight: "50g", price: 4000, cal: "150~200 kcal", serving: "50g", image: "/products/스폐셜 디저트/도곡마카롱체리쥬빌레_0.png", flavor: false, maxF: 0, tag: "Chef Made" },
@@ -300,7 +300,7 @@ const cakeProducts = generateProducts("icecream-cake", [
   { name: "황금빛 촛불\n눌 케이크", desc: "홀케이크", size: "홀", weight: "800g", price: 30000, cal: "1700~2300 kcal", serving: "800g", image: "/products/아이스크림케이크/황금빛촛불눌케이크_0.png", flavor: false, maxF: 0, sub: "basic" },
 
   // ── 프리미엄/캐릭터/테마 라인 ──
-  { name: "굿럭 카피바라", desc: "프리미엄 케이크", size: "프리미엄", weight: "900g", price: 38000, cal: "2000~2600 kcal", serving: "900g", image: "/products/아이스크림케이크/굿럭카피바라_0.png", flavor: false, maxF: 0, sub: "premium" },
+  { name: "굿럭 카피���라", desc: "프리미엄 케이크", size: "프리미엄", weight: "900g", price: 38000, cal: "2000~2600 kcal", serving: "900g", image: "/products/아이스크림케이크/굿럭카피바라_0.png", flavor: false, maxF: 0, sub: "premium" },
   { name: "럭키 포니\n춘식이 케이크", desc: "캐릭터 케이크", size: "캐릭터", weight: "800g", price: 30000, cal: "1700~2300 kcal", serving: "800g", image: "/products/아이스크림케이크/럭키포니춘식이케이크_0.png", flavor: false, maxF: 0, sub: "premium" },
   { name: "시계 보블 케이크", desc: "보블 케이크", size: "보블", weight: "350g", price: 15000, cal: "500~700 kcal", serving: "350g", image: "/products/아이스크림케이크/시계보블케이크_0.png", flavor: false, maxF: 0, sub: "premium" },
   { name: "로맨틱 야수\n에그 케이크", desc: "에그 케이크", size: "에그", weight: "400g", price: 15000, cal: "500~700 kcal", serving: "400g", image: "/products/아이스크림케이크/로맨틱야수에그케이크_0.png", flavor: false, maxF: 0, sub: "premium" },
@@ -467,7 +467,7 @@ const prepackProducts = generateProducts("prepack", [
   { name: "오레오 쿠키앤크림", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "650~950 kcal", serving: "660ml", image: "/products/레디팩 블록팩/오레오_쿠키앤크림_0.png", flavor: false, maxF: 0, sub: "readypack" },
   { name: "베리베리 스트로베리\n레디팩", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "550~850 kcal", serving: "660ml", image: "/products/레디팩 블록팩/베리베리-스트로베리-레디팩_0.png", flavor: false, maxF: 0, sub: "readypack" },
   { name: "초코나무숲 레디팩", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "650~950 kcal", serving: "660ml", image: "/products/레디팩 블록팩/초코나무숲레디팩_0.png", flavor: false, maxF: 0, sub: "readypack" },
-  { name: "엄마는 외계인\n레디팩", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "600~900 kcal", serving: "660ml", image: "/products/레디팩 블록팩/엄마는외계인레디팩_0.png", flavor: false, maxF: 0, sub: "readypack" },
+  { name: "엄마는 ��계인\n레디팩", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "600~900 kcal", serving: "660ml", image: "/products/레디팩 블록팩/엄마는외계인레디팩_0.png", flavor: false, maxF: 0, sub: "readypack" },
   { name: "레디팩 요거트", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "500~800 kcal", serving: "660ml", image: "/products/레디팩 블록팩/레디팩31요거트_0.png", flavor: false, maxF: 0, sub: "readypack" },
   { name: "체리 쥬빌레 레디팩", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "550~850 kcal", serving: "660ml", image: "/products/레디팩 블록팩/체리-쥬빌레-레디팩_0.png", flavor: false, maxF: 0, sub: "readypack" },
   { name: "민트 초콜릿칩\n레디팩", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "600~900 kcal", serving: "660ml", image: "/products/레디팩 블록팩/민트-초콜릿-칩-레디팩_0.png", flavor: false, maxF: 0, sub: "readypack" },
@@ -541,7 +541,7 @@ const partyProducts = generateProducts("party", [
   { name: "폭죽카드 일러스트", desc: "기타 소품", size: "1개", weight: "-", price: 8600, cal: "-", serving: "-", image: "/products/파티상품/폭죽카드(일러스트)_0.png", flavor: false, maxF: 0, sub: "party-deco" },
   { name: "폭죽카드 패턴", desc: "기타 소품", size: "1개", weight: "-", price: 8600, cal: "-", serving: "-", image: "/products/파티상품/폭죽카드(패턴)_0.png", flavor: false, maxF: 0, sub: "party-deco" },
   { name: "썸머 후르츠\n지비츠 세트", desc: "기타 소품", size: "1세트", weight: "-", price: 44000, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-썸머-후르츠-지비츠-세트-200X160px_0.png", flavor: false, maxF: 0, sub: "party-deco" },
-  { name: "체리 집게핀", desc: "기타 소품", size: "1개", weight: "-", price: 24500, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-체리-집게핀-200X160px_0.png", flavor: false, maxF: 0, sub: "party-deco" },
+  { name: "체리 집게핀", desc: "기타 소품", size: "1개", weight: "-", price: 24500, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-체리-집��핀-200X160px_0.png", flavor: false, maxF: 0, sub: "party-deco" },
   { name: "레몬 집게핀", desc: "기타 소품", size: "1개", weight: "-", price: 24500, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-레몬-집게핀-200X160px_0.png", flavor: false, maxF: 0, sub: "party-deco" },
   { name: "수박 집게핀", desc: "기타 소품", size: "1개", weight: "-", price: 24500, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-수박-집게핀-200X160px_0.png", flavor: false, maxF: 0, sub: "party-deco" },
   { name: "오렌지 집게핀", desc: "기타 소품", size: "1개", weight: "-", price: 24500, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-오렌지-집게핀-200X160px_0.png", flavor: false, maxF: 0, sub: "party-deco" },
@@ -775,11 +775,11 @@ const RANKED_BEST_SELLERS: string[] = [
   "더블레귤러",
   "이달의 더블주니어",
   // #4-6: Workshop specials drive seasonal traffic
-  "모찌 바람과\n함께 사라지다",
-  "두바이 스타일\n초콜릿쿠키",
+  "도곡 모찌\n바람과 함께 사라지다",
+  "두바이 스타일\n초코쿠키",
   "카페 아포가토",
   // #7-8: Beverages are high-margin impulse buys
-  "망고 패션후르츠\n블라스트",
+  "엄마는 외계인\n블라스트",
   "아메리카노",
   // #9-10: Packable ice cream for take-home
   "파인트",
@@ -790,19 +790,19 @@ const RANKED_BEST_SELLERS: string[] = [
   "화이트 스트로베리\n페스티벌",
   // #14-15: Coffee & beverage add-ons
   "카페라떼",
-  "피치요거트\n블라스트",
+  "피치 캐모마일\n아이스티",
   // #16-17: Gelato premium option
-  "젤라또 싱글",
-  "젤라또 더블",
+  "젤라또컵 (2가지맛)",
+  "젤라또팩",
   // #18-19: Dessert accompaniments
-  "브라우니 아 라 모드",
-  "크루아상 와플",
-  // #20-21: Workshop extras
-  "마카롱\n피스타치오 아몬드",
-  "바닐라라떼",
+  "바움쿠헨\n아몬드봉봉",
+  "스윗 시나몬 츄러스",
+  // #20-21: Workshop extras & coffee
+  "두바이 파르페",
+  "바닐라빈 라떼",
   // #22-23: Prepack take-home
-  "아이스 모찌 6개입",
-  "아이스 모찌 10개입",
+  "아이스 모찌 소금우유",
+  "아이스 모찌\n스트로베리",
   // #24: Family size
   "패밀리",
 ]
