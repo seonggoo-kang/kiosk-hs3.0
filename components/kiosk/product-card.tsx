@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image"
+import { X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { formatPrice, type Product } from "@/lib/mock-data"
 
@@ -9,7 +10,9 @@ type CardSize = "sm" | "md" | "lg" | "xl"
 type ProductCardProps = {
   product: Product
   isSelected?: boolean
+  quantity?: number
   onSelect: (product: Product) => void
+  onRemove?: (product: Product) => void
   priority?: boolean
   size?: CardSize
 }
@@ -77,17 +80,39 @@ const TAG_STYLES: Record<string, string> = {
   "가져가기 전용": "bg-emerald-600 text-white",
 }
 
-export function ProductCard({ product, isSelected, onSelect, priority, size = "sm" }: ProductCardProps) {
+export function ProductCard({ product, isSelected, quantity, onSelect, onRemove, priority, size = "sm" }: ProductCardProps) {
   const s = SIZE_CONFIG[size]
+  const inCart = (quantity ?? 0) > 0
   return (
     <button
       onClick={() => onSelect(product)}
       className={cn(
-        "flex flex-col items-center rounded-xl border-2 bg-card transition-all active:scale-[0.97]",
+        "relative flex flex-col items-center rounded-xl border-2 bg-card transition-all active:scale-[0.97]",
         s.padding,
-        isSelected ? "border-primary shadow-md" : "border-transparent shadow-sm"
+        inCart ? "border-primary shadow-md" : "border-transparent shadow-sm"
       )}
     >
+      {/* Quantity badge -- top-left */}
+      {inCart && (
+        <span className="absolute -left-1 -top-1 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground shadow">
+          {quantity}
+        </span>
+      )}
+
+      {/* Remove button -- top-right */}
+      {inCart && onRemove && (
+        <span
+          role="button"
+          tabIndex={0}
+          onClick={(e) => { e.stopPropagation(); onRemove(product) }}
+          onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); onRemove(product) } }}
+          className="absolute -right-1 -top-1 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-foreground/80 text-background shadow transition-colors hover:bg-destructive"
+          aria-label="장바구니에서 제거"
+        >
+          <X className="h-3 w-3" strokeWidth={3} />
+        </span>
+      )}
+
       <div className={cn("relative mb-2 flex w-full items-center justify-center rounded-lg bg-muted/30", s.container)}>
         <Image
           src={product.image}

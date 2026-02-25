@@ -27,11 +27,13 @@ function cardSizeForCount(count: number): "sm" | "md" | "lg" | "xl" {
 
 type RecommendedPanelProps = {
   cartProductIds: Set<string>
+  cartProductMap: Map<string, { quantity: number; cartId: string }>
   onSelectProduct: (product: Product) => void
+  onRemoveProduct: (product: Product) => void
   orderType?: "takeout" | "dine-in" | null
 }
 
-export function RecommendedPanel({ cartProductIds, onSelectProduct, orderType }: RecommendedPanelProps) {
+export function RecommendedPanel({ cartProductIds, cartProductMap, onSelectProduct, onRemoveProduct, orderType }: RecommendedPanelProps) {
   const [allProducts, setAllProducts] = useState<Product[]>(() => getRankedRecommendations(orderType))
   const [activeFilter, setActiveFilter] = useState("all")
   const [loading, setLoading] = useState(false)
@@ -178,7 +180,9 @@ export function RecommendedPanel({ cartProductIds, onSelectProduct, orderType }:
                   key={product.id}
                   product={product}
                   isSelected={cartProductIds.has(product.id)}
+                  quantity={cartProductMap.get(product.id)?.quantity}
                   onSelect={onSelectProduct}
+                  onRemove={onRemoveProduct}
                   priority={idx < 4}
                   size={cardSizeForCount(visibleProducts.length)}
                 />

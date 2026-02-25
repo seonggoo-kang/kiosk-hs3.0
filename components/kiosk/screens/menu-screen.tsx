@@ -63,19 +63,25 @@ type Slide = {
 function SlideContent({
   slide,
   cartProductIds,
+  cartProductMap,
   onSelectProduct,
+  onRemoveProduct,
   orderType,
 }: {
   slide: Slide
   cartProductIds: Set<string>
+  cartProductMap: Map<string, { quantity: number; cartId: string }>
   onSelectProduct: (p: Product) => void
+  onRemoveProduct: (p: Product) => void
   orderType?: "takeout" | "dine-in" | null
 }) {
   if (slide.isAiPick) {
     return (
       <RecommendedPanel
         cartProductIds={cartProductIds}
+        cartProductMap={cartProductMap}
         onSelectProduct={onSelectProduct}
+        onRemoveProduct={onRemoveProduct}
         orderType={orderType}
       />
     )
@@ -91,7 +97,9 @@ function SlideContent({
                 key={product.id}
                 product={product}
                 isSelected={cartProductIds.has(product.id)}
+                quantity={cartProductMap.get(product.id)?.quantity}
                 onSelect={onSelectProduct}
+                onRemove={onRemoveProduct}
                 priority={slide.pageIndex === 0}
                 size={cardSizeForCount(slide.totalCategoryProducts)}
               />
@@ -214,7 +222,21 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
     : null
 
   const hasCart = state.cart.length > 0
-  const cartProductIds = useMemo(() => new Set(state.cart.map((item) => item.product.id)), [state.cart])
+  const cartProductMap = useMemo(() => {
+    const m = new Map<string, { quantity: number; cartId: string }>()
+    for (const item of state.cart) {
+      const existing = m.get(item.product.id)
+      if (existing) {
+        existing.quantity += item.quantity
+      } else {
+        m.set(item.product.id, { quantity: item.quantity, cartId: item.cartId })
+      }
+    }
+    return m
+  }, [state.cart])
+
+  // Keep a Set version for backwards-compat with components that just need has()
+  const cartProductIds = useMemo(() => new Set(cartProductMap.keys()), [cartProductMap])
 
   const handleCategoryChange = useCallback(
     (id: string) => {
@@ -323,6 +345,11 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
     dispatch({ type: "ADD_TO_CART_INSTANT", payload: product })
   }, [dispatch])
 
+  const handleRemoveProduct = useCallback((product: Product) => {
+    const entry = cartProductMap.get(product.id)
+    if (entry) dispatch({ type: "REMOVE_FROM_CART", payload: entry.cartId })
+  }, [cartProductMap, dispatch])
+
   const isCake = activeCategory === "icecream-cake"
   const isBeverage = activeCategory === "beverage"
   const isDessert = activeCategory === "dessert"
@@ -393,7 +420,7 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
         <div className="relative h-full w-full">
           {prevSlide && (
             <div className="absolute inset-0" style={{ transform: `translateX(calc(-100% + ${dragOffset}px))`, transition: isAnimating ? "transform 250ms ease-out" : "none" }}>
-              <SlideContent slide={prevSlide} cartProductIds={cartProductIds} onSelectProduct={() => {}} orderType={state.orderType} />
+              <SlideContent slide={prevSlide} cartProductIds={cartProductIds} cartProductMap={cartProductMap} onSelectProduct={() => {}} onRemoveProduct={handleRemoveProduct} orderType={state.orderType} />
             </div>
           )}
           <div
@@ -401,11 +428,11 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
             className="absolute inset-0"
             style={{ transform: dragOffset !== 0 ? `translateX(${dragOffset}px)` : undefined, transition: isAnimating ? "transform 250ms ease-out" : "none" }}
           >
-            <SlideContent slide={displaySlide} cartProductIds={cartProductIds} onSelectProduct={handleProductSelect} orderType={state.orderType} />
+            <SlideContent slide={displaySlide} cartProductIds={cartProductIds} cartProductMap={cartProductMap} onSelectProduct={handleProductSelect} onRemoveProduct={handleRemoveProduct} orderType={state.orderType} />
           </div>
           {nextSlide && (
             <div className="absolute inset-0" style={{ transform: `translateX(calc(100% + ${dragOffset}px))`, transition: isAnimating ? "transform 250ms ease-out" : "none" }}>
-              <SlideContent slide={nextSlide} cartProductIds={cartProductIds} onSelectProduct={() => {}} orderType={state.orderType} />
+              <SlideContent slide={nextSlide} cartProductIds={cartProductIds} cartProductMap={cartProductMap} onSelectProduct={() => {}} onRemoveProduct={handleRemoveProduct} orderType={state.orderType} />
             </div>
           )}
         </div>
