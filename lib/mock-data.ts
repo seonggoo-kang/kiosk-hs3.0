@@ -300,7 +300,7 @@ const cakeProducts = generateProducts("icecream-cake", [
   { name: "황금빛 촛불\n눌 케이크", desc: "홀케이크", size: "홀", weight: "800g", price: 30000, cal: "1700~2300 kcal", serving: "800g", image: "/products/아이스크림케이크/황금빛촛불눌케이크_0.png", flavor: false, maxF: 0, sub: "basic" },
 
   // ── 프리미엄/캐릭터/테마 라인 ──
-  { name: "굿럭 카피���라", desc: "프리미엄 케이크", size: "프리미엄", weight: "900g", price: 38000, cal: "2000~2600 kcal", serving: "900g", image: "/products/아이스크림케이크/굿럭카피바라_0.png", flavor: false, maxF: 0, sub: "premium" },
+  { name: "굿럭 카피바라", desc: "프리미엄 케이크", size: "프리미엄", weight: "900g", price: 38000, cal: "2000~2600 kcal", serving: "900g", image: "/products/아이스크림케이크/굿럭카피바라_0.png", flavor: false, maxF: 0, sub: "premium" },
   { name: "럭키 포니\n춘식이 케이크", desc: "캐릭터 케이크", size: "캐릭터", weight: "800g", price: 30000, cal: "1700~2300 kcal", serving: "800g", image: "/products/아이스크림케이크/럭키포니춘식이케이크_0.png", flavor: false, maxF: 0, sub: "premium" },
   { name: "시계 보블 케이크", desc: "보블 케이크", size: "보블", weight: "350g", price: 15000, cal: "500~700 kcal", serving: "350g", image: "/products/아이스크림케이크/시계보블케이크_0.png", flavor: false, maxF: 0, sub: "premium" },
   { name: "로맨틱 야수\n에그 케이크", desc: "에그 케이크", size: "에그", weight: "400g", price: 15000, cal: "500~700 kcal", serving: "400g", image: "/products/아이스크림케이크/로맨틱야수에그케이크_0.png", flavor: false, maxF: 0, sub: "premium" },
@@ -467,7 +467,7 @@ const prepackProducts = generateProducts("prepack", [
   { name: "오레오 쿠키앤크림", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "650~950 kcal", serving: "660ml", image: "/products/레디팩 블록팩/오레오_쿠키앤크림_0.png", flavor: false, maxF: 0, sub: "readypack" },
   { name: "베리베리 스트로베리\n레디팩", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "550~850 kcal", serving: "660ml", image: "/products/레디팩 블록팩/베리베리-스트로베리-레디팩_0.png", flavor: false, maxF: 0, sub: "readypack" },
   { name: "초코나무숲 레디팩", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "650~950 kcal", serving: "660ml", image: "/products/레디팩 블록팩/초코나무숲레디팩_0.png", flavor: false, maxF: 0, sub: "readypack" },
-  { name: "엄마는 ��계인\n레디팩", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "600~900 kcal", serving: "660ml", image: "/products/레디팩 블록팩/엄마는외계인레디팩_0.png", flavor: false, maxF: 0, sub: "readypack" },
+  { name: "엄마는 외계인\n레디팩", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "600~900 kcal", serving: "660ml", image: "/products/레디팩 블록팩/엄마는외계인레디팩_0.png", flavor: false, maxF: 0, sub: "readypack" },
   { name: "레디팩 요거트", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "500~800 kcal", serving: "660ml", image: "/products/레디팩 블록팩/레디팩31요거트_0.png", flavor: false, maxF: 0, sub: "readypack" },
   { name: "체리 쥬빌레 레디팩", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "550~850 kcal", serving: "660ml", image: "/products/레디팩 블록팩/체리-쥬빌레-레디팩_0.png", flavor: false, maxF: 0, sub: "readypack" },
   { name: "민트 초콜릿칩\n레디팩", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "600~900 kcal", serving: "660ml", image: "/products/레디팩 블록팩/민트-초콜릿-칩-레디팩_0.png", flavor: false, maxF: 0, sub: "readypack" },
@@ -541,7 +541,7 @@ const partyProducts = generateProducts("party", [
   { name: "폭죽카드 일러스트", desc: "기타 소품", size: "1개", weight: "-", price: 8600, cal: "-", serving: "-", image: "/products/파티상품/폭죽카드(일러스트)_0.png", flavor: false, maxF: 0, sub: "party-deco" },
   { name: "폭죽카드 패턴", desc: "기타 소품", size: "1개", weight: "-", price: 8600, cal: "-", serving: "-", image: "/products/파티상품/폭죽카드(패턴)_0.png", flavor: false, maxF: 0, sub: "party-deco" },
   { name: "썸머 후르츠\n지비츠 세트", desc: "기타 소품", size: "1세트", weight: "-", price: 44000, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-썸머-후르츠-지비츠-세트-200X160px_0.png", flavor: false, maxF: 0, sub: "party-deco" },
-  { name: "체리 집게핀", desc: "기타 소품", size: "1개", weight: "-", price: 24500, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-체리-집��핀-200X160px_0.png", flavor: false, maxF: 0, sub: "party-deco" },
+  { name: "체리 집게핀", desc: "기타 소품", size: "1개", weight: "-", price: 24500, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-체리-집게핀-200X160px_0.png", flavor: false, maxF: 0, sub: "party-deco" },
   { name: "레몬 집게핀", desc: "기타 소품", size: "1개", weight: "-", price: 24500, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-레몬-집게핀-200X160px_0.png", flavor: false, maxF: 0, sub: "party-deco" },
   { name: "수박 집게핀", desc: "기타 소품", size: "1개", weight: "-", price: 24500, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-수박-집게핀-200X160px_0.png", flavor: false, maxF: 0, sub: "party-deco" },
   { name: "오렌지 집게핀", desc: "기타 소품", size: "1개", weight: "-", price: 24500, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-오렌지-집게핀-200X160px_0.png", flavor: false, maxF: 0, sub: "party-deco" },
@@ -577,7 +577,7 @@ export const flavorCategories: FlavorCategory[] = [
 // ─── Flavors (100) ── Based on actual BR Korea in-store menu ─
 export const flavors: Flavor[] = [
   // ── 추천 (12) ──
-  { id: "jjonkkuret", name: "진정한 쫀꾸렛", image: "/flavors/진정한쫀꾸렛_0.png", color: "hsl(30,40%,75%)", categoryId: "recommended", description: "쫀득한 초콜릿과 바삭한 크런치의 진정한 만���", badge: "이달의 맛" },
+  { id: "jjonkkuret", name: "진정한 쫀꾸렛", image: "/flavors/진정한쫀꾸렛_0.png", color: "hsl(30,40%,75%)", categoryId: "recommended", description: "쫀득한 초콜릿과 바삭한 크런치의 진정한 만남", badge: "이달의 맛" },
   { id: "alien-mom", name: "엄마는 외계인", image: "/flavors/엄마는외계인_0.png", color: "hsl(280,50%,75%)", categoryId: "recommended", description: "알록달록 솜사탕과 쿠키의 신비로운 우주 맛", badge: "1위" },
   { id: "almond-bonbon", name: "아몬드봉봉", image: "/flavors/아몬드봉봉_수정_0.png", color: "hsl(25,35%,72%)", categoryId: "recommended", description: "고소한 아몬드와 달콤한 봉봉의 만남", badge: "2위" },
   { id: "mint-choco-chip", name: "민트 초콜릿칩", image: "/flavors/민트초콜릿칩_0.png", color: "hsl(160,50%,75%)", categoryId: "recommended", description: "시원한 민트와 달콤한 초코칩의 조화", badge: "3위" },
@@ -599,7 +599,7 @@ export const flavors: Flavor[] = [
   { id: "wonderland-cotton", name: "이상한 나라의 솜사탕", image: "/flavors/이상한나라의솜사탕_1.png", color: "hsl(300,50%,80%)", categoryId: "fruit", description: "동화 속 솜사탕처럼 달콤하고 몽환적인 맛", badge: null },
   { id: "orange-sherbet", name: "오렌지 샤베트", image: "/flavors/오렌지샤베트50802_1.png", color: "hsl(25,80%,70%)", categoryId: "fruit", description: "상큼한 오렌지의 시원한 샤베트", badge: null },
   { id: "strawberry-choco-chip", name: "스트로베리 초콜릿칩", image: "/flavors/스트로베리초콜릿칩.png", color: "hsl(345,55%,72%)", categoryId: "fruit", description: "딸기와 초콜릿칩의 달콤한 조합", badge: null },
-  { id: "strawberry-cream", name: "스트로베리 앤 크림", image: "/flavors/스트로베리앤���림_1.png", color: "hsl(348,60%,78%)", categoryId: "fruit", description: "딸기와 크림의 클래식 조합", badge: null },
+  { id: "strawberry-cream", name: "스트로베리 앤 크림", image: "/flavors/스트로베리앤크림_1.png", color: "hsl(348,60%,78%)", categoryId: "fruit", description: "딸기와 크림의 클래식 조합", badge: null },
   { id: "apple-mint", name: "애플민트", image: "/flavors/애플민트.png", color: "hsl(140,45%,72%)", categoryId: "fruit", description: "사과와 민트의 상쾌한 조화", badge: null },
   { id: "peach-yogurt", name: "피치 요거트", image: "/flavors/피치요거트-100x86px_0.png", color: "hsl(20,70%,82%)", categoryId: "fruit", description: "복숭아와 요거트의 상큼한 조화", badge: null },
   { id: "pink-berry-matcha", name: "핑크베리 말차", image: "/flavors/핑크베리말차(수정)_0.png", color: "hsl(340,45%,72%)", categoryId: "fruit", description: "핑크베리와 말차의 조화로운 맛", badge: null },
@@ -607,7 +607,7 @@ export const flavors: Flavor[] = [
   { id: "dino-jelly", name: "디노젤리", image: "/flavors/디노젤리누끼_0.png", color: "hsl(120,50%,70%)", categoryId: "fruit", description: "말랑말랑 디노 젤리의 달콤한 맛", badge: null },
 
   // ── 초콜릿 ──
-  { id: "chocolate", name: "초콜릿", image: "/flavors/초콜릿_1.png", color: "hsl(20,50%,40%)", categoryId: "chocolate", description: "진하고 부드러운 클래식 초콜릿�� 맛", badge: null },
+  { id: "chocolate", name: "초콜릿", image: "/flavors/초콜릿_1.png", color: "hsl(20,50%,40%)", categoryId: "chocolate", description: "진하고 부드러운 클래식 초콜릿의 맛", badge: null },
   { id: "choco-mousse", name: "초콜릿 무스", image: "/flavors/초콜릿무스_0.png", color: "hsl(15,40%,25%)", categoryId: "chocolate", description: "부드럽고 진한 초콜릿 무스의 맛", badge: null },
   { id: "choco-poki-hae", name: "초코포키해", image: "/flavors/초코포키해_0.png", color: "hsl(18,45%,42%)", categoryId: "chocolate", description: "초코와 포키의 달콤한 만남", badge: null },
   { id: "brownie-jubilee", name: "브라우니 쥬빌레", image: "/flavors/(W)브라우니쥬빌레_1.png", color: "hsl(15,35%,38%)", categoryId: "chocolate", description: "촉촉한 브라우니 쥬빌레의 깊은 맛", badge: null },
@@ -638,7 +638,7 @@ export const flavors: Flavor[] = [
   { id: "creme-de-marron", name: "크렘드 마롱", image: "/flavors/크렘드마롱_0.png", color: "hsl(28,42%,52%)", categoryId: "coffee-caramel", description: "프렌치 마롱 크림의 달콤한 맛", badge: null },
   { id: "earl-grey-orange", name: "얼그레이 오렌지", image: "/flavors/(W)얼그레이오렌지_0.png", color: "hsl(30,50%,65%)", categoryId: "coffee-caramel", description: "얼그레이와 오렌지의 향긋한 조화", badge: null },
   { id: "green-tea-earl-grey", name: "그린티 얼그레이", image: "/flavors/(W)그린티얼그레이_0.png", color: "hsl(120,35%,65%)", categoryId: "coffee-caramel", description: "그린티와 얼그레이의 깊은 풍미", badge: null },
-  { id: "green-tea-orange-jasmine", name: "그린티 오렌지 자스민", image: "/flavors/(W)그린티오렌지자스민_0.png", color: "hsl(110,40%,68%)", categoryId: "coffee-caramel", description: "그린티, 오렌지, ���스민의 향긋한 조화", badge: null },
+  { id: "green-tea-orange-jasmine", name: "그린티 오렌지 자스민", image: "/flavors/(W)그린티오렌지자스민_0.png", color: "hsl(110,40%,68%)", categoryId: "coffee-caramel", description: "그린티, 오렌지, 자스민의 향긋한 조화", badge: null },
   { id: "green-tea-caramel", name: "그린티 카라멜", image: "/flavors/(W)그린티카라멜_0.png", color: "hsl(115,35%,60%)", categoryId: "coffee-caramel", description: "그린티와 카라멜의 달콤한 조화", badge: null },
 
   // ── 바닐라/민트 ──
@@ -732,7 +732,7 @@ export const discountSections: DiscountSection[] = [
   },
   {
     id: "mobile-coupon",
-    title: "모바일 교환권 / ��폰 / 기프티콘",
+    title: "모바일 교환권 / 쿠폰 / 기프티콘",
     items: [
       { id: "mobile-voucher", name: "모바일 교환권", discount: 3900, icon: "Ticket" },
       { id: "br-app-coupon", name: "배라앱 발급 쿠폰", icon: "Tag" },
