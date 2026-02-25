@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo, useEffect, useRef, useCallback } from "react"
-import { IceCreamCone, Check } from "lucide-react"
+import { IceCreamCone, Check, Plus, Minus } from "lucide-react"
 import { ProgressStepper } from "@/components/kiosk/progress-stepper"
 import { KioskFooter } from "@/components/kiosk/kiosk-footer"
 import { CategoryTabs } from "@/components/kiosk/category-tabs"
@@ -25,26 +25,38 @@ import {
   type Product,
 } from "@/lib/mock-data"
 
-const ITEMS_4COL = 16
-const ITEMS_3COL = 9
-const ITEMS_2COL = 4
-const ITEMS_1COL = 1
+// Zoom levels: 1=1col, 2=2col, 3=3col, 4=4col(default auto), 5=5col
+// null = auto mode (picks based on product count)
+type ZoomLevel = 1 | 2 | 3 | 4 | 5 | null
 
-function perPageForCount(count: number) {
-  if (count <= 1) return ITEMS_1COL
-  if (count <= 4) return ITEMS_2COL
-  if (count <= 9) return ITEMS_3COL
-  return ITEMS_4COL
+const ZOOM_ITEMS: Record<number, number> = { 1: 1, 2: 4, 3: 9, 4: 16, 5: 20 }
+const ZOOM_GRID: Record<number, string> = {
+  1: "grid grid-cols-1 gap-4 px-6",
+  2: "grid grid-cols-2 gap-4 px-2",
+  3: "grid grid-cols-3 gap-3 px-1",
+  4: "grid grid-cols-4 gap-2",
+  5: "grid grid-cols-5 gap-1.5",
+}
+const ZOOM_SIZE: Record<number, "xs" | "sm" | "md" | "lg" | "xl"> = { 1: "xl", 2: "lg", 3: "md", 4: "sm", 5: "xs" }
+
+function perPageForCount(count: number, zoom: ZoomLevel = null) {
+  if (zoom) return ZOOM_ITEMS[zoom]
+  if (count <= 1) return 1
+  if (count <= 4) return 4
+  if (count <= 9) return 9
+  return 16
 }
 
-function gridClassForCount(count: number) {
-  if (count <= 1) return "grid grid-cols-1 gap-4 px-6"
-  if (count <= 4) return "grid grid-cols-2 gap-4 px-2"
-  if (count <= 9) return "grid grid-cols-3 gap-3 px-1"
-  return "grid grid-cols-4 gap-2"
+function gridClassForCount(count: number, zoom: ZoomLevel = null) {
+  if (zoom) return ZOOM_GRID[zoom]
+  if (count <= 1) return ZOOM_GRID[1]
+  if (count <= 4) return ZOOM_GRID[2]
+  if (count <= 9) return ZOOM_GRID[3]
+  return ZOOM_GRID[4]
 }
 
-function cardSizeForCount(count: number): "sm" | "md" | "lg" | "xl" {
+function cardSizeForCount(count: number, zoom: ZoomLevel = null): "xs" | "sm" | "md" | "lg" | "xl" {
+  if (zoom) return ZOOM_SIZE[zoom]
   if (count <= 1) return "xl"
   if (count <= 4) return "lg"
   if (count <= 9) return "md"
@@ -84,6 +96,7 @@ function SlideContent({
   onSwitchOrderType?: () => void
   autoReturnSeconds?: number | null
   onCancelAutoReturn?: () => void
+  zoomLevel?: ZoomLevel
 }) {
   if (slide.isAiPick) {
     return (
@@ -101,7 +114,7 @@ function SlideContent({
     <div className="h-full overflow-y-auto overflow-x-hidden">
       <div className="flex min-h-full flex-col p-3">
         {slide.products.length > 0 ? (
-          <div className={gridClassForCount(slide.totalCategoryProducts)}>
+          <div className={gridClassForCount(slide.totalCategoryProducts, zoomLevel)}>
             {slide.products.map((product) => (
               <ProductCard
                 key={product.id}
@@ -111,7 +124,7 @@ function SlideContent({
                 onSelect={onSelectProduct}
                 onRemove={onRemoveProduct}
                 priority={slide.pageIndex === 0}
-                size={cardSizeForCount(slide.totalCategoryProducts)}
+                size={cardSizeForCount(slide.totalCategoryProducts, zoomLevel)}
               />
             ))}
           </div>
@@ -210,6 +223,26 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
   const [packableFilter, setPackableFilter] = useState("all")
   const [workshopFilter, setWorkshopFilter] = useState("all")
 
+  // ── Grid zoom ──
+  const [zoomLevel, setZoomLevel] = useState<ZoomLevel>(null)
+  const [showZoomHint, setShowZoomHint] = useState(false)
+  const [zoomIndicator, setZoomIndicator] = useState<number | null>(null)
+  const zoomIndicatorTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    const show = setTimeout(() => setShowZoomHint(true), 2000)
+    const hide = setTimeout(() => setShowZoomHint(false), 6000)
+    return () => { clearTimeout(show); clearTimeout(hide) }
+  }, [])
+
+  const dismissZoomHint = useCallback(() => setShowZoomHint(false), [])
+
+  const showZoomBadge = useCallback((level: number) => {
+    setZoomIndicator(level)
+    if (zoomIndicatorTimeout.current) clearTimeout(zoomIndicatorTimeout.current)
+    zoomIndicatorTimeout.current = setTimeout(() => setZoomIndicator(null), 800)
+  }, [])
+
   const [showAddedToast, setShowAddedToast] = useState(false)
 
   useEffect(() => {
@@ -227,7 +260,7 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
         slides.push({ categoryId: cat.id, pageIndex: 0, totalPages: 1, products: [], totalCategoryProducts: 0, isAiPick: true })
       } else {
         const products = getProductsByCategory(cat.id, state.orderType)
-        const perPage = perPageForCount(products.length)
+        const perPage = perPageForCount(products.length, zoomLevel)
         const totalPages = Math.max(1, Math.ceil(products.length / perPage))
         for (let p = 0; p < totalPages; p++) {
           slides.push({ categoryId: cat.id, pageIndex: p, totalPages, products: products.slice(p * perPage, (p + 1) * perPage), totalCategoryProducts: products.length })
@@ -235,7 +268,7 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
       }
     }
     return slides
-  }, [state.orderType])
+  }, [state.orderType, zoomLevel])
 
   const initialFlatIndex = useMemo(() => {
     const idx = flatSlides.findIndex((s) => s.categoryId === "ai-pick")
@@ -280,7 +313,7 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
     if (activeFilter === "all" || currentSlide.isAiPick) return null
     const allCatProducts = getProductsByCategory(activeCategory, state.orderType)
     const filtered = allCatProducts.filter((p) => p.subcategory === activeFilter)
-    const perPage = perPageForCount(filtered.length)
+    const perPage = perPageForCount(filtered.length, zoomLevel)
     const pages = Math.max(1, Math.ceil(filtered.length / perPage))
     const slides: Slide[] = []
     for (let p = 0; p < pages; p++) {
@@ -452,6 +485,68 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
     if (entry) dispatch({ type: "REMOVE_FROM_CART", payload: entry.cartId })
   }, [cartProductMap, dispatch])
 
+  // ── Pinch-to-zoom ──
+  const pinchPointers = useRef<Map<number, { x: number; y: number }>>(new Map())
+  const pinchStartDist = useRef<number | null>(null)
+  const pinchFired = useRef(false)
+
+  const onPinchPointerDown = useCallback((e: React.PointerEvent) => {
+    pinchPointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY })
+    if (pinchPointers.current.size === 2) {
+      const pts = [...pinchPointers.current.values()]
+      pinchStartDist.current = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y)
+      pinchFired.current = false
+      dragActive.current = false
+      dragOffsetRef.current = 0
+      setDragOffset(0)
+    }
+  }, [])
+
+  const onPinchPointerMove = useCallback((e: React.PointerEvent) => {
+    if (!pinchPointers.current.has(e.pointerId)) return
+    pinchPointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY })
+    if (pinchPointers.current.size === 2 && pinchStartDist.current !== null && !pinchFired.current) {
+      const pts = [...pinchPointers.current.values()]
+      const dist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y)
+      const delta = dist - pinchStartDist.current
+      if (Math.abs(delta) > 60) {
+        pinchFired.current = true
+        dismissZoomHint()
+        setZoomLevel((prev) => {
+          const cur = prev ?? 4
+          const next = delta > 0 ? Math.max(1, cur - 1) : Math.min(5, cur + 1)
+          showZoomBadge(next)
+          return next as 1 | 2 | 3 | 4 | 5
+        })
+      }
+    }
+  }, [dismissZoomHint, showZoomBadge])
+
+  const onPinchPointerUp = useCallback((e: React.PointerEvent) => {
+    pinchPointers.current.delete(e.pointerId)
+    if (pinchPointers.current.size < 2) { pinchStartDist.current = null; pinchFired.current = false }
+  }, [])
+
+  const handleZoomIn = useCallback(() => {
+    dismissZoomHint()
+    setZoomLevel((prev) => {
+      const cur = prev ?? 4
+      const next = Math.max(1, cur - 1) as 1 | 2 | 3 | 4 | 5
+      showZoomBadge(next)
+      return next
+    })
+  }, [dismissZoomHint, showZoomBadge])
+
+  const handleZoomOut = useCallback(() => {
+    dismissZoomHint()
+    setZoomLevel((prev) => {
+      const cur = prev ?? 4
+      const next = Math.min(5, cur + 1) as 1 | 2 | 3 | 4 | 5
+      showZoomBadge(next)
+      return next
+    })
+  }, [dismissZoomHint, showZoomBadge])
+
   // Cross-sell products for empty state recovery
   const crossSellProducts = useMemo(() => {
     return getRankedRecommendations(state.orderType).slice(0, 4)
@@ -566,16 +661,17 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
       {/* Carousel */}
       <div
         ref={containerRef}
-        className="relative flex-1 overflow-hidden bg-[#FFFFFF] select-none touch-pan-y"
-        onPointerDown={onDragPointerDown}
-        onPointerMove={onDragPointerMove}
-        onPointerUp={onDragPointerUp}
-        onPointerCancel={onDragPointerUp}
+        className="relative flex-1 overflow-hidden bg-[#FFFFFF] select-none"
+        style={{ touchAction: "none" }}
+        onPointerDown={(e) => { onDragPointerDown(e); onPinchPointerDown(e) }}
+        onPointerMove={(e) => { onDragPointerMove(e); onPinchPointerMove(e) }}
+        onPointerUp={(e) => { onDragPointerUp(e); onPinchPointerUp(e) }}
+        onPointerCancel={(e) => { onDragPointerUp(e); onPinchPointerUp(e) }}
       >
         <div className="relative h-full w-full">
           {prevSlide && (
             <div className="absolute inset-0" style={{ transform: `translateX(calc(-100% + ${dragOffset}px))`, transition: isAnimating ? "transform 250ms ease-out" : "none" }}>
-              <SlideContent slide={prevSlide} cartProductIds={cartProductIds} cartProductMap={cartProductMap} onSelectProduct={() => {}} onRemoveProduct={handleRemoveProduct} orderType={state.orderType} />
+              <SlideContent slide={prevSlide} cartProductIds={cartProductIds} cartProductMap={cartProductMap} onSelectProduct={() => {}} onRemoveProduct={handleRemoveProduct} orderType={state.orderType} zoomLevel={zoomLevel} />
             </div>
           )}
           <div
@@ -595,11 +691,12 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
               onSwitchOrderType={handleSwitchOrderType}
               autoReturnSeconds={autoReturnTimer}
               onCancelAutoReturn={cancelAutoReturn}
+              zoomLevel={zoomLevel}
             />
           </div>
           {nextSlide && (
             <div className="absolute inset-0" style={{ transform: `translateX(calc(100% + ${dragOffset}px))`, transition: isAnimating ? "transform 250ms ease-out" : "none" }}>
-              <SlideContent slide={nextSlide} cartProductIds={cartProductIds} cartProductMap={cartProductMap} onSelectProduct={() => {}} onRemoveProduct={handleRemoveProduct} orderType={state.orderType} />
+              <SlideContent slide={nextSlide} cartProductIds={cartProductIds} cartProductMap={cartProductMap} onSelectProduct={() => {}} onRemoveProduct={handleRemoveProduct} orderType={state.orderType} zoomLevel={zoomLevel} />
             </div>
           )}
         </div>
@@ -612,6 +709,89 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
             {Array.from({ length: displaySlide.totalPages }).map((_, i) => (
               <span key={i} className={`h-1.5 rounded-full transition-all duration-300 ${i === displaySlide.pageIndex ? "w-4 bg-primary" : "w-1.5 bg-border"}`} />
             ))}
+          </div>
+        )}
+
+        {/* Floating +/- zoom control */}
+        {!displaySlide.isAiPick && displaySlide.products.length > 0 && (
+          <div className="absolute bottom-10 right-3 z-20 flex flex-col items-center rounded-full border border-border bg-card/80 shadow-lg backdrop-blur-sm">
+            <button
+              onClick={handleZoomIn}
+              disabled={(zoomLevel ?? 4) <= 1}
+              className={"flex h-9 w-9 items-center justify-center rounded-t-full transition-colors " + ((zoomLevel ?? 4) <= 1 ? "text-muted-foreground/30" : "text-foreground active:bg-muted")}
+              aria-label="메뉴 크게 보기"
+            >
+              <Plus className="h-4 w-4" strokeWidth={2.5} />
+            </button>
+            <div className="flex flex-col items-center gap-0.5 py-0.5">
+              {[1, 2, 3, 4, 5].map((level) => (
+                <span
+                  key={level}
+                  className={"h-1 rounded-full transition-all " + ((zoomLevel ?? 4) === level ? "w-2.5 bg-primary" : "w-1 bg-border")}
+                />
+              ))}
+            </div>
+            <button
+              onClick={handleZoomOut}
+              disabled={(zoomLevel ?? 4) >= 5}
+              className={"flex h-9 w-9 items-center justify-center rounded-b-full transition-colors " + ((zoomLevel ?? 4) >= 5 ? "text-muted-foreground/30" : "text-foreground active:bg-muted")}
+              aria-label="메뉴 작게 보기"
+            >
+              <Minus className="h-4 w-4" strokeWidth={2.5} />
+            </button>
+          </div>
+        )}
+
+        {/* Zoom level indicator (brief flash on change) */}
+        {zoomIndicator !== null && (
+          <div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center">
+            <div className="animate-in fade-in zoom-in-95 duration-200 rounded-2xl bg-foreground/70 px-6 py-3 shadow-xl backdrop-blur-sm">
+              <div className="flex items-center gap-2">
+                <div className="grid gap-0.5" style={{ gridTemplateColumns: "repeat(" + zoomIndicator + ", 6px)" }}>
+                  {Array.from({ length: zoomIndicator * 2 }).map((_, i) => (
+                    <span key={i} className="h-1.5 w-1.5 rounded-[1px] bg-primary-foreground/80" />
+                  ))}
+                </div>
+                <span className="text-sm font-bold text-primary-foreground">
+                  {zoomIndicator + " x " + Math.min(zoomIndicator, 4)}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* First-time zoom hint */}
+        {showZoomHint && (
+          <div
+            className="pointer-events-auto absolute inset-0 z-30 flex items-center justify-center bg-foreground/20 backdrop-blur-[1px] animate-in fade-in duration-500"
+            onClick={dismissZoomHint}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") dismissZoomHint() }}
+            aria-label="힌트 닫기"
+          >
+            <div className="flex flex-col items-center gap-3 rounded-2xl bg-card/95 px-6 py-5 shadow-xl backdrop-blur-sm">
+              <div className="flex items-center gap-3">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
+                  <path d="M6 6l4 4M18 6l-4 4M6 18l4-4M18 18l-4-4" />
+                  <circle cx="12" cy="12" r="2" />
+                </svg>
+                <span className="text-xs font-medium text-foreground">
+                  {"두 손가락으로 확대/축소"}
+                </span>
+              </div>
+              <div className="h-px w-full bg-border" />
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1 rounded-full border border-border bg-muted px-2 py-0.5">
+                  <Plus className="h-3 w-3 text-foreground" />
+                  <span className="text-muted-foreground">/</span>
+                  <Minus className="h-3 w-3 text-foreground" />
+                </div>
+                <span className="text-xs font-medium text-foreground">
+                  {"버튼으로 메뉴 크기 조절"}
+                </span>
+              </div>
+            </div>
           </div>
         )}
 

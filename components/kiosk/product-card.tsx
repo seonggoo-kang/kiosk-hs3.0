@@ -5,7 +5,7 @@ import { X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { formatPrice, type Product } from "@/lib/mock-data"
 
-type CardSize = "sm" | "md" | "lg" | "xl"
+type CardSize = "xs" | "sm" | "md" | "lg" | "xl"
 
 type ProductCardProps = {
   product: Product
@@ -26,7 +26,19 @@ const SIZE_CONFIG: Record<CardSize, {
   price: string
   tag: string
   padding: string
+  hideDetail?: boolean
 }> = {
+  xs: {
+    container: "h-16",
+    image: "h-[52px] w-[52px]",
+    imgPx: 56,
+    name: "text-[9px]",
+    detail: "text-[8px]",
+    price: "text-[9px]",
+    tag: "text-[6px]",
+    padding: "p-1 pb-1.5",
+    hideDetail: true,
+  },
   sm: {
     container: "h-20",
     image: "h-[72px] w-[72px]",
@@ -135,14 +147,16 @@ export function ProductCard({ product, isSelected, quantity, onSelect, onRemove,
           </span>
         )}
       </div>
-      <p className={cn("line-clamp-2 whitespace-pre-wrap text-center font-semibold leading-snug text-foreground", s.name)}>
+      <p className={cn("whitespace-pre-wrap text-center font-semibold leading-snug text-foreground", s.hideDetail ? "line-clamp-1" : "line-clamp-2", s.name)}>
         {product.name}
       </p>
-      <p className={cn("mt-0.5 text-center leading-tight text-muted-foreground", s.detail)}>
-        {product.weight && product.weight !== "-" && !product.size.includes(product.weight)
-          ? `${product.size} (${product.weight})`
-          : product.size}
-      </p>
+      {!s.hideDetail && (
+        <p className={cn("mt-0.5 text-center leading-tight text-muted-foreground", s.detail)}>
+          {product.weight && product.weight !== "-" && !product.size.includes(product.weight)
+            ? `${product.size} (${product.weight})`
+            : product.size}
+        </p>
+      )}
       <p className={cn("mt-1 font-bold text-primary", s.price)}>
         {product.price === 0 ? "0원" : formatPrice(product.price)}
       </p>
