@@ -563,6 +563,15 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
     })
   }, [zoomMap, activeCategory])
 
+  const handleResetZoom = useCallback(() => {
+    setZoomMap((prev) => {
+      const next = { ...prev }
+      delete next[activeCategory]
+      return next
+    })
+    showZoomBadge(4)
+  }, [activeCategory, showZoomBadge])
+
   // Cross-sell products for empty state recovery
   const crossSellProducts = useMemo(() => {
     return getRankedRecommendations(state.orderType).slice(0, 4)
@@ -755,12 +764,20 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
               <Minus className="h-4 w-4" strokeWidth={2.5} />
             </button>
             {zoomLevel !== null && (
-              <button
-                onClick={handleApplyZoomToAll}
-                className="mt-1 mb-1 px-1 text-[7px] font-medium text-primary leading-tight text-center active:text-primary/70"
-              >
-                {"전체\n적용"}
-              </button>
+              <div className="flex flex-col items-center gap-0.5 border-t border-border pt-1 pb-1">
+                <button
+                  onClick={handleResetZoom}
+                  className="px-1 text-[7px] font-medium text-muted-foreground leading-tight text-center active:text-foreground"
+                >
+                  {"초기화"}
+                </button>
+                <button
+                  onClick={handleApplyZoomToAll}
+                  className="px-1 text-[7px] font-medium text-primary leading-tight text-center active:text-primary/70"
+                >
+                  {"전체\n적용"}
+                </button>
+              </div>
             )}
         </div>
 
