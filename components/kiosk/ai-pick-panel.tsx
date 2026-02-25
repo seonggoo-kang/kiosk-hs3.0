@@ -28,16 +28,25 @@ function cardSizeForCount(count: number): "sm" | "md" | "lg" | "xl" {
 type RecommendedPanelProps = {
   cartProductIds: Set<string>
   onSelectProduct: (product: Product) => void
+  orderType?: "takeout" | "dine-in" | null
 }
 
-export function RecommendedPanel({ cartProductIds, onSelectProduct }: RecommendedPanelProps) {
-  const [allProducts, setAllProducts] = useState<Product[]>(() => getRankedRecommendations())
+export function RecommendedPanel({ cartProductIds, onSelectProduct, orderType }: RecommendedPanelProps) {
+  const [allProducts, setAllProducts] = useState<Product[]>(() => getRankedRecommendations(orderType))
   const [activeFilter, setActiveFilter] = useState("all")
   const [loading, setLoading] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
   const filterRef = useRef<HTMLDivElement>(null)
 
   const filterCategories = useMemo(() => getRecommendedFilterCategories(), [])
+
+  // Re-filter when order type changes mid-session
+  const prevOrderType = useRef(orderType)
+  if (prevOrderType.current !== orderType) {
+    prevOrderType.current = orderType
+    setAllProducts(getRankedRecommendations(orderType))
+    setActiveFilter("all")
+  }
 
   // Filtered products
   const visibleProducts = useMemo(() => {
@@ -93,7 +102,7 @@ export function RecommendedPanel({ cartProductIds, onSelectProduct }: Recommende
   const handleRefresh = useCallback(() => {
     setLoading(true)
     setTimeout(() => {
-      setAllProducts(shuffleRankedRecommendations())
+      setAllProducts(shuffleRankedRecommendations(orderType))
       setActiveFilter("all")
       setLoading(false)
       scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" })

@@ -63,16 +63,19 @@ function SlideContent({
   slide,
   cartProductIds,
   onSelectProduct,
+  orderType,
 }: {
   slide: Slide
   cartProductIds: Set<string>
   onSelectProduct: (p: Product) => void
+  orderType?: "takeout" | "dine-in" | null
 }) {
   if (slide.isAiPick) {
     return (
       <RecommendedPanel
         cartProductIds={cartProductIds}
         onSelectProduct={onSelectProduct}
+        orderType={orderType}
       />
     )
   }
@@ -199,7 +202,7 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
   const selectedProduct = state.selectedProductId
     ? displaySlide.products.find((p) => p.id === state.selectedProductId) ||
       currentSlide.products.find((p) => p.id === state.selectedProductId) ||
-      getRankedRecommendations().find((p) => p.id === state.selectedProductId) ||
+      getRankedRecommendations(state.orderType).find((p) => p.id === state.selectedProductId) ||
       null
     : null
 
@@ -332,12 +335,12 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
     }
     const subcats = filterMap[activeCategory]
     if (!subcats) return null
-    const products = getProductsByCategory(activeCategory)
+    const products = getProductsByCategory(activeCategory, state.orderType)
     return subcats.filter((sc) => {
       if (sc.id === "all") return true
       return products.some((p) => p.subcategory === sc.id)
     })
-  }, [activeCategory])
+  }, [activeCategory, state.orderType])
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
@@ -363,7 +366,7 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
         <div className="relative h-full w-full">
           {prevSlide && (
             <div className="absolute inset-0" style={{ transform: `translateX(calc(-100% + ${dragOffset}px))`, transition: isAnimating ? "transform 250ms ease-out" : "none" }}>
-              <SlideContent slide={prevSlide} cartProductIds={cartProductIds} onSelectProduct={() => {}} />
+              <SlideContent slide={prevSlide} cartProductIds={cartProductIds} onSelectProduct={() => {}} orderType={state.orderType} />
             </div>
           )}
           <div
@@ -371,11 +374,11 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
             className="absolute inset-0"
             style={{ transform: dragOffset !== 0 ? `translateX(${dragOffset}px)` : undefined, transition: isAnimating ? "transform 250ms ease-out" : "none" }}
           >
-            <SlideContent slide={displaySlide} cartProductIds={cartProductIds} onSelectProduct={handleProductSelect} />
+            <SlideContent slide={displaySlide} cartProductIds={cartProductIds} onSelectProduct={handleProductSelect} orderType={state.orderType} />
           </div>
           {nextSlide && (
             <div className="absolute inset-0" style={{ transform: `translateX(calc(100% + ${dragOffset}px))`, transition: isAnimating ? "transform 250ms ease-out" : "none" }}>
-              <SlideContent slide={nextSlide} cartProductIds={cartProductIds} onSelectProduct={() => {}} />
+              <SlideContent slide={nextSlide} cartProductIds={cartProductIds} onSelectProduct={() => {}} orderType={state.orderType} />
             </div>
           )}
         </div>
