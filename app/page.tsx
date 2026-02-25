@@ -104,7 +104,7 @@ export default function LandingPage() {
   }, [isDragging, currentIndex])
 
   return (
-    <div className="relative flex flex-1 flex-col overflow-hidden bg-black">
+    <div className="relative flex flex-1 flex-col overflow-hidden bg-background">
       {/* ═══════════════════════════════════════════
           BANNER SLIDER -- always present
           In idle: fills the full screen
@@ -166,17 +166,17 @@ export default function LandingPage() {
         {/* Page indicator dots */}
         {banners.length > 1 && (
           <div
-            className="absolute bottom-4 left-0 right-0 z-10 flex items-center justify-center gap-2 transition-all duration-500"
+            className="absolute left-0 right-0 z-10 flex items-center justify-center gap-1.5 transition-all duration-500"
             style={{ bottom: isIdle ? "48px" : "10px" }}
             aria-hidden="true"
           >
             {banners.map((_, i) => (
               <span
                 key={i}
-                className={`rounded-full transition-all duration-400 ${
+                className={`h-1.5 rounded-full transition-all duration-300 ${
                   i === currentIndex
-                    ? "h-2 w-5 bg-white"
-                    : "h-2 w-2 bg-white/40"
+                    ? "w-4 bg-primary"
+                    : "w-1.5 bg-border"
                 }`}
               />
             ))}
