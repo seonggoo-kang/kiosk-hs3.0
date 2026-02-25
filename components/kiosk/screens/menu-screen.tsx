@@ -84,6 +84,7 @@ function SlideContent({
   onSwitchOrderType,
   autoReturnSeconds,
   onCancelAutoReturn,
+  zoomLevel,
 }: {
   slide: Slide
   cartProductIds: Set<string>
