@@ -111,7 +111,7 @@ export default function LandingPage() {
           In active: shrinks to top ~43%
           ═══════════════════════════════════════════ */}
       <div
-        className="relative w-full overflow-hidden transition-all duration-500 ease-out"
+        className="relative w-full overflow-hidden bg-background transition-all duration-500 ease-out"
         style={{
           flex: "1 1 0%",
           minHeight: 0,
