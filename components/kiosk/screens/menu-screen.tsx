@@ -714,8 +714,7 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
         )}
 
         {/* Floating +/- zoom control */}
-        {!displaySlide.isAiPick && displaySlide.products.length > 0 && (
-          <div className="absolute bottom-10 right-3 z-20 flex flex-col items-center rounded-full border border-border bg-card/80 shadow-lg backdrop-blur-sm">
+        <div className="absolute bottom-10 right-3 z-20 flex flex-col items-center rounded-full border border-border bg-card/80 shadow-lg backdrop-blur-sm">
             <button
               onClick={handleZoomIn}
               disabled={(zoomLevel ?? 4) <= 1}
@@ -740,8 +739,7 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
             >
               <Minus className="h-4 w-4" strokeWidth={2.5} />
             </button>
-          </div>
-        )}
+        </div>
 
         {/* Zoom level indicator (brief flash on change) */}
         {zoomIndicator !== null && (
