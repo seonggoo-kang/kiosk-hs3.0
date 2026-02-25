@@ -140,7 +140,7 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
       if (cat.id === "ai-pick") {
         slides.push({ categoryId: cat.id, pageIndex: 0, totalPages: 1, products: [], totalCategoryProducts: 0, isAiPick: true })
       } else {
-        const products = getProductsByCategory(cat.id)
+        const products = getProductsByCategory(cat.id, state.orderType)
         const perPage = perPageForCount(products.length)
         const totalPages = Math.max(1, Math.ceil(products.length / perPage))
         for (let p = 0; p < totalPages; p++) {
@@ -149,7 +149,7 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
       }
     }
     return slides
-  }, [])
+  }, [state.orderType])
 
   const initialFlatIndex = useMemo(() => {
     const idx = flatSlides.findIndex((s) => s.categoryId === "ai-pick")
@@ -171,7 +171,7 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
 
   const filteredSlides = useMemo(() => {
     if (activeFilter === "all" || currentSlide.isAiPick) return null
-    const allCatProducts = getProductsByCategory(activeCategory)
+    const allCatProducts = getProductsByCategory(activeCategory, state.orderType)
     const filtered = allCatProducts.filter((p) => p.subcategory === activeFilter)
     const perPage = perPageForCount(filtered.length)
     const pages = Math.max(1, Math.ceil(filtered.length / perPage))
@@ -180,7 +180,7 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
       slides.push({ categoryId: activeCategory, pageIndex: p, totalPages: pages, products: filtered.slice(p * perPage, (p + 1) * perPage), totalCategoryProducts: filtered.length })
     }
     return slides
-  }, [activeFilter, activeCategory, currentSlide.isAiPick])
+  }, [activeFilter, activeCategory, currentSlide.isAiPick, state.orderType])
 
   const [filteredPageIndex, setFilteredPageIndex] = useState(0)
   useEffect(() => { setFilteredPageIndex(0) }, [activeFilter])
