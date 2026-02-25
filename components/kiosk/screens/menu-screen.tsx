@@ -99,7 +99,11 @@ function SlideContent({
         ) : (
           <div className="flex h-full flex-col items-center justify-center gap-3 text-muted-foreground">
             <IceCreamCone className="h-12 w-12 opacity-30" />
-            <p className="text-sm">이 카테고리에 상품이 없습니다.</p>
+            <p className="text-center text-sm leading-relaxed px-6">
+              {orderType
+                ? `이 카테고리에는 '${orderType === "takeout" ? "가져가기" : "먹고가기"}'가 가능한 상품이 없습니다.`
+                : "이 카테고리에 상품이 없습니다."}
+            </p>
           </div>
         )}
       </div>
