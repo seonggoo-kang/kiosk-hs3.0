@@ -52,7 +52,7 @@ export function ProductCard({ product, isSelected, onSelect, priority }: Product
           </span>
         )}
       </div>
-      <p className="whitespace-pre-wrap text-center text-xs font-semibold leading-tight text-foreground">
+      <p className="line-clamp-2 whitespace-pre-wrap text-center text-[10px] font-semibold leading-snug text-foreground">
         {product.name}
       </p>
       <p className="mt-0.5 text-center text-[10px] leading-tight text-muted-foreground">
@@ -60,7 +60,7 @@ export function ProductCard({ product, isSelected, onSelect, priority }: Product
           ? `${product.size} (${product.weight})`
           : product.size}
       </p>
-      <p className="mt-1 text-xs font-bold text-primary">
+      <p className="mt-1 text-[10px] font-bold text-primary">
         {product.price === 0 ? "0원" : formatPrice(product.price)}
       </p>
     </button>

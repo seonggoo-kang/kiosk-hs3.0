@@ -10,6 +10,7 @@ type QuantityControlProps = {
   max?: number
   unit?: string
   size?: "sm" | "md"
+  dark?: boolean
 }
 
 export function QuantityControl({
@@ -19,6 +20,7 @@ export function QuantityControl({
   max = 99,
   unit,
   size = "md",
+  dark = false,
 }: QuantityControlProps) {
   const isSmall = size === "sm"
 
@@ -28,30 +30,37 @@ export function QuantityControl({
         onClick={() => onChange(Math.max(min, value - 1))}
         disabled={value <= min}
         className={cn(
-          "flex shrink-0 items-center justify-center rounded-full border border-border transition-colors active:bg-muted disabled:opacity-30",
+          "flex shrink-0 items-center justify-center rounded-full border transition-colors disabled:opacity-30",
+          dark
+            ? "border-gray-500 text-gray-300 active:bg-gray-600"
+            : "border-border active:bg-muted",
           isSmall ? "h-7 w-7" : "h-8 w-8"
         )}
-        aria-label="감소"
+        aria-label={"\uAC10\uC18C"}
       >
         <Minus className={isSmall ? "h-3 w-3" : "h-3.5 w-3.5"} />
       </button>
       <span
         className={cn(
-          "min-w-[2rem] text-center font-bold text-primary",
+          "min-w-[2rem] text-center font-bold",
+          dark ? "text-white" : "text-primary",
           isSmall ? "text-sm" : "text-base"
         )}
       >
         {value}
-        {unit && <span className="text-xs font-normal text-muted-foreground">{unit}</span>}
+        {unit && <span className={cn("text-xs font-normal", dark ? "text-gray-400" : "text-muted-foreground")}>{unit}</span>}
       </span>
       <button
         onClick={() => onChange(Math.min(max, value + 1))}
         disabled={value >= max}
         className={cn(
-          "flex shrink-0 items-center justify-center rounded-full border border-border transition-colors active:bg-muted disabled:opacity-30",
+          "flex shrink-0 items-center justify-center rounded-full border transition-colors disabled:opacity-30",
+          dark
+            ? "border-gray-500 text-gray-300 active:bg-gray-600"
+            : "border-border active:bg-muted",
           isSmall ? "h-7 w-7" : "h-8 w-8"
         )}
-        aria-label="증가"
+        aria-label={"\uC99D\uAC00"}
       >
         <Plus className={isSmall ? "h-3 w-3" : "h-3.5 w-3.5"} />
       </button>

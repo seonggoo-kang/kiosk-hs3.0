@@ -13,11 +13,19 @@ export type CartItemOption = {
   quantity: number
 }
 
+export type ResolvedRequiredOption = {
+  groupId: string
+  selectedOptionId: string
+  selectedOptionName: string
+  priceAdd: number
+}
+
 export type CartItem = {
   cartId: string
   product: Product
   selectedFlavors: Flavor[]
   options: CartItemOption[]
+  requiredSelections: ResolvedRequiredOption[]
   quantity: number
 }
 
@@ -32,7 +40,8 @@ type OrderState = {
   cart: CartItem[]
   discounts: DiscountApplied[]
   selectedProductId: string | null
-}
+  lastTouchedCartId: string | null
+  }
 
 type OrderAction =
   | { type: "SET_ORDER_TYPE"; payload: OrderType }
@@ -40,6 +49,8 @@ type OrderAction =
   | { type: "REMOVE_FROM_CART"; payload: string }
   | { type: "UPDATE_QUANTITY"; payload: { cartId: string; quantity: number } }
   | { type: "SELECT_PRODUCT"; payload: string | null }
+  | { type: "ADD_TO_CART_INSTANT"; payload: Product }
+  | { type: "RESOLVE_OPTIONS"; payload: { cartId: string; flavors?: Flavor[]; requiredSelections?: ResolvedRequiredOption[] } }
   | { type: "APPLY_DISCOUNT"; payload: DiscountApplied }
   | { type: "REMOVE_DISCOUNT"; payload: string }
   | { type: "RESET_ORDER" }
@@ -49,8 +60,11 @@ function orderReducer(state: OrderState, action: OrderAction): OrderState {
   switch (action.type) {
     case "SET_ORDER_TYPE":
       return { ...state, orderType: action.payload }
-    case "ADD_TO_CART":
-      return { ...state, cart: [...state.cart, action.payload], selectedProductId: null }
+    case "ADD_TO_CART": {
+      // Ensure requiredSelections exists for backward compatibility
+      const cartItem = { ...action.payload, requiredSelections: action.payload.requiredSelections ?? [] }
+      return { ...state, cart: [...state.cart, cartItem], selectedProductId: null }
+    }
     case "REMOVE_FROM_CART":
       return { ...state, cart: state.cart.filter((item) => item.cartId !== action.payload) }
     case "UPDATE_QUANTITY": {
@@ -66,6 +80,47 @@ function orderReducer(state: OrderState, action: OrderAction): OrderState {
     }
     case "SELECT_PRODUCT":
       return { ...state, selectedProductId: action.payload }
+    case "ADD_TO_CART_INSTANT": {
+      const product = action.payload
+      const existing = state.cart.find((item) => item.product.id === product.id)
+      if (existing) {
+        // Increment quantity of existing item and mark it as last touched
+        return {
+          ...state,
+          cart: state.cart.map((item) =>
+            item.cartId === existing.cartId
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
+          ),
+          selectedProductId: null,
+          lastTouchedCartId: existing.cartId,
+        }
+      }
+      const newItem: CartItem = {
+        cartId: `cart-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+        product,
+        selectedFlavors: [],
+        options: [],
+        requiredSelections: [],
+        quantity: 1,
+      }
+      return { ...state, cart: [...state.cart, newItem], selectedProductId: null, lastTouchedCartId: newItem.cartId }
+    }
+    case "RESOLVE_OPTIONS": {
+      const { cartId, flavors, requiredSelections } = action.payload
+      return {
+        ...state,
+        cart: state.cart.map((item) =>
+          item.cartId === cartId
+            ? {
+                ...item,
+                ...(flavors !== undefined ? { selectedFlavors: flavors } : {}),
+                ...(requiredSelections !== undefined ? { requiredSelections } : {}),
+              }
+            : item
+        ),
+      }
+    }
     case "APPLY_DISCOUNT":
       return { ...state, discounts: [...state.discounts.filter((d) => d.id !== action.payload.id), action.payload] }
     case "REMOVE_DISCOUNT":
@@ -82,7 +137,8 @@ const initialState: OrderState = {
   cart: [],
   discounts: [],
   selectedProductId: null,
-}
+  lastTouchedCartId: null,
+  }
 
 // ─── Context ──────────────────────────────────────────────
 type OrderContextValue = {
@@ -126,4 +182,11 @@ export function useOrder() {
     throw new Error("useOrder must be used within an OrderProvider")
   }
   return context
+}
+
+// Helper: check if a cart item still needs required options resolved
+export function itemNeedsOptions(item: CartItem): boolean {
+  const needsFlavor = item.product.requiresFlavor && item.selectedFlavors.length === 0
+  const needsRequired = item.product.requiredOptions.length > item.requiredSelections.length
+  return needsFlavor || needsRequired
 }

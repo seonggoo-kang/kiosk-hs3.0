@@ -18,10 +18,10 @@ export function ActionBar({
   primaryDisabled = false,
 }: ActionBarProps) {
   return (
-    <div className="flex shrink-0 gap-3 bg-card px-4 pb-2 pt-2">
+    <div className="flex shrink-0 gap-3 bg-[#F6F6FA] px-4 pb-2 pt-2">
       <button
         onClick={onBack}
-        className="flex h-14 flex-1 items-center justify-center rounded-xl bg-secondary text-base font-bold text-secondary-foreground transition-colors active:opacity-80"
+        className="flex h-[46px] flex-1 items-center justify-center rounded-xl bg-secondary text-base font-bold text-secondary-foreground transition-colors active:opacity-80"
       >
         {backLabel}
       </button>
@@ -29,10 +29,10 @@ export function ActionBar({
         onClick={onPrimary}
         disabled={primaryDisabled}
         className={cn(
-          "flex h-14 flex-1 items-center justify-center rounded-xl text-base font-bold transition-colors active:opacity-80",
+          "flex h-[46px] flex-1 items-center justify-center rounded-xl text-base font-bold transition-colors active:opacity-80",
           primaryDisabled
             ? "bg-muted text-muted-foreground"
-            : "bg-primary text-primary-foreground"
+            : "bg-[#e84073] text-white"
         )}
       >
         {primaryLabel}

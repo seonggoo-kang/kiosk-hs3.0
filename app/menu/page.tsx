@@ -8,15 +8,16 @@ import { KioskFooter } from "@/components/kiosk/kiosk-footer"
 import { CategoryTabs } from "@/components/kiosk/category-tabs"
 import { ProductCard } from "@/components/kiosk/product-card"
 import { ProductDetailPanel } from "@/components/kiosk/product-detail-panel"
-import { CartStrip } from "@/components/kiosk/cart-strip"
+import { MiniCart } from "@/components/kiosk/cart-strip"
 import { ActionBar } from "@/components/kiosk/action-bar"
 import { EventPromoBanners } from "@/components/kiosk/event-promo-banners"
 import { SubcategoryFilter } from "@/components/kiosk/subcategory-filter"
-import { AiPickPanel } from "@/components/kiosk/ai-pick-panel"
-import { useOrder } from "@/lib/order-context"
+import { RecommendedPanel } from "@/components/kiosk/ai-pick-panel"
+import { useOrder, itemNeedsOptions } from "@/lib/order-context"
 import {
   categories,
   getProductsByCategory,
+  getRankedRecommendations,
   cakeSubcategories,
   beverageSubcategories,
   dessertSubcategories,
@@ -41,7 +42,7 @@ type Slide = {
 // ── Slide renderer (pure presentational) ───────────────────
 function SlideContent({
   slide,
-  selectedProductId,
+  cartProductIds,
   onSelectProduct,
   onEventOverflowDrag,
   onEventOverflowCommit,
@@ -50,7 +51,7 @@ function SlideContent({
   canOverflowRight,
 }: {
   slide: Slide
-  selectedProductId: string | null
+  cartProductIds: Set<string>
   onSelectProduct: (p: Product) => void
   onEventOverflowDrag?: (dx: number) => void
   onEventOverflowCommit?: (direction: "left" | "right") => void
@@ -73,7 +74,12 @@ function SlideContent({
   }
 
   if (slide.isAiPick) {
-    return <AiPickPanel />
+    return (
+      <RecommendedPanel
+        cartProductIds={cartProductIds}
+        onSelectProduct={onSelectProduct}
+      />
+    )
   }
 
   return (
@@ -85,7 +91,7 @@ function SlideContent({
               <ProductCard
                 key={product.id}
                 product={product}
-                isSelected={selectedProductId === product.id}
+                isSelected={cartProductIds.has(product.id)}
                 onSelect={onSelectProduct}
                 priority={slide.pageIndex === 0}
               />
@@ -166,9 +172,9 @@ function MenuContent() {
   }, [])
 
   // ── Flat index state ──
-  // Start at the first slide of 4th category (index 3, "workshop")
+  // Start at the first slide of "AI 추천" (index 0)
   const initialFlatIndex = useMemo(() => {
-    const idx = flatSlides.findIndex((s) => s.categoryId === categories[3].id)
+    const idx = flatSlides.findIndex((s) => s.categoryId === "ai-pick")
     return idx >= 0 ? idx : 0
   }, [flatSlides])
 
@@ -235,10 +241,12 @@ function MenuContent() {
   const selectedProduct = state.selectedProductId
     ? displaySlide.products.find((p) => p.id === state.selectedProductId) ||
       currentSlide.products.find((p) => p.id === state.selectedProductId) ||
+      getRankedRecommendations().find((p) => p.id === state.selectedProductId) ||
       null
     : null
 
   const hasCart = state.cart.length > 0
+  const cartProductIds = useMemo(() => new Set(state.cart.map((item) => item.product.id)), [state.cart])
 
   // ── Category tab click: jump to first slide of that category ──
   const handleCategoryChange = useCallback(
@@ -410,7 +418,7 @@ function MenuContent() {
     [nextSlide, prevSlide, isFiltered, dispatch]
   )
 
-  // ── Product interaction ──
+  // ── Product interaction: instant-add to cart ──
   const handleProductSelect = useCallback(
     (product: Product) => {
       // If a horizontal drag just happened, ignore the click
@@ -419,48 +427,11 @@ function MenuContent() {
         return
       }
 
-      if (state.selectedProductId === product.id) {
-        if (product.requiresFlavor) {
-          router.push(`/menu/flavors?productId=${product.id}`)
-        } else {
-          dispatch({
-            type: "ADD_TO_CART",
-            payload: {
-              cartId: `${product.id}-${Date.now()}`,
-              product,
-              selectedFlavors: [],
-              options: [],
-              quantity: 1,
-            },
-          })
-        }
-      } else {
-        dispatch({ type: "SELECT_PRODUCT", payload: product.id })
-      }
+      // Instantly add to mini cart (pending options if needed)
+      dispatch({ type: "ADD_TO_CART_INSTANT", payload: product })
     },
-    [state.selectedProductId, router, dispatch]
+    [dispatch]
   )
-
-  const handleFlavorSelect = () => {
-    if (selectedProduct) {
-      router.push(`/menu/flavors?productId=${selectedProduct.id}`)
-    }
-  }
-
-  const handleAddSimple = () => {
-    if (selectedProduct && !selectedProduct.requiresFlavor) {
-      dispatch({
-        type: "ADD_TO_CART",
-        payload: {
-          cartId: `${selectedProduct.id}-${Date.now()}`,
-          product: selectedProduct,
-          selectedFlavors: [],
-          options: [],
-          quantity: 1,
-        },
-      })
-    }
-  }
 
   // Category booleans for subcategory filter visibility
   const isCake = activeCategory === "icecream-cake"
@@ -544,7 +515,7 @@ function MenuContent() {
       {/* ── Carousel container ── */}
       <div
         ref={containerRef}
-        className="relative flex-1 overflow-hidden bg-muted/40 select-none touch-pan-y"
+        className="relative flex-1 overflow-hidden bg-[#FFFFFF] select-none touch-pan-y"
         onPointerDown={onDragPointerDown}
         onPointerMove={onDragPointerMove}
         onPointerUp={onDragPointerUp}
@@ -562,9 +533,9 @@ function MenuContent() {
               }}
             >
               <SlideContent
-                slide={prevSlide}
-                selectedProductId={null}
-                onSelectProduct={() => {}}
+  slide={prevSlide}
+  cartProductIds={cartProductIds}
+  onSelectProduct={() => {}}
               />
             </div>
           )}
@@ -579,9 +550,9 @@ function MenuContent() {
             }}
           >
             <SlideContent
-              slide={displaySlide}
-              selectedProductId={state.selectedProductId}
-              onSelectProduct={handleProductSelect}
+  slide={displaySlide}
+  cartProductIds={cartProductIds}
+  onSelectProduct={handleProductSelect}
               canOverflowLeft={canGoRight}
               canOverflowRight={canGoLeft}
               onEventOverflowDrag={(dx) => {
@@ -620,9 +591,9 @@ function MenuContent() {
               }}
             >
               <SlideContent
-                slide={nextSlide}
-                selectedProductId={null}
-                onSelectProduct={() => {}}
+  slide={nextSlide}
+  cartProductIds={cartProductIds}
+  onSelectProduct={() => {}}
               />
             </div>
           )}
@@ -672,45 +643,36 @@ function MenuContent() {
         )}
       </div>
 
-      {/* Product detail panel */}
-      {selectedProduct && (
-        <div className="shrink-0 border-t border-border bg-card p-3">
-          <ProductDetailPanel product={selectedProduct} />
-        </div>
-      )}
+      {/* Mini Cart */}
+      <MiniCart />
 
-      {/* Cart strip */}
-      <CartStrip />
-
-      {/* Action Bar */}
-      {selectedProduct ? (
-        <ActionBar
-          onBack={() => dispatch({ type: "SELECT_PRODUCT", payload: null })}
-          backLabel="이전으로"
-          primaryLabel={selectedProduct.requiresFlavor ? "맛 선택하기" : "담기"}
-          primaryDisabled={false}
-          onPrimary={() => {
-            if (selectedProduct.requiresFlavor) {
-              handleFlavorSelect()
+      {/* Action Bar -- dynamic label based on pending options */}
+      <ActionBar
+        onBack={() => {
+          dispatch({ type: "RESET_ORDER" })
+          router.push("/")
+        }}
+        backLabel="처음으로"
+        primaryLabel={(() => {
+          if (!hasCart) return "주문하기"
+          const hasPending = state.cart.some(itemNeedsOptions)
+          return hasPending ? "옵션 일괄 선택하기" : "주문하기"
+        })()}
+        primaryDisabled={!hasCart}
+        onPrimary={() => {
+          const pendingItem = state.cart.find(itemNeedsOptions)
+          if (pendingItem) {
+            // Navigate to flavors page for items that need flavor, or options page
+            if (pendingItem.product.requiresFlavor && pendingItem.selectedFlavors.length === 0) {
+              router.push(`/menu/flavors?productId=${pendingItem.product.id}&cartId=${pendingItem.cartId}`)
             } else {
-              handleAddSimple()
+              router.push(`/menu/options?cartId=${pendingItem.cartId}`)
             }
-          }}
-        />
-      ) : (
-        <ActionBar
-          onBack={() => {
-            dispatch({ type: "RESET_ORDER" })
-            router.push("/")
-          }}
-          backLabel="처음으로"
-          primaryLabel="주문하기"
-          primaryDisabled={!hasCart}
-          onPrimary={() => router.push("/discounts")}
-        />
-      )}
-
-      <KioskFooter />
+          } else {
+            router.push("/discounts")
+          }
+        }}
+      />
     </div>
   )
 }
