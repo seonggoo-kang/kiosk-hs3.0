@@ -111,10 +111,10 @@ export default function LandingPage() {
           In active: shrinks to top ~43%
           ═══════════════════════════════════════════ */}
       <div
-        className="relative w-full shrink-0 overflow-hidden transition-all duration-500 ease-out"
+        className="relative w-full overflow-hidden transition-all duration-500 ease-out"
         style={{
-          height: isIdle ? "100%" : "43%",
-          flex: isIdle ? "1 1 auto" : "0 0 auto",
+          flex: "1 1 0%",
+          minHeight: 0,
         }}
         onPointerDown={onBannerPointerDown}
         onPointerMove={onBannerPointerMove}
@@ -199,69 +199,51 @@ export default function LandingPage() {
           Hidden when idle, slides in when active
           ═══════════════════════════════════════════ */}
       <div
-        className="flex flex-col bg-background transition-all duration-500 ease-out"
+        className="flex shrink-0 flex-col bg-background transition-all duration-500 ease-out overflow-hidden"
         style={{
           opacity: isIdle ? 0 : 1,
-          transform: isIdle ? "translateY(30px)" : "translateY(0)",
+          maxHeight: isIdle ? "0px" : "220px",
+          transform: isIdle ? "translateY(20px)" : "translateY(0)",
           pointerEvents: isIdle ? "none" : "auto",
-          flex: isIdle ? "0 0 0px" : "1 1 auto",
         }}
       >
-        {/* Logo + tagline */}
-        <div className="flex flex-col items-center pt-6 pb-2">
-          <img
-            src="/images/br-logo.png"
-            alt="Baskin Robbins"
-            className="h-14 w-auto"
-          />
-          <p className="mt-1 text-xs font-bold tracking-widest text-muted-foreground">
-            BASKIN ROBBINS
-          </p>
-        </div>
-
         {/* Order type buttons */}
-        <div className="flex flex-1 items-center px-5 pb-4">
-          <div className="flex w-full gap-4">
-            <button
-              onClick={() => handleOrderType("takeout")}
-              className="flex flex-1 flex-col items-center gap-3 rounded-2xl bg-card py-6 shadow-md ring-1 ring-border transition-all active:scale-[0.97]"
-            >
-              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10">
-                <ShoppingBag className="h-7 w-7 text-primary" />
-              </div>
-              <span className="text-base font-bold text-foreground">{"가져가기"}</span>
-            </button>
-            <button
-              onClick={() => handleOrderType("dine-in")}
-              className="flex flex-1 flex-col items-center gap-3 rounded-2xl bg-card py-6 shadow-md ring-1 ring-border transition-all active:scale-[0.97]"
-            >
-              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10">
-                <Store className="h-7 w-7 text-primary" />
-              </div>
-              <span className="text-base font-bold text-foreground">{"먹고가기"}</span>
-            </button>
-          </div>
+        <div className="flex gap-3 px-4 pt-4 pb-3">
+          <button
+            onClick={() => handleOrderType("takeout")}
+            className="flex flex-1 items-center justify-center gap-2.5 rounded-xl bg-card py-4 shadow-sm ring-1 ring-border transition-all active:scale-[0.97]"
+          >
+            <ShoppingBag className="h-5 w-5 text-primary" />
+            <span className="text-sm font-bold text-foreground">{"가져가기"}</span>
+          </button>
+          <button
+            onClick={() => handleOrderType("dine-in")}
+            className="flex flex-1 items-center justify-center gap-2.5 rounded-xl bg-card py-4 shadow-sm ring-1 ring-border transition-all active:scale-[0.97]"
+          >
+            <Store className="h-5 w-5 text-primary" />
+            <span className="text-sm font-bold text-foreground">{"먹고가기"}</span>
+          </button>
         </div>
 
         {/* Bottom accessibility bar */}
-        <div className="flex shrink-0 items-center justify-between bg-muted/80 px-4 py-3">
-          <p className="text-xs font-medium text-muted-foreground">{"카운터에서도 주문할 수 있어요."}</p>
-          <div className="flex items-center gap-4">
+        <div className="flex items-center justify-between bg-muted/80 px-4 py-2.5">
+          <p className="text-[11px] font-medium text-muted-foreground">{"카운터에서도 주문할 수 있어요."}</p>
+          <div className="flex items-center gap-3">
             <button className="flex flex-col items-center gap-0.5" aria-label="낮은자세">
-              <Accessibility className="h-5 w-5 text-muted-foreground" />
-              <span className="text-[10px] text-muted-foreground">{"낮은자세"}</span>
+              <Accessibility className="h-4 w-4 text-muted-foreground" />
+              <span className="text-[9px] text-muted-foreground">{"낮은자세"}</span>
             </button>
             <button className="flex flex-col items-center gap-0.5" aria-label="고대비">
-              <Sun className="h-5 w-5 text-muted-foreground" />
-              <span className="text-[10px] text-muted-foreground">{"고대비"}</span>
+              <Sun className="h-4 w-4 text-muted-foreground" />
+              <span className="text-[9px] text-muted-foreground">{"고대비"}</span>
             </button>
             <button className="flex flex-col items-center gap-0.5" aria-label="돋보기">
-              <Search className="h-5 w-5 text-muted-foreground" />
-              <span className="text-[10px] text-muted-foreground">{"돋보기"}</span>
+              <Search className="h-4 w-4 text-muted-foreground" />
+              <span className="text-[9px] text-muted-foreground">{"돋보기"}</span>
             </button>
             <button className="flex flex-col items-center gap-0.5" aria-label="Language">
-              <Languages className="h-5 w-5 text-muted-foreground" />
-              <span className="text-[10px] text-muted-foreground">Language</span>
+              <Languages className="h-4 w-4 text-muted-foreground" />
+              <span className="text-[9px] text-muted-foreground">Language</span>
             </button>
           </div>
         </div>
