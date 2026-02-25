@@ -5,13 +5,7 @@ import { Home, Check, ChevronDown, Hourglass } from "lucide-react"
 import { useOrder } from "@/lib/order-context"
 import { cn } from "@/lib/utils"
 
-const STEPS = [
-  { label: "매장/포장 선택" },
-  { label: "메뉴 선택" },
-  { label: "주문확인" },
-  { label: "결제하기" },
-  { label: "결제완료" },
-] as const
+const STEP_LABELS = ["", "메뉴 선택", "주문확인", "결제하기", "결제완료"] as const
 
 interface ProgressStepperProps {
   currentStep: 1 | 2 | 3 | 4 | 5
@@ -23,17 +17,23 @@ export function ProgressStepper({ currentStep, elapsedSeconds, onHome }: Progres
   const { state, dispatch } = useOrder()
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const toggleRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!dropdownOpen) return
     const handler = (e: PointerEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      const target = e.target as Node
+      // Ignore clicks on the toggle area (label + chevron) -- those handle their own toggle
+      if (toggleRef.current?.contains(target)) return
+      if (dropdownRef.current && !dropdownRef.current.contains(target)) {
         setDropdownOpen(false)
       }
     }
     document.addEventListener("pointerdown", handler)
     return () => document.removeEventListener("pointerdown", handler)
   }, [dropdownOpen])
+
+  const toggleDropdown = useCallback(() => setDropdownOpen((o) => !o), [])
 
   const handleSwitchOrderType = useCallback(
     (type: "takeout" | "dine-in") => {
@@ -42,6 +42,10 @@ export function ProgressStepper({ currentStep, elapsedSeconds, onHome }: Progres
     },
     [dispatch]
   )
+
+  const step1Label = state.orderType === "takeout" ? "가져가기" : "먹고가기"
+  const altType: "takeout" | "dine-in" = state.orderType === "takeout" ? "dine-in" : "takeout"
+  const altLabel = altType === "takeout" ? "가져가기" : "먹고가기"
 
   return (
     <div className="relative shrink-0 border-b border-border bg-card">
@@ -62,14 +66,13 @@ export function ProgressStepper({ currentStep, elapsedSeconds, onHome }: Progres
 
         {/* Steps flow */}
         <div className="flex flex-1 items-center overflow-hidden">
-          {STEPS.map((step, i) => {
-            const stepNum = (i + 1) as 1 | 2 | 3 | 4 | 5
+          {[1, 2, 3, 4, 5].map((stepNum) => {
             const isCompleted = stepNum < currentStep
             const isActive = stepNum === currentStep
-            const isUpcoming = stepNum > currentStep
+            const label = stepNum === 1 ? step1Label : STEP_LABELS[stepNum - 1]
 
             return (
-              <div key={i} className="flex items-center">
+              <div key={stepNum} className="flex items-center">
                 {/* Arrow separator */}
                 <span
                   className={cn(
@@ -95,30 +98,40 @@ export function ProgressStepper({ currentStep, elapsedSeconds, onHome }: Progres
                   </div>
                 )}
 
-                {/* Step label */}
-                <span
-                  className={cn(
-                    "ml-0.5 whitespace-nowrap leading-none",
-                    isCompleted ? "text-[9px] font-medium text-primary" :
-                    isActive ? "text-[9px] font-bold text-foreground" :
-                    "text-[9px] font-normal text-muted-foreground"
-                  )}
-                >
-                  {step.label}
-                </span>
-
-                {/* Step 1 dropdown trigger (right of text) */}
-                {i === 0 && (
-                  <button
-                    onClick={() => setDropdownOpen((o) => !o)}
+                {/* Step 1: clickable label + dropdown chevron */}
+                {stepNum === 1 ? (
+                  <div ref={toggleRef} className="flex items-center">
+                    <button
+                      onPointerDown={(e) => { e.stopPropagation(); toggleDropdown() }}
+                      className={cn(
+                        "ml-0.5 whitespace-nowrap rounded px-1 py-0.5 text-[9px] font-bold leading-none transition-colors",
+                        isCompleted ? "bg-primary/10 text-primary" : "bg-primary/10 text-foreground"
+                      )}
+                    >
+                      {step1Label}
+                    </button>
+                    <button
+                      onPointerDown={(e) => { e.stopPropagation(); toggleDropdown() }}
+                      className={cn(
+                        "ml-0.5 flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full border transition-colors",
+                        dropdownOpen ? "border-primary bg-primary/10" : "border-border bg-background"
+                      )}
+                      aria-label="주문 유형 변경"
+                    >
+                      <ChevronDown className={cn("h-2 w-2 transition-transform", dropdownOpen && "rotate-180")} />
+                    </button>
+                  </div>
+                ) : (
+                  <span
                     className={cn(
-                      "ml-0.5 flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full border transition-colors",
-                      dropdownOpen ? "border-primary bg-primary/10" : "border-border bg-background"
+                      "ml-0.5 whitespace-nowrap leading-none",
+                      isCompleted ? "text-[9px] font-medium text-primary" :
+                      isActive ? "text-[9px] font-bold text-foreground" :
+                      "text-[9px] font-normal text-muted-foreground"
                     )}
-                    aria-label="주문 유형 변경"
                   >
-                    <ChevronDown className={cn("h-2 w-2 transition-transform", dropdownOpen && "rotate-180")} />
-                  </button>
+                    {label}
+                  </span>
                 )}
               </div>
             )
@@ -135,31 +148,18 @@ export function ProgressStepper({ currentStep, elapsedSeconds, onHome }: Progres
         </div>
       </div>
 
-      {/* Step 1 dropdown popover */}
+      {/* Step 1 dropdown -- shows only the alternative option */}
       {dropdownOpen && (
         <div
           ref={dropdownRef}
-          className="absolute left-8 top-full z-50 mt-0.5 w-32 rounded-lg border border-border bg-card p-1 shadow-lg"
+          className="absolute left-8 top-full z-50 mt-0.5 rounded-lg border border-border bg-card p-1 shadow-lg"
         >
           <button
-            onClick={() => handleSwitchOrderType("takeout")}
-            className={cn(
-              "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-xs transition-colors",
-              state.orderType === "takeout" ? "bg-primary/10 font-bold text-primary" : "text-foreground hover:bg-muted/60"
-            )}
+            onClick={() => handleSwitchOrderType(altType)}
+            className="flex w-full items-center gap-1.5 rounded-md px-3 py-1.5 text-left text-xs font-medium text-foreground transition-colors hover:bg-muted/60"
           >
-            {state.orderType === "takeout" && <Check className="h-3 w-3 text-primary" />}
-            <span className={state.orderType === "takeout" ? "" : "ml-5"}>{"가져가기"}</span>
-          </button>
-          <button
-            onClick={() => handleSwitchOrderType("dine-in")}
-            className={cn(
-              "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-xs transition-colors",
-              state.orderType === "dine-in" ? "bg-primary/10 font-bold text-primary" : "text-foreground hover:bg-muted/60"
-            )}
-          >
-            {state.orderType === "dine-in" && <Check className="h-3 w-3 text-primary" />}
-            <span className={state.orderType === "dine-in" ? "" : "ml-5"}>{"먹고가기"}</span>
+            {altLabel}
+            <span className="text-[10px] text-muted-foreground">{"(으)로 변경"}</span>
           </button>
         </div>
       )}
