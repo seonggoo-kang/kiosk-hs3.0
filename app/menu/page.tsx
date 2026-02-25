@@ -26,7 +26,8 @@ import {
   type Product,
 } from "@/lib/mock-data"
 
-const ITEMS_PER_PAGE = 16 // 4 cols x 4 rows
+const ITEMS_4COL = 16 // 4 cols x 4 rows
+const ITEMS_3COL = 9  // 3 cols x 3 rows
 
 // ── Flat slide descriptor ──────────────────────────────────
 type Slide = {
@@ -34,6 +35,7 @@ type Slide = {
   pageIndex: number // page within the category (0-based)
   totalPages: number // total pages this category has
   products: Product[] // pre-sliced products for this page
+  totalCategoryProducts: number // total products in the category (for layout decision)
   isAiPick?: boolean
 }
 
@@ -56,11 +58,13 @@ function SlideContent({
     )
   }
 
+  const useCompact = slide.totalCategoryProducts <= 9
+
   return (
     <div className="h-full overflow-y-auto overflow-x-hidden">
       <div className="flex min-h-full flex-col p-3">
         {slide.products.length > 0 ? (
-          <div className="grid grid-cols-4 gap-2">
+          <div className={useCompact ? "grid grid-cols-3 gap-3 px-1" : "grid grid-cols-4 gap-2"}>
             {slide.products.map((product) => (
               <ProductCard
                 key={product.id}
@@ -117,17 +121,20 @@ function MenuContent() {
           pageIndex: 0,
           totalPages: 1,
           products: [],
+          totalCategoryProducts: 0,
           isAiPick: true,
         })
       } else {
         const products = getProductsByCategory(cat.id)
-        const totalPages = Math.max(1, Math.ceil(products.length / ITEMS_PER_PAGE))
+        const perPage = products.length <= 9 ? ITEMS_3COL : ITEMS_4COL
+        const totalPages = Math.max(1, Math.ceil(products.length / perPage))
         for (let p = 0; p < totalPages; p++) {
           slides.push({
             categoryId: cat.id,
             pageIndex: p,
             totalPages,
-            products: products.slice(p * ITEMS_PER_PAGE, (p + 1) * ITEMS_PER_PAGE),
+            products: products.slice(p * perPage, (p + 1) * perPage),
+            totalCategoryProducts: products.length,
           })
         }
       }
@@ -168,14 +175,16 @@ function MenuContent() {
     if (activeFilter === "all" || currentSlide.isAiPick) return null
     const allCatProducts = getProductsByCategory(activeCategory)
     const filtered = allCatProducts.filter((p) => p.subcategory === activeFilter)
-    const pages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE))
+    const perPage = filtered.length <= 9 ? ITEMS_3COL : ITEMS_4COL
+    const pages = Math.max(1, Math.ceil(filtered.length / perPage))
     const slides: Slide[] = []
     for (let p = 0; p < pages; p++) {
       slides.push({
         categoryId: activeCategory,
         pageIndex: p,
         totalPages: pages,
-        products: filtered.slice(p * ITEMS_PER_PAGE, (p + 1) * ITEMS_PER_PAGE),
+        products: filtered.slice(p * perPage, (p + 1) * perPage),
+        totalCategoryProducts: filtered.length,
       })
     }
     return slides
@@ -196,7 +205,7 @@ function MenuContent() {
       return filteredSlides[idx]
     }
     if (filteredSlides && filteredSlides.length === 0) {
-      return { categoryId: activeCategory, pageIndex: 0, totalPages: 1, products: [] }
+      return { categoryId: activeCategory, pageIndex: 0, totalPages: 1, products: [], totalCategoryProducts: 0 }
     }
     return currentSlide
   }, [filteredSlides, filteredPageIndex, currentSlide, activeCategory])
