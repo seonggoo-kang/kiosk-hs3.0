@@ -52,15 +52,42 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
   const prevPageFlavors = page > 0 ? getPageFlavors(page - 1) : null
   const nextPageFlavors = page < totalPages - 1 ? getPageFlavors(page + 1) : null
 
-  const toggleFlavor = useCallback((flavor: Flavor) => {
+  // Count how many times each flavor is selected
+  const flavorCountMap = useMemo(() => {
+    const map = new Map<string, number>()
+    for (const f of selectedFlavors) {
+      map.set(f.id, (map.get(f.id) ?? 0) + 1)
+    }
+    return map
+  }, [selectedFlavors])
+
+  // Add one more instance of this flavor (duplicates allowed)
+  const addFlavor = useCallback((flavor: Flavor) => {
     setSelectedFlavors((prev) => {
-      const exists = prev.find((f) => f.id === flavor.id)
-      if (exists) { setFocusedFlavor(null); return prev.filter((f) => f.id !== flavor.id) }
       if (prev.length >= maxFlavors) return prev
       setFocusedFlavor(flavor)
       return [...prev, flavor]
     })
   }, [maxFlavors])
+
+  // Remove one instance of this flavor (from the grid X button)
+  const removeOneFlavor = useCallback((flavorId: string) => {
+    setSelectedFlavors((prev) => {
+      const idx = prev.findIndex((f) => f.id === flavorId)
+      if (idx === -1) return prev
+      setFocusedFlavor(null)
+      return [...prev.slice(0, idx), ...prev.slice(idx + 1)]
+    })
+  }, [])
+
+  // Remove a specific slot by index (from the bottom panel X button)
+  const removeByIndex = useCallback((index: number) => {
+    setSelectedFlavors((prev) => {
+      if (index < 0 || index >= prev.length) return prev
+      setFocusedFlavor(null)
+      return [...prev.slice(0, index), ...prev.slice(index + 1)]
+    })
+  }, [])
 
   const handleCategoryChange = (catId: string) => { setActiveCategory(catId); setPage(0) }
 
@@ -156,34 +183,53 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
     <div className="flex h-full flex-col p-2">
       <div className="grid flex-1 grid-cols-4 grid-rows-4 gap-1.5">
         {flavors.map((flavor) => {
-          const isSelected = selectedFlavors.some((f) => f.id === flavor.id)
-          const isDisabled = !isSelected && selectedFlavors.length >= maxFlavors
+          const count = flavorCountMap.get(flavor.id) ?? 0
+          const isSelected = count > 0
+          const isFull = selectedFlavors.length >= maxFlavors
+          const isDisabled = !isSelected && isFull
           return (
-            <button
-              key={flavor.id}
-              onClick={() => { if (interactive && !isDisabled && !wasDragging.current) toggleFlavor(flavor) }}
-              disabled={!interactive || isDisabled}
-              className={cn(
-                "relative flex flex-col items-center justify-center gap-1 rounded-lg border-2 bg-card transition-all",
-                interactive && "active:scale-[0.97]",
-                isSelected ? "border-primary" : isDisabled ? "border-transparent opacity-35" : "border-transparent"
-              )}
-            >
-              {flavor.badge && (
-                <span className={cn(
-                  "absolute left-0.5 top-0.5 z-10 max-w-[90%] truncate rounded px-1 py-px text-[7px] font-bold leading-tight text-white",
-                  flavor.badge === "NEW" ? "bg-red-500" : flavor.badge === "과일 섬유질 포함" ? "bg-pink-400" : "bg-primary"
-                )}>
-                  {flavor.badge}
+            <div key={flavor.id} className="relative">
+              {/* Count badge -- top-left */}
+              {isSelected && count > 0 && (
+                <span className="absolute left-0 top-0 z-20 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-primary px-0.5 text-[9px] font-bold text-white shadow-sm">
+                  {count}
                 </span>
               )}
-              <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full">
-                <Image src={flavor.image} alt={flavor.name} fill className="object-cover" sizes="56px" priority={page === 0} />
-              </div>
-              <span className="w-full px-0.5 text-center text-[9px] font-semibold leading-tight text-foreground">
-                {flavor.name}
-              </span>
-            </button>
+              {/* Remove badge -- top-right */}
+              {isSelected && interactive && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); removeOneFlavor(flavor.id) }}
+                  className="absolute right-0 top-0 z-20 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-foreground/70 text-white shadow-sm"
+                  aria-label={`${flavor.name} 제거`}
+                >
+                  <X className="h-2.5 w-2.5" strokeWidth={3} />
+                </button>
+              )}
+              <button
+                onClick={() => { if (interactive && !wasDragging.current) addFlavor(flavor) }}
+                disabled={!interactive || isFull}
+                className={cn(
+                  "relative flex h-full w-full flex-col items-center justify-center gap-1 rounded-lg border-2 bg-card transition-all",
+                  interactive && !isFull && "active:scale-[0.97]",
+                  isSelected ? "border-primary" : !isSelected && isFull ? "border-transparent opacity-35" : "border-transparent"
+                )}
+              >
+                {flavor.badge && (
+                  <span className={cn(
+                    "absolute left-0.5 top-5 z-10 max-w-[90%] truncate rounded px-1 py-px text-[7px] font-bold leading-tight text-white",
+                    flavor.badge === "NEW" ? "bg-red-500" : flavor.badge === "과일 섬유질 포함" ? "bg-pink-400" : "bg-primary"
+                  )}>
+                    {flavor.badge}
+                  </span>
+                )}
+                <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full">
+                  <Image src={flavor.image} alt={flavor.name} fill className="object-cover" sizes="56px" priority={page === 0} />
+                </div>
+                <span className="w-full px-0.5 text-center text-[9px] font-semibold leading-tight text-foreground">
+                  {flavor.name}
+                </span>
+              </button>
+            </div>
           )
         })}
       </div>
@@ -307,9 +353,9 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
             const flavor = selectedFlavors[i]
             if (flavor) {
               return (
-                <div key={flavor.id} className="relative flex shrink-0 flex-col items-center px-1 pt-0.5" style={{ width: 68 }}>
+                <div key={`slot-${i}`} className="relative flex shrink-0 flex-col items-center px-1 pt-0.5" style={{ width: 68 }}>
                   <button
-                    onClick={() => toggleFlavor(flavor)}
+                    onClick={() => removeByIndex(i)}
                     className="absolute right-0 top-0 z-10 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-foreground/80 text-card"
                     aria-label={`${flavor.name} 제거`}
                   >
