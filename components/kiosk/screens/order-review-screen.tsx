@@ -1,7 +1,8 @@
 "use client"
 
 import { useRef, useState, useEffect } from "react"
-import { X, Minus, Plus, ChevronUp, ChevronDown } from "lucide-react"
+import { X, Minus, Plus } from "lucide-react"
+import { ScrollIndicators } from "@/components/kiosk/ui"
 import Image from "next/image"
 import { ProgressStepper } from "@/components/kiosk/progress-stepper"
 import { KioskFooter } from "@/components/kiosk/kiosk-footer"
@@ -122,30 +123,13 @@ export function OrderReviewScreen({
           </div>
 
           {/* Scroll indicators */}
-          <div className="absolute right-1 top-1 z-10 flex flex-col gap-1">
-            <button
-              onClick={() => scrollBy(-150)}
-              disabled={!canScrollUp}
-              className={cn(
-                "flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-card shadow-sm transition-opacity",
-                canScrollUp ? "opacity-100" : "opacity-30"
-              )}
-            >
-              <ChevronUp className="h-5 w-5 text-muted-foreground" />
-            </button>
-          </div>
-          <div className="absolute bottom-1 right-1 z-10 flex flex-col gap-1">
-            <button
-              onClick={() => scrollBy(150)}
-              disabled={!canScrollDown}
-              className={cn(
-                "flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-card shadow-sm transition-opacity",
-                canScrollDown ? "opacity-100" : "opacity-30"
-              )}
-            >
-              <ChevronDown className="h-5 w-5 text-muted-foreground" />
-            </button>
-          </div>
+          <ScrollIndicators
+            canScrollUp={canScrollUp}
+            canScrollDown={canScrollDown}
+            onScrollUp={() => scrollBy(-150)}
+            onScrollDown={() => scrollBy(150)}
+            className="absolute right-1 top-1/2 z-10 -translate-y-1/2"
+          />
         </div>
       </div>
 
