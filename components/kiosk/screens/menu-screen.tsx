@@ -240,17 +240,17 @@ export const MenuScreen = forwardRef<MenuScreenHandle, MenuScreenProps>(function
 
   // ── Grid zoom (per-category) ──
   const [zoomMap, setZoomMap] = useState<Record<string, ZoomLevel>>({})
-  const [showZoomHint, setShowZoomHint] = useState(false)
+  const [showGestureHint, setShowGestureHint] = useState(false)
   const [zoomIndicator, setZoomIndicator] = useState<number | null>(null)
   const zoomIndicatorTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
-    const show = setTimeout(() => setShowZoomHint(true), 2000)
-    const hide = setTimeout(() => setShowZoomHint(false), 6000)
+    const show = setTimeout(() => setShowGestureHint(true), 2000)
+    const hide = setTimeout(() => setShowGestureHint(false), 7000)
     return () => { clearTimeout(show); clearTimeout(hide) }
   }, [])
 
-  const dismissZoomHint = useCallback(() => setShowZoomHint(false), [])
+  const dismissGestureHint = useCallback(() => setShowGestureHint(false), [])
 
   const showZoomBadge = useCallback((level: number) => {
     setZoomIndicator(level)
@@ -899,14 +899,6 @@ export const MenuScreen = forwardRef<MenuScreenHandle, MenuScreenProps>(function
         {prevSlide && <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-4 bg-gradient-to-r from-foreground/5 to-transparent" aria-hidden="true" />}
         {nextSlide && <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-4 bg-gradient-to-l from-foreground/5 to-transparent" aria-hidden="true" />}
 
-        {displaySlide.totalPages > 1 && (
-          <div className="pointer-events-none absolute bottom-2 left-0 right-0 z-10 flex items-center justify-center gap-1.5" aria-hidden="true">
-            {Array.from({ length: displaySlide.totalPages }).map((_, i) => (
-              <span key={i} className={`h-1.5 rounded-full transition-all duration-300 ${i === displaySlide.pageIndex ? "w-4 bg-primary" : "w-1.5 bg-border"}`} />
-            ))}
-          </div>
-        )}
-
         {/* Zoom level indicator (brief flash on change) */}
         {zoomIndicator !== null && (
           <div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center">
@@ -925,24 +917,36 @@ export const MenuScreen = forwardRef<MenuScreenHandle, MenuScreenProps>(function
           </div>
         )}
 
-        {/* First-time zoom hint */}
-        {showZoomHint && (
+        {/* First-time gesture hint (swipe + zoom) */}
+        {showGestureHint && (
           <div
             className="pointer-events-auto absolute inset-0 z-30 flex items-center justify-center bg-foreground/20 backdrop-blur-[1px] animate-in fade-in duration-500"
-            onClick={dismissZoomHint}
+            onClick={dismissGestureHint}
             role="button"
             tabIndex={0}
-            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") dismissZoomHint() }}
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") dismissGestureHint() }}
             aria-label="힌트 닫기"
           >
-            <div className="flex items-center gap-3 rounded-2xl bg-card/95 px-6 py-5 shadow-xl backdrop-blur-sm">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
-                <path d="M6 6l4 4M18 6l-4 4M6 18l4-4M18 18l-4-4" />
-                <circle cx="12" cy="12" r="2" />
-              </svg>
-              <span className="text-xs font-medium text-foreground">
-                {"두 손가락으로 확대/축소"}
-              </span>
+            <div className="flex flex-col gap-4 rounded-2xl bg-card/95 px-6 py-5 shadow-xl backdrop-blur-sm">
+              {/* Swipe hint */}
+              <div className="flex items-center gap-3">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
+                  <path d="M5 12h14M5 12l4-4M5 12l4 4M19 12l-4-4M19 12l-4 4" />
+                </svg>
+                <span className="text-xs font-medium text-foreground">
+                  좌우로 밀어서 카테고리 이동
+                </span>
+              </div>
+              {/* Zoom hint */}
+              <div className="flex items-center gap-3">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
+                  <path d="M6 6l4 4M18 6l-4 4M6 18l4-4M18 18l-4-4" />
+                  <circle cx="12" cy="12" r="2" />
+                </svg>
+                <span className="text-xs font-medium text-foreground">
+                  두 손가락으로 확대/축소
+                </span>
+              </div>
             </div>
           </div>
         )}
