@@ -328,15 +328,15 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
       </div>
 
       {/* Bottom selection panel */}
-      <div className="shrink-0 border-t border-border px-2 pb-1.5 pt-0" style={{ backgroundColor: "#F6F6FA" }}>
-        {/* Flavor description pill -- always rendered to reserve space; invisible when no flavor focused */}
-        <div className={cn("px-1 pb-1 pt-1.5", !focusedFlavor && "invisible")}>
-          <div className="rounded-full bg-pink-100 px-4 py-1.5">
-            <p className="text-center text-[10px] leading-relaxed text-foreground/70">
-              {focusedFlavor ? focusedFlavor.description : "\u00A0"}
-            </p>
+      <div className="relative shrink-0 border-t border-border px-2 pb-1.5 pt-2" style={{ backgroundColor: "#F6F6FA" }}>
+        {/* Flavor description pill -- absolutely positioned above the panel so it never affects layout */}
+        {focusedFlavor && (
+          <div className="absolute bottom-full left-0 right-0 z-20 px-3 pb-1.5">
+            <div className="rounded-full bg-pink-100 px-4 py-1.5 shadow-sm">
+              <p className="text-center text-[10px] leading-relaxed text-foreground/70">{focusedFlavor.description}</p>
+            </div>
           </div>
-        </div>
+        )}
         <div className="flex items-stretch gap-1.5 overflow-x-auto scrollbar-hide" style={{ height: 100 }}>
           {/* Product thumbnail */}
           <div className="flex shrink-0 flex-col items-center justify-center rounded-2xl border border-border/50 px-1.5" style={{ width: 78 }}>
