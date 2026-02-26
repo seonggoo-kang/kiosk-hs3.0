@@ -366,7 +366,7 @@ export default function KioskApp() {
             <div
               key={idx}
               className="absolute inset-0 flex flex-col overflow-hidden"
-              style={{ visibility: "hidden", pointerEvents: "none" }}
+              style={{ visibility: "hidden", pointerEvents: "none", zIndex: -1 }}
             >
               {screens[idx]}
             </div>

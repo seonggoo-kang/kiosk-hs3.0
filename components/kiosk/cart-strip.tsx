@@ -158,7 +158,7 @@ export function MiniCart({ onEditItem }: MiniCartProps = {}) {
                   onClick={() =>
                     dispatch({ type: "REMOVE_FROM_CART", payload: item.cartId })
                   }
-                  className="absolute -right-2 -top-2 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-foreground/80 text-white shadow"
+                  className="absolute -right-2 -top-2 z-[1] flex h-5 w-5 items-center justify-center rounded-full bg-foreground/80 text-white shadow"
                   aria-label="삭제"
                 >
                   <X className="h-2.5 w-2.5" />
