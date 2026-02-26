@@ -54,48 +54,75 @@
 
 @layer base {
   :root {
-    /* ── Kiosk hardware dimensions (portrait) ──
-       The physical screen is 1080 x 1920, but we author the
-       CSS layout at a "logical" viewport of 480 x 853
-       (i.e. 1080 / 2.25 and 1920 / 2.25). This keeps Tailwind
-       utility classes (text-sm, p-4, gap-2, etc.) looking correct
-       without converting every value to rem.
+    /* ══════════════════════════════════════════════════════════════════════
+       BR KIOSK DESIGN SYSTEM - CSS CUSTOM PROPERTIES
+       See /lib/design-system.ts for full documentation
+       ══════════════════════════════════════════════════════════════════════ */
 
-       The container is scaled up to fill the real hardware via
-       CSS transform: scale(). In the browser preview it scales
-       to fit whatever window size is available.
-
-       Override --kiosk-hw-* for different form factors:
-       - Standing kiosk: 1080 x 1920  (default)
-       - Table order:    800 x 1280   (example)
-    */
-    /* Logical viewport = physical / DPR (2.25)
-       Standing kiosk: 1080/2.25 = 480,  1920/2.25 ≈ 853  */
+    /* ── Kiosk Viewport ──────────────────────────────────────────────────── */
     --kiosk-w: 480px;
     --kiosk-h: 853px;
-    /* --kiosk-scale is set by JS on mount + resize (see KioskScaler). */
     --kiosk-scale: 1;
 
-    --background: 0 0% 96%;
-    --foreground: 220 15% 15%;
-    --card: 0 0% 100%;
+    /* ── Brand Colors ────────────────────────────────────────────────────── */
+    --primary: 338 80% 55%;              /* BR Pink #E84073 */
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 338 80% 96%;        /* Light pink for accents */
+    --primary-dark: 338 80% 45%;         /* Darker pink for hover */
+
+    /* ── Semantic Colors ─────────────────────────────────────────────────── */
+    --background: 0 0% 96%;              /* Page background #F5F5F5 */
+    --foreground: 220 15% 15%;           /* Primary text #202530 */
+    --card: 0 0% 100%;                   /* Card surface #FFFFFF */
     --card-foreground: 220 15% 15%;
     --popover: 0 0% 100%;
     --popover-foreground: 220 15% 15%;
-    --primary: 338 80% 55%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 220 10% 46%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 220 10% 94%;
-    --muted-foreground: 220 10% 46%;
-    --accent: 338 80% 96%;
+    --muted: 220 10% 94%;                /* Muted backgrounds #EEEFF2 */
+    --muted-foreground: 220 10% 46%;     /* Secondary text #6B7280 */
+    --accent: 338 80% 96%;               /* Accent backgrounds */
     --accent-foreground: 338 80% 45%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 220 13% 89%;
+    --border: 220 13% 89%;               /* Borders #DFE1E6 */
     --input: 220 13% 89%;
     --ring: 338 80% 55%;
-    --radius: 0.75rem;
+
+    /* ── Panel Color (for bottom panels, action bars) ───────────────────── */
+    --panel: 240 20% 97%;                /* Panel background #F6F6FA */
+
+    /* ── Feedback Colors ─────────────────────────────────────────────────── */
+    --success: 142 76% 36%;
+    --warning: 38 92% 50%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --info: 199 89% 48%;
+
+    /* ── Secondary (for secondary buttons) ───────────────────────────────── */
+    --secondary: 220 10% 46%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* ── Border Radius Scale ─────────────────────────────────────────────── */
+    --radius: 0.75rem;                   /* 12px base radius */
+    --radius-sm: 0.25rem;                /* 4px */
+    --radius-md: 0.5rem;                 /* 8px */
+    --radius-lg: 0.75rem;                /* 12px */
+    --radius-xl: 1rem;                   /* 16px */
+    --radius-2xl: 1.25rem;               /* 20px */
+    --radius-full: 9999px;               /* Pills */
+
+    /* ── Spacing Scale ───────────────────────────────────────────────────── */
+    --space-screen: 0.75rem;             /* 12px - screen horizontal padding */
+    --space-card: 0.875rem;              /* 14px - card internal padding */
+    --space-section: 1rem;               /* 16px - between sections */
+    --space-item: 0.625rem;              /* 10px - between list items */
+
+    /* ── Component Heights ───────────────────────────────────────────────── */
+    --height-header: 52px;
+    --height-footer: 28px;
+    --height-action-bar: 100px;
+    --height-button: 48px;
+    --height-button-sm: 40px;
+
+    /* ── Typography ──────────────────────────────────────────────────────── */
+    --font-sans: 'NanumSquareNeo', system-ui, sans-serif;
   }
 }
 
