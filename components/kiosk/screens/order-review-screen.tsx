@@ -1,8 +1,7 @@
 "use client"
 
-import { useRef, useState, useEffect } from "react"
+import { useRef } from "react"
 import { X, Minus, Plus } from "lucide-react"
-import { ScrollIndicators } from "@/components/kiosk/ui"
 import Image from "next/image"
 import { ProgressStepper } from "@/components/kiosk/progress-stepper"
 import { KioskFooter } from "@/components/kiosk/kiosk-footer"
@@ -31,25 +30,6 @@ export function OrderReviewScreen({
 }: OrderReviewScreenProps) {
   const { state, dispatch, totalItems, subtotal } = useOrder()
   const scrollRef = useRef<HTMLDivElement>(null)
-  const [canScrollUp, setCanScrollUp] = useState(false)
-  const [canScrollDown, setCanScrollDown] = useState(false)
-
-  // Check scroll state
-  useEffect(() => {
-    const el = scrollRef.current
-    if (!el) return
-    const checkScroll = () => {
-      setCanScrollUp(el.scrollTop > 0)
-      setCanScrollDown(el.scrollTop + el.clientHeight < el.scrollHeight - 2)
-    }
-    checkScroll()
-    el.addEventListener("scroll", checkScroll)
-    return () => el.removeEventListener("scroll", checkScroll)
-  }, [state.cart])
-
-  const scrollBy = (delta: number) => {
-    scrollRef.current?.scrollBy({ top: delta, behavior: "smooth" })
-  }
 
   const handleQuantityChange = (cartId: string, newQty: number) => {
     if (newQty <= 0) {
@@ -104,32 +84,21 @@ export function OrderReviewScreen({
           <h2 className="text-sm font-bold text-foreground">상품</h2>
         </div>
 
-        {/* Scrollable product list with scroll indicators */}
-        <div className="relative flex-1 overflow-hidden">
-          <div ref={scrollRef} className="h-full overflow-y-auto px-3 pb-4 pt-1 scrollbar-hide">
-            <div className="flex flex-col gap-4">
-              {state.cart.map((item) => (
-                <OrderItemCard
-                  key={item.cartId}
-                  item={item}
-                  itemPrice={getItemPrice(item)}
-                  optionsString={getOptionsString(item)}
-                  onQuantityChange={(qty) => handleQuantityChange(item.cartId, qty)}
-                  onRemove={() => handleRemove(item.cartId)}
-                  onEditOptions={onEditOptions ? () => onEditOptions(item) : undefined}
-                />
-              ))}
-            </div>
+        {/* Scrollable product list */}
+        <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 pb-4 pt-1 scrollbar-kiosk">
+          <div className="flex flex-col gap-4">
+            {state.cart.map((item) => (
+              <OrderItemCard
+                key={item.cartId}
+                item={item}
+                itemPrice={getItemPrice(item)}
+                optionsString={getOptionsString(item)}
+                onQuantityChange={(qty) => handleQuantityChange(item.cartId, qty)}
+                onRemove={() => handleRemove(item.cartId)}
+                onEditOptions={onEditOptions ? () => onEditOptions(item) : undefined}
+              />
+            ))}
           </div>
-
-          {/* Scroll indicators */}
-          <ScrollIndicators
-            canScrollUp={canScrollUp}
-            canScrollDown={canScrollDown}
-            onScrollUp={() => scrollBy(-150)}
-            onScrollDown={() => scrollBy(150)}
-            className="absolute right-1 top-1/2 z-10 -translate-y-1/2"
-          />
         </div>
       </div>
 

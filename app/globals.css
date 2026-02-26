@@ -50,6 +50,26 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+  
+  /* ── Kiosk Scrollbar (standardized across app) ── */
+  .scrollbar-kiosk {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--primary) / 0.4) transparent;
+  }
+  .scrollbar-kiosk::-webkit-scrollbar {
+    width: 6px;
+  }
+  .scrollbar-kiosk::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 3px;
+  }
+  .scrollbar-kiosk::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary) / 0.4);
+    border-radius: 3px;
+  }
+  .scrollbar-kiosk::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary) / 0.6);
+  }
 }
 
 @layer base {

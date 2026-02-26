@@ -125,7 +125,7 @@ export function DiscountsScreen({ onBack, onGoToPayment, onHome, onGoToMenu, onG
     <div className="flex flex-1 flex-col overflow-hidden bg-background">
             <ProgressStepper currentStep={currentStep} elapsedSeconds={elapsedSeconds} onHome={onHome} onGoToStep={(step) => { if (step === 2 && onGoToMenu) onGoToMenu(); else if (step === 3 && onGoToOrderReview) onGoToOrderReview() }} />
 
-      <div className="flex-1 overflow-y-auto bg-muted/30 px-3 py-3">
+      <div className="flex-1 overflow-y-auto bg-muted/30 px-3 py-3 scrollbar-kiosk">
         {/* 배라앱 바코드 Section */}
         <section className="mb-4">
           <div className="mb-2 flex items-center justify-between">

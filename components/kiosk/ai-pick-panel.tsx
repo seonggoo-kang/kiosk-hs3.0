@@ -165,7 +165,7 @@ export function RecommendedPanel({ cartProductIds, cartProductMap, onSelectProdu
       )}
 
       {/* Scrollable content */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto bg-background">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto bg-background scrollbar-kiosk">
         {loading ? (
           <div className="flex flex-col items-center justify-center gap-3 pt-20">
             <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
