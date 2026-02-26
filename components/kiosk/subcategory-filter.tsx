@@ -7,9 +7,10 @@ type SubcategoryFilterProps = {
   items: Array<{ id: string; name: string }>
   activeId: string
   onSelect: (id: string) => void
+  trailing?: React.ReactNode
 }
 
-export function SubcategoryFilter({ items, activeId, onSelect }: SubcategoryFilterProps) {
+export function SubcategoryFilter({ items, activeId, onSelect, trailing }: SubcategoryFilterProps) {
   // Defer rendering Korean text until after hydration to prevent SSR streaming
   // from splitting multibyte UTF-8 characters at buffer boundaries
   const [ready, setReady] = useState(false)
@@ -57,30 +58,37 @@ export function SubcategoryFilter({ items, activeId, onSelect }: SubcategoryFilt
   )
 
   return (
-    <div
-      ref={scrollRef}
-      className="flex w-full shrink-0 gap-1.5 overflow-x-auto border-b border-border bg-card px-3 py-2 scrollbar-hide select-none"
-      onPointerDown={onPointerDown}
-      onPointerMove={onPointerMove}
-      onPointerUp={onPointerUp}
-      onPointerCancel={onPointerUp}
-    >
-      {ready
-        ? items.map((item) => (
-            <button
-              key={item.id}
-              data-filter-id={item.id}
-              className={cn(
-                "shrink-0 rounded-full px-3 py-1 text-[10px] font-medium transition-colors",
-                activeId === item.id
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted text-muted-foreground active:bg-muted/80"
-              )}
-            >
-              {item.name}
-            </button>
-          ))
-        : null}
+    <div className="flex w-full shrink-0 items-center border-b border-border bg-card">
+      <div
+        ref={scrollRef}
+        className="flex min-w-0 flex-1 gap-1.5 overflow-x-auto px-3 py-2 scrollbar-hide select-none"
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
+      >
+        {ready
+          ? items.map((item) => (
+              <button
+                key={item.id}
+                data-filter-id={item.id}
+                className={cn(
+                  "shrink-0 rounded-full px-3 py-1 text-[10px] font-medium transition-colors",
+                  activeId === item.id
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-muted-foreground active:bg-muted/80"
+                )}
+              >
+                {item.name}
+              </button>
+            ))
+          : null}
+      </div>
+      {trailing && (
+        <div className="shrink-0 border-l border-border px-1.5">
+          {trailing}
+        </div>
+      )}
     </div>
   )
 }

@@ -687,18 +687,68 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
     }
   }
 
+  const currentZoom = zoomLevel ?? 4
+  const zoomToolbar = (
+    <div className="flex items-center gap-1" role="toolbar" aria-label="메뉴 크기 조절">
+      <button
+        onClick={handleZoomIn}
+        disabled={currentZoom <= 1}
+        className={"flex h-6 w-6 items-center justify-center rounded-full transition-colors " + (currentZoom <= 1 ? "text-muted-foreground/30" : "text-foreground active:bg-muted")}
+        aria-label="메뉴 크게 보기"
+      >
+        <Plus className="h-3 w-3" strokeWidth={2.5} />
+      </button>
+      <div className="flex items-center gap-0.5">
+        {[1, 2, 3, 4, 5].map((level) => (
+          <span
+            key={level}
+            className={"h-1 rounded-full transition-all " + (currentZoom === level ? "w-2 bg-primary" : "w-1 bg-border")}
+          />
+        ))}
+      </div>
+      <button
+        onClick={handleZoomOut}
+        disabled={currentZoom >= 5}
+        className={"flex h-6 w-6 items-center justify-center rounded-full transition-colors " + (currentZoom >= 5 ? "text-muted-foreground/30" : "text-foreground active:bg-muted")}
+        aria-label="메뉴 작게 보기"
+      >
+        <Minus className="h-3 w-3" strokeWidth={2.5} />
+      </button>
+      <button
+        onClick={handleResetZoom}
+        disabled={zoomLevel === null}
+        className={"ml-0.5 rounded px-1 py-0.5 text-[7px] font-medium leading-tight transition-opacity " + (zoomLevel !== null ? "text-muted-foreground active:text-foreground opacity-100" : "opacity-0 pointer-events-none")}
+      >
+        {"초기화"}
+      </button>
+      <button
+        onClick={handleApplyZoomToAll}
+        disabled={zoomLevel === null}
+        className={"rounded px-1 py-0.5 text-[7px] font-medium leading-tight transition-opacity " + (zoomLevel !== null ? "text-primary active:text-primary/70 opacity-100" : "opacity-0 pointer-events-none")}
+      >
+        {"전체적용"}
+      </button>
+    </div>
+  )
+
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
       <ProgressStepper currentStep={currentStep} elapsedSeconds={elapsedSeconds} onHome={onBack} />
       <CategoryTabs categories={categories} activeId={activeCategory} onSelect={handleCategoryChange} emptyCategoryIds={emptyCategoryIds} />
 
-      {isCake && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={cakeFilter} onSelect={(id) => { setCakeFilter(id); jumpToFirstPageOfCategory() }} />}
-      {isBeverage && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={beverageFilter} onSelect={(id) => { setBeverageFilter(id); jumpToFirstPageOfCategory() }} />}
-      {isDessert && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={dessertFilter} onSelect={(id) => { setDessertFilter(id); jumpToFirstPageOfCategory() }} />}
-      {isPrepack && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={prepackFilter} onSelect={(id) => { setPrepackFilter(id); jumpToFirstPageOfCategory() }} />}
-      {isParty && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={partyFilter} onSelect={(id) => { setPartyFilter(id); jumpToFirstPageOfCategory() }} />}
-      {isPackable && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={packableFilter} onSelect={(id) => { setPackableFilter(id); jumpToFirstPageOfCategory() }} />}
-      {isWorkshop && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={workshopFilter} onSelect={(id) => { setWorkshopFilter(id); jumpToFirstPageOfCategory() }} />}
+      {isCake && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={cakeFilter} onSelect={(id) => { setCakeFilter(id); jumpToFirstPageOfCategory() }} trailing={zoomToolbar} />}
+      {isBeverage && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={beverageFilter} onSelect={(id) => { setBeverageFilter(id); jumpToFirstPageOfCategory() }} trailing={zoomToolbar} />}
+      {isDessert && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={dessertFilter} onSelect={(id) => { setDessertFilter(id); jumpToFirstPageOfCategory() }} trailing={zoomToolbar} />}
+      {isPrepack && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={prepackFilter} onSelect={(id) => { setPrepackFilter(id); jumpToFirstPageOfCategory() }} trailing={zoomToolbar} />}
+      {isParty && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={partyFilter} onSelect={(id) => { setPartyFilter(id); jumpToFirstPageOfCategory() }} trailing={zoomToolbar} />}
+      {isPackable && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={packableFilter} onSelect={(id) => { setPackableFilter(id); jumpToFirstPageOfCategory() }} trailing={zoomToolbar} />}
+      {isWorkshop && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={workshopFilter} onSelect={(id) => { setWorkshopFilter(id); jumpToFirstPageOfCategory() }} trailing={zoomToolbar} />}
+      {/* Standalone zoom bar for categories without subcategory filters */}
+      {!visibleSubcats && (
+        <div className="flex w-full shrink-0 items-center justify-end border-b border-border bg-card px-3 py-1.5">
+          {zoomToolbar}
+        </div>
+      )}
 
       {/* Carousel */}
       <div
@@ -755,48 +805,6 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
           </div>
         )}
 
-        {/* Floating +/- zoom control */}
-        <div className="absolute bottom-10 right-3 z-20 flex flex-col items-center rounded-full border border-border bg-card/80 shadow-lg backdrop-blur-sm">
-            <button
-              onClick={handleZoomIn}
-              disabled={(zoomLevel ?? 4) <= 1}
-              className={"flex h-9 w-9 items-center justify-center rounded-t-full transition-colors " + ((zoomLevel ?? 4) <= 1 ? "text-muted-foreground/30" : "text-foreground active:bg-muted")}
-              aria-label="메뉴 크게 보기"
-            >
-              <Plus className="h-4 w-4" strokeWidth={2.5} />
-            </button>
-            <div className="flex flex-col items-center gap-0.5 py-0.5">
-              {[1, 2, 3, 4, 5].map((level) => (
-                <span
-                  key={level}
-                  className={"h-1 rounded-full transition-all " + ((zoomLevel ?? 4) === level ? "w-2.5 bg-primary" : "w-1 bg-border")}
-                />
-              ))}
-            </div>
-            <button
-              onClick={handleZoomOut}
-              disabled={(zoomLevel ?? 4) >= 5}
-              className={"flex h-9 w-9 items-center justify-center rounded-b-full transition-colors " + ((zoomLevel ?? 4) >= 5 ? "text-muted-foreground/30" : "text-foreground active:bg-muted")}
-              aria-label="메뉴 작게 보기"
-            >
-              <Minus className="h-4 w-4" strokeWidth={2.5} />
-            </button>
-            <div className={"flex flex-col items-center gap-0.5 border-t border-border pt-1 pb-1 transition-opacity duration-200 " + (zoomLevel !== null ? "opacity-100" : "opacity-0 pointer-events-none")}>
-              <button
-                onClick={handleResetZoom}
-                className="px-1 text-[7px] font-medium text-muted-foreground leading-tight text-center active:text-foreground"
-              >
-                {"초기화"}
-              </button>
-              <button
-                onClick={handleApplyZoomToAll}
-                className="px-1 text-[7px] font-medium text-primary leading-tight text-center active:text-primary/70"
-              >
-                {"전체\n적용"}
-              </button>
-            </div>
-        </div>
-
         {/* Zoom level indicator (brief flash on change) */}
         {zoomIndicator !== null && (
           <div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center">
@@ -843,7 +851,7 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
                   <Minus className="h-3 w-3 text-foreground" />
                 </div>
                 <span className="text-xs font-medium text-foreground">
-                  {"버튼으로 메뉴 크기 조절"}
+                  {"상단 바에서 크기 조절"}
                 </span>
               </div>
             </div>
