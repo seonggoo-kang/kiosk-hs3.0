@@ -340,7 +340,7 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
       <div className="shrink-0 border-t border-border px-2 pb-1.5 pt-2" style={{ backgroundColor: "#F6F6FA" }}>
         <div className="flex items-stretch gap-1.5 overflow-x-auto scrollbar-hide" style={{ height: 100 }}>
           {/* Product thumbnail */}
-          <div className="flex shrink-0 flex-col items-center justify-center rounded-2xl border border-border bg-card px-1.5" style={{ width: 78 }}>
+          <div className="flex shrink-0 flex-col items-center justify-center rounded-2xl border border-border/50 px-1.5" style={{ width: 78 }}>
             <div className="relative mb-1 h-12 w-12 overflow-hidden rounded-lg">
               <Image src={product.image} alt={product.name} fill className="object-contain" sizes="48px" />
             </div>
@@ -369,7 +369,7 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
               )
             }
             return (
-              <div key={`empty-${i}`} className="flex shrink-0 flex-col items-center justify-center rounded-2xl bg-muted/60" style={{ width: 68 }}>
+              <div key={`empty-${i}`} className="flex shrink-0 flex-col items-center justify-center rounded-2xl" style={{ width: 68, backgroundColor: "#EDEDF2" }}>
                 <div className="mb-1 flex h-11 w-11 items-center justify-center rounded-full bg-muted">
                   <span className="text-base font-bold text-muted-foreground/40">{"?"}</span>
                 </div>
