@@ -284,7 +284,7 @@ const packableProducts = generateProducts("packable-icecream", [
   // ── 패밀리 ──
   { name: "패밀리", desc: "5가지 맛", size: "5가지 맛 (960g)", weight: "960g", price: 26000, cal: "324~704 kcal", serving: "960g", image: "/products/포장가능아이스크림/워크샵패밀리_0.png", flavor: true, maxF: 5, sub: "family" },
   // ── 하프갤론 ──
-  { name: "하프갤론", desc: "6가지 맛", size: "6가지 맛 (1200g)", weight: "1200g", price: 31500, cal: "450~900 kcal", serving: "1200g", image: "/products/포장가능아이스크림/워크샵하프갤론_0.png", flavor: true, maxF: 6, sub: "half-gallon" },
+  { name: "하프갤론", desc: "6가지 맛", size: "6가지 맛 (1200g)", weight: "1200g", price: 31500, cal: "450~900 kcal", serving: "1200g", image: "/products/포���가능아이스크림/워크샵하프갤론_0.png", flavor: true, maxF: 6, sub: "half-gallon" },
   // ── 팩 ──
   { name: "아빠왔다팩", desc: "싱글레귤러 4개", size: "싱글레귤러 4개", weight: "4개", price: 15600, cal: "150~280 kcal", serving: "4개", image: "/products/포장가능아이스크림/워크샵아빠왔다팩_1.png", flavor: true, maxF: 4, sub: "pack" },
   { name: "버라이어티팩", desc: "싱글레귤러 6개", size: "싱글레귤러 6개", weight: "6개", price: 23400, cal: "150~280 kcal", serving: "6개", image: "/products/포장가능아이스크림/워크샵버라이어티팩_1.png", flavor: true, maxF: 6, sub: "pack" },
@@ -400,7 +400,7 @@ const beverageProducts = generateProducts("beverage", [
   { name: "레슬리 민초", desc: "시그니처 쉐이크", size: "레귤러", weight: "400ml", price: 6200, cal: "320~400 kcal", serving: "400ml", image: "/products/음료&블라스트/레슬리민초_0.png", flavor: false, maxF: 0, sub: "signature" },
   { name: "레슬리 엄마는\n외계인", desc: "시그니처 쉐이크", size: "레귤러", weight: "400ml", price: 6200, cal: "310~390 kcal", serving: "400ml", image: "/products/음료&블라스트/레슬리엄마는외계인_0.png", flavor: false, maxF: 0, sub: "signature" },
   { name: "레슬리 아봉", desc: "시그니처 쉐이크", size: "레귤러", weight: "400ml", price: 6200, cal: "300~380 kcal", serving: "400ml", image: "/products/음료&블라스트/레슬리아봉_0.png", flavor: false, maxF: 0, sub: "signature" },
-  { name: "레슬리 초콜릿 쉐이크", desc: "시그니처 쉐이크", size: "레귤러", weight: "400ml", price: 6200, cal: "340~420 kcal", serving: "400ml", image: "/products/음료&블라스트/레슬리초콜릿쉐이크_0.png", flavor: false, maxF: 0, sub: "signature" },
+  { name: "레슬리 초콜릿 쉐이크", desc: "시그니처 쉐이크", size: "레귤러", weight: "400ml", price: 6200, cal: "340~420 kcal", serving: "400ml", image: "/products/음료&블라스트/레슬리초콜���쉐이크_0.png", flavor: false, maxF: 0, sub: "signature" },
   { name: "엄마는 외계인\n블라스트", desc: "블라스트", size: "레귤러", weight: "400ml", price: 6200, cal: "300~380 kcal", serving: "400ml", image: "/products/음료&블라스트/엄마는외계인블라스트_1.png", flavor: false, maxF: 0, sub: "signature" },
   { name: "우주 라이크봉봉\n블라스트", desc: "블라스트", size: "레귤러", weight: "400ml", price: 5800, cal: "280~350 kcal", serving: "400ml", image: "/products/음료&블라스트/우주라이크봉봉블라스트_0.png", flavor: false, maxF: 0, sub: "signature" },
   { name: "카푸치노 블라스트\n오리지널", desc: "카푸치노 블라스트", size: "레귤러", weight: "400ml", price: 5800, cal: "260~340 kcal", serving: "400ml", image: "/products/음료&블라스트/카푸치노-블라스트_오리지널_1.png", flavor: false, maxF: 0, sub: "signature" },
@@ -515,7 +515,7 @@ const prepackProducts = generateProducts("prepack", [
   { name: "레인보우 샤베트\n레디팩", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "450~700 kcal", serving: "660ml", image: "/products/레디팩 블록팩/레인보우샤베트레디팩_0.png", flavor: false, maxF: 0, sub: "readypack" },
 
   // ── 블록팩 (소용량 컵형) – 4,000원 고정 ──
-  { name: "블록팩 레인보우\n샤베트", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "150~250 kcal", serving: "200ml", image: "/products/레디팩 블록팩/블록팩레인보우샤베트_0.png", flavor: false, maxF: 0, sub: "blockpack" },
+  { name: "블록팩 레인보우\n샤베트", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "150~250 kcal", serving: "200ml", image: "/products/레디팩 블록���/블록팩레인보우샤베트_0.png", flavor: false, maxF: 0, sub: "blockpack" },
   { name: "블록팩 베리베리\n스트로베리", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "170~260 kcal", serving: "200ml", image: "/products/레디팩 블록팩/블록팩베리베리스트로베리_0.png", flavor: false, maxF: 0, sub: "blockpack" },
   { name: "블록팩 이상한 나라의\n솜사탕", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/레디팩 블록팩/NEW블록팩(이상한나라의솜사탕)_0.png", flavor: false, maxF: 0, sub: "blockpack" },
   { name: "블���팩 바람과 함께\n사라지다", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/레디팩 블록팩/NEW블록팩(바람과함께사라지다)_0.png", flavor: false, maxF: 0, sub: "blockpack" },
@@ -604,8 +604,8 @@ export const products: Product[] = [
 
 // ─── Flavor Categories ───────────────────────────────────
 export const flavorCategories: FlavorCategory[] = [
+  { id: "recommended", name: "추천 맛" },
   { id: "all", name: "전체" },
-  { id: "recommended", name: "추천" },
   { id: "fruit", name: "과일" },
   { id: "chocolate", name: "초콜릿" },
   { id: "milk-cheese", name: "우유/치즈/과자" },
@@ -671,7 +671,7 @@ export const flavors: Flavor[] = [
 
   // ── 커피/카라멜/티 ──
   { id: "jamoca-almond-fudge", name: "자모카 아몬드 훠지", image: "/flavors/자모카아몬드훠지50112_0.png", color: "hsl(20,40%,40%)", categoryId: "coffee-caramel", description: "커피 아이스크림에 아몬드와 초콜릿 퍼지의 조화", badge: null },
-  { id: "mocha-tiramisu", name: "모카 티라미수", image: "/flavors/모카티라미수_0.png", color: "hsl(25,35%,42%)", categoryId: "coffee-caramel", description: "모카와 티라미수의 진한 풍미", badge: null },
+  { id: "mocha-tiramisu", name: "모카 티라미수", image: "/flavors/모카티라미수_0.png", color: "hsl(25,35%,42%)", categoryId: "coffee-caramel", description: "모카와 티라미수의 진�� 풍미", badge: null },
   { id: "neoneun-cham-dalgona", name: "너는 참 달고나", image: "/flavors/너는참달고나_0.png", color: "hsl(35,55%,65%)", categoryId: "coffee-caramel", description: "달콤한 달고나의 풍미", badge: null },
   { id: "golden-praline-butter", name: "골든 프랄린 버터", image: "/flavors/골든프랄린버터_1.png", color: "hsl(38,50%,60%)", categoryId: "coffee-caramel", description: "골든 프랄린과 버터의 고소한 맛", badge: null },
   { id: "winter-bam", name: "윈터밤", image: "/flavors/윈터밤_1.png", color: "hsl(30,40%,50%)", categoryId: "coffee-caramel", description: "겨울 밤의 따뜻하고 고소한 맛", badge: null },

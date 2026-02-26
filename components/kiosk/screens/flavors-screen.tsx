@@ -245,8 +245,8 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
         <div className="grid grid-cols-4">
           {flavorCategories.slice(0, 4).map((cat) => (
             <button key={cat.id} onClick={() => handleCategoryChange(cat.id)}
-              className={cn("border-b-2 px-1 py-2 text-[11px] font-semibold transition-colors",
-                activeCategory === cat.id ? "border-primary text-primary" : "border-transparent text-muted-foreground"
+              className={cn("border-b-2 px-1 py-2 text-[10px] font-medium transition-colors",
+                activeCategory === cat.id ? "border-primary font-bold text-primary" : "border-transparent text-muted-foreground"
               )}>
               {cat.name}
             </button>
@@ -255,8 +255,8 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
         <div className="grid grid-cols-4">
           {flavorCategories.slice(4).map((cat) => (
             <button key={cat.id} onClick={() => handleCategoryChange(cat.id)}
-              className={cn("border-b-2 px-1 py-2 text-[11px] font-semibold transition-colors",
-                activeCategory === cat.id ? "border-primary text-primary" : "border-transparent text-muted-foreground"
+              className={cn("border-b-2 px-1 py-2 text-[10px] font-medium transition-colors",
+                activeCategory === cat.id ? "border-primary font-bold text-primary" : "border-transparent text-muted-foreground"
               )}>
               {cat.name}
             </button>
