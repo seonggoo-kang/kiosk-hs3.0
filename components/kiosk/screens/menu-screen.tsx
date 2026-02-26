@@ -279,21 +279,28 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
   const [sheetProduct, setSheetProduct] = useState<Product | null>(null)
   const [sheetFlavors, setSheetFlavors] = useState<Flavor[]>([])
   const [sheetReqSelections, setSheetReqSelections] = useState<ResolvedRequiredOption[]>([])
-  // Re-open bottom sheet when returning from flavor picker
+  // Re-open bottom sheet when returning from flavor picker.
+  // Since ALL screens are always mounted, we just watch for the
+  // sheetFlowActive flag to flip to true. We use a ref to avoid
+  // re-running when the inline callbacks change reference.
+  const prevSheetFlowActive = useRef(false)
   useEffect(() => {
-    if (sheetFlowActive && sheetReturnFlavors && sheetReturnFlavors.length > 0 && pendingSheetProductId) {
+    if (sheetFlowActive && !prevSheetFlowActive.current && sheetReturnFlavors && sheetReturnFlavors.length > 0 && pendingSheetProductId) {
       const prod = allProducts.find((p) => p.id === pendingSheetProductId)
       if (prod) {
         setSheetProduct(prod)
         setSheetFlavors(sheetReturnFlavors)
-        // Restore saved required selections
         if (pendingSheetReqSelections && pendingSheetReqSelections.length > 0) {
           setSheetReqSelections(pendingSheetReqSelections)
         }
       }
-      onClearPendingSheet?.()
-      onClearSheetFlow?.()
+      // Defer clearing so the state is consumed first
+      setTimeout(() => {
+        onClearPendingSheet?.()
+        onClearSheetFlow?.()
+      }, 0)
     }
+    prevSheetFlowActive.current = !!sheetFlowActive
   }, [sheetFlowActive, sheetReturnFlavors, pendingSheetProductId, pendingSheetReqSelections, onClearSheetFlow, onClearPendingSheet])
 
   const flatSlides = useMemo<Slide[]>(() => {
