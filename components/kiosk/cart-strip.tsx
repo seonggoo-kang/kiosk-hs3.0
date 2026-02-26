@@ -6,7 +6,11 @@ import { useOrder, itemNeedsOptions } from "@/lib/order-context"
 import { formatPrice } from "@/lib/mock-data"
 import { QuantityControl } from "./quantity-control"
 
-export function MiniCart() {
+interface MiniCartProps {
+  onEditItem?: (cartId: string) => void
+}
+
+export function MiniCart({ onEditItem }: MiniCartProps = {}) {
   const { state, dispatch, totalItems, subtotal } = useOrder()
   const hasItems = state.cart.length > 0
 
@@ -180,11 +184,17 @@ export function MiniCart() {
                     </p>
                     {/* Row 3: Option select/change chip */}
                     {isPending ? (
-                      <button className="mt-0.5 rounded-md bg-primary px-2 py-0.5 text-[9px] font-semibold text-white active:opacity-80">
+                      <button
+                        onClick={(e) => { e.stopPropagation(); onEditItem?.(item.cartId) }}
+                        className="mt-0.5 rounded-md bg-primary px-2 py-0.5 text-[9px] font-semibold text-white active:opacity-80"
+                      >
                         {"옵션 선택"}
                       </button>
                     ) : hasChosenOptions ? (
-                      <button className="mt-0.5 flex items-center gap-0.5 rounded-md bg-primary/10 px-2 py-0.5 text-[9px] font-semibold text-primary active:opacity-80">
+                      <button
+                        onClick={(e) => { e.stopPropagation(); onEditItem?.(item.cartId) }}
+                        className="mt-0.5 flex items-center gap-0.5 rounded-md bg-primary/10 px-2 py-0.5 text-[9px] font-semibold text-primary active:opacity-80"
+                      >
                         <span className="max-w-[80px] truncate">{chosenSummary}</span>
                         <svg className="h-2.5 w-2.5 shrink-0 opacity-60" viewBox="0 0 12 12" fill="none"><path d="M4 3l4 3-4 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                       </button>

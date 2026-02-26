@@ -10,9 +10,11 @@ import { MiniCart } from "@/components/kiosk/cart-strip"
 import { ActionBar } from "@/components/kiosk/action-bar"
 import { SubcategoryFilter } from "@/components/kiosk/subcategory-filter"
 import { RecommendedPanel } from "@/components/kiosk/ai-pick-panel"
-import { useOrder, itemNeedsOptions } from "@/lib/order-context"
+import { OptionBottomSheet } from "@/components/kiosk/option-bottom-sheet"
+import { useOrder, itemNeedsOptions, type ResolvedRequiredOption, type CartItemOption } from "@/lib/order-context"
 import {
   categories,
+  products as allProducts,
   getProductsByCategory,
   getRankedRecommendations,
   cakeSubcategories,
@@ -23,6 +25,7 @@ import {
   packableSubcategories,
   workshopSubcategories,
   type Product,
+  type Flavor,
 } from "@/lib/mock-data"
 
 // Zoom levels: 1=1col, 2=2col, 3=3col, 4=4col(default auto), 5=5col
@@ -215,9 +218,15 @@ interface MenuScreenProps {
   showAddedToast?: boolean
   currentStep: 1 | 2 | 3 | 4 | 5
   elapsedSeconds: number
+  /** Flavors returned from the FlavorsScreen when in bottom-sheet flow */
+  sheetReturnFlavors?: Flavor[]
+  /** Flag indicating flavors were returned from sheet flow */
+  sheetFlowActive?: boolean
+  /** Callback to clear the sheet flow state in parent */
+  onClearSheetFlow?: () => void
 }
 
-export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscounts, showAddedToast: externalToast, currentStep, elapsedSeconds }: MenuScreenProps) {
+export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscounts, showAddedToast: externalToast, currentStep, elapsedSeconds, sheetReturnFlavors, sheetFlowActive, onClearSheetFlow }: MenuScreenProps) {
   const { state, dispatch } = useOrder()
 
   const [cakeFilter, setCakeFilter] = useState("all")
@@ -257,6 +266,26 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
       return () => clearTimeout(timer)
     }
   }, [externalToast])
+
+  // ── Option bottom sheet state ──
+  const [sheetProduct, setSheetProduct] = useState<Product | null>(null)
+  const [sheetFlavors, setSheetFlavors] = useState<Flavor[]>([])
+  const [sheetReqSelections, setSheetReqSelections] = useState<ResolvedRequiredOption[]>([])
+  // Track when returning from flavor screen
+  const [pendingSheetProductId, setPendingSheetProductId] = useState<string | null>(null)
+
+  // Re-open bottom sheet when returning from flavor picker
+  useEffect(() => {
+    if (sheetFlowActive && sheetReturnFlavors && sheetReturnFlavors.length > 0 && pendingSheetProductId) {
+      const prod = allProducts.find((p) => p.id === pendingSheetProductId)
+      if (prod) {
+        setSheetProduct(prod)
+        setSheetFlavors(sheetReturnFlavors)
+      }
+      setPendingSheetProductId(null)
+      onClearSheetFlow?.()
+    }
+  }, [sheetFlowActive, sheetReturnFlavors, pendingSheetProductId, onClearSheetFlow])
 
   const flatSlides = useMemo<Slide[]>(() => {
     const slides: Slide[] = []
@@ -485,13 +514,96 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
 
   const handleProductSelect = useCallback((product: Product) => {
     if (wasDragging.current) { wasDragging.current = false; return }
-    dispatch({ type: "ADD_TO_CART_INSTANT", payload: product })
+    // If product has required options or needs flavors, open bottom sheet
+    const needsOptions = product.requiredOptions.length > 0 || product.requiresFlavor
+    if (needsOptions) {
+      setSheetProduct(product)
+      setSheetFlavors([])
+      setSheetReqSelections([])
+    } else {
+      dispatch({ type: "ADD_TO_CART_INSTANT", payload: product })
+    }
   }, [dispatch])
 
   const handleRemoveProduct = useCallback((product: Product) => {
     const entry = cartProductMap.get(product.id)
     if (entry) dispatch({ type: "REMOVE_FROM_CART", payload: entry.cartId })
   }, [cartProductMap, dispatch])
+
+  // ── Bottom sheet confirm (add to cart with all options) ──
+  const handleSheetConfirm = useCallback((data: {
+    requiredSelections: ResolvedRequiredOption[]
+    flavors: Flavor[]
+    options: CartItemOption[]
+  }) => {
+    if (!sheetProduct) return
+    dispatch({
+      type: "ADD_TO_CART",
+      payload: {
+        cartId: `${sheetProduct.id}-${Date.now()}`,
+        product: sheetProduct,
+        selectedFlavors: data.flavors,
+        options: data.options,
+        requiredSelections: data.requiredSelections,
+        quantity: 1,
+      },
+    })
+    setSheetProduct(null)
+    setSheetFlavors([])
+    setSheetReqSelections([])
+    // Show added toast
+    setShowAddedToast(true)
+    setTimeout(() => setShowAddedToast(false), 2500)
+  }, [sheetProduct, dispatch])
+
+  // ── Bottom sheet flavor picker navigation ──
+  const handleSheetPickFlavors = useCallback((currentSelections: { requiredSelections: ResolvedRequiredOption[] }) => {
+    if (!sheetProduct) return
+    // Save current state so we can restore when returning
+    setSheetReqSelections(currentSelections.requiredSelections)
+    setPendingSheetProductId(sheetProduct.id)
+    setSheetProduct(null) // close sheet while flavor screen is open
+    onGoToFlavors(sheetProduct.id, "__sheet__") // special cartId to indicate sheet flow
+  }, [sheetProduct, onGoToFlavors])
+
+  // ── Edit existing cart item via bottom sheet ──
+  const [editingCartId, setEditingCartId] = useState<string | null>(null)
+
+  const handleEditCartItem = useCallback((cartId: string) => {
+    const item = state.cart.find((i) => i.cartId === cartId)
+    if (!item) return
+    // Only open sheet for items that have options/flavors to edit
+    if (item.product.requiredOptions.length === 0 && !item.product.requiresFlavor) return
+    setEditingCartId(cartId)
+    setSheetProduct(item.product)
+    setSheetFlavors(item.selectedFlavors)
+    setSheetReqSelections(item.requiredSelections)
+  }, [state.cart])
+
+  const handleEditSheetConfirm = useCallback((data: {
+    requiredSelections: ResolvedRequiredOption[]
+    flavors: Flavor[]
+    options: CartItemOption[]
+  }) => {
+    if (!editingCartId) {
+      // New item flow
+      handleSheetConfirm(data)
+      return
+    }
+    // Update existing cart item
+    dispatch({
+      type: "RESOLVE_OPTIONS",
+      payload: {
+        cartId: editingCartId,
+        flavors: data.flavors,
+        requiredSelections: data.requiredSelections,
+      },
+    })
+    setEditingCartId(null)
+    setSheetProduct(null)
+    setSheetFlavors([])
+    setSheetReqSelections([])
+  }, [editingCartId, handleSheetConfirm, dispatch])
 
   // ── Pinch-to-zoom ──
   const pinchPointers = useRef<Map<number, { x: number; y: number }>>(new Map())
@@ -849,7 +961,7 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
         )}
       </div>
 
-      <MiniCart />
+      <MiniCart onEditItem={handleEditCartItem} />
       <ActionBar
         onBack={() => {
           dispatch({ type: "RESET_ORDER" })
@@ -875,6 +987,23 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
           }
         }}
       />
+
+      {/* Option bottom sheet for products with required options */}
+      {sheetProduct && (
+        <OptionBottomSheet
+          product={sheetProduct}
+          initialFlavors={sheetFlavors}
+          initialRequiredSelections={sheetReqSelections}
+          onConfirm={handleEditSheetConfirm}
+          onPickFlavors={sheetProduct.requiresFlavor ? handleSheetPickFlavors : undefined}
+          onClose={() => {
+            setEditingCartId(null)
+            setSheetProduct(null)
+            setSheetFlavors([])
+            setSheetReqSelections([])
+          }}
+        />
+      )}
     </div>
   )
 }

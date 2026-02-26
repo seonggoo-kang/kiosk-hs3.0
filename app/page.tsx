@@ -131,13 +131,25 @@ export default function KioskApp() {
     [navigateTo]
   )
 
+  // Store selected flavors for sheet flow
+  const [sheetReturnFlavors, setSheetReturnFlavors] = useState<import("@/lib/mock-data").Flavor[]>([])
+  const [sheetFlowActive, setSheetFlowActive] = useState(false)
+
   const handleFlavorsComplete = useCallback(
     (productId: string, flavors: import("@/lib/mock-data").Flavor[]) => {
-      setNavProductId(productId)
-      setNavFlavorIds(flavors.map((f) => f.id))
-      navigateTo(SCREEN.OPTIONS, "left")
+      if (navCartId === "__sheet__") {
+        // Returning from flavor picker to the bottom sheet flow
+        setSheetReturnFlavors(flavors)
+        setSheetFlowActive(true)
+        setNavProductId(productId)
+        navigateTo(SCREEN.MENU, "right")
+      } else {
+        setNavProductId(productId)
+        setNavFlavorIds(flavors.map((f) => f.id))
+        navigateTo(SCREEN.OPTIONS, "left")
+      }
     },
-    [navigateTo]
+    [navigateTo, navCartId]
   )
 
   const handleOptionsComplete = useCallback(() => {
@@ -257,6 +269,9 @@ export default function KioskApp() {
         showAddedToast={showMenuToast}
         currentStep={currentStep}
         elapsedSeconds={elapsedSeconds}
+        sheetReturnFlavors={sheetReturnFlavors}
+        sheetFlowActive={sheetFlowActive}
+        onClearSheetFlow={() => { setSheetFlowActive(false); setSheetReturnFlavors([]) }}
       />
     ),
     [SCREEN.FLAVORS]: (
