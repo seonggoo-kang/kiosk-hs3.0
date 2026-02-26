@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useCallback, useEffect, useRef } from "react"
 import Image from "next/image"
-import { X } from "lucide-react"
+import { X, Snowflake, Flame, Coffee } from "lucide-react"
 import { cn } from "@/lib/utils"
 import {
   type Product,
@@ -13,6 +13,82 @@ import {
 } from "@/lib/mock-data"
 import type { ResolvedRequiredOption, CartItemOption } from "@/lib/order-context"
 import { OptionSelector } from "./option-selector"
+
+// ─── Icons for required options ───────────────────────────────────────
+function SnowflakeIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2v4m0 12v4m10-10h-4M6 12H2m15.07-7.07l-2.83 2.83M8.76 15.24l-2.83 2.83m11.14 0l-2.83-2.83M8.76 8.76L5.93 5.93M12 8a4 4 0 100 8 4 4 0 000-8z" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+      <circle cx="12" cy="12" r="2" fill="currentColor"/>
+    </svg>
+  )
+}
+
+function SteamIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <path d="M8 18c0-3.5 2-6 2-9s-2-5.5-2-9"/>
+      <path d="M12 18c0-3.5 2-6 2-9s-2-5.5-2-9"/>
+      <path d="M16 18c0-3.5 2-6 2-9s-2-5.5-2-9"/>
+    </svg>
+  )
+}
+
+function CupSmallIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M6 8h12l-1.5 10a2 2 0 01-2 1.8h-5a2 2 0 01-2-1.8L6 8z" fill="currentColor" opacity="0.3"/>
+      <path d="M17 8H7l1.5 10a2 2 0 002 1.8h3a2 2 0 002-1.8L17 8zM7 8V6a1 1 0 011-1h8a1 1 0 011 1v2" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+    </svg>
+  )
+}
+
+function CupLargeIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M5 6h14l-2 14a2 2 0 01-2 2H9a2 2 0 01-2-2L5 6z" fill="currentColor" opacity="0.3"/>
+      <path d="M18 6H6l2 14a2 2 0 002 2h4a2 2 0 002-2l2-14zM6 6V4a1 1 0 011-1h10a1 1 0 011 1v2" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+    </svg>
+  )
+}
+
+function BeanIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <ellipse cx="9" cy="12" rx="5" ry="7" fill="currentColor" opacity="0.8"/>
+      <ellipse cx="15" cy="12" rx="5" ry="7" fill="currentColor" opacity="0.6"/>
+      <path d="M9 8c0 4 0 8 0 8M15 8c0 4 0 8 0 8" stroke="white" strokeWidth="0.8" opacity="0.5"/>
+    </svg>
+  )
+}
+
+function getOptionIcon(groupId: string, optionId: string, isSelected: boolean) {
+  const baseClass = "h-8 w-8"
+  
+  if (groupId === "temperature") {
+    if (optionId === "ice") {
+      return <Snowflake className={cn(baseClass, isSelected ? "text-blue-500" : "text-blue-300")} />
+    }
+    if (optionId === "hot") {
+      return <SteamIcon className={cn(baseClass, isSelected ? "text-red-400" : "text-red-300")} />
+    }
+  }
+  
+  if (groupId === "cup-size") {
+    if (optionId === "regular") {
+      return <CupSmallIcon className={cn(baseClass, isSelected ? "text-primary" : "text-primary/50")} />
+    }
+    if (optionId === "large") {
+      return <CupLargeIcon className={cn(baseClass, isSelected ? "text-primary" : "text-primary/50")} />
+    }
+  }
+  
+  if (groupId === "bean") {
+    return <BeanIcon className={cn(baseClass, isSelected ? "text-amber-700" : "text-amber-600/60")} />
+  }
+  
+  return null
+}
 
 // ─── Types ────────────────────────────────────────────────
 type OptionBottomSheetProps = {
@@ -222,7 +298,7 @@ export function OptionBottomSheet({
       <div
         ref={sheetRef}
         className={cn(
-          "relative flex max-h-[85vh] flex-col rounded-t-2xl bg-card shadow-xl transition-transform duration-250 ease-out",
+          "relative flex max-h-[90vh] flex-col rounded-t-2xl bg-card shadow-xl transition-transform duration-250 ease-out",
           visible ? "translate-y-0" : "translate-y-full"
         )}
       >
@@ -245,33 +321,55 @@ export function OptionBottomSheet({
         </div>
 
         {/* ── Scrollable body ── */}
-        <div className="flex-1 overflow-y-auto px-4 py-3">
+        <div className="flex-1 overflow-y-auto px-4 py-4">
           {/* Required option groups */}
-          {reqGroups.map((group) => (
-            <section key={group.id} className="mb-4">
-              <h3 className="mb-2 text-xs font-bold text-foreground">{group.name}</h3>
-              <div className="flex gap-2">
-                {group.options.map((opt) => {
-                  const isSelected = reqSelections[group.id] === opt.id
-                  return (
-                    <button
-                      key={opt.id}
-                      onClick={() => setReqSelections((prev) => ({ ...prev, [group.id]: opt.id }))}
-                      className={cn(
-                        "flex flex-1 flex-col items-center justify-center gap-0.5 rounded-xl border-2 px-3 py-3 transition-all active:scale-[0.97]",
-                        isSelected ? "border-primary bg-accent" : "border-border bg-card"
-                      )}
-                    >
-                      <span className="text-sm font-semibold text-foreground">{opt.name}</span>
-                      {opt.priceAdd > 0 && (
-                        <span className="text-[10px] font-bold text-primary">+{formatPrice(opt.priceAdd)}</span>
-                      )}
-                    </button>
-                  )
-                })}
-              </div>
-            </section>
-          ))}
+          {reqGroups.map((group) => {
+            const isBeanGroup = group.id === "bean"
+            const gridCols = isBeanGroup ? "grid-cols-3" : "grid-cols-2"
+            
+            return (
+              <section key={group.id} className="mb-5">
+                <h3 className="mb-2.5 text-sm font-bold text-foreground">{group.name}</h3>
+                <div className={cn("grid gap-2.5", gridCols)}>
+                  {group.options.map((opt) => {
+                    const isSelected = reqSelections[group.id] === opt.id
+                    const icon = getOptionIcon(group.id, opt.id, isSelected)
+                    const description = (opt as { description?: string }).description
+                    
+                    return (
+                      <button
+                        key={opt.id}
+                        onClick={() => setReqSelections((prev) => ({ ...prev, [group.id]: opt.id }))}
+                        className={cn(
+                          "flex flex-col items-center justify-center gap-1.5 rounded-xl border-2 px-2 transition-all active:scale-[0.98]",
+                          isBeanGroup ? "py-3" : "py-4",
+                          isSelected 
+                            ? "border-primary bg-card shadow-sm" 
+                            : "border-transparent bg-muted/60"
+                        )}
+                      >
+                        {icon && <div className="mb-0.5">{icon}</div>}
+                        <span className={cn(
+                          "text-xs font-bold",
+                          isSelected ? "text-primary" : "text-foreground"
+                        )}>
+                          {opt.name}
+                        </span>
+                        {description && (
+                          <span className="text-center text-[9px] leading-tight text-muted-foreground">
+                            {description}
+                          </span>
+                        )}
+                        {opt.priceAdd > 0 && (
+                          <span className="text-[9px] font-bold text-primary">+{formatPrice(opt.priceAdd)}</span>
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>
+              </section>
+            )
+          })}
 
           {/* Flavor selection CTA */}
           {product.requiresFlavor && (

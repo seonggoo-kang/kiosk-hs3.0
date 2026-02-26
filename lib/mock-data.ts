@@ -79,27 +79,27 @@ export const requiredOptionGroups: RequiredOptionGroup[] = [
   },
   {
     id: "temperature",
-    name: "온도 선택",
+    name: "온도",
     options: [
-      { id: "ice", name: "아이스", priceAdd: 0 },
-      { id: "hot", name: "핫", priceAdd: 0 },
+      { id: "ice", name: "아이스", priceAdd: 0, icon: "snowflake" },
+      { id: "hot", name: "핫", priceAdd: 0, icon: "steam" },
     ],
   },
   {
     id: "cup-size",
     name: "컵 사이즈",
     options: [
-      { id: "regular", name: "레귤러", priceAdd: 0 },
-      { id: "large", name: "라지", priceAdd: 700 },
+      { id: "regular", name: "레귤러", priceAdd: 0, icon: "cup-small" },
+      { id: "large", name: "라지", priceAdd: 700, icon: "cup-large" },
     ],
   },
   {
     id: "bean",
-    name: "원두 선택",
+    name: "원두",
     options: [
-      { id: "signature-blend", name: "시그니처 블렌드", priceAdd: 0 },
-      { id: "single-origin", name: "싱글 오리진", priceAdd: 300 },
-      { id: "decaf", name: "디카페인", priceAdd: 500 },
+      { id: "special-edition", name: "스페셜 에디션", priceAdd: 0, icon: "bean", description: "갓 볶은 견과류의 고소함과 진한 여운" },
+      { id: "white-and-blue", name: "화이트 앤 블루", priceAdd: 0, icon: "bean", description: "다크초콜릿 풍미와 묵직한 단맛" },
+      { id: "decaf", name: "디카페인", priceAdd: 0, icon: "bean", description: "카페인 99.9% 제거 본연의 향은 그대로" },
     ],
   },
 ]
@@ -400,7 +400,7 @@ const beverageProducts = generateProducts("beverage", [
   { name: "레슬리 민초", desc: "시그니처 쉐이크", size: "레귤러", weight: "400ml", price: 6200, cal: "320~400 kcal", serving: "400ml", image: "/products/음료&블라스트/레슬리민초_0.png", flavor: false, maxF: 0, sub: "signature" },
   { name: "레슬리 엄마는\n외계인", desc: "시그니처 쉐이크", size: "레귤러", weight: "400ml", price: 6200, cal: "310~390 kcal", serving: "400ml", image: "/products/음료&블라스트/레슬리엄마는외계인_0.png", flavor: false, maxF: 0, sub: "signature" },
   { name: "레슬리 아봉", desc: "시그니처 쉐이크", size: "레귤러", weight: "400ml", price: 6200, cal: "300~380 kcal", serving: "400ml", image: "/products/음료&블라스트/레슬리아봉_0.png", flavor: false, maxF: 0, sub: "signature" },
-  { name: "레슬리 초콜릿 쉐이크", desc: "시그니처 쉐이크", size: "레귤러", weight: "400ml", price: 6200, cal: "340~420 kcal", serving: "400ml", image: "/products/음료&블라스트/레슬리���콜���쉐이크_0.png", flavor: false, maxF: 0, sub: "signature" },
+  { name: "레슬리 초콜릿 쉐이크", desc: "시그니처 쉐이크", size: "레귤러", weight: "400ml", price: 6200, cal: "340~420 kcal", serving: "400ml", image: "/products/음료&블라스트/레���리���콜���쉐이크_0.png", flavor: false, maxF: 0, sub: "signature" },
   { name: "엄마는 외계인\n블라스트", desc: "블라스트", size: "레귤러", weight: "400ml", price: 6200, cal: "300~380 kcal", serving: "400ml", image: "/products/음료&블라스트/엄마는외계인블라스트_1.png", flavor: false, maxF: 0, sub: "signature" },
   { name: "우주 라이크봉봉\n블라스트", desc: "블라스트", size: "레귤러", weight: "400ml", price: 5800, cal: "280~350 kcal", serving: "400ml", image: "/products/음료&블라스트/우주라이크봉봉블라스트_0.png", flavor: false, maxF: 0, sub: "signature" },
   { name: "카푸치노 블라스트\n오리지널", desc: "카푸치노 블라스트", size: "레귤러", weight: "400ml", price: 5800, cal: "260~340 kcal", serving: "400ml", image: "/products/음료&블라스트/카푸치노-블라스트_오리지널_1.png", flavor: false, maxF: 0, sub: "signature" },
@@ -418,7 +418,7 @@ const beverageProducts = generateProducts("beverage", [
   { name: "식혜", desc: "전통 음료", size: "레귤러", weight: "350ml", price: 6200, cal: "120~180 kcal", serving: "350ml", image: "/products/음료&블라스트/식혜kdrink_0.png", flavor: false, maxF: 0, sub: "k-drink" },
   { name: "수정과", desc: "전통 음료", size: "레귤러", weight: "350ml", price: 6200, cal: "100~160 kcal", serving: "350ml", image: "/products/음료&블라스트/수정과kdrink_1.png", flavor: false, maxF: 0, sub: "k-drink" },
   { name: "식혜 블라스트", desc: "전통 블라스트", size: "레귤러", weight: "400ml", price: 6800, cal: "200~300 kcal", serving: "400ml", image: "/products/음료&블라스트/식혜블라스트_0.png", flavor: false, maxF: 0, sub: "k-drink" },
-  { name: "미숫가루 라떼", desc: "곡물 라떼", size: "레귤러", weight: "350ml", price: 3800, cal: "180~260 kcal", serving: "350ml", image: "/products/음료&블라스트/미숫가루라떼_0.png", flavor: false, maxF: 0, sub: "k-drink" },
+  { name: "미숫가루 라떼", desc: "곡물 라떼", size: "레귤러", weight: "350ml", price: 3800, cal: "180~260 kcal", serving: "350ml", image: "/products/음료&블라스트/미숫가��라떼_0.png", flavor: false, maxF: 0, sub: "k-drink" },
   { name: "인절미 곡물 쉐이크", desc: "곡물 쉐이크", size: "레귤러", weight: "400ml", price: 6900, cal: "300~400 kcal", serving: "400ml", image: "/products/음료&블라스트/인절미곡물쉐이크_1.png", flavor: false, maxF: 0, sub: "k-drink" },
   { name: "두바이 스타일\n초코라떼", desc: "스페셜 라떼", size: "레귤러", weight: "350ml", price: 5800, cal: "250~340 kcal", serving: "350ml", image: "/products/음료&블라스트/두바이스타일초코라떼(수정)_0.png", flavor: false, maxF: 0, sub: "k-drink" },
 
