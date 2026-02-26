@@ -1,9 +1,9 @@
 "use client"
 
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback, useEffect, useRef } from "react"
 import { useOrder } from "@/lib/order-context"
 import { LandingScreen } from "@/components/kiosk/screens/landing-screen"
-import { MenuScreen } from "@/components/kiosk/screens/menu-screen"
+import { MenuScreen, type MenuScreenHandle } from "@/components/kiosk/screens/menu-screen"
 import { FlavorsScreen } from "@/components/kiosk/screens/flavors-screen"
 import { OptionsScreen } from "@/components/kiosk/screens/options-screen"
 import { DiscountsScreen } from "@/components/kiosk/screens/discounts-screen"
@@ -131,20 +131,22 @@ export default function KioskApp() {
     [navigateTo]
   )
 
-  // Store state for bottom-sheet ↔ flavor-screen round-trip
-  const [sheetReturnFlavors, setSheetReturnFlavors] = useState<import("@/lib/mock-data").Flavor[]>([])
-  const [sheetFlowActive, setSheetFlowActive] = useState(false)
-  const [pendingSheetProductId, setPendingSheetProductId] = useState<string | null>(null)
-  const [pendingSheetReqSelections, setPendingSheetReqSelections] = useState<import("@/lib/order-context").ResolvedRequiredOption[]>([])
+  // Ref to MenuScreen for imperative sheet reopen
+  const menuScreenRef = useRef<MenuScreenHandle>(null)
+  // Store saved required selections while user is on flavor screen
+  const pendingSheetReqSelectionsRef = useRef<import("@/lib/order-context").ResolvedRequiredOption[]>([])
 
   const handleFlavorsComplete = useCallback(
     (productId: string, flavors: import("@/lib/mock-data").Flavor[]) => {
       if (navCartId === "__sheet__") {
-        // Returning from flavor picker to the bottom sheet flow
-        setSheetReturnFlavors(flavors)
-        setSheetFlowActive(true)
-        setNavProductId(productId)
+        // Returning from flavor picker to the bottom sheet flow.
+        // Navigate back to menu first, then reopen the sheet after the transition.
         navigateTo(SCREEN.MENU, "right")
+        // Reopen the sheet after the slide animation completes (300ms)
+        setTimeout(() => {
+          menuScreenRef.current?.reopenSheetWithFlavors(productId, flavors, pendingSheetReqSelectionsRef.current)
+          pendingSheetReqSelectionsRef.current = []
+        }, 350)
       } else {
         setNavProductId(productId)
         setNavFlavorIds(flavors.map((f) => f.id))
@@ -264,6 +266,7 @@ export default function KioskApp() {
     ),
     [SCREEN.MENU]: (
       <MenuScreen
+        ref={menuScreenRef}
         onBack={goToLanding}
         onGoToFlavors={handleGoToFlavors}
         onGoToOptions={handleGoToOptions}
@@ -271,13 +274,7 @@ export default function KioskApp() {
         showAddedToast={showMenuToast}
         currentStep={currentStep}
         elapsedSeconds={elapsedSeconds}
-        sheetReturnFlavors={sheetReturnFlavors}
-        sheetFlowActive={sheetFlowActive}
-        onClearSheetFlow={() => { setSheetFlowActive(false); setSheetReturnFlavors([]) }}
-        pendingSheetProductId={pendingSheetProductId}
-        pendingSheetReqSelections={pendingSheetReqSelections}
-        onSetPendingSheet={(productId, reqSelections) => { setPendingSheetProductId(productId); setPendingSheetReqSelections(reqSelections) }}
-        onClearPendingSheet={() => { setPendingSheetProductId(null); setPendingSheetReqSelections([]) }}
+        onSetPendingSheet={(productId, reqSelections) => { pendingSheetReqSelectionsRef.current = reqSelections }}
       />
     ),
     [SCREEN.FLAVORS]: (
