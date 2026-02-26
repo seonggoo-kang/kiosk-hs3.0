@@ -131,9 +131,11 @@ export default function KioskApp() {
     [navigateTo]
   )
 
-  // Store selected flavors for sheet flow
+  // Store state for bottom-sheet ↔ flavor-screen round-trip
   const [sheetReturnFlavors, setSheetReturnFlavors] = useState<import("@/lib/mock-data").Flavor[]>([])
   const [sheetFlowActive, setSheetFlowActive] = useState(false)
+  const [pendingSheetProductId, setPendingSheetProductId] = useState<string | null>(null)
+  const [pendingSheetReqSelections, setPendingSheetReqSelections] = useState<import("@/lib/order-context").ResolvedRequiredOption[]>([])
 
   const handleFlavorsComplete = useCallback(
     (productId: string, flavors: import("@/lib/mock-data").Flavor[]) => {
@@ -272,6 +274,10 @@ export default function KioskApp() {
         sheetReturnFlavors={sheetReturnFlavors}
         sheetFlowActive={sheetFlowActive}
         onClearSheetFlow={() => { setSheetFlowActive(false); setSheetReturnFlavors([]) }}
+        pendingSheetProductId={pendingSheetProductId}
+        pendingSheetReqSelections={pendingSheetReqSelections}
+        onSetPendingSheet={(productId, reqSelections) => { setPendingSheetProductId(productId); setPendingSheetReqSelections(reqSelections) }}
+        onClearPendingSheet={() => { setPendingSheetProductId(null); setPendingSheetReqSelections([]) }}
       />
     ),
     [SCREEN.FLAVORS]: (

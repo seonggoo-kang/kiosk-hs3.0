@@ -224,9 +224,17 @@ interface MenuScreenProps {
   sheetFlowActive?: boolean
   /** Callback to clear the sheet flow state in parent */
   onClearSheetFlow?: () => void
+  /** Product ID waiting for flavors (lifted to survive navigation) */
+  pendingSheetProductId?: string | null
+  /** Saved required selections while on flavor screen (lifted to survive navigation) */
+  pendingSheetReqSelections?: ResolvedRequiredOption[]
+  /** Set the pending sheet state in the parent */
+  onSetPendingSheet?: (productId: string, reqSelections: ResolvedRequiredOption[]) => void
+  /** Clear the pending sheet state in the parent */
+  onClearPendingSheet?: () => void
 }
 
-export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscounts, showAddedToast: externalToast, currentStep, elapsedSeconds, sheetReturnFlavors, sheetFlowActive, onClearSheetFlow }: MenuScreenProps) {
+export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscounts, showAddedToast: externalToast, currentStep, elapsedSeconds, sheetReturnFlavors, sheetFlowActive, onClearSheetFlow, pendingSheetProductId, pendingSheetReqSelections, onSetPendingSheet, onClearPendingSheet }: MenuScreenProps) {
   const { state, dispatch } = useOrder()
 
   const [cakeFilter, setCakeFilter] = useState("all")
@@ -271,9 +279,6 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
   const [sheetProduct, setSheetProduct] = useState<Product | null>(null)
   const [sheetFlavors, setSheetFlavors] = useState<Flavor[]>([])
   const [sheetReqSelections, setSheetReqSelections] = useState<ResolvedRequiredOption[]>([])
-  // Track when returning from flavor screen
-  const [pendingSheetProductId, setPendingSheetProductId] = useState<string | null>(null)
-
   // Re-open bottom sheet when returning from flavor picker
   useEffect(() => {
     if (sheetFlowActive && sheetReturnFlavors && sheetReturnFlavors.length > 0 && pendingSheetProductId) {
@@ -281,11 +286,15 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
       if (prod) {
         setSheetProduct(prod)
         setSheetFlavors(sheetReturnFlavors)
+        // Restore saved required selections
+        if (pendingSheetReqSelections && pendingSheetReqSelections.length > 0) {
+          setSheetReqSelections(pendingSheetReqSelections)
+        }
       }
-      setPendingSheetProductId(null)
+      onClearPendingSheet?.()
       onClearSheetFlow?.()
     }
-  }, [sheetFlowActive, sheetReturnFlavors, pendingSheetProductId, onClearSheetFlow])
+  }, [sheetFlowActive, sheetReturnFlavors, pendingSheetProductId, pendingSheetReqSelections, onClearSheetFlow, onClearPendingSheet])
 
   const flatSlides = useMemo<Slide[]>(() => {
     const slides: Slide[] = []
@@ -559,12 +568,11 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
   // ── Bottom sheet flavor picker navigation ──
   const handleSheetPickFlavors = useCallback((currentSelections: { requiredSelections: ResolvedRequiredOption[] }) => {
     if (!sheetProduct) return
-    // Save current state so we can restore when returning
-    setSheetReqSelections(currentSelections.requiredSelections)
-    setPendingSheetProductId(sheetProduct.id)
+    // Save state to parent so it survives the navigation round-trip
+    onSetPendingSheet?.(sheetProduct.id, currentSelections.requiredSelections)
     setSheetProduct(null) // close sheet while flavor screen is open
     onGoToFlavors(sheetProduct.id, "__sheet__") // special cartId to indicate sheet flow
-  }, [sheetProduct, onGoToFlavors])
+  }, [sheetProduct, onGoToFlavors, onSetPendingSheet])
 
   // ── Edit existing cart item via bottom sheet ──
   const [editingCartId, setEditingCartId] = useState<string | null>(null)
