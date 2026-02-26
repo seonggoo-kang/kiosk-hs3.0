@@ -374,12 +374,12 @@ export default function KioskApp() {
         }
 
         if (isPrev && animating) {
-          // Sliding out
+          // Sliding out - lower z-index so incoming screen covers it
           const to = slideDir === "left" ? "-100%" : "100%"
           return (
             <div
               key={idx}
-              className="absolute inset-0 flex flex-col overflow-hidden"
+              className="absolute inset-0 z-0 flex flex-col overflow-hidden"
               style={{
                 transform: `translateX(${to})`,
                 transition: "transform 300ms ease-out",
@@ -391,12 +391,13 @@ export default function KioskApp() {
           )
         }
 
-        // Active screen
+        // Active screen - higher z-index to cover outgoing screen
         return (
           <SlideIn
             key={`${idx}-${slideKey}`}
             from={animating ? (slideDir === "left" ? "100%" : "-100%") : "0%"}
             active
+            zIndex={10}
           >
             {screens[idx]}
           </SlideIn>
@@ -415,10 +416,12 @@ function SlideIn({
   from,
   active,
   children,
+  zIndex = 0,
 }: {
   from: string
   active: boolean
   children: React.ReactNode
+  zIndex?: number
 }) {
   const [offset, setOffset] = useState(from)
 
@@ -438,6 +441,7 @@ function SlideIn({
         transform: `translateX(${offset})`,
         transition: offset === from && from !== "0%" ? "none" : "transform 300ms ease-out",
         pointerEvents: active ? "auto" : "none",
+        zIndex,
       }}
     >
       {children}
