@@ -736,19 +736,13 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
       <ProgressStepper currentStep={currentStep} elapsedSeconds={elapsedSeconds} onHome={onBack} />
       <CategoryTabs categories={categories} activeId={activeCategory} onSelect={handleCategoryChange} emptyCategoryIds={emptyCategoryIds} />
 
-      {isCake && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={cakeFilter} onSelect={(id) => { setCakeFilter(id); jumpToFirstPageOfCategory() }} trailing={zoomToolbar} />}
-      {isBeverage && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={beverageFilter} onSelect={(id) => { setBeverageFilter(id); jumpToFirstPageOfCategory() }} trailing={zoomToolbar} />}
-      {isDessert && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={dessertFilter} onSelect={(id) => { setDessertFilter(id); jumpToFirstPageOfCategory() }} trailing={zoomToolbar} />}
-      {isPrepack && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={prepackFilter} onSelect={(id) => { setPrepackFilter(id); jumpToFirstPageOfCategory() }} trailing={zoomToolbar} />}
-      {isParty && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={partyFilter} onSelect={(id) => { setPartyFilter(id); jumpToFirstPageOfCategory() }} trailing={zoomToolbar} />}
-      {isPackable && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={packableFilter} onSelect={(id) => { setPackableFilter(id); jumpToFirstPageOfCategory() }} trailing={zoomToolbar} />}
-      {isWorkshop && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={workshopFilter} onSelect={(id) => { setWorkshopFilter(id); jumpToFirstPageOfCategory() }} trailing={zoomToolbar} />}
-      {/* Standalone zoom bar for categories without subcategory filters */}
-      {!visibleSubcats && (
-        <div className="flex w-full shrink-0 items-center justify-end border-b border-border bg-card px-3 py-1.5">
-          {zoomToolbar}
-        </div>
-      )}
+      {isCake && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={cakeFilter} onSelect={(id) => { setCakeFilter(id); jumpToFirstPageOfCategory() }} />}
+      {isBeverage && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={beverageFilter} onSelect={(id) => { setBeverageFilter(id); jumpToFirstPageOfCategory() }} />}
+      {isDessert && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={dessertFilter} onSelect={(id) => { setDessertFilter(id); jumpToFirstPageOfCategory() }} />}
+      {isPrepack && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={prepackFilter} onSelect={(id) => { setPrepackFilter(id); jumpToFirstPageOfCategory() }} />}
+      {isParty && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={partyFilter} onSelect={(id) => { setPartyFilter(id); jumpToFirstPageOfCategory() }} />}
+      {isPackable && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={packableFilter} onSelect={(id) => { setPackableFilter(id); jumpToFirstPageOfCategory() }} />}
+      {isWorkshop && visibleSubcats && <SubcategoryFilter items={visibleSubcats} activeId={workshopFilter} onSelect={(id) => { setWorkshopFilter(id); jumpToFirstPageOfCategory() }} />}
 
       {/* Carousel */}
       <div
@@ -833,27 +827,14 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
             onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") dismissZoomHint() }}
             aria-label="힌트 닫기"
           >
-            <div className="flex flex-col items-center gap-3 rounded-2xl bg-card/95 px-6 py-5 shadow-xl backdrop-blur-sm">
-              <div className="flex items-center gap-3">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
-                  <path d="M6 6l4 4M18 6l-4 4M6 18l4-4M18 18l-4-4" />
-                  <circle cx="12" cy="12" r="2" />
-                </svg>
-                <span className="text-xs font-medium text-foreground">
-                  {"두 손가락으로 확대/축소"}
-                </span>
-              </div>
-              <div className="h-px w-full bg-border" />
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1 rounded-full border border-border bg-muted px-2 py-0.5">
-                  <Plus className="h-3 w-3 text-foreground" />
-                  <span className="text-muted-foreground">/</span>
-                  <Minus className="h-3 w-3 text-foreground" />
-                </div>
-                <span className="text-xs font-medium text-foreground">
-                  {"상단 바에서 크기 조절"}
-                </span>
-              </div>
+            <div className="flex items-center gap-3 rounded-2xl bg-card/95 px-6 py-5 shadow-xl backdrop-blur-sm">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
+                <path d="M6 6l4 4M18 6l-4 4M6 18l4-4M18 18l-4-4" />
+                <circle cx="12" cy="12" r="2" />
+              </svg>
+              <span className="text-xs font-medium text-foreground">
+                {"두 손가락으로 확대/축소"}
+              </span>
             </div>
           </div>
         )}
