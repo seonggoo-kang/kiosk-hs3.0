@@ -337,10 +337,10 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
       )}
 
       {/* Bottom selection panel */}
-      <div className="shrink-0 border-t border-border bg-card px-2 pb-1 pt-2">
-        <div className="flex items-start gap-1 overflow-x-auto scrollbar-hide">
+      <div className="shrink-0 border-t border-border bg-card px-2 pb-1.5 pt-2">
+        <div className="flex items-stretch gap-1.5 overflow-x-auto scrollbar-hide" style={{ height: 100 }}>
           {/* Product thumbnail */}
-          <div className="flex shrink-0 flex-col items-center rounded-lg border border-border bg-card p-1.5" style={{ width: 76 }}>
+          <div className="flex shrink-0 flex-col items-center justify-center rounded-2xl border border-border bg-card px-1.5" style={{ width: 78 }}>
             <div className="relative mb-1 h-12 w-12 overflow-hidden rounded-lg">
               <Image src={product.image} alt={product.name} fill className="object-contain" sizes="48px" />
             </div>
@@ -353,23 +353,23 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
             const flavor = selectedFlavors[i]
             if (flavor) {
               return (
-                <div key={`slot-${i}`} className="relative flex shrink-0 flex-col items-center px-1 pt-0.5" style={{ width: 68 }}>
+                <div key={`slot-${i}`} className="relative flex shrink-0 flex-col items-center justify-center rounded-2xl bg-pink-50" style={{ width: 68 }}>
                   <button
                     onClick={() => removeByIndex(i)}
-                    className="absolute right-0 top-0 z-10 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-foreground/80 text-card"
+                    className="absolute right-0.5 top-0.5 z-10 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-foreground/70 text-white shadow-sm"
                     aria-label={`${flavor.name} 제거`}
                   >
                     <X className="h-2.5 w-2.5" strokeWidth={3} />
                   </button>
-                  <div className="relative mb-1 h-11 w-11 overflow-hidden rounded-full ring-2 ring-primary/30">
+                  <div className="relative mb-1 h-11 w-11 overflow-hidden rounded-full ring-2 ring-primary/20">
                     <Image src={flavor.image} alt={flavor.name} fill className="object-cover" sizes="44px" />
                   </div>
-                  <p className="line-clamp-2 w-full text-center text-[7px] font-semibold leading-tight text-foreground">{flavor.name}</p>
+                  <p className="line-clamp-2 w-full px-0.5 text-center text-[7px] font-semibold leading-tight text-foreground">{flavor.name}</p>
                 </div>
               )
             }
             return (
-              <div key={`empty-${i}`} className="flex shrink-0 flex-col items-center px-1 pt-0.5" style={{ width: 68 }}>
+              <div key={`empty-${i}`} className="flex shrink-0 flex-col items-center justify-center rounded-2xl bg-muted/60" style={{ width: 68 }}>
                 <div className="mb-1 flex h-11 w-11 items-center justify-center rounded-full bg-muted">
                   <span className="text-base font-bold text-muted-foreground/40">{"?"}</span>
                 </div>
