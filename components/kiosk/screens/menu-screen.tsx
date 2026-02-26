@@ -781,22 +781,20 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
             >
               <Minus className="h-4 w-4" strokeWidth={2.5} />
             </button>
-            {zoomLevel !== null && (
-              <div className="flex flex-col items-center gap-0.5 border-t border-border pt-1 pb-1">
-                <button
-                  onClick={handleResetZoom}
-                  className="px-1 text-[7px] font-medium text-muted-foreground leading-tight text-center active:text-foreground"
-                >
-                  {"초기화"}
-                </button>
-                <button
-                  onClick={handleApplyZoomToAll}
-                  className="px-1 text-[7px] font-medium text-primary leading-tight text-center active:text-primary/70"
-                >
-                  {"전체\n적용"}
-                </button>
-              </div>
-            )}
+            <div className={"flex flex-col items-center gap-0.5 border-t border-border pt-1 pb-1 transition-opacity duration-200 " + (zoomLevel !== null ? "opacity-100" : "opacity-0 pointer-events-none")}>
+              <button
+                onClick={handleResetZoom}
+                className="px-1 text-[7px] font-medium text-muted-foreground leading-tight text-center active:text-foreground"
+              >
+                {"초기화"}
+              </button>
+              <button
+                onClick={handleApplyZoomToAll}
+                className="px-1 text-[7px] font-medium text-primary leading-tight text-center active:text-primary/70"
+              >
+                {"전체\n적용"}
+              </button>
+            </div>
         </div>
 
         {/* Zoom level indicator (brief flash on change) */}
