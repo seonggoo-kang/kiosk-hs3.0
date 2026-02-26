@@ -977,11 +977,8 @@ export function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscoun
         onPrimary={() => {
           const pendingItem = state.cart.find(itemNeedsOptions)
           if (pendingItem) {
-            if (pendingItem.product.requiresFlavor && pendingItem.selectedFlavors.length === 0) {
-              onGoToFlavors(pendingItem.product.id, pendingItem.cartId)
-            } else {
-              onGoToOptions(pendingItem.cartId)
-            }
+            // Open bottom sheet for the pending item instead of navigating away
+            handleEditCartItem(pendingItem.cartId)
           } else {
             onGoToDiscounts()
           }
