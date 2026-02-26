@@ -896,8 +896,8 @@ export const MenuScreen = forwardRef<MenuScreenHandle, MenuScreenProps>(function
           )}
         </div>
 
-        {prevSlide && <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-4 bg-gradient-to-r from-foreground/5 to-transparent" aria-hidden="true" />}
-        {nextSlide && <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-4 bg-gradient-to-l from-foreground/5 to-transparent" aria-hidden="true" />}
+        {prevSlide && <div className="pointer-events-none absolute left-0 top-0 z-[1] h-full w-4 bg-gradient-to-r from-foreground/5 to-transparent" aria-hidden="true" />}
+        {nextSlide && <div className="pointer-events-none absolute right-0 top-0 z-[1] h-full w-4 bg-gradient-to-l from-foreground/5 to-transparent" aria-hidden="true" />}
 
         {/* Zoom level indicator (brief flash on change) */}
         {zoomIndicator !== null && (

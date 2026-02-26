@@ -161,7 +161,7 @@ function OrderItemCard({ item, itemPrice, optionsString, onQuantityChange, onRem
       {/* Remove button */}
       <button
         onClick={onRemove}
-        className="absolute right-2 top-2 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-foreground/80 text-white shadow-sm transition-colors active:opacity-80"
+        className="absolute right-2 top-2 z-[1] flex h-5 w-5 items-center justify-center rounded-full bg-foreground/80 text-white shadow-sm transition-colors active:opacity-80"
         aria-label="삭제"
       >
         <X className="h-2.5 w-2.5" />

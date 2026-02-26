@@ -216,7 +216,7 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
               >
                 {flavor.badge && (
                   <span className={cn(
-                    "absolute left-0.5 top-5 z-10 max-w-[90%] truncate rounded px-1 py-px text-[7px] font-bold leading-tight text-white",
+                    "absolute left-0.5 top-5 z-[1] max-w-[90%] truncate rounded px-1 py-px text-[7px] font-bold leading-tight text-white",
                     flavor.badge === "NEW" ? "bg-red-500" : flavor.badge === "과일 섬유질 포함" ? "bg-pink-400" : "bg-primary"
                   )}>
                     {flavor.badge}
@@ -314,12 +314,12 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
         </div>
 
         {/* Edge shadow hints (like MenuScreen) */}
-        {prevPageFlavors && <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-4 bg-gradient-to-r from-foreground/5 to-transparent" aria-hidden="true" />}
-        {nextPageFlavors && <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-4 bg-gradient-to-l from-foreground/5 to-transparent" aria-hidden="true" />}
+        {prevPageFlavors && <div className="pointer-events-none absolute left-0 top-0 z-[1] h-full w-4 bg-gradient-to-r from-foreground/5 to-transparent" aria-hidden="true" />}
+        {nextPageFlavors && <div className="pointer-events-none absolute right-0 top-0 z-[1] h-full w-4 bg-gradient-to-l from-foreground/5 to-transparent" aria-hidden="true" />}
 
         {/* Pagination dots */}
         {totalPages > 1 && (
-          <div className="pointer-events-none absolute bottom-2 left-0 right-0 z-10 flex items-center justify-center gap-1.5" aria-hidden="true">
+          <div className="pointer-events-none absolute bottom-2 left-0 right-0 z-[1] flex items-center justify-center gap-1.5" aria-hidden="true">
             {Array.from({ length: totalPages }).map((_, i) => (
               <span key={i} className={cn("h-1.5 rounded-full transition-all duration-300", i === page ? "w-4 bg-primary" : "w-1.5 bg-border")} />
             ))}
@@ -355,7 +355,7 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
                 <div key={`slot-${i}`} className="relative flex shrink-0 flex-col items-center justify-center rounded-2xl bg-pink-50" style={{ width: 68 }}>
                   <button
                     onClick={() => removeByIndex(i)}
-                    className="absolute right-0.5 top-0.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-foreground/80 text-white shadow-sm"
+                    className="absolute right-0.5 top-0.5 z-[1] flex h-5 w-5 items-center justify-center rounded-full bg-foreground/80 text-white shadow-sm"
                     aria-label={`${flavor.name} 제거`}
                   >
                     <X className="h-2.5 w-2.5" strokeWidth={3} />
