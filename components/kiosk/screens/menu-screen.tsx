@@ -627,7 +627,7 @@ export const MenuScreen = forwardRef<MenuScreenHandle, MenuScreenProps>(function
       const delta = dist - pinchStartDist.current
       if (Math.abs(delta) > 60) {
         pinchFired.current = true
-        dismissZoomHint()
+        dismissGestureHint()
         setZoomMap((prev) => {
           const cat = activeCategory
           const cur = prev[cat] ?? 4
@@ -637,7 +637,7 @@ export const MenuScreen = forwardRef<MenuScreenHandle, MenuScreenProps>(function
         })
       }
     }
-  }, [dismissZoomHint, showZoomBadge])
+  }, [dismissGestureHint, showZoomBadge])
 
   const onPinchPointerUp = useCallback((e: React.PointerEvent) => {
     pinchPointers.current.delete(e.pointerId)
@@ -645,24 +645,24 @@ export const MenuScreen = forwardRef<MenuScreenHandle, MenuScreenProps>(function
   }, [])
 
   const handleZoomIn = useCallback(() => {
-    dismissZoomHint()
+    dismissGestureHint()
     setZoomMap((prev) => {
       const cur = prev[activeCategory] ?? 4
       const next = Math.max(1, cur - 1) as 1 | 2 | 3 | 4 | 5
       showZoomBadge(next)
       return { ...prev, [activeCategory]: next }
     })
-  }, [dismissZoomHint, showZoomBadge, activeCategory])
+  }, [dismissGestureHint, showZoomBadge, activeCategory])
 
   const handleZoomOut = useCallback(() => {
-    dismissZoomHint()
+    dismissGestureHint()
     setZoomMap((prev) => {
       const cur = prev[activeCategory] ?? 4
       const next = Math.min(5, cur + 1) as 1 | 2 | 3 | 4 | 5
       showZoomBadge(next)
       return { ...prev, [activeCategory]: next }
     })
-  }, [dismissZoomHint, showZoomBadge, activeCategory])
+  }, [dismissGestureHint, showZoomBadge, activeCategory])
 
   const handleApplyZoomToAll = useCallback(() => {
     const current = zoomMap[activeCategory] ?? null
