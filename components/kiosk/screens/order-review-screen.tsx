@@ -204,7 +204,7 @@ interface OrderItemCardProps {
 
 function OrderItemCard({ item, itemPrice, optionsString, onQuantityChange, onRemove, onEditOptions }: OrderItemCardProps) {
   return (
-    <div className="relative overflow-hidden rounded-2xl border-l-4 border-l-primary bg-card shadow-sm ring-1 ring-border/50">
+    <div className="relative overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
       {/* Remove button */}
       <button
         onClick={onRemove}
