@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { Gift, Bell, Home, ChevronDown, ChevronUp } from "lucide-react"
+import { ChevronDown, ChevronUp } from "lucide-react"
+import { ProgressStepper } from "@/components/kiosk/progress-stepper"
 import { KioskFooter } from "@/components/kiosk/kiosk-footer"
 import { ActionBar } from "@/components/kiosk/action-bar"
 import { NumpadModal } from "@/components/kiosk/numpad-modal"
@@ -121,26 +122,7 @@ export function DiscountsScreen({ onBack, onGoToPayment, onHome, onGoToMenu, cur
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden bg-background">
-      {/* Custom Header matching Figma */}
-      <div className="flex shrink-0 items-center justify-between border-b border-border bg-background px-3 py-2">
-        <div className="flex items-center gap-1.5">
-          <BRLogo className="h-5 w-8" />
-          <span className="text-sm font-bold text-foreground">할인/적립</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <button className="flex items-center gap-1 rounded-full border border-border bg-background px-2 py-1">
-            <Gift className="h-3 w-3 text-primary" />
-            <span className="text-[9px] font-medium text-foreground">교환권조회</span>
-          </button>
-          <button className="flex items-center gap-1 rounded-full border border-border bg-background px-2 py-1">
-            <Bell className="h-3 w-3 text-amber-500" />
-            <span className="text-[9px] font-medium text-foreground">도움기능</span>
-          </button>
-          <button onClick={onHome} className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
-            <Home className="h-4 w-4 text-primary" />
-          </button>
-        </div>
-      </div>
+      <ProgressStepper currentStep={currentStep} elapsedSeconds={elapsedSeconds} onHome={onHome} onGoToStep={(step) => { if (step === 2 && onGoToMenu) onGoToMenu() }} />
 
       <div className="flex-1 overflow-y-auto bg-muted/30 px-3 py-3">
         {/* 배라앱 바코드 Section */}
