@@ -1,200 +1,420 @@
 "use client"
 
-import { useRouter } from "next/navigation"
-import { useState, useEffect, useRef, useCallback } from "react"
-import { ShoppingBag, Store, Accessibility, Sun, Search, Languages } from "lucide-react"
+import { useState, useCallback, useEffect, useRef } from "react"
 import { useOrder } from "@/lib/order-context"
+import { LandingScreen } from "@/components/kiosk/screens/landing-screen"
+import { MenuScreen, type MenuScreenHandle } from "@/components/kiosk/screens/menu-screen"
+import { FlavorsScreen } from "@/components/kiosk/screens/flavors-screen"
+import { OptionsScreen } from "@/components/kiosk/screens/options-screen"
+import { DiscountsScreen } from "@/components/kiosk/screens/discounts-screen"
+import { PaymentScreen } from "@/components/kiosk/screens/payment-screen"
+import { ConfirmationScreen } from "@/components/kiosk/screens/confirmation-screen"
+import { products } from "@/lib/mock-data"
 
-const ADS = [
-  "/images/ads/ad-1.jpg",
-  "/images/ads/ad-2.jpg",
-  "/images/ads/ad-3.jpg",
-]
+// Screen indices
+const SCREEN = {
+  LANDING: 0,
+  MENU: 1,
+  FLAVORS: 2,
+  OPTIONS: 3,
+  DISCOUNTS: 4,
+  PAYMENT: 5,
+  CONFIRMATION: 6,
+} as const
 
-const AD_INTERVAL = 5000 // 5 seconds per ad
-const IDLE_TIMEOUT = 60000 // 60 seconds to return to screensaver
+type ScreenIndex = (typeof SCREEN)[keyof typeof SCREEN]
 
-export default function LandingPage() {
-  const router = useRouter()
+export default function KioskApp() {
+  // ── Client-only guard to avoid SSR hydration mismatch with Korean text ──
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+
   const { dispatch } = useOrder()
 
-  // Screensaver state
-  const [isIdle, setIsIdle] = useState(true)
-  const [currentAd, setCurrentAd] = useState(0)
-  const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const adIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  // ── Screen navigation state ──
+  const [activeScreen, setActiveScreen] = useState<ScreenIndex>(SCREEN.LANDING)
+  const [prevScreen, setPrevScreen] = useState<ScreenIndex | null>(null)
+  const [slideDir, setSlideDir] = useState<"left" | "right">("left")
+  const [animating, setAnimating] = useState(false)
 
-  const handleOrderType = (type: "takeout" | "dine-in") => {
-    dispatch({ type: "SET_ORDER_TYPE", payload: type })
-    router.push("/menu")
+  // ── Session timer ──
+  const [sessionStart, setSessionStart] = useState<number | null>(null)
+  const [elapsedSeconds, setElapsedSeconds] = useState(0)
+
+  useEffect(() => {
+    if (sessionStart === null) { setElapsedSeconds(0); return }
+    const interval = setInterval(() => {
+      setElapsedSeconds(Math.floor((Date.now() - sessionStart) / 1000))
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [sessionStart])
+
+  // ── Compute current step from active screen ──
+  const currentStep: 1 | 2 | 3 | 4 | 5 = (() => {
+    switch (activeScreen) {
+      case SCREEN.MENU: case SCREEN.FLAVORS: case SCREEN.OPTIONS: return 2
+      case SCREEN.DISCOUNTS: return 3
+      case SCREEN.PAYMENT: return 4
+      case SCREEN.CONFIRMATION: return 5
+      default: return 1
+    }
+  })()
+
+  // ── Navigation params passed between screens ──
+  const [navProductId, setNavProductId] = useState<string | null>(null)
+  const [navCartId, setNavCartId] = useState<string | null>(null)
+  const [navFlavorIds, setNavFlavorIds] = useState<string[]>([])
+  const [showMenuToast, setShowMenuToast] = useState(false)
+
+  // ── Preload all product images on mount ──
+  useEffect(() => {
+    const allSrcs = products.map((p) => p.image).filter(Boolean)
+    allSrcs.forEach((src) => {
+      const img = new Image()
+      img.crossOrigin = "anonymous"
+      img.src = src
+    })
+  }, [])
+
+  // ── Navigate with slide animation ──
+  const navigateTo = useCallback(
+    (screen: ScreenIndex, dir: "left" | "right" = "left") => {
+      if (animating) return
+      setSlideDir(dir)
+      setPrevScreen(activeScreen)
+      setActiveScreen(screen)
+      setAnimating(true)
+      setTimeout(() => {
+        setPrevScreen(null)
+        setAnimating(false)
+      }, 300)
+    },
+    [animating, activeScreen]
+  )
+
+  // ── Instant reset (no animation) ──
+  const goToLanding = useCallback(() => {
+    setPrevScreen(null)
+    setAnimating(false)
+    setActiveScreen(SCREEN.LANDING)
+    setNavProductId(null)
+    setNavCartId(null)
+    setNavFlavorIds([])
+    setShowMenuToast(false)
+    setSessionStart(null)
+  }, [])
+
+  // ── Navigation callbacks ──
+  const handleOrderType = useCallback(
+    (type: "takeout" | "dine-in") => {
+      dispatch({ type: "SET_ORDER_TYPE", payload: type })
+      setSessionStart(Date.now())
+      navigateTo(SCREEN.MENU, "left")
+    },
+    [dispatch, navigateTo]
+  )
+
+  const handleGoToFlavors = useCallback(
+    (productId: string, cartId: string) => {
+      setNavProductId(productId)
+      setNavCartId(cartId)
+      navigateTo(SCREEN.FLAVORS, "left")
+    },
+    [navigateTo]
+  )
+
+  const handleGoToOptions = useCallback(
+    (cartId: string) => {
+      setNavCartId(cartId)
+      navigateTo(SCREEN.OPTIONS, "left")
+    },
+    [navigateTo]
+  )
+
+  // Ref to MenuScreen for imperative sheet reopen
+  const menuScreenRef = useRef<MenuScreenHandle>(null)
+  // Store saved required selections while user is on flavor screen
+  const pendingSheetReqSelectionsRef = useRef<import("@/lib/order-context").ResolvedRequiredOption[]>([])
+
+  const handleFlavorsComplete = useCallback(
+    (productId: string, flavors: import("@/lib/mock-data").Flavor[]) => {
+      if (navCartId === "__sheet__") {
+        // Returning from flavor picker to the bottom sheet flow.
+        // Navigate back to menu first, then reopen the sheet after the transition.
+        navigateTo(SCREEN.MENU, "right")
+        // Reopen the sheet after the slide animation completes (300ms)
+        setTimeout(() => {
+          menuScreenRef.current?.reopenSheetWithFlavors(productId, flavors, pendingSheetReqSelectionsRef.current)
+          pendingSheetReqSelectionsRef.current = []
+        }, 350)
+      } else {
+        setNavProductId(productId)
+        setNavFlavorIds(flavors.map((f) => f.id))
+        navigateTo(SCREEN.OPTIONS, "left")
+      }
+    },
+    [navigateTo, navCartId]
+  )
+
+  const handleOptionsComplete = useCallback(() => {
+    setShowMenuToast(true)
+    navigateTo(SCREEN.MENU, "right")
+    setTimeout(() => setShowMenuToast(false), 3000)
+  }, [navigateTo])
+
+  const handleGoToDiscounts = useCallback(() => {
+    navigateTo(SCREEN.DISCOUNTS, "left")
+  }, [navigateTo])
+
+  const handleGoToPayment = useCallback(() => {
+    navigateTo(SCREEN.PAYMENT, "left")
+  }, [navigateTo])
+
+  const handlePaymentComplete = useCallback(() => {
+    navigateTo(SCREEN.CONFIRMATION, "left")
+  }, [navigateTo])
+
+  const handleReset = useCallback(() => {
+    goToLanding()
+  }, [goToLanding])
+
+  // ── Compute slide positions ──
+  // Active screen: starts offset, slides to center (0%)
+  // Previous screen: starts at center, slides away
+  const getScreenStyle = (
+    screenIdx: ScreenIndex
+  ): React.CSSProperties => {
+    const isActive = screenIdx === activeScreen
+    const isPrev = screenIdx === prevScreen
+
+    if (!isActive && !isPrev) {
+      // Off-screen, hidden
+      return {
+        position: "absolute",
+        inset: 0,
+        transform: "translateX(100%)",
+        visibility: "hidden",
+        pointerEvents: "none",
+      }
+    }
+
+    if (isActive && !animating) {
+      // Settled in place
+      return {
+        position: "absolute",
+        inset: 0,
+        transform: "translateX(0%)",
+        visibility: "visible",
+        pointerEvents: "auto",
+      }
+    }
+
+    if (isActive && animating) {
+      // Sliding into view
+      const from = slideDir === "left" ? "100%" : "-100%"
+      return {
+        position: "absolute",
+        inset: 0,
+        transform: "translateX(0%)",
+        visibility: "visible",
+        pointerEvents: "none",
+        transition: "transform 300ms ease-out",
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        "--slide-from": from,
+      } as any
+    }
+
+    if (isPrev && animating) {
+      // Sliding out of view
+      const to = slideDir === "left" ? "-100%" : "100%"
+      return {
+        position: "absolute",
+        inset: 0,
+        transform: `translateX(${to})`,
+        visibility: "visible",
+        pointerEvents: "none",
+        transition: "transform 300ms ease-out",
+      }
+    }
+
+    return {
+      position: "absolute",
+      inset: 0,
+      visibility: "hidden",
+      pointerEvents: "none",
+    }
   }
 
-  // ── Ad rotation (only when idle) ──
+  // We need a ref-based approach for the "slide in" animation:
+  // On first render the active screen is at the offset, then we
+  // animate it to 0. We use a key trick to trigger re-render.
+  const [slideKey, setSlideKey] = useState(0)
+
+  // When activeScreen changes while animating, kick a re-render
+  // to trigger the CSS transition from offset → 0
   useEffect(() => {
-    if (!isIdle) {
-      if (adIntervalRef.current) clearInterval(adIntervalRef.current)
-      return
+    if (animating) {
+      // Force the incoming screen to start at offset
+      setSlideKey((k) => k + 1)
     }
-    adIntervalRef.current = setInterval(() => {
-      setCurrentAd((prev) => (prev + 1) % ADS.length)
-    }, AD_INTERVAL)
-    return () => {
-      if (adIntervalRef.current) clearInterval(adIntervalRef.current)
-    }
-  }, [isIdle])
+  }, [activeScreen, animating])
 
-  // ── Wake up: dismiss screensaver on any interaction ──
-  const wake = useCallback(() => {
-    if (isIdle) setIsIdle(false)
+  // Build screen elements
+  const screens: Record<ScreenIndex, React.ReactNode> = {
+    [SCREEN.LANDING]: (
+      <LandingScreen onSelectOrderType={handleOrderType} />
+    ),
+    [SCREEN.MENU]: (
+      <MenuScreen
+        ref={menuScreenRef}
+        onBack={goToLanding}
+        onGoToFlavors={handleGoToFlavors}
+        onGoToOptions={handleGoToOptions}
+        onGoToDiscounts={handleGoToDiscounts}
+        showAddedToast={showMenuToast}
+        currentStep={currentStep}
+        elapsedSeconds={elapsedSeconds}
+        onSetPendingSheet={(productId, reqSelections) => { pendingSheetReqSelectionsRef.current = reqSelections }}
+      />
+    ),
+    [SCREEN.FLAVORS]: (
+      <FlavorsScreen
+        productId={navProductId}
+        onBack={() => navigateTo(SCREEN.MENU, "right")}
+        onComplete={handleFlavorsComplete}
+        onHome={goToLanding}
+        currentStep={currentStep}
+        elapsedSeconds={elapsedSeconds}
+      />
+    ),
+    [SCREEN.OPTIONS]: (
+      <OptionsScreen
+        productId={navProductId}
+        flavorIds={navFlavorIds}
+        onBack={() => navigateTo(SCREEN.FLAVORS, "right")}
+        onComplete={handleOptionsComplete}
+        onHome={goToLanding}
+        currentStep={currentStep}
+        elapsedSeconds={elapsedSeconds}
+      />
+    ),
+    [SCREEN.DISCOUNTS]: (
+      <DiscountsScreen
+        onBack={() => navigateTo(SCREEN.MENU, "right")}
+        onGoToPayment={handleGoToPayment}
+        onHome={goToLanding}
+        currentStep={currentStep}
+        elapsedSeconds={elapsedSeconds}
+      />
+    ),
+    [SCREEN.PAYMENT]: (
+      <PaymentScreen
+        onBack={() => navigateTo(SCREEN.DISCOUNTS, "right")}
+        onComplete={handlePaymentComplete}
+        onHome={goToLanding}
+        currentStep={currentStep}
+        elapsedSeconds={elapsedSeconds}
+      />
+    ),
+    [SCREEN.CONFIRMATION]: (
+      <ConfirmationScreen
+        onReset={handleReset}
+        currentStep={currentStep}
+        elapsedSeconds={elapsedSeconds}
+      />
+    ),
+  }
 
-    // Reset idle timer
-    if (idleTimerRef.current) clearTimeout(idleTimerRef.current)
-    idleTimerRef.current = setTimeout(() => {
-      setIsIdle(true)
-    }, IDLE_TIMEOUT)
-  }, [isIdle])
-
-  useEffect(() => {
-    const events = ["pointerdown", "pointermove", "touchstart", "click", "keydown"] as const
-    const handler = () => wake()
-    events.forEach((e) => window.addEventListener(e, handler, { passive: true }))
-    return () => {
-      events.forEach((e) => window.removeEventListener(e, handler))
-      if (idleTimerRef.current) clearTimeout(idleTimerRef.current)
-    }
-  }, [wake])
+  if (!mounted) {
+    return <div className="relative flex-1 overflow-hidden bg-background" />
+  }
 
   return (
-    <div className="relative flex flex-1 flex-col">
-      {/* ═══════════════════════════════════════════
-          BACKGROUND LAYER -- always mounted
-          The landing page with hero, logo, CTAs
-          ═══════════════════════════════════════════ */}
-      
-      {/* Background image: current ad as the bg when awake */}
-      <div className="absolute inset-0 overflow-hidden">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={ADS[currentAd]}
-          alt=""
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/70" />
-      </div>
-
-      {/* Logo at top */}
-      <div className="relative z-10 flex flex-col items-center pt-14">
-        <img
-          src="/images/br-logo.png"
-          alt="Baskin Robbins"
-          className="h-20 w-auto drop-shadow-lg"
-        />
-        <p className="mt-2 text-lg font-bold tracking-widest text-white/90 drop-shadow-md">
-          BASKIN ROBBINS
-        </p>
-      </div>
-
-      {/* Spacer */}
-      <div className="flex-1" />
-
-      {/* Order type buttons */}
-      <div
-        className="relative z-10 px-5 pb-4 transition-all duration-500"
-        style={{
-          opacity: isIdle ? 0 : 1,
-          transform: isIdle ? "translateY(20px)" : "translateY(0)",
-          pointerEvents: isIdle ? "none" : "auto",
-        }}
-      >
-        <div className="flex gap-4">
-          <button
-            onClick={() => handleOrderType("takeout")}
-            className="flex flex-1 flex-col items-center gap-3 rounded-2xl bg-white/95 py-6 shadow-lg backdrop-blur-sm transition-all active:scale-[0.97]"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10">
-              <ShoppingBag className="h-7 w-7 text-primary" />
+    <div className="relative flex-1 overflow-hidden">
+      {Object.values(SCREEN).map((idx) => {
+        const isActive = idx === activeScreen
+        const isPrev = idx === prevScreen
+        if (!isActive && !isPrev) {
+          // Keep mounted but invisible for instant access
+          return (
+            <div
+              key={idx}
+              className="absolute inset-0 flex flex-col overflow-hidden"
+              style={{ visibility: "hidden", pointerEvents: "none" }}
+            >
+              {screens[idx]}
             </div>
-            <span className="text-base font-bold text-foreground">{"가져가기"}</span>
-          </button>
-          <button
-            onClick={() => handleOrderType("dine-in")}
-            className="flex flex-1 flex-col items-center gap-3 rounded-2xl bg-white/95 py-6 shadow-lg backdrop-blur-sm transition-all active:scale-[0.97]"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10">
-              <Store className="h-7 w-7 text-primary" />
+          )
+        }
+
+        if (isPrev && animating) {
+          // Sliding out
+          const to = slideDir === "left" ? "-100%" : "100%"
+          return (
+            <div
+              key={idx}
+              className="absolute inset-0 flex flex-col overflow-hidden"
+              style={{
+                transform: `translateX(${to})`,
+                transition: "transform 300ms ease-out",
+                pointerEvents: "none",
+              }}
+            >
+              {screens[idx]}
             </div>
-            <span className="text-base font-bold text-foreground">{"먹고가기"}</span>
-          </button>
-        </div>
-      </div>
+          )
+        }
 
-      {/* Bottom accessibility bar */}
-      <div
-        className="relative z-10 flex shrink-0 items-center justify-between bg-black/50 px-4 py-3 backdrop-blur-sm transition-all duration-500"
-        style={{
-          opacity: isIdle ? 0 : 1,
-          transform: isIdle ? "translateY(10px)" : "translateY(0)",
-          pointerEvents: isIdle ? "none" : "auto",
-        }}
-      >
-        <p className="text-xs font-medium text-white/70">{"카운터에서도 주문할 수 있어요."}</p>
-        <div className="flex items-center gap-4">
-          <button className="flex flex-col items-center gap-0.5" aria-label="낮은자세">
-            <Accessibility className="h-5 w-5 text-white/70" />
-            <span className="text-[10px] text-white/70">{"낮은자세"}</span>
-          </button>
-          <button className="flex flex-col items-center gap-0.5" aria-label="고대비">
-            <Sun className="h-5 w-5 text-white/70" />
-            <span className="text-[10px] text-white/70">{"고대비"}</span>
-          </button>
-          <button className="flex flex-col items-center gap-0.5" aria-label="돋보기">
-            <Search className="h-5 w-5 text-white/70" />
-            <span className="text-[10px] text-white/70">{"돋보기"}</span>
-          </button>
-          <button className="flex flex-col items-center gap-0.5" aria-label="Language">
-            <Languages className="h-5 w-5 text-white/70" />
-            <span className="text-[10px] text-white/70">Language</span>
-          </button>
-        </div>
-      </div>
-
-      {/* ═══════════════════════════════════════════
-          FOREGROUND LAYER -- screensaver overlay
-          Fullscreen ads that crossfade, dissolves away on interaction
-          ═══════════════════════════════════════════ */}
-      <div
-        className="absolute inset-0 z-20 overflow-hidden transition-opacity duration-500 ease-out"
-        style={{
-          opacity: isIdle ? 1 : 0,
-          pointerEvents: isIdle ? "auto" : "none",
-        }}
-      >
-        {/* All 3 ad images stacked, crossfade via opacity */}
-        {ADS.map((src, i) => (
-          <div
-            key={src}
-            className="absolute inset-0 overflow-hidden transition-opacity duration-1000 ease-in-out"
-            style={{ opacity: currentAd === i ? 1 : 0 }}
+        // Active screen
+        return (
+          <SlideIn
+            key={`${idx}-${slideKey}`}
+            from={animating ? (slideDir === "left" ? "100%" : "-100%") : "0%"}
+            active
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={src}
-              alt=""
-              className="absolute inset-0 h-full w-full animate-ken-burns object-cover"
-            />
-          </div>
-        ))}
+            {screens[idx]}
+          </SlideIn>
+        )
+      })}
+    </div>
+  )
+}
 
-        {/* Subtle gradient vignette for cinematic feel */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20" />
+/**
+ * A wrapper that slides its children from `from` → 0% on mount.
+ * Uses requestAnimationFrame to ensure the initial offset is painted
+ * before transitioning to 0%.
+ */
+function SlideIn({
+  from,
+  active,
+  children,
+}: {
+  from: string
+  active: boolean
+  children: React.ReactNode
+}) {
+  const [offset, setOffset] = useState(from)
 
-        {/* "Touch to order" prompt - pulses gently */}
-        <div className="absolute inset-x-0 bottom-12 flex justify-center">
-          <p className="animate-pulse text-sm font-medium tracking-wider text-white/80 drop-shadow-lg">
-            {"화면을 터치해주세요"}
-          </p>
-        </div>
-      </div>
+  useEffect(() => {
+    if (from === "0%") return
+    // After the first paint with the offset, transition to 0
+    const raf = requestAnimationFrame(() => {
+      setOffset("0%")
+    })
+    return () => cancelAnimationFrame(raf)
+  }, [from])
+
+  return (
+    <div
+      className="absolute inset-0 flex flex-col overflow-hidden"
+      style={{
+        transform: `translateX(${offset})`,
+        transition: offset === from && from !== "0%" ? "none" : "transform 300ms ease-out",
+        pointerEvents: active ? "auto" : "none",
+      }}
+    >
+      {children}
     </div>
   )
 }

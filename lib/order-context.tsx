@@ -162,7 +162,11 @@ export function OrderProvider({ children }: { children: ReactNode }) {
       (oSum, o) => oSum + o.option.priceAdd * o.quantity,
       0
     )
-    return sum + (item.product.price + optionsCost) * item.quantity
+    const reqOptsCost = (item.requiredSelections ?? []).reduce(
+      (rSum, r) => rSum + r.priceAdd,
+      0
+    )
+    return sum + (item.product.price + optionsCost + reqOptsCost) * item.quantity
   }, 0)
 
   const totalDiscount = state.discounts.reduce((sum, d) => sum + d.amount, 0)

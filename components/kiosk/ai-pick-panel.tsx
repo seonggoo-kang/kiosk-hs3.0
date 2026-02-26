@@ -11,19 +11,58 @@ import {
 } from "@/lib/mock-data"
 import { ProductCard } from "@/components/kiosk/product-card"
 
-type RecommendedPanelProps = {
-  cartProductIds: Set<string>
-  onSelectProduct: (product: Product) => void
+type ZoomLevel = 1 | 2 | 3 | 4 | 5 | null
+
+const ZOOM_GRID: Record<number, string> = {
+  1: "grid grid-cols-1 gap-4 px-6",
+  2: "grid grid-cols-2 gap-4 px-2",
+  3: "grid grid-cols-3 gap-3 px-1",
+  4: "grid grid-cols-4 gap-2",
+  5: "grid grid-cols-5 gap-1.5",
+}
+const ZOOM_SIZE: Record<number, "xs" | "sm" | "md" | "lg" | "xl"> = { 1: "xl", 2: "lg", 3: "md", 4: "sm", 5: "xs" }
+
+function gridClassForCount(count: number, zoom: ZoomLevel = null) {
+  if (zoom) return ZOOM_GRID[zoom]
+  if (count <= 1) return ZOOM_GRID[1]
+  if (count <= 4) return ZOOM_GRID[2]
+  if (count <= 9) return ZOOM_GRID[3]
+  return ZOOM_GRID[4]
 }
 
-export function RecommendedPanel({ cartProductIds, onSelectProduct }: RecommendedPanelProps) {
-  const [allProducts, setAllProducts] = useState<Product[]>(() => getRankedRecommendations())
+function cardSizeForCount(count: number, zoom: ZoomLevel = null): "xs" | "sm" | "md" | "lg" | "xl" {
+  if (zoom) return ZOOM_SIZE[zoom]
+  if (count <= 1) return "xl"
+  if (count <= 4) return "lg"
+  if (count <= 9) return "md"
+  return "sm"
+}
+
+type RecommendedPanelProps = {
+  cartProductIds: Set<string>
+  cartProductMap: Map<string, { quantity: number; cartId: string }>
+  onSelectProduct: (product: Product) => void
+  onRemoveProduct: (product: Product) => void
+  orderType?: "takeout" | "dine-in" | null
+  zoomLevel?: ZoomLevel
+}
+
+export function RecommendedPanel({ cartProductIds, cartProductMap, onSelectProduct, onRemoveProduct, orderType, zoomLevel }: RecommendedPanelProps) {
+  const [allProducts, setAllProducts] = useState<Product[]>(() => getRankedRecommendations(orderType))
   const [activeFilter, setActiveFilter] = useState("all")
   const [loading, setLoading] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
   const filterRef = useRef<HTMLDivElement>(null)
 
   const filterCategories = useMemo(() => getRecommendedFilterCategories(), [])
+
+  // Re-filter when order type changes mid-session
+  const prevOrderType = useRef(orderType)
+  if (prevOrderType.current !== orderType) {
+    prevOrderType.current = orderType
+    setAllProducts(getRankedRecommendations(orderType))
+    setActiveFilter("all")
+  }
 
   // Filtered products
   const visibleProducts = useMemo(() => {
@@ -79,45 +118,51 @@ export function RecommendedPanel({ cartProductIds, onSelectProduct }: Recommende
   const handleRefresh = useCallback(() => {
     setLoading(true)
     setTimeout(() => {
-      setAllProducts(shuffleRankedRecommendations())
+      setAllProducts(shuffleRankedRecommendations(orderType))
       setActiveFilter("all")
       setLoading(false)
       scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" })
     }, 800)
   }, [])
 
-  // Build filter items
-  const filterItems = [
-    { id: "all", name: "\uC804\uCCB4" },
-    ...filterCategories.map((c) => ({ id: c.id, name: c.name })),
-  ]
+  // Build filter items -- hide categories with zero matching products.
+  // Hide entire filter bar when 0 or 1 category groups have items (no filtering value).
+  const filterItems = useMemo(() => {
+    const withItems = filterCategories
+      .filter((c) => allProducts.some((p) => p.categoryId === c.id))
+      .map((c) => ({ id: c.id, name: c.name }))
+    if (withItems.length <= 1) return null
+    return [{ id: "all", name: "\uC804\uCCB4" }, ...withItems]
+  }, [filterCategories, allProducts])
 
   return (
     <div className="flex h-full flex-col">
-      {/* Category filter bar -- swipeable */}
-      <div
-        ref={filterRef}
-        className="flex w-full shrink-0 gap-1.5 overflow-x-auto border-b border-border bg-card px-3 py-2 scrollbar-hide select-none"
-        onPointerDown={onFilterPointerDown}
-        onPointerMove={onFilterPointerMove}
-        onPointerUp={onFilterPointerUp}
-        onPointerCancel={onFilterPointerUp}
-      >
-        {filterItems.map((item) => (
-          <button
-            key={item.id}
-            data-filter-id={item.id}
-            className={cn(
-              "shrink-0 rounded-full px-3 py-1 text-[10px] font-medium transition-colors",
-              activeFilter === item.id
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground active:bg-muted/80"
-            )}
-          >
-            {item.name}
-          </button>
-        ))}
-      </div>
+      {/* Category filter bar -- swipeable; hidden when <=1 category has items */}
+      {filterItems && (
+        <div
+          ref={filterRef}
+          className="flex w-full shrink-0 gap-1.5 overflow-x-auto border-b border-border bg-card px-3 py-2 scrollbar-hide select-none"
+          onPointerDown={onFilterPointerDown}
+          onPointerMove={onFilterPointerMove}
+          onPointerUp={onFilterPointerUp}
+          onPointerCancel={onFilterPointerUp}
+        >
+          {filterItems.map((item) => (
+            <button
+              key={item.id}
+              data-filter-id={item.id}
+              className={cn(
+                "shrink-0 rounded-full px-3 py-1 text-[10px] font-medium transition-colors",
+                activeFilter === item.id
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground active:bg-muted/80"
+              )}
+            >
+              {item.name}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Scrollable content */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto bg-[#FFFFFF]">
@@ -143,14 +188,18 @@ export function RecommendedPanel({ cartProductIds, onSelectProduct }: Recommende
             </button>
 
             {/* Flat product grid -- ranked by purchase likelihood */}
-            <div className="grid grid-cols-4 gap-2">
+            <div className={gridClassForCount(visibleProducts.length, zoomLevel)}>
               {visibleProducts.map((product, idx) => (
                 <ProductCard
                   key={product.id}
                   product={product}
                   isSelected={cartProductIds.has(product.id)}
+                  quantity={cartProductMap.get(product.id)?.quantity}
                   onSelect={onSelectProduct}
+                  onRemove={onRemoveProduct}
                   priority={idx < 4}
+                  size={cardSizeForCount(visibleProducts.length, zoomLevel)}
+                  rank={visibleProducts.length >= 11 ? (idx + 1 <= (visibleProducts.length >= 16 ? 10 : 5) ? idx + 1 : null) : null}
                 />
               ))}
             </div>
