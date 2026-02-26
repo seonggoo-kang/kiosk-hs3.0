@@ -155,47 +155,53 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
       </div>
 
       {focusedFlavor && (
-        <div className="shrink-0 border-t border-border bg-accent/50 px-4 py-1.5">
-          <p className="text-center text-[10px] leading-relaxed text-muted-foreground">{focusedFlavor.description}</p>
+        <div className="shrink-0 px-3 py-1.5">
+          <div className="rounded-full bg-pink-50 px-4 py-2">
+            <p className="text-center text-[10px] leading-relaxed text-foreground/70">{focusedFlavor.description}</p>
+          </div>
         </div>
       )}
 
-      <div className="shrink-0 border-t border-border bg-card">
-        <div className="flex overflow-x-auto scrollbar-hide">
-          <div className="flex shrink-0 flex-col items-center border-r border-border p-1.5" style={{ width: 80 }}>
-            <div className="relative mb-0.5 h-9 w-9 overflow-hidden rounded-lg">
-              <Image src={product.image} alt={product.name} fill className="object-contain" sizes="36px" />
+      <div className="shrink-0 border-t border-border bg-card px-2 pb-1 pt-2">
+        <div className="flex items-start gap-1 overflow-x-auto scrollbar-hide">
+          {/* Product thumbnail */}
+          <div className="flex shrink-0 flex-col items-center rounded-lg border border-border bg-card p-1.5" style={{ width: 76 }}>
+            <div className="relative mb-1 h-12 w-12 overflow-hidden rounded-lg">
+              <Image src={product.image} alt={product.name} fill className="object-contain" sizes="48px" />
             </div>
-            <p className="text-center text-[7px] font-bold leading-tight text-foreground">{product.name}</p>
-            <p className="text-center text-[7px] leading-tight text-foreground">{product.size}</p>
-            <p className="text-[8px] font-bold text-primary">{formatPrice(product.price)}</p>
+            <p className="line-clamp-2 w-full text-center text-[8px] font-bold leading-tight text-foreground">{product.name}</p>
+            <p className="text-center text-[7px] leading-tight text-muted-foreground">{product.size}</p>
+            <p className="mt-0.5 text-[9px] font-bold text-primary">{formatPrice(product.price)}</p>
           </div>
-          <div className="flex flex-1 overflow-x-auto scrollbar-hide">
-            {Array.from({ length: maxFlavors }).map((_, i) => {
-              const flavor = selectedFlavors[i]
-              if (flavor) {
-                return (
-                  <div key={flavor.id} className="relative flex shrink-0 flex-col items-center border-r border-border p-1.5" style={{ width: 62 }}>
-                    <button onClick={() => toggleFlavor(flavor)} className="absolute -right-0.5 -top-0.5 z-10 flex h-4 w-4 items-center justify-center rounded-full bg-foreground text-primary-foreground" aria-label={`${flavor.name} 제거`}>
-                      <X className="h-2.5 w-2.5" />
-                    </button>
-                    <div className="relative mb-0.5 h-8 w-8 overflow-hidden rounded-full">
-                      <Image src={flavor.image} alt={flavor.name} fill className="object-cover" sizes="32px" />
-                    </div>
-                    <p className="line-clamp-2 w-full text-center text-[7px] font-medium leading-tight text-foreground">{flavor.name}</p>
-                  </div>
-                )
-              }
+          {/* Flavor slots */}
+          {Array.from({ length: maxFlavors }).map((_, i) => {
+            const flavor = selectedFlavors[i]
+            if (flavor) {
               return (
-                <div key={`empty-${i}`} className="flex shrink-0 flex-col items-center border-r border-border p-1.5" style={{ width: 62 }}>
-                  <div className="mb-0.5 flex h-8 w-8 items-center justify-center rounded-full bg-muted">
-                    <HelpCircle className="h-3.5 w-3.5 text-muted-foreground/40" />
+                <div key={flavor.id} className="relative flex shrink-0 flex-col items-center px-1 pt-0.5" style={{ width: 68 }}>
+                  <button
+                    onClick={() => toggleFlavor(flavor)}
+                    className="absolute right-0 top-0 z-10 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-foreground/80 text-card"
+                    aria-label={`${flavor.name} 제거`}
+                  >
+                    <X className="h-2.5 w-2.5" strokeWidth={3} />
+                  </button>
+                  <div className="relative mb-1 h-11 w-11 overflow-hidden rounded-full ring-2 ring-primary/30">
+                    <Image src={flavor.image} alt={flavor.name} fill className="object-cover" sizes="44px" />
                   </div>
-                  <p className="text-center text-[7px] text-muted-foreground">{"플레이버 " + (i + 1)}</p>
+                  <p className="line-clamp-2 w-full text-center text-[7px] font-semibold leading-tight text-foreground">{flavor.name}</p>
                 </div>
               )
-            })}
-          </div>
+            }
+            return (
+              <div key={`empty-${i}`} className="flex shrink-0 flex-col items-center px-1 pt-0.5" style={{ width: 68 }}>
+                <div className="mb-1 flex h-11 w-11 items-center justify-center rounded-full bg-muted">
+                  <span className="text-base font-bold text-muted-foreground/40">?</span>
+                </div>
+                <p className="text-center text-[7px] text-muted-foreground/50">{"플레이버 " + (i + 1)}</p>
+              </div>
+            )
+          })}
         </div>
       </div>
 
