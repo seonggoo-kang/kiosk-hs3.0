@@ -337,7 +337,7 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
       )}
 
       {/* Bottom selection panel */}
-      <div className="shrink-0 border-t border-border bg-card px-2 pb-1.5 pt-2">
+      <div className="shrink-0 border-t border-border px-2 pb-1.5 pt-2" style={{ backgroundColor: "#F6F6FA" }}>
         <div className="flex items-stretch gap-1.5 overflow-x-auto scrollbar-hide" style={{ height: 100 }}>
           {/* Product thumbnail */}
           <div className="flex shrink-0 flex-col items-center justify-center rounded-2xl border border-border bg-card px-1.5" style={{ width: 78 }}>
