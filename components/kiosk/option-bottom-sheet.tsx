@@ -338,7 +338,7 @@ export function OptionBottomSheet({
       <div
         ref={sheetRef}
         className={cn(
-          "relative flex h-[95vh] flex-col rounded-t-2xl bg-card shadow-xl transition-transform duration-250 ease-out",
+          "relative flex flex-col rounded-t-2xl bg-card shadow-xl transition-transform duration-250 ease-out",
           visible ? "translate-y-0" : "translate-y-full"
         )}
       >
@@ -361,7 +361,7 @@ export function OptionBottomSheet({
         </div>
 
         {/* ── Body (no scroll needed for coffee options) ── */}
-        <div className="flex-1 px-3 py-2">
+        <div className="px-3 py-2">
           {/* Required option groups */}
           {reqGroups.map((group) => {
             const isBeanGroup = group.id === "bean"
