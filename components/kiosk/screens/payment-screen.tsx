@@ -18,17 +18,18 @@ interface PaymentScreenProps {
   onComplete: () => void
   onHome: () => void
   onGoToMenu?: () => void
+  onGoToOrderReview?: () => void
   currentStep: 1 | 2 | 3 | 4 | 5
   elapsedSeconds: number
 }
 
-export function PaymentScreen({ onBack, onComplete, onHome, onGoToMenu, currentStep, elapsedSeconds }: PaymentScreenProps) {
+export function PaymentScreen({ onBack, onComplete, onHome, onGoToMenu, onGoToOrderReview, currentStep, elapsedSeconds }: PaymentScreenProps) {
   const { totalDiscount, finalAmount } = useOrder()
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null)
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
-      <ProgressStepper currentStep={currentStep} elapsedSeconds={elapsedSeconds} onHome={onHome} onGoToStep={(step) => { if (step === 2 && onGoToMenu) onGoToMenu(); else if (step === 3) onBack() }} />
+            <ProgressStepper currentStep={currentStep} elapsedSeconds={elapsedSeconds} onHome={onHome} onGoToStep={(step) => { if (step === 2 && onGoToMenu) onGoToMenu(); else if (step === 3 && onGoToOrderReview) onGoToOrderReview() }} />
 
       <div className="flex-1 overflow-y-auto bg-muted/40 p-4">
         <div className="grid grid-cols-2 gap-3">

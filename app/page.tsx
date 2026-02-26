@@ -6,6 +6,7 @@ import { LandingScreen } from "@/components/kiosk/screens/landing-screen"
 import { MenuScreen, type MenuScreenHandle } from "@/components/kiosk/screens/menu-screen"
 import { FlavorsScreen } from "@/components/kiosk/screens/flavors-screen"
 import { OptionsScreen } from "@/components/kiosk/screens/options-screen"
+import { OrderReviewScreen } from "@/components/kiosk/screens/order-review-screen"
 import { DiscountsScreen } from "@/components/kiosk/screens/discounts-screen"
 import { PaymentScreen } from "@/components/kiosk/screens/payment-screen"
 import { ConfirmationScreen } from "@/components/kiosk/screens/confirmation-screen"
@@ -17,9 +18,10 @@ const SCREEN = {
   MENU: 1,
   FLAVORS: 2,
   OPTIONS: 3,
-  DISCOUNTS: 4,
-  PAYMENT: 5,
-  CONFIRMATION: 6,
+  ORDER_REVIEW: 4,
+  DISCOUNTS: 5,
+  PAYMENT: 6,
+  CONFIRMATION: 7,
 } as const
 
 type ScreenIndex = (typeof SCREEN)[keyof typeof SCREEN]
@@ -53,8 +55,8 @@ export default function KioskApp() {
   const currentStep: 1 | 2 | 3 | 4 | 5 = (() => {
     switch (activeScreen) {
       case SCREEN.MENU: case SCREEN.FLAVORS: case SCREEN.OPTIONS: return 2
-      case SCREEN.DISCOUNTS: return 3
-      case SCREEN.PAYMENT: return 4
+      case SCREEN.ORDER_REVIEW: return 3
+      case SCREEN.DISCOUNTS: case SCREEN.PAYMENT: return 4
       case SCREEN.CONFIRMATION: return 5
       default: return 1
     }
@@ -160,6 +162,10 @@ export default function KioskApp() {
     setShowMenuToast(true)
     navigateTo(SCREEN.MENU, "right")
     setTimeout(() => setShowMenuToast(false), 3000)
+  }, [navigateTo])
+
+  const handleGoToOrderReview = useCallback(() => {
+    navigateTo(SCREEN.ORDER_REVIEW, "left")
   }, [navigateTo])
 
   const handleGoToDiscounts = useCallback(() => {
@@ -270,7 +276,7 @@ export default function KioskApp() {
         onBack={goToLanding}
         onGoToFlavors={handleGoToFlavors}
         onGoToOptions={handleGoToOptions}
-        onGoToDiscounts={handleGoToDiscounts}
+        onGoToDiscounts={handleGoToOrderReview}
         showAddedToast={showMenuToast}
         currentStep={currentStep}
         elapsedSeconds={elapsedSeconds}
@@ -298,12 +304,23 @@ export default function KioskApp() {
         elapsedSeconds={elapsedSeconds}
       />
     ),
+    [SCREEN.ORDER_REVIEW]: (
+      <OrderReviewScreen
+        onBack={() => navigateTo(SCREEN.MENU, "right")}
+        onGoToDiscounts={handleGoToDiscounts}
+        onHome={goToLanding}
+        onGoToMenu={() => navigateTo(SCREEN.MENU, "right")}
+        currentStep={currentStep}
+        elapsedSeconds={elapsedSeconds}
+      />
+    ),
     [SCREEN.DISCOUNTS]: (
       <DiscountsScreen
-        onBack={() => navigateTo(SCREEN.MENU, "right")}
+        onBack={() => navigateTo(SCREEN.ORDER_REVIEW, "right")}
         onGoToPayment={handleGoToPayment}
         onHome={goToLanding}
         onGoToMenu={() => navigateTo(SCREEN.MENU, "right")}
+        onGoToOrderReview={() => navigateTo(SCREEN.ORDER_REVIEW, "right")}
         currentStep={currentStep}
         elapsedSeconds={elapsedSeconds}
       />
@@ -314,6 +331,7 @@ export default function KioskApp() {
         onComplete={handlePaymentComplete}
         onHome={goToLanding}
         onGoToMenu={() => navigateTo(SCREEN.MENU, "right")}
+        onGoToOrderReview={() => navigateTo(SCREEN.ORDER_REVIEW, "right")}
         currentStep={currentStep}
         elapsedSeconds={elapsedSeconds}
       />

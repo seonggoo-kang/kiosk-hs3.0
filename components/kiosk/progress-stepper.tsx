@@ -5,7 +5,7 @@ import { Home, Check, ChevronDown, Hourglass } from "lucide-react"
 import { useOrder } from "@/lib/order-context"
 import { cn } from "@/lib/utils"
 
-const STEP_LABELS = ["", "메뉴 선택", "주문확인", "결제하기", "결제완료"] as const
+const STEP_LABELS = ["", "메뉴 선택", "주문확인", "할인/적립", "결제완료"] as const
 
 interface ProgressStepperProps {
   currentStep: 1 | 2 | 3 | 4 | 5

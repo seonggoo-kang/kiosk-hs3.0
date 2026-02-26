@@ -72,11 +72,12 @@ interface DiscountsScreenProps {
   onGoToPayment: () => void
   onHome: () => void
   onGoToMenu?: () => void
+  onGoToOrderReview?: () => void
   currentStep: 1 | 2 | 3 | 4 | 5
   elapsedSeconds: number
 }
 
-export function DiscountsScreen({ onBack, onGoToPayment, onHome, onGoToMenu, currentStep, elapsedSeconds }: DiscountsScreenProps) {
+export function DiscountsScreen({ onBack, onGoToPayment, onHome, onGoToMenu, onGoToOrderReview, currentStep, elapsedSeconds }: DiscountsScreenProps) {
   const { state, dispatch, subtotal, totalDiscount, finalAmount } = useOrder()
   const [numpadOpen, setNumpadOpen] = useState(false)
   const [activeItems, setActiveItems] = useState<Set<string>>(new Set())
@@ -122,7 +123,7 @@ export function DiscountsScreen({ onBack, onGoToPayment, onHome, onGoToMenu, cur
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden bg-background">
-      <ProgressStepper currentStep={currentStep} elapsedSeconds={elapsedSeconds} onHome={onHome} onGoToStep={(step) => { if (step === 2 && onGoToMenu) onGoToMenu() }} />
+            <ProgressStepper currentStep={currentStep} elapsedSeconds={elapsedSeconds} onHome={onHome} onGoToStep={(step) => { if (step === 2 && onGoToMenu) onGoToMenu(); else if (step === 3 && onGoToOrderReview) onGoToOrderReview() }} />
 
       <div className="flex-1 overflow-y-auto bg-muted/30 px-3 py-3">
         {/* 배라앱 바코드 Section */}
