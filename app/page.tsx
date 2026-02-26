@@ -379,7 +379,7 @@ export default function KioskApp() {
           return (
             <div
               key={idx}
-              className="absolute inset-0 z-0 flex flex-col overflow-hidden"
+              className="absolute inset-0 z-0 flex flex-col overflow-hidden bg-background"
               style={{
                 transform: `translateX(${to})`,
                 transition: "transform 300ms ease-out",
@@ -436,7 +436,7 @@ function SlideIn({
 
   return (
     <div
-      className="absolute inset-0 flex flex-col overflow-hidden"
+      className="absolute inset-0 flex flex-col overflow-hidden bg-background"
       style={{
         transform: `translateX(${offset})`,
         transition: offset === from && from !== "0%" ? "none" : "transform 300ms ease-out",
