@@ -102,6 +102,30 @@ export const requiredOptionGroups: RequiredOptionGroup[] = [
       { id: "decaf", name: "디카페인", priceAdd: 0, icon: "bean", description: "카페인 99.9% 제거 본연의 향은 그대로" },
     ],
   },
+  {
+    id: "shot",
+    name: "샷",
+    options: [
+      { id: "no-shot", name: "추가 안함", priceAdd: 0 },
+      { id: "add-shot", name: "샷 추가", priceAdd: 500 },
+    ],
+  },
+  {
+    id: "milk",
+    name: "우유",
+    options: [
+      { id: "regular-milk", name: "우유", priceAdd: 0 },
+      { id: "oat-milk", name: "오트(귀리) 변경", priceAdd: 500 },
+    ],
+  },
+  {
+    id: "cup-type",
+    name: "컵",
+    options: [
+      { id: "regular-cup", name: "일반컵", priceAdd: 0 },
+      { id: "personal-cup", name: "개인용 컵", priceAdd: -300 },
+    ],
+  },
 ]
 
 export type PaymentMethod = {
@@ -253,10 +277,13 @@ const workshopProducts = generateProducts("workshop", [
 ])
 
 // ─── 콘/컵 (30) ──────────────────────────────────────────
-const SERVING_TYPE: RequiredOptionDef = { groupId: "serving-type", label: "콘/컵 선택" }
-const TEMPERATURE: RequiredOptionDef = { groupId: "temperature", label: "온도 선택" }
-const CUP_SIZE: RequiredOptionDef = { groupId: "cup-size", label: "컵 사이즈" }
-const BEAN: RequiredOptionDef = { groupId: "bean", label: "원두 선택" }
+  const SERVING_TYPE: RequiredOptionDef = { groupId: "serving-type", label: "콘/컵 선택" }
+  const TEMPERATURE: RequiredOptionDef = { groupId: "temperature", label: "온도" }
+  const CUP_SIZE: RequiredOptionDef = { groupId: "cup-size", label: "컵 사이즈" }
+  const BEAN: RequiredOptionDef = { groupId: "bean", label: "원두" }
+  const SHOT: RequiredOptionDef = { groupId: "shot", label: "샷" }
+  const MILK: RequiredOptionDef = { groupId: "milk", label: "우유" }
+  const CUP_TYPE: RequiredOptionDef = { groupId: "cup-type", label: "컵" }
 
 const coneCupProducts = generateProducts("cone-cup", [
   { name: "싱글 레귤러", desc: "레귤러 1스쿱", size: "레귤러", weight: "115g", price: 3900, cal: "150~280 kcal", serving: "115g", image: "/products/콘컵/워크샵싱글레귤러(수정1)_0.png", flavor: true, maxF: 1, reqOpts: [SERVING_TYPE] },
@@ -377,9 +404,9 @@ const cakeProducts = generateProducts("icecream-cake", [
 const coffeeProducts = generateProducts("coffee", [
   { name: "에쉬레 윈터 골든\n브륄레 아인슈페너", desc: "아인슈페너", size: "레귤러", weight: "350ml", price: 5500, cal: "180~260 kcal", serving: "350ml", image: "/products/커피/[HS]제품이미지-에쉬레-윈터-골든-브륄레-아인슈페너-204X160px_1.png", flavor: false, maxF: 0 },
   { name: "카페 레이어드", desc: "레이어드 라떼", size: "레귤러", weight: "350ml", price: 5400, cal: "150~220 kcal", serving: "350ml", image: "/products/커피/(워크샵)카페레이어드카테고리_0.png", flavor: false, maxF: 0 },
-  { name: "아메리카노", desc: "아이스/핫", size: "레귤러", weight: "350ml", price: 4400, cal: "5~10 kcal", serving: "350ml", image: "/products/커피/아메리카노링크_0.png", flavor: false, maxF: 0, reqOpts: [TEMPERATURE, CUP_SIZE, BEAN] },
-  { name: "카페라떼", desc: "아이스/핫", size: "레귤러", weight: "350ml", price: 5000, cal: "120~180 kcal", serving: "350ml", image: "/products/커피/카페라떼_0.png", flavor: false, maxF: 0, reqOpts: [TEMPERATURE, CUP_SIZE, BEAN] },
-  { name: "바닐라빈 라떼", desc: "아이스/핫", size: "레귤러", weight: "350ml", price: 5000, cal: "180~250 kcal", serving: "350ml", image: "/products/커피/[HS]제품이미지-바닐라빈-라떼-147X115px_0.png", flavor: false, maxF: 0, reqOpts: [TEMPERATURE, CUP_SIZE, BEAN] },
+  { name: "아메리카노", desc: "아이스/핫", size: "레귤러", weight: "350ml", price: 4400, cal: "5~10 kcal", serving: "350ml", image: "/products/커피/아메리카노링크_0.png", flavor: false, maxF: 0, reqOpts: [TEMPERATURE, CUP_SIZE, BEAN, SHOT, MILK, CUP_TYPE] },
+  { name: "카페라떼", desc: "아이스/핫", size: "레귤러", weight: "350ml", price: 5000, cal: "120~180 kcal", serving: "350ml", image: "/products/커피/카페라떼_0.png", flavor: false, maxF: 0, reqOpts: [TEMPERATURE, CUP_SIZE, BEAN, SHOT, MILK, CUP_TYPE] },
+  { name: "바닐라빈 라떼", desc: "아이스/핫", size: "레귤러", weight: "350ml", price: 5000, cal: "180~250 kcal", serving: "350ml", image: "/products/커피/[HS]제품이미지-바닐라빈-라떼-147X115px_0.png", flavor: false, maxF: 0, reqOpts: [TEMPERATURE, CUP_SIZE, BEAN, SHOT, MILK, CUP_TYPE] },
   { name: "연유라떼", desc: "아이스", size: "레귤러", weight: "350ml", price: 5000, cal: "210~300 kcal", serving: "350ml", image: "/products/커피/[HS]제품이미지-연유라떼-147X115px_0.png", flavor: false, maxF: 0 },
   { name: "엄마는 외계인\n카페모카", desc: "카페모카", size: "레귤러", weight: "350ml", price: 5000, cal: "220~300 kcal", serving: "350ml", image: "/products/커피/엄마는외계인(카페모카)_1.png", flavor: false, maxF: 0 },
   { name: "슈가밤 커피", desc: "슈가밤 커피", size: "레귤러", weight: "300ml", price: 3900, cal: "80~120 kcal", serving: "300ml", image: "/products/커피/슈가밤커피_1.png", flavor: false, maxF: 0 },
@@ -398,7 +425,7 @@ export const beverageSubcategories = [
 const beverageProducts = generateProducts("beverage", [
   // ── 시그니처 / 쉐이크 / 블라스트 ──
   { name: "레슬리 민초", desc: "시그니처 쉐이크", size: "레귤러", weight: "400ml", price: 6200, cal: "320~400 kcal", serving: "400ml", image: "/products/음료&블라스트/레슬리민초_0.png", flavor: false, maxF: 0, sub: "signature" },
-  { name: "레슬리 엄마는\n외계인", desc: "시그니처 쉐이크", size: "레귤러", weight: "400ml", price: 6200, cal: "310~390 kcal", serving: "400ml", image: "/products/음료&블라스트/레슬리엄마는외계인_0.png", flavor: false, maxF: 0, sub: "signature" },
+  { name: "레슬리 엄마는\n외계인", desc: "시그니처 ���이크", size: "레귤러", weight: "400ml", price: 6200, cal: "310~390 kcal", serving: "400ml", image: "/products/음료&블라스트/레슬리엄마는외계인_0.png", flavor: false, maxF: 0, sub: "signature" },
   { name: "레슬리 아봉", desc: "시그니처 쉐이크", size: "레귤러", weight: "400ml", price: 6200, cal: "300~380 kcal", serving: "400ml", image: "/products/음료&블라스트/레슬리아봉_0.png", flavor: false, maxF: 0, sub: "signature" },
   { name: "레슬리 초콜릿 쉐이크", desc: "시그니처 쉐이크", size: "레귤러", weight: "400ml", price: 6200, cal: "340~420 kcal", serving: "400ml", image: "/products/음료&블라스트/레���리���콜���쉐이크_0.png", flavor: false, maxF: 0, sub: "signature" },
   { name: "엄마는 외계인\n블라스트", desc: "블라스트", size: "레귤러", weight: "400ml", price: 6200, cal: "300~380 kcal", serving: "400ml", image: "/products/음료&블라스트/엄마는외계인블라스트_1.png", flavor: false, maxF: 0, sub: "signature" },
@@ -431,11 +458,11 @@ const beverageProducts = generateProducts("beverage", [
   { name: "초콜릿바나나\n더블쉐이크", desc: "클래식 쉐이크", size: "레귤러", weight: "400ml", price: 6900, cal: "340~440 kcal", serving: "400ml", image: "/products/음료&블라스트/HS_초콜릿바나나더블쉐이크_0.png", flavor: false, maxF: 0, sub: "classic-shake", tag: "NEW" },
 ])
 
-// ─── 젤라또 (6) ── Actual BR gelato menu ─────────────────
+// ─── 젤라또 (6) ── Actual BR gelato menu ───────────────���─
 const gelatoProducts = generateProducts("gelato", [
   { name: "젤라또컵 (2가지맛)", desc: "2가지맛", size: "컵 (2가지맛)", weight: "200g", price: 5500, cal: "220~340 kcal", serving: "200g", image: "/products/젤라또/젤라또컵(2가지맛)_수정_0.png", flavor: false, maxF: 0 },
   { name: "젤라또팩", desc: "500ml / 3가지맛", size: "500ml (3가지맛)", weight: "500ml", price: 19500, cal: "600~900 kcal", serving: "500ml", image: "/products/젤라또/(W)젤라또팩_0.png", flavor: false, maxF: 0, tag: "가져가기 전용" },
-  { name: "젤라스\n믹스베리 요거트", desc: "젤라또", size: "1컵", weight: "200g", price: 6300, cal: "180~280 kcal", serving: "200g", image: "/products/젤라또/젤라스BC믹스베리요거트_1.png", flavor: false, maxF: 0 },
+  { name: "젤라스\n믹스베�� 요거트", desc: "젤라또", size: "1컵", weight: "200g", price: 6300, cal: "180~280 kcal", serving: "200g", image: "/products/젤라또/젤라스BC믹스베리요거트_1.png", flavor: false, maxF: 0 },
   { name: "젤라스 피스타치오\n허니요거트", desc: "젤라또", size: "1컵", weight: "200g", price: 6300, cal: "200~300 kcal", serving: "200g", image: "/products/젤라또/젤라스BC피스타치오허니요거트_1.png", flavor: false, maxF: 0 },
   { name: "젤라스\n카라멜쿠키 바닐라", desc: "젤라또", size: "1컵", weight: "200g", price: 6300, cal: "220~320 kcal", serving: "200g", image: "/products/젤라또/젤라스BC카라멜쿠키바닐라_1.png", flavor: false, maxF: 0 },
   { name: "젤라스 초콜릿바나나", desc: "젤라또", size: "1컵", weight: "200g", price: 6300, cal: "210~310 kcal", serving: "200g", image: "/products/젤라또/젤라스BC초콜릿바나나_1.png", flavor: false, maxF: 0 },
@@ -485,7 +512,7 @@ const dessertProducts = generateProducts("dessert", [
 
   // ── 초콜릿 바 / 스틱바 / 선물세트 ──
   { name: "스윗 초콜릿바", desc: "초콜릿 바", size: "1개", weight: "120g", price: 5800, cal: "280~380 kcal", serving: "120g", image: "/products/디저트/스윗초콜릿바_0.png", flavor: false, maxF: 0, sub: "choco-hangwa" },
-  { name: "스윗 초콜릿바\n세트 (4개입)", desc: "초콜릿 바 세트", size: "4개입", weight: "240g", price: 11600, cal: "560~760 kcal", serving: "240g", image: "/products/디저트/스윗초콜릿바세트(4개입)_0.png", flavor: false, maxF: 0, sub: "choco-hangwa" },
+  { name: "스윗 초콜릿바\n세트 (4개입)", desc: "초콜릿 바 세트", size: "4개입", weight: "240g", price: 11600, cal: "560~760 kcal", serving: "240g", image: "/products/디��트/스윗초콜릿바세트(4개입)_0.png", flavor: false, maxF: 0, sub: "choco-hangwa" },
   { name: "맥심 스틱바\n슈프림 골드", desc: "스틱바", size: "1개", weight: "100g", price: 4500, cal: "250~350 kcal", serving: "100g", image: "/products/디저트/맥심스틱바슈프림골드_0.png", flavor: false, maxF: 0, sub: "choco-hangwa" },
   { name: "미니 아이스 스틱바\n바닐라", desc: "스틱바", size: "1개", weight: "60g", price: 2800, cal: "120~180 kcal", serving: "60g", image: "/products/디저트/미니아이스스틱바(바닐라)_0.png", flavor: false, maxF: 0, sub: "choco-hangwa" },
 
@@ -690,7 +717,7 @@ export const flavors: Flavor[] = [
   { id: "lessly-choforest", name: "레슬리 초숲", image: "/flavors/레슬리초숲HS_1.png", color: "hsl(130,40%,55%)", categoryId: "vanilla-mint", description: "레슬리 초콜릿 숲의 깊은 풍미", badge: null },
 
   // ── 곡물/견과류 ──
-  { id: "pistachio-almond", name: "피스타치오 아몬드", image: "/flavors/피스타치오 아몬드.png", color: "hsl(90,30%,65%)", categoryId: "grain-nut", description: "고소한 피스타치오와 아몬드의 풍미", badge: null },
+  { id: "pistachio-almond", name: "피스타���오 아몬드", image: "/flavors/피스타치오 아몬드.png", color: "hsl(90,30%,65%)", categoryId: "grain-nut", description: "고소한 피스타치오와 아몬드의 풍미", badge: null },
   { id: "pistachio-gelato", name: "피스타치오 젤라또", image: "/flavors/피스타치오젤라또_0.png", color: "hsl(85,35%,60%)", categoryId: "grain-nut", description: "이탈리안 피스타치오 젤라또의 고소함", badge: null },
   { id: "injeolmi", name: "인절미", image: "/flavors/BR_플레이버-인절미-182X158px_0.png", color: "hsl(40,35%,75%)", categoryId: "grain-nut", description: "고소한 인절미의 전통 맛", badge: null },
   { id: "hongsi", name: "홍시", image: "/flavors/BR_플레이버-홍시-182X158px_0.png", color: "hsl(15,70%,55%)", categoryId: "grain-nut", description: "달콤한 홍시의 자연스러운 맛", badge: null },
