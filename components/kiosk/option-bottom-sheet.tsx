@@ -93,7 +93,7 @@ function CupTypeIcon({ className }: { className?: string }) {
 }
 
 function getSectionIcon(groupId: string) {
-  const iconClass = "h-4 w-4 text-primary"
+  const iconClass = "h-3.5 w-3.5 text-primary"
   switch (groupId) {
     case "shot": return <ShotIcon className={iconClass} />
     case "milk": return <MilkIcon className={iconClass} />
@@ -103,7 +103,7 @@ function getSectionIcon(groupId: string) {
 }
 
 function getOptionIcon(groupId: string, optionId: string, isSelected: boolean, isBeanGroup: boolean = false) {
-  const baseClass = isBeanGroup ? "h-5 w-5" : "h-6 w-6"
+  const baseClass = isBeanGroup ? "h-4 w-4" : "h-5 w-5"
   
   if (groupId === "temperature") {
     if (optionId === "ice") {
@@ -338,30 +338,30 @@ export function OptionBottomSheet({
       <div
         ref={sheetRef}
         className={cn(
-          "relative flex max-h-[90vh] flex-col rounded-t-2xl bg-card shadow-xl transition-transform duration-250 ease-out",
+          "relative flex h-[95vh] flex-col rounded-t-2xl bg-card shadow-xl transition-transform duration-250 ease-out",
           visible ? "translate-y-0" : "translate-y-full"
         )}
       >
         {/* ── Header ── */}
-        <div className="flex shrink-0 items-center gap-3 border-b border-border px-4 py-3">
-          <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-muted">
-            <Image src={product.image} alt={product.name} fill className="object-contain" sizes="48px" />
+        <div className="flex shrink-0 items-center gap-2.5 border-b border-border px-3 py-2">
+          <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-muted">
+            <Image src={product.image} alt={product.name} fill className="object-contain" sizes="40px" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-bold text-foreground">{product.name}</p>
-            <p className="text-xs text-muted-foreground">{product.size}</p>
+            <p className="truncate text-xs font-bold text-foreground">{product.name}</p>
+            <p className="text-[10px] text-muted-foreground">{product.size}</p>
           </div>
           <button
             onClick={handleClose}
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-muted"
+            className="flex h-7 w-7 items-center justify-center rounded-full bg-muted"
             aria-label="닫기"
           >
-            <X className="h-4 w-4 text-foreground" />
+            <X className="h-3.5 w-3.5 text-foreground" />
           </button>
         </div>
 
-        {/* ── Scrollable body ── */}
-        <div className="flex-1 overflow-y-auto px-4 py-3">
+        {/* ── Body (no scroll needed for coffee options) ── */}
+        <div className="flex-1 px-3 py-2">
           {/* Required option groups */}
           {reqGroups.map((group) => {
             const isBeanGroup = group.id === "bean"
@@ -371,12 +371,12 @@ export function OptionBottomSheet({
             const sectionIcon = getSectionIcon(group.id)
             
             return (
-              <section key={group.id} className="mb-3">
-                <h3 className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-foreground">
+              <section key={group.id} className="mb-2">
+                <h3 className="mb-1 flex items-center gap-1 text-[10px] font-bold text-foreground">
                   {sectionIcon}
                   {group.name}
                 </h3>
-                <div className={cn("grid gap-2", gridCols)}>
+                <div className={cn("grid gap-1.5", gridCols)}>
                   {group.options.map((opt) => {
                     const isSelected = reqSelections[group.id] === opt.id
                     const icon = isIconGroup ? getOptionIcon(group.id, opt.id, isSelected, isBeanGroup) : null
@@ -388,8 +388,8 @@ export function OptionBottomSheet({
                         key={opt.id}
                         onClick={() => setReqSelections((prev) => ({ ...prev, [group.id]: opt.id }))}
                         className={cn(
-                          "flex flex-col items-center justify-center rounded-xl border-2 transition-all active:scale-[0.98]",
-                          isBeanGroup ? "gap-1 px-1.5 py-2" : isSimpleGroup ? "gap-0.5 px-2 py-2.5" : "gap-1 px-2 py-2.5",
+                          "flex flex-col items-center justify-center rounded-lg border-2 transition-all active:scale-[0.98]",
+                          isBeanGroup ? "gap-0.5 px-1 py-1.5" : isSimpleGroup ? "gap-0 px-1.5 py-2" : "gap-0.5 px-1.5 py-2",
                           isSelected 
                             ? "border-primary bg-card shadow-sm" 
                             : "border-transparent bg-muted/50"
@@ -397,18 +397,18 @@ export function OptionBottomSheet({
                       >
                         {icon}
                         <span className={cn(
-                          "text-[11px] font-bold",
+                          "text-[10px] font-bold",
                           isSelected ? "text-primary" : "text-foreground"
                         )}>
                           {opt.name}
                         </span>
                         {description && (
-                          <span className="text-center text-[8px] leading-tight text-muted-foreground">
+                          <span className="text-center text-[7px] leading-tight text-muted-foreground">
                             {description}
                           </span>
                         )}
                         {priceChange !== 0 && (
-                          <span className="text-[9px] font-bold text-primary">
+                          <span className="text-[8px] font-bold text-primary">
                             {priceChange > 0 ? "+" : ""}{formatPrice(priceChange)}
                           </span>
                         )}
