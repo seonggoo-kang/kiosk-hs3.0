@@ -215,24 +215,6 @@ export function LandingScreen({ onSelectOrderType }: LandingScreenProps) {
           style={{ opacity: isIdle ? 1 : 0 }}
         />
 
-        {/* Dot indicators */}
-        {banners.length > 1 && (
-          <div
-            className="absolute left-0 right-0 z-10 flex items-center justify-center gap-1.5 transition-all duration-500"
-            style={{ bottom: isIdle ? "48px" : "10px" }}
-            aria-hidden="true"
-          >
-            {banners.map((_, i) => (
-              <span
-                key={i}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  i === currentIndex ? "w-4 bg-primary" : "w-1.5 bg-border"
-                }`}
-              />
-            ))}
-          </div>
-        )}
-
         {/* Idle "touch to start" prompt */}
         <div
           className="absolute inset-x-0 bottom-5 flex justify-center transition-opacity duration-500"
