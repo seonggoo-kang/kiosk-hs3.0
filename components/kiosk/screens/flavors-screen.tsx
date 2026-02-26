@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useMemo, useCallback, useRef } from "react"
+import { useState, useMemo, useCallback, useRef, useEffect } from "react"
 import Image from "next/image"
-import { HelpCircle, X, ChevronLeft, ChevronRight } from "lucide-react"
+import { X } from "lucide-react"
 import { ProgressStepper } from "@/components/kiosk/progress-stepper"
 import { KioskFooter } from "@/components/kiosk/kiosk-footer"
 import { ActionBar } from "@/components/kiosk/action-bar"
@@ -16,7 +16,7 @@ import {
 import { cn } from "@/lib/utils"
 
 const COLS = 4
-const ROWS = 5
+const ROWS = 4
 const PER_PAGE = COLS * ROWS
 
 interface FlavorsScreenProps {
@@ -36,15 +36,21 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
   const [selectedFlavors, setSelectedFlavors] = useState<Flavor[]>([])
   const [focusedFlavor, setFocusedFlavor] = useState<Flavor | null>(null)
 
-  const touchStartX = useRef(0)
-  const touchEndX = useRef(0)
-  const gridRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   const maxFlavors = product?.maxFlavors ?? 5
 
   const filteredFlavors = useMemo(() => getFlavorsByCategory(activeCategory), [activeCategory])
   const totalPages = Math.ceil(filteredFlavors.length / PER_PAGE)
-  const pageFlavors = filteredFlavors.slice(page * PER_PAGE, (page + 1) * PER_PAGE)
+
+  // Build pages for the carousel (current, prev, next)
+  const getPageFlavors = useCallback((p: number) => {
+    return filteredFlavors.slice(p * PER_PAGE, (p + 1) * PER_PAGE)
+  }, [filteredFlavors])
+
+  const pageFlavors = getPageFlavors(page)
+  const prevPageFlavors = page > 0 ? getPageFlavors(page - 1) : null
+  const nextPageFlavors = page < totalPages - 1 ? getPageFlavors(page + 1) : null
 
   const toggleFlavor = useCallback((flavor: Flavor) => {
     setSelectedFlavors((prev) => {
@@ -57,14 +63,80 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
   }, [maxFlavors])
 
   const handleCategoryChange = (catId: string) => { setActiveCategory(catId); setPage(0) }
-  const goPage = (dir: number) => { setPage((p) => Math.max(0, Math.min(totalPages - 1, p + dir))) }
 
-  const onTouchStart = (e: React.TouchEvent) => { touchStartX.current = e.changedTouches[0].screenX }
-  const onTouchEnd = (e: React.TouchEvent) => {
-    touchEndX.current = e.changedTouches[0].screenX
-    const diff = touchStartX.current - touchEndX.current
-    if (Math.abs(diff) > 50) goPage(diff > 0 ? 1 : -1)
-  }
+  // ── Pointer-event-based drag/swipe system (mirrors MenuScreen) ──
+  const dragStartX = useRef(0)
+  const dragStartY = useRef(0)
+  const dragActive = useRef(false)
+  const dragLocked = useRef<"horizontal" | "vertical" | null>(null)
+  const dragOffsetRef = useRef(0)
+  const [dragOffset, setDragOffset] = useState(0)
+  const [isAnimating, setIsAnimating] = useState(false)
+  const wasDragging = useRef(false)
+
+  // Global pointer-up safety net
+  useEffect(() => {
+    const handleGlobalUp = () => {
+      if (dragActive.current) {
+        dragActive.current = false
+        const dx = dragOffsetRef.current
+        if (Math.abs(dx) > 0) { setIsAnimating(true); setDragOffset(0); setTimeout(() => setIsAnimating(false), 250) }
+        dragOffsetRef.current = 0
+      }
+    }
+    window.addEventListener("pointerup", handleGlobalUp)
+    return () => window.removeEventListener("pointerup", handleGlobalUp)
+  }, [])
+
+  const onDragPointerDown = useCallback((e: React.PointerEvent) => {
+    if (isAnimating) return
+    wasDragging.current = false
+    dragStartX.current = e.clientX
+    dragStartY.current = e.clientY
+    dragActive.current = true
+    dragLocked.current = null
+    dragOffsetRef.current = 0
+    setDragOffset(0)
+  }, [isAnimating])
+
+  const onDragPointerMove = useCallback((e: React.PointerEvent) => {
+    if (!dragActive.current) return
+    const dx = e.clientX - dragStartX.current
+    const dy = e.clientY - dragStartY.current
+    if (!dragLocked.current && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+      dragLocked.current = Math.abs(dx) > Math.abs(dy) ? "horizontal" : "vertical"
+      if (dragLocked.current === "horizontal") wasDragging.current = true
+    }
+    if (dragLocked.current !== "horizontal") return
+    let offset = dx
+    // Rubber-band at edges
+    if ((!prevPageFlavors && dx > 0) || (!nextPageFlavors && dx < 0)) offset = dx * 0.2
+    dragOffsetRef.current = offset
+    setDragOffset(offset)
+  }, [prevPageFlavors, nextPageFlavors])
+
+  const onDragPointerUp = useCallback(() => {
+    if (!dragActive.current) return
+    dragActive.current = false
+    const dx = dragOffsetRef.current
+    const containerWidth = containerRef.current?.offsetWidth || 400
+    const threshold = containerWidth * 0.2
+    dragLocked.current = null
+    if (dx < -threshold && nextPageFlavors) {
+      setIsAnimating(true)
+      setDragOffset(-containerWidth)
+      setTimeout(() => { setPage((p) => p + 1); setDragOffset(0); setIsAnimating(false) }, 250)
+    } else if (dx > threshold && prevPageFlavors) {
+      setIsAnimating(true)
+      setDragOffset(containerWidth)
+      setTimeout(() => { setPage((p) => p - 1); setDragOffset(0); setIsAnimating(false) }, 250)
+    } else {
+      setIsAnimating(true)
+      setDragOffset(0)
+      setTimeout(() => setIsAnimating(false), 250)
+    }
+    dragOffsetRef.current = 0
+  }, [prevPageFlavors, nextPageFlavors])
 
   const handleComplete = () => {
     if (!product || selectedFlavors.length === 0) return
@@ -74,15 +146,55 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
   if (!product) {
     return (
       <div className="flex flex-1 items-center justify-center">
-        <p className="text-muted-foreground">상품을 찾을 수 없습니다.</p>
+        <p className="text-muted-foreground">{"상품을 찾을 수 없습니다."}</p>
       </div>
     )
   }
+
+  // Render a single page grid of flavors
+  const renderFlavorGrid = (flavors: Flavor[], interactive: boolean) => (
+    <div className="flex h-full flex-col p-2">
+      <div className="grid flex-1 grid-cols-4 grid-rows-4 gap-1.5">
+        {flavors.map((flavor) => {
+          const isSelected = selectedFlavors.some((f) => f.id === flavor.id)
+          const isDisabled = !isSelected && selectedFlavors.length >= maxFlavors
+          return (
+            <button
+              key={flavor.id}
+              onClick={() => { if (interactive && !isDisabled && !wasDragging.current) toggleFlavor(flavor) }}
+              disabled={!interactive || isDisabled}
+              className={cn(
+                "relative flex flex-col items-center justify-center gap-1 rounded-lg border-2 bg-card transition-all",
+                interactive && "active:scale-[0.97]",
+                isSelected ? "border-primary" : isDisabled ? "border-transparent opacity-35" : "border-transparent"
+              )}
+            >
+              {flavor.badge && (
+                <span className={cn(
+                  "absolute left-0.5 top-0.5 z-10 max-w-[90%] truncate rounded px-1 py-px text-[7px] font-bold leading-tight text-white",
+                  flavor.badge === "NEW" ? "bg-red-500" : flavor.badge === "과일 섬유질 포함" ? "bg-pink-400" : "bg-primary"
+                )}>
+                  {flavor.badge}
+                </span>
+              )}
+              <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full">
+                <Image src={flavor.image} alt={flavor.name} fill className="object-cover" sizes="56px" priority={page === 0} />
+              </div>
+              <span className="w-full px-0.5 text-center text-[9px] font-semibold leading-tight text-foreground">
+                {flavor.name}
+              </span>
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
       <ProgressStepper currentStep={currentStep} elapsedSeconds={elapsedSeconds} onHome={onHome} />
 
+      {/* Category tabs */}
       <div className="shrink-0 border-b border-border bg-card">
         <div className="grid grid-cols-4">
           {flavorCategories.slice(0, 4).map((cat) => (
@@ -106,54 +218,70 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
         </div>
       </div>
 
-      <div className="relative flex-1 overflow-hidden bg-muted/30">
-        {page > 0 && (
-          <button onClick={() => goPage(-1)} className="absolute left-0 top-1/2 z-20 -translate-y-1/2 rounded-r-lg bg-card/80 py-4 pl-0.5 pr-1 shadow" aria-label="이전 페이지">
-            <ChevronLeft className="h-4 w-4 text-muted-foreground" />
-          </button>
-        )}
-        {page < totalPages - 1 && (
-          <button onClick={() => goPage(1)} className="absolute right-0 top-1/2 z-20 -translate-y-1/2 rounded-l-lg bg-card/80 py-4 pl-1 pr-0.5 shadow" aria-label="다음 페이지">
-            <ChevronRight className="h-4 w-4 text-muted-foreground" />
-          </button>
-        )}
+      {/* Carousel grid area */}
+      <div
+        ref={containerRef}
+        className="relative flex-1 touch-pan-y overflow-hidden bg-muted/30"
+        style={{ touchAction: "pan-y" }}
+        onPointerDown={onDragPointerDown}
+        onPointerMove={onDragPointerMove}
+        onPointerUp={onDragPointerUp}
+        onPointerCancel={onDragPointerUp}
+      >
+        <div className="relative h-full w-full">
+          {/* Previous page (off-screen left) */}
+          {prevPageFlavors && (
+            <div
+              className="absolute inset-0"
+              style={{
+                transform: `translateX(calc(-100% + ${dragOffset}px))`,
+                transition: isAnimating ? "transform 250ms ease-out" : "none",
+              }}
+            >
+              {renderFlavorGrid(prevPageFlavors, false)}
+            </div>
+          )}
 
-        <div ref={gridRef} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} className="flex h-full flex-col p-2">
-          <div className="grid flex-1 grid-cols-4 grid-rows-5 gap-1">
-            {pageFlavors.map((flavor) => {
-              const isSelected = selectedFlavors.some((f) => f.id === flavor.id)
-              const isDisabled = !isSelected && selectedFlavors.length >= maxFlavors
-              return (
-                <button key={flavor.id} onClick={() => { if (!isDisabled) toggleFlavor(flavor) }} disabled={isDisabled}
-                  className={cn("relative flex flex-col items-center justify-center gap-0.5 rounded-lg border-2 bg-card transition-all active:scale-[0.97]",
-                    isSelected ? "border-primary" : isDisabled ? "border-transparent opacity-35" : "border-transparent"
-                  )}>
-                  {flavor.badge && (
-                    <span className={cn("absolute left-0.5 top-0.5 z-10 max-w-[90%] truncate rounded px-1 py-px text-[7px] font-bold leading-tight text-white",
-                      flavor.badge === "NEW" ? "bg-red-500" : flavor.badge === "과일 섬유질 포함" ? "bg-pink-400" : "bg-primary"
-                    )}>{flavor.badge}</span>
-                  )}
-                  <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full">
-                    <Image src={flavor.image} alt={flavor.name} fill className="object-cover" sizes="56px" priority={page === 0} />
-                  </div>
-                  <span className="line-clamp-2 w-full px-0.5 text-center text-[9px] font-semibold leading-tight text-foreground">{flavor.name}</span>
-                </button>
-              )
-            })}
+          {/* Current page */}
+          <div
+            className="absolute inset-0"
+            style={{
+              transform: dragOffset !== 0 ? `translateX(${dragOffset}px)` : undefined,
+              transition: isAnimating ? "transform 250ms ease-out" : "none",
+            }}
+          >
+            {renderFlavorGrid(pageFlavors, true)}
           </div>
 
-          {totalPages > 1 && (
-            <div className="flex shrink-0 items-center justify-center gap-1.5 py-1">
-              {Array.from({ length: totalPages }).map((_, i) => (
-                <button key={i} onClick={() => setPage(i)}
-                  className={cn("h-1.5 rounded-full transition-all", i === page ? "w-4 bg-primary" : "w-1.5 bg-muted-foreground/30")}
-                  aria-label={`${i + 1} 페이지`} />
-              ))}
+          {/* Next page (off-screen right) */}
+          {nextPageFlavors && (
+            <div
+              className="absolute inset-0"
+              style={{
+                transform: `translateX(calc(100% + ${dragOffset}px))`,
+                transition: isAnimating ? "transform 250ms ease-out" : "none",
+              }}
+            >
+              {renderFlavorGrid(nextPageFlavors, false)}
             </div>
           )}
         </div>
+
+        {/* Edge shadow hints (like MenuScreen) */}
+        {prevPageFlavors && <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-4 bg-gradient-to-r from-foreground/5 to-transparent" aria-hidden="true" />}
+        {nextPageFlavors && <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-4 bg-gradient-to-l from-foreground/5 to-transparent" aria-hidden="true" />}
+
+        {/* Pagination dots */}
+        {totalPages > 1 && (
+          <div className="pointer-events-none absolute bottom-2 left-0 right-0 z-10 flex items-center justify-center gap-1.5" aria-hidden="true">
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <span key={i} className={cn("h-1.5 rounded-full transition-all duration-300", i === page ? "w-4 bg-primary" : "w-1.5 bg-border")} />
+            ))}
+          </div>
+        )}
       </div>
 
+      {/* Flavor description pill */}
       {focusedFlavor && (
         <div className="shrink-0 px-3 py-1.5">
           <div className="rounded-full bg-pink-50 px-4 py-2">
@@ -162,6 +290,7 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
         </div>
       )}
 
+      {/* Bottom selection panel */}
       <div className="shrink-0 border-t border-border bg-card px-2 pb-1 pt-2">
         <div className="flex items-start gap-1 overflow-x-auto scrollbar-hide">
           {/* Product thumbnail */}
@@ -196,7 +325,7 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
             return (
               <div key={`empty-${i}`} className="flex shrink-0 flex-col items-center px-1 pt-0.5" style={{ width: 68 }}>
                 <div className="mb-1 flex h-11 w-11 items-center justify-center rounded-full bg-muted">
-                  <span className="text-base font-bold text-muted-foreground/40">?</span>
+                  <span className="text-base font-bold text-muted-foreground/40">{"?"}</span>
                 </div>
                 <p className="text-center text-[7px] text-muted-foreground/50">{"플레이버 " + (i + 1)}</p>
               </div>
