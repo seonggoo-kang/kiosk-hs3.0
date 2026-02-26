@@ -282,8 +282,8 @@ export function OptionBottomSheet({
               {selectedFlavors.length > 0 ? (
                 <div className="flex flex-col gap-2">
                   <div className="flex flex-wrap gap-1.5">
-                    {selectedFlavors.map((f) => (
-                      <span key={f.id} className="flex items-center gap-1.5 rounded-full border border-primary/30 bg-accent px-2.5 py-1 text-[10px] font-medium text-foreground">
+                    {selectedFlavors.map((f, idx) => (
+                      <span key={`${f.id}-${idx}`} className="flex items-center gap-1.5 rounded-full border border-primary/30 bg-accent px-2.5 py-1 text-[10px] font-medium text-foreground">
                         <span className="inline-block h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: f.color }} />
                         {f.name}
                       </span>
