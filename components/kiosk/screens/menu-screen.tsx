@@ -118,7 +118,7 @@ function SlideContent({
   }
 
   return (
-    <div className="h-full overflow-y-auto overflow-x-hidden">
+    <div className="h-full overflow-y-auto overflow-x-hidden scrollbar-kiosk">
       <div className="flex min-h-full flex-col p-3">
         {slide.products.length > 0 ? (
           <div className={gridClassForCount(slide.totalCategoryProducts, zoomLevel)}>
