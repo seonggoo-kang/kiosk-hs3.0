@@ -303,6 +303,7 @@ export default function KioskApp() {
         onBack={() => navigateTo(SCREEN.MENU, "right")}
         onGoToPayment={handleGoToPayment}
         onHome={goToLanding}
+        onGoToMenu={() => navigateTo(SCREEN.MENU, "right")}
         currentStep={currentStep}
         elapsedSeconds={elapsedSeconds}
       />
@@ -312,6 +313,7 @@ export default function KioskApp() {
         onBack={() => navigateTo(SCREEN.DISCOUNTS, "right")}
         onComplete={handlePaymentComplete}
         onHome={goToLanding}
+        onGoToMenu={() => navigateTo(SCREEN.MENU, "right")}
         currentStep={currentStep}
         elapsedSeconds={elapsedSeconds}
       />

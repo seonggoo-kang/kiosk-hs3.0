@@ -11,9 +11,10 @@ interface ProgressStepperProps {
   currentStep: 1 | 2 | 3 | 4 | 5
   elapsedSeconds: number
   onHome?: () => void
+  onGoToStep?: (step: number) => void
 }
 
-export function ProgressStepper({ currentStep, elapsedSeconds, onHome }: ProgressStepperProps) {
+export function ProgressStepper({ currentStep, elapsedSeconds, onHome, onGoToStep }: ProgressStepperProps) {
   const { state, dispatch } = useOrder()
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -121,11 +122,17 @@ export function ProgressStepper({ currentStep, elapsedSeconds, onHome }: Progres
                       <ChevronDown className={cn("h-2 w-2 transition-transform", dropdownOpen && "rotate-180")} />
                     </button>
                   </div>
+                ) : isCompleted && onGoToStep ? (
+                  <button
+                    onClick={() => onGoToStep(stepNum)}
+                    className="ml-0.5 whitespace-nowrap rounded px-1 py-0.5 text-[9px] font-medium leading-none text-primary transition-colors active:bg-primary/10"
+                  >
+                    {label}
+                  </button>
                 ) : (
                   <span
                     className={cn(
                       "ml-0.5 whitespace-nowrap leading-none",
-                      isCompleted ? "text-[9px] font-medium text-primary" :
                       isActive ? "text-[9px] font-bold text-foreground" :
                       "text-[9px] font-normal text-muted-foreground"
                     )}

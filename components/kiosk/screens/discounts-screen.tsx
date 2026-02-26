@@ -21,11 +21,12 @@ interface DiscountsScreenProps {
   onBack: () => void
   onGoToPayment: () => void
   onHome: () => void
+  onGoToMenu?: () => void
   currentStep: 1 | 2 | 3 | 4 | 5
   elapsedSeconds: number
 }
 
-export function DiscountsScreen({ onBack, onGoToPayment, onHome, currentStep, elapsedSeconds }: DiscountsScreenProps) {
+export function DiscountsScreen({ onBack, onGoToPayment, onHome, onGoToMenu, currentStep, elapsedSeconds }: DiscountsScreenProps) {
   const { state, dispatch, subtotal, totalDiscount, finalAmount } = useOrder()
   const [numpadOpen, setNumpadOpen] = useState(false)
   const [activeItems, setActiveItems] = useState<Set<string>>(new Set())
@@ -48,7 +49,7 @@ export function DiscountsScreen({ onBack, onGoToPayment, onHome, currentStep, el
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
-      <ProgressStepper currentStep={currentStep} elapsedSeconds={elapsedSeconds} onHome={onHome} />
+      <ProgressStepper currentStep={currentStep} elapsedSeconds={elapsedSeconds} onHome={onHome} onGoToStep={(step) => { if (step === 2 && onGoToMenu) onGoToMenu() }} />
 
       <div className="flex-1 overflow-y-auto bg-muted/40 p-4">
         {discountSections.map((section) => (
