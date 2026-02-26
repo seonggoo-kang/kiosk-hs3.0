@@ -29,7 +29,10 @@ type ScreenIndex = (typeof SCREEN)[keyof typeof SCREEN]
 export default function KioskApp() {
   // ── Client-only guard to avoid SSR hydration mismatch with Korean text ──
   const [mounted, setMounted] = useState(false)
-  useEffect(() => setMounted(true), [])
+  useEffect(() => {
+    console.log("[v0] KioskApp mounting...")
+    setMounted(true)
+  }, [])
 
   const { dispatch } = useOrder()
 
@@ -82,6 +85,7 @@ export default function KioskApp() {
   const navigateTo = useCallback(
     (screen: ScreenIndex, dir: "left" | "right" = "left") => {
       if (animating) return
+      console.log("[v0] navigateTo called:", { from: activeScreen, to: screen, dir })
       setSlideDir(dir)
       setPrevScreen(activeScreen)
       setActiveScreen(screen)
@@ -96,6 +100,8 @@ export default function KioskApp() {
 
   // ── Instant reset (no animation) ──
   const goToLanding = useCallback(() => {
+    console.log("[v0] goToLanding called - resetting to landing screen")
+    console.trace("[v0] goToLanding stack trace")
     setPrevScreen(null)
     setAnimating(false)
     setActiveScreen(SCREEN.LANDING)
