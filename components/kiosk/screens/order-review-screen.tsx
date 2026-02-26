@@ -105,8 +105,8 @@ export function OrderReviewScreen({
 
         {/* Scrollable product list with scroll indicators */}
         <div className="relative flex-1 overflow-hidden">
-          <div ref={scrollRef} className="h-full overflow-y-auto px-3 pb-2">
-            <div className="flex flex-col gap-2.5">
+          <div ref={scrollRef} className="h-full overflow-y-auto px-3 pb-4 pt-1 scrollbar-hide">
+            <div className="flex flex-col gap-4">
               {state.cart.map((item) => (
                 <OrderItemCard
                   key={item.cartId}
@@ -204,7 +204,7 @@ interface OrderItemCardProps {
 
 function OrderItemCard({ item, itemPrice, optionsString, onQuantityChange, onRemove, onEditOptions }: OrderItemCardProps) {
   return (
-    <div className="relative overflow-hidden rounded-2xl border-l-4 border-l-primary bg-card shadow-sm">
+    <div className="relative overflow-hidden rounded-2xl border-l-4 border-l-primary bg-card shadow-sm ring-1 ring-border/50">
       {/* Remove button */}
       <button
         onClick={onRemove}
@@ -214,7 +214,7 @@ function OrderItemCard({ item, itemPrice, optionsString, onQuantityChange, onRem
         <X className="h-3.5 w-3.5 text-muted-foreground" />
       </button>
 
-      <div className="flex gap-3 p-3 pb-2">
+      <div className="flex gap-3 p-3.5 pb-2.5">
         {/* Product info */}
         <div className="flex flex-1 flex-col gap-1 pr-16">
           <h3 className="text-sm font-bold leading-tight text-foreground">{item.product.name.replace(/\\n/g, " ")}</h3>
@@ -261,10 +261,10 @@ function OrderItemCard({ item, itemPrice, optionsString, onQuantityChange, onRem
       </div>
 
       {/* Divider */}
-      <div className="mx-3 border-t border-border" />
+      <div className="mx-3.5 border-t border-border" />
 
       {/* Bottom row: quantity + options button + price */}
-      <div className="flex items-center justify-between px-3 py-2">
+      <div className="flex items-center justify-between px-3.5 py-2.5">
         <div className="flex items-center gap-2">
           {/* Quantity stepper */}
           <div className="flex items-center overflow-hidden rounded-full border border-border bg-background">
