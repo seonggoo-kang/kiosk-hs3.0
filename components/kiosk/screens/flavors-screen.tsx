@@ -264,10 +264,10 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
         </div>
       </div>
 
-      {/* Carousel grid area */}
+      {/* Carousel grid area -- pb-7 reserves space so the description pill never overlaps flavor items */}
       <div
         ref={containerRef}
-        className="relative flex-1 touch-pan-y overflow-hidden bg-muted/30"
+        className="relative flex-1 touch-pan-y overflow-hidden bg-muted/30 pb-7"
         style={{ touchAction: "pan-y" }}
         onPointerDown={onDragPointerDown}
         onPointerMove={onDragPointerMove}
