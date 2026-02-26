@@ -332,7 +332,7 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
         {/* Flavor description pill -- absolutely positioned above the panel so it never affects layout */}
         {focusedFlavor && (
           <div className="absolute bottom-full left-0 right-0 z-20 px-3 pb-1.5">
-            <div className="rounded-full bg-pink-100 px-4 py-1.5 shadow-sm">
+            <div className="rounded-full bg-accent px-4 py-1.5 shadow-sm">
               <p className="text-center text-[10px] leading-relaxed text-foreground/70">{focusedFlavor.description}</p>
             </div>
           </div>
@@ -352,7 +352,7 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
             const flavor = selectedFlavors[i]
             if (flavor) {
               return (
-                <div key={`slot-${i}`} className="relative flex shrink-0 flex-col items-center justify-center rounded-2xl bg-pink-50" style={{ width: 68 }}>
+                <div key={`slot-${i}`} className="relative flex shrink-0 flex-col items-center justify-center rounded-2xl bg-accent" style={{ width: 68 }}>
                   <button
                     onClick={() => removeByIndex(i)}
                     className="absolute right-0.5 top-0.5 z-[1] flex h-5 w-5 items-center justify-center rounded-full bg-foreground/80 text-white shadow-sm"

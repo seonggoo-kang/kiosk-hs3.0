@@ -166,7 +166,7 @@ export function MiniCart({ onEditItem }: MiniCartProps = {}) {
 
                 {/* Image + info rows */}
                 <div className="flex items-start gap-2">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-gray-100">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-muted">
                     <img
                       src={item.product.image}
                       alt={item.product.name}
