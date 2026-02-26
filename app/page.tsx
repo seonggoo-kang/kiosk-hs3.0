@@ -29,10 +29,7 @@ type ScreenIndex = (typeof SCREEN)[keyof typeof SCREEN]
 export default function KioskApp() {
   // ── Client-only guard to avoid SSR hydration mismatch with Korean text ──
   const [mounted, setMounted] = useState(false)
-  useEffect(() => {
-    console.log("[v0] KioskApp mounting...")
-    setMounted(true)
-  }, [])
+  useEffect(() => setMounted(true), [])
 
   const { dispatch } = useOrder()
 
@@ -85,7 +82,6 @@ export default function KioskApp() {
   const navigateTo = useCallback(
     (screen: ScreenIndex, dir: "left" | "right" = "left") => {
       if (animating) return
-      console.log("[v0] navigateTo called:", { from: activeScreen, to: screen, dir })
       setSlideDir(dir)
       setPrevScreen(activeScreen)
       setActiveScreen(screen)
@@ -100,8 +96,6 @@ export default function KioskApp() {
 
   // ── Instant reset (no animation) ──
   const goToLanding = useCallback(() => {
-    console.log("[v0] goToLanding called - resetting to landing screen")
-    console.trace("[v0] goToLanding stack trace")
     setPrevScreen(null)
     setAnimating(false)
     setActiveScreen(SCREEN.LANDING)
@@ -360,6 +354,12 @@ export default function KioskApp() {
       {Object.values(SCREEN).map((idx) => {
         const isActive = idx === activeScreen
         const isPrev = idx === prevScreen
+        
+        // Don't mount ConfirmationScreen until it's needed (it has a timer that auto-resets)
+        if (idx === SCREEN.CONFIRMATION && !isActive && !isPrev) {
+          return null
+        }
+        
         if (!isActive && !isPrev) {
           // Keep mounted but invisible for instant access
           return (

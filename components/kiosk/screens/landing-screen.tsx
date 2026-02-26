@@ -24,16 +24,12 @@ export function LandingScreen({ onSelectOrderType }: LandingScreenProps) {
   const videoRefs = useRef<Map<number, HTMLVideoElement>>(new Map())
 
   useEffect(() => {
-    console.log("[v0] LandingScreen: Starting banner fetch...")
     fetch("/api/banners")
       .then((r) => r.json())
       .then((items: BannerItem[]) => {
-        console.log("[v0] LandingScreen: Banner fetch complete, got", items.length, "items")
         if (items.length > 0) setBanners(items)
       })
-      .catch((err) => {
-        console.error("[v0] LandingScreen: Banner fetch failed", err)
-      })
+      .catch(() => {})
   }, [])
 
   // ── Duration-aware auto-advance ──
