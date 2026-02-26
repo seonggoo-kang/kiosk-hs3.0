@@ -284,7 +284,7 @@ const packableProducts = generateProducts("packable-icecream", [
   // ── 패밀리 ──
   { name: "패밀리", desc: "5가지 맛", size: "5가지 맛 (960g)", weight: "960g", price: 26000, cal: "324~704 kcal", serving: "960g", image: "/products/포장가능아이스크림/워크샵패밀리_0.png", flavor: true, maxF: 5, sub: "family" },
   // ── 하프갤론 ──
-  { name: "하프갤론", desc: "6가지 맛", size: "6가지 맛 (1200g)", weight: "1200g", price: 31500, cal: "450~900 kcal", serving: "1200g", image: "/products/포���가능아이스크림/워크샵하프갤론_0.png", flavor: true, maxF: 6, sub: "half-gallon" },
+  { name: "하프갤론", desc: "6가지 맛", size: "6가지 맛 (1200g)", weight: "1200g", price: 31500, cal: "450~900 kcal", serving: "1200g", image: "/products/포�����가능아이스크림/워크샵하프갤론_0.png", flavor: true, maxF: 6, sub: "half-gallon" },
   // ── 팩 ──
   { name: "아빠왔다팩", desc: "싱글레귤러 4개", size: "싱글레귤러 4개", weight: "4개", price: 15600, cal: "150~280 kcal", serving: "4개", image: "/products/포장가능아이스크림/워크샵아빠왔다팩_1.png", flavor: true, maxF: 4, sub: "pack" },
   { name: "버라이어티팩", desc: "싱글레귤러 6개", size: "싱글레귤러 6개", weight: "6개", price: 23400, cal: "150~280 kcal", serving: "6개", image: "/products/포장가능아이스크림/워크샵버라이어티팩_1.png", flavor: true, maxF: 6, sub: "pack" },
@@ -400,7 +400,7 @@ const beverageProducts = generateProducts("beverage", [
   { name: "레슬리 민초", desc: "시그니처 쉐이크", size: "레귤러", weight: "400ml", price: 6200, cal: "320~400 kcal", serving: "400ml", image: "/products/음료&블라스트/레슬리민초_0.png", flavor: false, maxF: 0, sub: "signature" },
   { name: "레슬리 엄마는\n외계인", desc: "시그니처 쉐이크", size: "레귤러", weight: "400ml", price: 6200, cal: "310~390 kcal", serving: "400ml", image: "/products/음료&블라스트/레슬리엄마는외계인_0.png", flavor: false, maxF: 0, sub: "signature" },
   { name: "레슬리 아봉", desc: "시그니처 쉐이크", size: "레귤러", weight: "400ml", price: 6200, cal: "300~380 kcal", serving: "400ml", image: "/products/음료&블라스트/레슬리아봉_0.png", flavor: false, maxF: 0, sub: "signature" },
-  { name: "레슬리 초콜릿 쉐이크", desc: "시그니처 쉐이크", size: "레귤러", weight: "400ml", price: 6200, cal: "340~420 kcal", serving: "400ml", image: "/products/음료&블라스트/레슬리초콜���쉐이크_0.png", flavor: false, maxF: 0, sub: "signature" },
+  { name: "레슬리 초콜릿 쉐이크", desc: "시그니처 쉐이크", size: "레귤러", weight: "400ml", price: 6200, cal: "340~420 kcal", serving: "400ml", image: "/products/음료&블라스트/레슬리���콜���쉐이크_0.png", flavor: false, maxF: 0, sub: "signature" },
   { name: "엄마는 외계인\n블라스트", desc: "블라스트", size: "레귤러", weight: "400ml", price: 6200, cal: "300~380 kcal", serving: "400ml", image: "/products/음료&블라스트/엄마는외계인블라스트_1.png", flavor: false, maxF: 0, sub: "signature" },
   { name: "우주 라이크봉봉\n블라스트", desc: "블라스트", size: "레귤러", weight: "400ml", price: 5800, cal: "280~350 kcal", serving: "400ml", image: "/products/음료&블라스트/우주라이크봉봉블라스트_0.png", flavor: false, maxF: 0, sub: "signature" },
   { name: "카푸치노 블라스트\n오리지널", desc: "카푸치노 블라스트", size: "레귤러", weight: "400ml", price: 5800, cal: "260~340 kcal", serving: "400ml", image: "/products/음료&블라스트/카푸치노-블라스트_오리지널_1.png", flavor: false, maxF: 0, sub: "signature" },
@@ -515,7 +515,7 @@ const prepackProducts = generateProducts("prepack", [
   { name: "레인보우 샤베트\n레디팩", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "450~700 kcal", serving: "660ml", image: "/products/레디팩 블록팩/레인보우샤베트레디팩_0.png", flavor: false, maxF: 0, sub: "readypack" },
 
   // ── 블록팩 (소용량 컵형) – 4,000원 고정 ──
-  { name: "블록팩 레인보우\n샤베트", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "150~250 kcal", serving: "200ml", image: "/products/레디팩 블록���/블록팩레인보우샤베트_0.png", flavor: false, maxF: 0, sub: "blockpack" },
+  { name: "블록팩 레인보우\n샤베트", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "150~250 kcal", serving: "200ml", image: "/products/레��팩 블록���/블록팩레인보우샤베트_0.png", flavor: false, maxF: 0, sub: "blockpack" },
   { name: "블록팩 베리베리\n스트로베리", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "170~260 kcal", serving: "200ml", image: "/products/레디팩 블록팩/블록팩베리베리스트로베리_0.png", flavor: false, maxF: 0, sub: "blockpack" },
   { name: "블록팩 이상한 나라의\n솜사탕", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/레디팩 블록팩/NEW블록팩(이상한나라의솜사탕)_0.png", flavor: false, maxF: 0, sub: "blockpack" },
   { name: "블���팩 바람과 함께\n사라지다", desc: "블록팩", size: "소용량", weight: "200ml", price: 4000, cal: "180~280 kcal", serving: "200ml", image: "/products/레디팩 블록팩/NEW블록팩(바람과함께사라지다)_0.png", flavor: false, maxF: 0, sub: "blockpack" },
@@ -632,7 +632,7 @@ export const flavors: Flavor[] = [
 
   // ── 과일 ──
   { id: "golden-apple-yogurt", name: "골든애플 요거트", image: "/flavors/골든애플 요거트.png", color: "hsl(45,70%,75%)", categoryId: "fruit", description: "달콤한 사과와 상큼한 요거트의 조화", badge: null },
-  { id: "strawberry-gelato", name: "딸기 젤라또", image: "/flavors/딸기젤라또누끼_0.png", color: "hsl(345,65%,70%)", categoryId: "fruit", description: "신선한 딸기로 만든 이탈리�� 젤라또", badge: null },
+  { id: "strawberry-gelato", name: "딸��� 젤라또", image: "/flavors/딸기젤라또누끼_0.png", color: "hsl(345,65%,70%)", categoryId: "fruit", description: "신선한 딸기로 만든 이탈리�� 젤라또", badge: null },
   { id: "merong-melon", name: "메롱 멜론", image: "/flavors/메롱멜론_1.png", color: "hsl(130,50%,70%)", categoryId: "fruit", description: "달콤한 멜론의 상큼한 맛", badge: null },
   { id: "berry-good", name: "베리굿", image: "/flavors/베리굿_0.png", color: "hsl(340,55%,65%)", categoryId: "fruit", description: "다양한 베리의 상큼한 조화", badge: null },
   { id: "wind-away", name: "바람과 함께 사라지다", image: "/flavors/바람과함께사라지다_0.png", color: "hsl(270,50%,80%)", categoryId: "fruit", description: "부드럽게 사라지는 솜사탕의 달콤함", badge: null },
@@ -671,7 +671,7 @@ export const flavors: Flavor[] = [
 
   // ── 커피/카라멜/티 ──
   { id: "jamoca-almond-fudge", name: "자모카 아몬드 훠지", image: "/flavors/자모카아몬드훠지50112_0.png", color: "hsl(20,40%,40%)", categoryId: "coffee-caramel", description: "커피 아이스크림에 아몬드와 초콜릿 퍼지의 조화", badge: null },
-  { id: "mocha-tiramisu", name: "모카 티라미수", image: "/flavors/모카티라미수_0.png", color: "hsl(25,35%,42%)", categoryId: "coffee-caramel", description: "모카와 티라미수의 진�� 풍미", badge: null },
+  { id: "mocha-tiramisu", name: "모카 티라미수", image: "/flavors/모카티라미수_0.png", color: "hsl(25,35%,42%)", categoryId: "coffee-caramel", description: "모카와 ���라미수의 진�� 풍미", badge: null },
   { id: "neoneun-cham-dalgona", name: "너는 참 달고나", image: "/flavors/너는참달고나_0.png", color: "hsl(35,55%,65%)", categoryId: "coffee-caramel", description: "달콤한 달고나의 풍미", badge: null },
   { id: "golden-praline-butter", name: "골든 프랄린 버터", image: "/flavors/골든프랄린버터_1.png", color: "hsl(38,50%,60%)", categoryId: "coffee-caramel", description: "골든 프랄린과 버터의 고소한 맛", badge: null },
   { id: "winter-bam", name: "윈터밤", image: "/flavors/윈터밤_1.png", color: "hsl(30,40%,50%)", categoryId: "coffee-caramel", description: "겨울 밤의 따뜻하고 고소한 맛", badge: null },
@@ -764,36 +764,25 @@ export const paymentMethods: PaymentMethod[] = [
 // ─── Discount Sections ────────────────────────────────────
 export const discountSections: DiscountSection[] = [
   {
-    id: "one-click",
-    title: "원클릭 결제",
+    id: "membership",
+    title: "적용할 멤버십 혜택을 모두 선택하세요",
     items: [
-      { id: "br-app-pay", name: "배라앱 매장 결제", icon: "Store" },
-    ],
-  },
-  {
-    id: "mobile-coupon",
-    title: "모바일 교환권 / 쿠폰 / 기프티콘",
-    items: [
-      { id: "mobile-voucher", name: "모바일 교환권", discount: 3900, icon: "Ticket" },
-      { id: "br-app-coupon", name: "배라앱 발급 쿠폰", icon: "Tag" },
+      { id: "happy-point", name: "해피포인트", icon: "HappyPoint" },
+      { id: "mobile-voucher", name: "모바일 교환권", icon: "Circle" },
+      { id: "br-app-coupon", name: "배라앱 발급 쿠폰", icon: "Circle" },
+      { id: "happy-point-app-coupon", name: "해피포인트 앱 쿠폰", icon: "Circle" },
     ],
   },
   {
     id: "carrier",
-    title: "통신사 멤버십 할인",
+    title: "적용할 통신사/제휴 할인 수단을 모두 선택하세요",
     items: [
-      { id: "t-membership", name: "T 멤버십", icon: "Signal" },
-      { id: "kt-membership", name: "KT 멤버십", icon: "Wifi" },
-    ],
-  },
-  {
-    id: "points",
-    title: "포인트 사용",
-    items: [
-      { id: "happy-point", name: "해피포인트", icon: "Circle" },
-      { id: "h-point", name: "현대 H.Point", discount: 1240, icon: "Hexagon" },
-      { id: "kia-members", name: "기아멤버스", icon: "Car" },
-      { id: "blue-members", name: "블루멤버스", icon: "Shield" },
+      { id: "t-membership", name: "T 멤버십", icon: "KT" },
+      { id: "kt-membership", name: "KT 멤버십", icon: "TMobile" },
+      { id: "h-point", name: "현대 H.Point", icon: "Circle" },
+      { id: "kia-members", name: "기아멤버스", icon: "KIA" },
+      { id: "blue-members", name: "블루멤버스", icon: "BlueMember" },
+      { id: "employee-discount", name: "임직원할인", icon: "Circle" },
     ],
   },
 ]
