@@ -91,7 +91,7 @@ export function MiniCart({ onEditItem }: MiniCartProps = {}) {
         <div className="flex items-center justify-between pb-2.5">
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-bold text-foreground">
-              {"\uC8FC\uBB38\uC218\uB7C9"}
+              주문수량
             </span>
             <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[10px] font-bold text-white">
               {totalItems}
@@ -99,7 +99,7 @@ export function MiniCart({ onEditItem }: MiniCartProps = {}) {
           </div>
           <div className="flex items-baseline gap-1.5">
             <span className="text-[10px] text-muted-foreground">
-              {"\uCD1D \uC8FC\uBB38\uAE08\uC561"}
+              총 주문금액
             </span>
             <span className="text-base font-extrabold text-primary">
               {formatPrice(subtotal)}

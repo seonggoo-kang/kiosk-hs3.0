@@ -132,7 +132,7 @@ export function RecommendedPanel({ cartProductIds, cartProductMap, onSelectProdu
       .filter((c) => allProducts.some((p) => p.categoryId === c.id))
       .map((c) => ({ id: c.id, name: c.name }))
     if (withItems.length <= 1) return null
-    return [{ id: "all", name: "\uC804\uCCB4" }, ...withItems]
+    return [{ id: "all", name: "전체" }, ...withItems]
   }, [filterCategories, allProducts])
 
   return (
@@ -170,7 +170,7 @@ export function RecommendedPanel({ cartProductIds, cartProductMap, onSelectProdu
           <div className="flex flex-col items-center justify-center gap-3 pt-20">
             <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
             <p className="text-xs text-muted-foreground animate-pulse">
-              {"\uCD94\uCC9C \uBA54\uB274\uB97C \uBD88\uB7EC\uC624\uB294 \uC911..."}
+              추천 메뉴를 불러오는 중...
             </p>
           </div>
         ) : (
@@ -182,7 +182,7 @@ export function RecommendedPanel({ cartProductIds, cartProductMap, onSelectProdu
             >
               <Sparkles className="h-4 w-4 text-primary" />
               <span className="text-xs font-bold text-primary">
-                {"\uC624\uB298\uC758 \uC870\uD569 \uCD94\uCC9C"}
+                오늘의 조합 추천
               </span>
               <RotateCcw className="h-3 w-3 text-primary/60" />
             </button>
@@ -206,7 +206,7 @@ export function RecommendedPanel({ cartProductIds, cartProductMap, onSelectProdu
 
             {visibleProducts.length === 0 && (
               <p className="pt-10 text-center text-xs text-muted-foreground">
-                {"\uD574\uB2F9 \uCE74\uD14C\uACE0\uB9AC\uC5D0 \uCD94\uCC9C \uC81C\uD488\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"}
+                해당 카테고리에 추천 제품이 없습니다
               </p>
             )}
           </div>
