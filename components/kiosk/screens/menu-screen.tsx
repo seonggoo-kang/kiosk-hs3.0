@@ -855,7 +855,7 @@ export const MenuScreen = forwardRef<MenuScreenHandle, MenuScreenProps>(function
       {/* Carousel */}
       <div
         ref={containerRef}
-        className="relative flex-1 overflow-hidden bg-[#FFFFFF] select-none"
+        className="relative flex-1 overflow-hidden bg-background select-none"
         style={{ touchAction: "none" }}
         onPointerDown={(e) => { onDragPointerDown(e); onPinchPointerDown(e) }}
         onPointerMove={(e) => { onDragPointerMove(e); onPinchPointerMove(e) }}

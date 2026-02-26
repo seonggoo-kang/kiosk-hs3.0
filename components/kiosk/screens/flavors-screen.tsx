@@ -199,7 +199,7 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
               {isSelected && interactive && (
                 <button
                   onClick={(e) => { e.stopPropagation(); removeOneFlavor(flavor.id) }}
-                  className="absolute right-0 top-0 z-20 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-foreground/70 text-white shadow-sm"
+                  className="absolute right-0 top-0 z-20 flex h-5 w-5 items-center justify-center rounded-full bg-foreground/80 text-white shadow-sm"
                   aria-label={`${flavor.name} 제거`}
                 >
                   <X className="h-2.5 w-2.5" strokeWidth={3} />
@@ -328,7 +328,7 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
       </div>
 
       {/* Bottom selection panel */}
-      <div className="relative shrink-0 border-t border-border px-2 pb-1.5 pt-2" style={{ backgroundColor: "#F6F6FA" }}>
+      <div className="relative shrink-0 border-t border-border bg-panel px-2 pb-1.5 pt-2">
         {/* Flavor description pill -- absolutely positioned above the panel so it never affects layout */}
         {focusedFlavor && (
           <div className="absolute bottom-full left-0 right-0 z-20 px-3 pb-1.5">
@@ -355,7 +355,7 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
                 <div key={`slot-${i}`} className="relative flex shrink-0 flex-col items-center justify-center rounded-2xl bg-pink-50" style={{ width: 68 }}>
                   <button
                     onClick={() => removeByIndex(i)}
-                    className="absolute right-0.5 top-0.5 z-10 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-foreground/70 text-white shadow-sm"
+                    className="absolute right-0.5 top-0.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-foreground/80 text-white shadow-sm"
                     aria-label={`${flavor.name} 제거`}
                   >
                     <X className="h-2.5 w-2.5" strokeWidth={3} />
@@ -368,7 +368,7 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
               )
             }
             return (
-              <div key={`empty-${i}`} className="flex shrink-0 flex-col items-center justify-center rounded-2xl" style={{ width: 68, backgroundColor: "#EDEDF2" }}>
+              <div key={`empty-${i}`} className="flex shrink-0 flex-col items-center justify-center rounded-2xl bg-muted" style={{ width: 68 }}>
                 <div className="mb-1 flex h-11 w-11 items-center justify-center rounded-full bg-muted">
                   <span className="text-base font-bold text-muted-foreground/40">{"?"}</span>
                 </div>

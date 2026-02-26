@@ -166,11 +166,11 @@ export function OrderReviewScreen({
       </div>
 
       {/* Action buttons */}
-      <div className="shrink-0 bg-background px-3 pb-2 pt-1">
-        <div className="flex gap-2">
+      <div className="shrink-0 bg-panel px-screen pb-2 pt-2">
+        <div className="flex gap-3">
           <button
             onClick={onBack}
-            className="flex-1 rounded-2xl bg-muted py-3.5 text-sm font-bold text-foreground transition-colors active:bg-muted/80"
+            className="flex h-button flex-1 items-center justify-center rounded-xl bg-secondary text-sm font-bold text-secondary-foreground transition-colors active:opacity-80"
           >
             이전으로
           </button>
@@ -178,8 +178,8 @@ export function OrderReviewScreen({
             onClick={onGoToDiscounts}
             disabled={state.cart.length === 0}
             className={cn(
-              "flex-1 rounded-2xl py-3.5 text-sm font-bold text-primary-foreground transition-colors",
-              state.cart.length === 0 ? "bg-muted text-muted-foreground" : "bg-primary active:bg-primary/90"
+              "flex h-button flex-1 items-center justify-center rounded-xl text-sm font-bold transition-colors active:opacity-80",
+              state.cart.length === 0 ? "bg-muted text-muted-foreground" : "bg-primary text-primary-foreground"
             )}
           >
             할인/적립
@@ -208,10 +208,10 @@ function OrderItemCard({ item, itemPrice, optionsString, onQuantityChange, onRem
       {/* Remove button */}
       <button
         onClick={onRemove}
-        className="absolute right-2 top-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-muted/80 transition-colors active:bg-muted"
+        className="absolute right-2 top-2 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-foreground/80 text-white shadow-sm transition-colors active:opacity-80"
         aria-label="삭제"
       >
-        <X className="h-3.5 w-3.5 text-muted-foreground" />
+        <X className="h-2.5 w-2.5" />
       </button>
 
       <div className="flex gap-3 p-3.5 pb-2.5">
