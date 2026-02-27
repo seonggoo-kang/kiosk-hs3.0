@@ -83,7 +83,8 @@
     --kiosk-w: 480px;
     --kiosk-h: 853px;
     --kiosk-scale: 1;
-    --is-mobile: 0;  /* 0 = kiosk, 1 = mobile (set by KioskScaler) */
+    --is-mobile: 0;     /* 0 = kiosk, 1 = mobile (set by KioskScaler) */
+    --is-landscape: 0;  /* 0 = portrait, 1 = landscape (set by KioskScaler) */
 
     /* ── Brand Colors ────────────────────────────────────────────────────── */
     --primary: 338 80% 55%;              /* BR Pink #E84073 */
@@ -180,5 +181,44 @@ html[data-device="mobile"] .kiosk-frame {
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
   }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   LANDSCAPE TABLET STYLES
+   Applied when data-device="kiosk-landscape" is set on <html> by KioskScaler
+   Target: 1280x800 landscape tablets (table order kiosks)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Landscape kiosk uses a different aspect ratio frame */
+html[data-device="kiosk-landscape"] .kiosk-frame {
+  border-radius: 0.75rem;
+}
+
+/* Adjust text sizes for landscape (more horizontal space) */
+html[data-device="kiosk-landscape"] {
+  --landscape-text-scale: 1;
+}
+
+/* Landscape-specific component adjustments */
+html[data-device="kiosk-landscape"] .progress-stepper {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Landscape header - more compact */
+html[data-device="kiosk-landscape"] .kiosk-header {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+/* Landscape footer - more compact */
+html[data-device="kiosk-landscape"] .kiosk-footer {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+/* Landscape action bar - horizontal layout optimization */
+html[data-device="kiosk-landscape"] .action-bar {
+  padding: 0.75rem 1rem;
 }
 

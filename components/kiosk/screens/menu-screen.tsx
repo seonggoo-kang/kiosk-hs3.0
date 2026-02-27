@@ -225,9 +225,11 @@ interface MenuScreenProps {
   elapsedSeconds: number
   /** Set the pending sheet state in the parent (survives navigation) */
   onSetPendingSheet?: (productId: string, reqSelections: ResolvedRequiredOption[]) => void
+  /** Hide the mini cart (for landscape mode where cart is in sidebar) */
+  hideMiniCart?: boolean
 }
 
-export const MenuScreen = forwardRef<MenuScreenHandle, MenuScreenProps>(function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscounts, showAddedToast: externalToast, currentStep, elapsedSeconds, onSetPendingSheet }, ref) {
+export const MenuScreen = forwardRef<MenuScreenHandle, MenuScreenProps>(function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscounts, showAddedToast: externalToast, currentStep, elapsedSeconds, onSetPendingSheet, hideMiniCart }, ref) {
   const { state, dispatch } = useOrder()
 
   const [cakeFilter, setCakeFilter] = useState("all")
@@ -961,7 +963,7 @@ export const MenuScreen = forwardRef<MenuScreenHandle, MenuScreenProps>(function
         )}
       </div>
 
-      <MiniCart onEditItem={handleEditCartItem} />
+      {!hideMiniCart && <MiniCart onEditItem={handleEditCartItem} />}
       <ActionBar
         onBack={() => {
           dispatch({ type: "RESET_ORDER" })

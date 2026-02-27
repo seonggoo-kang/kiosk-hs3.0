@@ -3,55 +3,93 @@
 import { useEffect, useState } from "react"
 
 /**
- * Kiosk hardware profiles.
- * The logical viewport is the CSS design surface (authored layout).
- * On the real hardware, the scale factor maps logical → physical pixels.
+ * Device profiles for the kiosk application:
  *
- *   Standing kiosk: 1080 x 1920  →  logical 480 x 853  (×2.25)
- *   Table order:    800  x 1280  →  logical 480 x 768  (×1.667)  [future]
- *   Mobile:         native viewport (no scaling, fully responsive)
+ *   Portrait Kiosk:   1080 x 1920  →  logical 480 x 853  (×2.25 scale)
+ *   Landscape Tablet: 1280 x 800   →  logical 800 x 500  (×1.6 scale)
+ *   Mobile:           native viewport (no scaling, fully responsive)
  */
-const KIOSK_LOGICAL_W = 480
-const KIOSK_LOGICAL_H = 853
-const MOBILE_BREAKPOINT = 768
 
-function isMobileDevice() {
-  if (typeof window === "undefined") return false
+// Portrait kiosk (standing kiosk)
+const KIOSK_PORTRAIT_W = 480
+const KIOSK_PORTRAIT_H = 853
+
+// Landscape tablet kiosk (table order)
+const KIOSK_LANDSCAPE_W = 800
+const KIOSK_LANDSCAPE_H = 500
+
+const MOBILE_BREAKPOINT = 768
+const LANDSCAPE_MIN_WIDTH = 1024
+
+export type DeviceMode = "mobile" | "kiosk-portrait" | "kiosk-landscape"
+
+function detectDeviceMode(): DeviceMode {
+  if (typeof window === "undefined") return "kiosk-portrait"
+  
   const width = window.innerWidth
+  const height = window.innerHeight
   const isTouchCapable = "ontouchstart" in window || navigator.maxTouchPoints > 0
-  const isNarrow = width < MOBILE_BREAKPOINT
-  // Mobile: narrow screen + touch capable
-  return isNarrow && isTouchCapable
+  const isLandscape = width > height
+  
+  // Mobile: narrow screen + touch capable + portrait
+  if (width < MOBILE_BREAKPOINT && isTouchCapable) {
+    return "mobile"
+  }
+  
+  // Landscape tablet: wide screen + landscape orientation
+  if (isLandscape && width >= LANDSCAPE_MIN_WIDTH) {
+    return "kiosk-landscape"
+  }
+  
+  // Default: portrait kiosk
+  return "kiosk-portrait"
 }
 
-function computeScale() {
+function computePortraitScale() {
   const vw = window.innerWidth
   const vh = window.innerHeight
-  return Math.min(vw / KIOSK_LOGICAL_W, vh / KIOSK_LOGICAL_H)
+  return Math.min(vw / KIOSK_PORTRAIT_W, vh / KIOSK_PORTRAIT_H)
+}
+
+function computeLandscapeScale() {
+  const vw = window.innerWidth
+  const vh = window.innerHeight
+  return Math.min(vw / KIOSK_LANDSCAPE_W, vh / KIOSK_LANDSCAPE_H)
 }
 
 export function KioskScaler() {
   useEffect(() => {
     const update = () => {
-      const mobile = isMobileDevice()
+      const mode = detectDeviceMode()
       
-      // Set CSS custom property for mobile detection
-      document.documentElement.style.setProperty(
-        "--is-mobile",
-        mobile ? "1" : "0"
-      )
-      document.documentElement.setAttribute("data-device", mobile ? "mobile" : "kiosk")
+      // Set data attribute for CSS targeting
+      document.documentElement.setAttribute("data-device", mode)
       
-      if (mobile) {
-        // Mobile: no scaling, use native viewport
-        document.documentElement.style.setProperty("--kiosk-scale", "1")
-        document.documentElement.style.setProperty("--kiosk-w", "100vw")
-        document.documentElement.style.setProperty("--kiosk-h", "100dvh")
-      } else {
-        // Kiosk: fixed logical size with scaling
-        document.documentElement.style.setProperty("--kiosk-scale", String(computeScale()))
-        document.documentElement.style.setProperty("--kiosk-w", `${KIOSK_LOGICAL_W}px`)
-        document.documentElement.style.setProperty("--kiosk-h", `${KIOSK_LOGICAL_H}px`)
+      switch (mode) {
+        case "mobile":
+          document.documentElement.style.setProperty("--kiosk-scale", "1")
+          document.documentElement.style.setProperty("--kiosk-w", "100vw")
+          document.documentElement.style.setProperty("--kiosk-h", "100dvh")
+          document.documentElement.style.setProperty("--is-mobile", "1")
+          document.documentElement.style.setProperty("--is-landscape", "0")
+          break
+          
+        case "kiosk-landscape":
+          document.documentElement.style.setProperty("--kiosk-scale", String(computeLandscapeScale()))
+          document.documentElement.style.setProperty("--kiosk-w", `${KIOSK_LANDSCAPE_W}px`)
+          document.documentElement.style.setProperty("--kiosk-h", `${KIOSK_LANDSCAPE_H}px`)
+          document.documentElement.style.setProperty("--is-mobile", "0")
+          document.documentElement.style.setProperty("--is-landscape", "1")
+          break
+          
+        case "kiosk-portrait":
+        default:
+          document.documentElement.style.setProperty("--kiosk-scale", String(computePortraitScale()))
+          document.documentElement.style.setProperty("--kiosk-w", `${KIOSK_PORTRAIT_W}px`)
+          document.documentElement.style.setProperty("--kiosk-h", `${KIOSK_PORTRAIT_H}px`)
+          document.documentElement.style.setProperty("--is-mobile", "0")
+          document.documentElement.style.setProperty("--is-landscape", "0")
+          break
       }
     }
     
@@ -67,16 +105,29 @@ export function KioskScaler() {
   return null
 }
 
-// Hook for components that need to know if we're in mobile mode
-export function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false)
+// Hook for components that need to know the current device mode
+export function useDeviceMode() {
+  const [mode, setMode] = useState<DeviceMode>("kiosk-portrait")
   
   useEffect(() => {
-    const check = () => setIsMobile(isMobileDevice())
+    const check = () => setMode(detectDeviceMode())
     check()
     window.addEventListener("resize", check)
-    return () => window.removeEventListener("resize", check)
+    window.addEventListener("orientationchange", check)
+    return () => {
+      window.removeEventListener("resize", check)
+      window.removeEventListener("orientationchange", check)
+    }
   }, [])
   
-  return isMobile
+  return mode
+}
+
+// Convenience hooks
+export function useIsMobile() {
+  return useDeviceMode() === "mobile"
+}
+
+export function useIsLandscape() {
+  return useDeviceMode() === "kiosk-landscape"
 }

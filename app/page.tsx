@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from "react"
 import { useOrder } from "@/lib/order-context"
+import { useDeviceMode, type DeviceMode } from "@/components/kiosk/kiosk-scaler"
 import { LandingScreen } from "@/components/kiosk/screens/landing-screen"
 import { MenuScreen, type MenuScreenHandle } from "@/components/kiosk/screens/menu-screen"
 import { FlavorsScreen } from "@/components/kiosk/screens/flavors-screen"
@@ -10,6 +11,7 @@ import { OrderReviewScreen } from "@/components/kiosk/screens/order-review-scree
 import { DiscountsScreen } from "@/components/kiosk/screens/discounts-screen"
 import { PaymentScreen } from "@/components/kiosk/screens/payment-screen"
 import { ConfirmationScreen } from "@/components/kiosk/screens/confirmation-screen"
+import { LandscapeLayout } from "@/components/kiosk/landscape-layout"
 import { products } from "@/lib/mock-data"
 
 // Screen indices
@@ -32,6 +34,8 @@ export default function KioskApp() {
   useEffect(() => setMounted(true), [])
 
   const { dispatch } = useOrder()
+  const deviceMode = useDeviceMode()
+  const isLandscape = deviceMode === "kiosk-landscape"
 
   // ── Screen navigation state ──
   const [activeScreen, setActiveScreen] = useState<ScreenIndex>(SCREEN.LANDING)
@@ -270,7 +274,22 @@ export default function KioskApp() {
     [SCREEN.LANDING]: (
       <LandingScreen onSelectOrderType={handleOrderType} />
     ),
-    [SCREEN.MENU]: (
+    [SCREEN.MENU]: isLandscape ? (
+      <LandscapeLayout onGoToOrderReview={handleGoToOrderReview} showCart={true}>
+        <MenuScreen
+          ref={menuScreenRef}
+          onBack={goToLanding}
+          onGoToFlavors={handleGoToFlavors}
+          onGoToOptions={handleGoToOptions}
+          onGoToDiscounts={handleGoToOrderReview}
+          showAddedToast={showMenuToast}
+          currentStep={currentStep}
+          elapsedSeconds={elapsedSeconds}
+          onSetPendingSheet={(productId, reqSelections) => { pendingSheetReqSelectionsRef.current = reqSelections }}
+          hideMiniCart={true}
+        />
+      </LandscapeLayout>
+    ) : (
       <MenuScreen
         ref={menuScreenRef}
         onBack={goToLanding}
