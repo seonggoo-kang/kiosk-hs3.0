@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { OrderProvider } from '@/lib/order-context'
 import { KioskScaler } from '@/components/kiosk/kiosk-scaler'
+import { DeviceModeToggle } from '@/components/kiosk/device-mode-toggle'
 
 import './globals.css'
 
@@ -41,6 +42,7 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         <OrderProvider>
           <KioskScaler />
+          <DeviceModeToggle />
           {/* 
             Outer wrapper:
             - Kiosk mode: centres + scales the fixed-size frame (480x853 logical)

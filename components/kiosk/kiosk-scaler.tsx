@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback, createContext, useContext } from "react"
 
 /**
  * Device profiles for the kiosk application:
@@ -23,7 +23,41 @@ const LANDSCAPE_MIN_WIDTH = 1024
 
 export type DeviceMode = "mobile" | "kiosk-portrait" | "kiosk-landscape"
 
+// Global override state (persists across re-renders)
+let globalModeOverride: DeviceMode | null = null
+let globalListeners: Set<() => void> = new Set()
+
+function notifyListeners() {
+  globalListeners.forEach(fn => fn())
+}
+
+export function setModeOverride(mode: DeviceMode | null) {
+  globalModeOverride = mode
+  notifyListeners()
+  // Trigger a resize event to update CSS variables
+  window.dispatchEvent(new Event("resize"))
+}
+
+export function getModeOverride() {
+  return globalModeOverride
+}
+
+export function cycleMode() {
+  const modes: DeviceMode[] = ["kiosk-portrait", "kiosk-landscape", "mobile"]
+  const currentIndex = globalModeOverride ? modes.indexOf(globalModeOverride) : -1
+  const nextIndex = (currentIndex + 1) % modes.length
+  setModeOverride(modes[nextIndex])
+  return modes[nextIndex]
+}
+
+export function clearModeOverride() {
+  setModeOverride(null)
+}
+
 function detectDeviceMode(): DeviceMode {
+  // If there's a manual override, use it
+  if (globalModeOverride) return globalModeOverride
+  
   if (typeof window === "undefined") return "kiosk-portrait"
   
   const width = window.innerWidth
@@ -112,15 +146,43 @@ export function useDeviceMode() {
   useEffect(() => {
     const check = () => setMode(detectDeviceMode())
     check()
+    
+    // Listen for resize/orientation changes
     window.addEventListener("resize", check)
     window.addEventListener("orientationchange", check)
+    
+    // Listen for manual override changes
+    globalListeners.add(check)
+    
     return () => {
       window.removeEventListener("resize", check)
       window.removeEventListener("orientationchange", check)
+      globalListeners.delete(check)
     }
   }, [])
   
   return mode
+}
+
+// Hook that returns mode + override status + toggle function
+export function useDeviceModeWithOverride() {
+  const mode = useDeviceMode()
+  const [, forceUpdate] = useState(0)
+  
+  useEffect(() => {
+    const update = () => forceUpdate(n => n + 1)
+    globalListeners.add(update)
+    return () => { globalListeners.delete(update) }
+  }, [])
+  
+  return {
+    mode,
+    isOverridden: globalModeOverride !== null,
+    override: globalModeOverride,
+    cycle: cycleMode,
+    clear: clearModeOverride,
+    setMode: setModeOverride,
+  }
 }
 
 // Convenience hooks
