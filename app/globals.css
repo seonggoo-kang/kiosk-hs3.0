@@ -83,6 +83,7 @@
     --kiosk-w: 480px;
     --kiosk-h: 853px;
     --kiosk-scale: 1;
+    --is-mobile: 0;  /* 0 = kiosk, 1 = mobile (set by KioskScaler) */
 
     /* ── Brand Colors ────────────────────────────────────────────────────── */
     --primary: 338 80% 55%;              /* BR Pink #E84073 */
@@ -152,6 +153,32 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   MOBILE-SPECIFIC STYLES
+   Applied when data-device="mobile" is set on <html> by KioskScaler
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Remove black background on mobile - app fills full screen */
+html[data-device="mobile"] .kiosk-outer {
+  background: transparent;
+}
+
+/* On mobile, the frame has no shadow and fills viewport */
+html[data-device="mobile"] .kiosk-frame {
+  box-shadow: none;
+  border-radius: 0;
+}
+
+/* Safe area insets for notched devices (iPhone X+, etc.) */
+@supports (padding: env(safe-area-inset-top)) {
+  html[data-device="mobile"] .kiosk-frame {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
   }
 }
 
