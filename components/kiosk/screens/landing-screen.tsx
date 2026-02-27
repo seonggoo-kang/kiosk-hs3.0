@@ -204,9 +204,8 @@ export function LandingScreen({ onSelectOrderType }: LandingScreenProps) {
             ))}
           </div>
         ) : (
-          <div className="flex h-full w-full items-center justify-center bg-primary/5">
-            <img src="/images/br-logo.png" alt="Baskin Robbins" className="h-20 w-auto opacity-40" />
-          </div>
+          /* Fallback while banners load - simple background */
+          <div className="flex h-full w-full items-center justify-center bg-primary/5" />
         )}
 
         {/* Idle gradient overlay */}
