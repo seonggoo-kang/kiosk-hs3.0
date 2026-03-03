@@ -267,23 +267,6 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
     <div className="flex flex-1 flex-col overflow-hidden">
       <ProgressStepper currentStep={currentStep} elapsedSeconds={elapsedSeconds} onHome={onHome} />
 
-      {/* Recommendation button (only when on recommended category) */}
-      {activeCategory === "recommended" && (
-        <div className="shrink-0 border-b border-border bg-card px-3 py-2">
-          <button
-            onClick={handleCycleMode}
-            disabled={isRefreshing}
-            className="flex w-full items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-2 transition-colors active:bg-primary/10 disabled:opacity-50"
-          >
-            <Sparkles className="h-4 w-4 text-primary" />
-            <span className="text-xs font-bold text-primary">
-              {currentModeLabel}
-            </span>
-            <RotateCcw className={cn("h-3 w-3 text-primary/60", isRefreshing && "animate-spin")} />
-          </button>
-        </div>
-      )}
-
       {/* Category tabs */}
       <div className="shrink-0 border-b border-border bg-card">
         <div className="grid grid-cols-4">
@@ -363,10 +346,27 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
 
         {/* Pagination dots */}
         {totalPages > 1 && (
-          <div className="pointer-events-none absolute bottom-2 left-0 right-0 z-[1] flex items-center justify-center gap-1.5" aria-hidden="true">
+          <div className="pointer-events-none absolute bottom-8 left-0 right-0 z-[1] flex items-center justify-center gap-1.5" aria-hidden="true">
             {Array.from({ length: totalPages }).map((_, i) => (
               <span key={i} className={cn("h-1.5 rounded-full transition-all duration-300", i === page ? "w-4 bg-primary" : "w-1.5 bg-border")} />
             ))}
+          </div>
+        )}
+
+        {/* Recommendation button (only when on recommended category) - positioned at bottom of grid */}
+        {activeCategory === "recommended" && (
+          <div className="absolute bottom-1 left-0 right-0 z-[1] flex justify-center px-3">
+            <button
+              onClick={handleCycleMode}
+              disabled={isRefreshing}
+              className="flex items-center gap-1.5 rounded-full border border-primary/30 bg-card/95 px-3 py-1.5 shadow-sm backdrop-blur-sm transition-colors active:bg-primary/10 disabled:opacity-50"
+            >
+              <Sparkles className="h-3 w-3 text-primary" />
+              <span className="text-[10px] font-bold text-primary">
+                {currentModeLabel}
+              </span>
+              <RotateCcw className={cn("h-2.5 w-2.5 text-primary/60", isRefreshing && "animate-spin")} />
+            </button>
           </div>
         )}
       </div>
