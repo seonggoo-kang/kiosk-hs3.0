@@ -300,7 +300,7 @@ export const packableSubcategories = [
   { id: "family", name: "패밀리" },
   { id: "half-gallon", name: "하프갤론" },
   { id: "pack", name: "팩" },
-  { id: "set", name: "세트" },
+  { id: "set", name: "세���" },
 ]
 
 const packableProducts = generateProducts("packable-icecream", [
@@ -351,7 +351,7 @@ const cakeProducts = generateProducts("icecream-cake", [
   { name: "초코딥\n스노우볼 눌", desc: "소형 케이크", size: "소형", weight: "350g", price: 15000, cal: "550~750 kcal", serving: "350g", image: "/products/아이스크림케이크/초코딥스노우볼눌_0.png", flavor: false, maxF: 0, sub: "small" },
   { name: "허그미 러브벨", desc: "소형 케이크", size: "소형", weight: "350g", price: 15000, cal: "500~700 kcal", serving: "350g", image: "/products/아이스크림케이크/허그미러브벨_0.png", flavor: false, maxF: 0, sub: "small" },
   { name: "써니사이드업 에그", desc: "에그 케이크", size: "에그", weight: "400g", price: 15000, cal: "500~700 kcal", serving: "400g", image: "/products/아이스크림케이크/써니사이드업에그_0.png", flavor: false, maxF: 0, sub: "small" },
-  { name: "러블리 미녀눌 케이크", desc: "소형 케이크", size: "소형", weight: "350g", price: 15000, cal: "500~700 kcal", serving: "350g", image: "/products/아이스크림케이크/러블리미녀눌케이크_0.png", flavor: false, maxF: 0, sub: "small" },
+  { name: "러블리 미녀눌 케이크", desc: "소형 케이크", size: "소형", weight: "350g", price: 15000, cal: "500~700 kcal", serving: "350g", image: "/products/아이스크림케이크/러블���미녀눌케이크_0.png", flavor: false, maxF: 0, sub: "small" },
   { name: "리틀 기프트 보블", desc: "보블 케이크", size: "보블", weight: "350g", price: 15000, cal: "500~700 kcal", serving: "350g", image: "/products/아이스크림케이크/BR_HS-제품이미지-리틀기프트보블-204X160px_0.png", flavor: false, maxF: 0, sub: "small" },
 
   // ── 기본 홀케이크 라인 ──
@@ -506,7 +506,7 @@ const dessertProducts = generateProducts("dessert", [
   { name: "젤라또 츄러스 세트", desc: "세트 메뉴", size: "1세트", weight: "300g", price: 9500, cal: "480~650 kcal", serving: "300g", image: "/products/디저트/젤라또츄러스세트_0.png", flavor: false, maxF: 0, sub: "set-menu", tag: "20% 할인" },
 
   // ── 츄러스 / 케이크 단품 ──
-  { name: "스윗 시나몬 츄러스", desc: "츄러스", size: "1개", weight: "100g", price: 4500, cal: "250~350 kcal", serving: "100g", image: "/products/디저트/스윗시나몬츄러스_0.png", flavor: false, maxF: 0, sub: "churros-cake" },
+  { name: "스윗 시나몬 ���러스", desc: "츄러스", size: "1개", weight: "100g", price: 4500, cal: "250~350 kcal", serving: "100g", image: "/products/디저트/스윗시나몬츄러스_0.png", flavor: false, maxF: 0, sub: "churros-cake" },
   { name: "젤라또 하트 츄러스", desc: "츄러스", size: "1개", weight: "150g", price: 7500, cal: "380~500 kcal", serving: "150g", image: "/products/디저트/젤라또하트츄러스_0.png", flavor: false, maxF: 0, sub: "churros-cake" },
   { name: "바스크 치즈케이크", desc: "치즈케이크", size: "1개", weight: "150g", price: 7500, cal: "350~480 kcal", serving: "150g", image: "/products/디저트/BR_바스크치즈케이크-204X160px_0.png", flavor: false, maxF: 0, sub: "churros-cake" },
 
@@ -536,7 +536,7 @@ const prepackProducts = generateProducts("prepack", [
   { name: "초코나무숲 레디팩", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "650~950 kcal", serving: "660ml", image: "/products/레디팩 블록팩/초코나무숲레디팩_0.png", flavor: false, maxF: 0, sub: "readypack" },
   { name: "엄마는 외계인\n레디팩", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "600~900 kcal", serving: "660ml", image: "/products/레디팩 블록팩/엄마는외계인레디팩_0.png", flavor: false, maxF: 0, sub: "readypack" },
   { name: "레디팩 요거트", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "500~800 kcal", serving: "660ml", image: "/products/레디팩 블록팩/레디팩31요거트_0.png", flavor: false, maxF: 0, sub: "readypack" },
-  { name: "체리 쥬빌레 레디팩", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "550~850 kcal", serving: "660ml", image: "/products/레디팩 블록팩/체리-쥬빌레-레디팩_0.png", flavor: false, maxF: 0, sub: "readypack" },
+  { name: "체리 쥬빌레 레디팩", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "550~850 kcal", serving: "660ml", image: "/products/레디팩 블록팩/��리-쥬빌레-레디팩_0.png", flavor: false, maxF: 0, sub: "readypack" },
   { name: "민트 초콜릿칩\n레디팩", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "600~900 kcal", serving: "660ml", image: "/products/레디팩 블록팩/민트-초콜릿-칩-레디팩_0.png", flavor: false, maxF: 0, sub: "readypack" },
   { name: "레디팩 소금우유", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "500~800 kcal", serving: "660ml", image: "/products/레디팩 블록팩/레디팩_소금우유_0.png", flavor: false, maxF: 0, sub: "readypack" },
   { name: "레인보우 샤베트\n레디팩", desc: "레디팩", size: "대용량", weight: "660ml", price: 10800, cal: "450~700 kcal", serving: "660ml", image: "/products/레디팩 블록팩/레인보우샤베트레디팩_0.png", flavor: false, maxF: 0, sub: "readypack" },
@@ -590,7 +590,7 @@ const partyProducts = generateProducts("party", [
   { name: "아이스크림 스쿱퍼", desc: "브랜드 굿즈", size: "1개", weight: "-", price: 25000, cal: "-", serving: "-", image: "/products/파티상품/아이스크림스쿱퍼_0.png", flavor: false, maxF: 0, sub: "brand" },
 
   // ── 향 제품 (그립톡 / 방향제) ──
-  { name: "복숭아 그립톡", desc: "그립톡", size: "1개", weight: "-", price: 12000, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-복숭아-그립톡-200X160px_0.png", flavor: false, maxF: 0, sub: "scent" },
+  { name: "복숭아 그립톡", desc: "그립톡", size: "1개", weight: "-", price: 12000, cal: "-", serving: "-", image: "/products/파��상품/BR_HS-제품이미지-복숭아-그립톡-200X160px_0.png", flavor: false, maxF: 0, sub: "scent" },
   { name: "레몬 그립톡", desc: "그립톡", size: "1개", weight: "-", price: 12000, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-레몬-그립톡-200X160px_0.png", flavor: false, maxF: 0, sub: "scent" },
   { name: "딸기 그립톡", desc: "그립톡", size: "1개", weight: "-", price: 12000, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-딸기-그립톡-200X160px_0.png", flavor: false, maxF: 0, sub: "scent" },
   { name: "망고 그립톡", desc: "그립톡", size: "1개", weight: "-", price: 12000, cal: "-", serving: "-", image: "/products/파티상품/BR_HS-제품이미지-망고-그립톡-200X160px_0.png", flavor: false, maxF: 0, sub: "scent" },
@@ -643,19 +643,27 @@ export const flavorCategories: FlavorCategory[] = [
 
 // ─── Flavors (100) ── Based on actual BR Korea in-store menu ─
 export const flavors: Flavor[] = [
-  // ── 추천 (12) ──
+  // ── 추천 (20) ── Rankings up to 10위
   { id: "jjonkkuret", name: "진정한 쫀꾸렛", image: "/flavors/진정한쫀꾸렛_0.png", color: "hsl(30,40%,75%)", categoryId: "recommended", description: "쫀득한 초콜릿과 바삭한 크런치의 진정한 만남", badge: "이달의 맛" },
   { id: "alien-mom", name: "엄마는 외계인", image: "/flavors/엄마는외계인_0.png", color: "hsl(280,50%,75%)", categoryId: "recommended", description: "알록달록 솜사탕과 쿠키의 신비로운 우주 맛", badge: "1위" },
   { id: "almond-bonbon", name: "아몬드봉봉", image: "/flavors/아몬드봉봉_수정_0.png", color: "hsl(25,35%,72%)", categoryId: "recommended", description: "고소한 아몬드와 달콤한 봉봉의 만남", badge: "2위" },
   { id: "mint-choco-chip", name: "민트 초콜릿칩", image: "/flavors/민트초콜릿칩_0.png", color: "hsl(160,50%,75%)", categoryId: "recommended", description: "시원한 민트와 달콤한 초코칩의 조화", badge: "3위" },
-  { id: "rainbow-sherbet", name: "레인보우 샤베트", image: "/flavors/레인보우샤베트_0.png", color: "hsl(40,80%,80%)", categoryId: "recommended", description: "다채로운 과일 맛의 상큼한 샤베트", badge: "과일 섬유질 포함" },
+  { id: "rainbow-sherbet", name: "레인보우 샤베트", image: "/flavors/레인보우샤베트_0.png", color: "hsl(40,80%,80%)", categoryId: "recommended", description: "다채로운 과일 맛의 상큼한 샤베트", badge: "4위" },
   { id: "ny-cheesecake", name: "뉴욕 치즈케이크", image: "/flavors/뉴욕치즈케이크_0.png", color: "hsl(45,50%,82%)", categoryId: "recommended", description: "진한 뉴욕 스타일 치즈케이크의 깊은 맛", badge: "5위" },
-  { id: "jjonddeok-heukimja", name: "쫀떡 만난 흑임자", image: "/flavors/쫀떡만난흑임자_0.png", color: "hsl(0,0%,35%)", categoryId: "recommended", description: "고소한 흑임자와 쫄깃한 쫀떡의 전통 조화", badge: "NEW" },
-  { id: "ice-hotteok", name: "아이스 호떡", image: "/flavors/아이스호떡_1.png", color: "hsl(35,55%,60%)", categoryId: "recommended", description: "달콤한 호떡의 따뜻한 맛을 아이스크림으로", badge: "NEW" },
-  { id: "bam-goguma", name: "밤이 옥수로 맛있구마", image: "/flavors/밤이 옥수로 맛있구마.png", color: "hsl(35,60%,55%)", categoryId: "recommended", description: "고구마, 밤, 옥수수의 고소한 가을 맛", badge: "NEW" },
-  { id: "honey-mochi", name: "말랑 꿀떡 모찌", image: "/flavors/말랑꿀떡모찌_0.png", color: "hsl(42,50%,78%)", categoryId: "recommended", description: "꿀떡 모찌의 말랑말랑 달콤한 맛", badge: "NEW" },
-  { id: "berry-berry-strawberry", name: "베리베리 스트로베리", image: "/flavors/베리베리스트로베리_0.png", color: "hsl(340,60%,78%)", categoryId: "recommended", description: "딸기의 상큼함을 가득 담은 베리 맛", badge: null },
-  { id: "love-strawberry", name: "사랑에 빠진 딸기", image: "/flavors/사랑에빠진딸기_1.png", color: "hsl(345,60%,75%)", categoryId: "recommended", description: "딸기와 초콜릿이 치즈케이크에 반해버린 사랑의 맛", badge: null },
+  { id: "jjonddeok-heukimja", name: "쫀떡 만난 흑임자", image: "/flavors/쫀떡만난흑임자_0.png", color: "hsl(0,0%,35%)", categoryId: "recommended", description: "고소한 흑임자와 쫄깃한 쫀떡의 전통 조화", badge: "6위" },
+  { id: "ice-hotteok", name: "아이스 호떡", image: "/flavors/아이스호떡_1.png", color: "hsl(35,55%,60%)", categoryId: "recommended", description: "달콤한 호떡의 따뜻한 맛을 아이스크림으로", badge: "7위" },
+  { id: "bam-goguma", name: "밤이 옥수로 맛있구마", image: "/flavors/밤이 옥수로 맛있구마.png", color: "hsl(35,60%,55%)", categoryId: "recommended", description: "고구마, 밤, 옥수수의 고소한 가을 맛", badge: "8위" },
+  { id: "honey-mochi", name: "말랑 꿀떡 모찌", image: "/flavors/말랑꿀떡모찌_0.png", color: "hsl(42,50%,78%)", categoryId: "recommended", description: "꿀떡 모찌의 말랑말랑 달콤한 맛", badge: "9위" },
+  { id: "berry-berry-strawberry", name: "베리베리 스트로베리", image: "/flavors/베리베리스트로베리_0.png", color: "hsl(340,60%,78%)", categoryId: "recommended", description: "딸기의 상큼함을 가득 담은 베리 맛", badge: "10위" },
+  { id: "love-strawberry", name: "사랑에 빠진 딸기", image: "/flavors/사랑에빠진딸기_1.png", color: "hsl(345,60%,75%)", categoryId: "recommended", description: "딸기와 초콜릿이 치즈케이크에 반해버린 사랑의 맛", badge: "NEW" },
+  { id: "rec-choco-mousse", name: "초콜릿 무스", image: "/flavors/초콜릿무스_0.png", color: "hsl(25,50%,35%)", categoryId: "recommended", description: "부드러운 초콜릿 무스의 깊은 풍미", badge: "NEW" },
+  { id: "rec-jamoca", name: "자모카 아몬드 훠지", image: "/flavors/자모카아몬드훠지_0.png", color: "hsl(30,35%,45%)", categoryId: "recommended", description: "커피와 아몬드, 훠지의 클래식 조합", badge: "NEW" },
+  { id: "rec-vanilla", name: "바닐라", image: "/flavors/바닐라_0.png", color: "hsl(45,60%,90%)", categoryId: "recommended", description: "클래식한 마다가스카르 바닐라의 순수한 맛", badge: null },
+  { id: "rec-cookies-cream", name: "쿠키 앤 크림", image: "/flavors/쿠키앤크림_0.png", color: "hsl(0,0%,85%)", categoryId: "recommended", description: "바삭한 초코쿠키와 부드러운 크림의 조화", badge: null },
+  { id: "rec-shooting-star", name: "슈팅스타", image: "/flavors/슈팅스타_0.png", color: "hsl(200,60%,70%)", categoryId: "recommended", description: "반짝이는 별처럼 달콤한 맛", badge: null },
+  { id: "rec-very-berry", name: "베리베리 치즈케이크", image: "/flavors/베리베리치즈케이크_0.png", color: "hsl(340,50%,65%)", categoryId: "recommended", description: "베리와 치즈케이크의 환상 조합", badge: null },
+  { id: "rec-choco-chip", name: "초콜릿칩", image: "/flavors/초콜릿칩_0.png", color: "hsl(25,40%,50%)", categoryId: "recommended", description: "진한 초콜릿칩이 가득한 클래식 맛", badge: null },
+  { id: "rec-green-tea", name: "그린티", image: "/flavors/그린티_0.png", color: "hsl(120,30%,55%)", categoryId: "recommended", description: "진한 녹차의 깊고 담백한 맛", badge: null },
 
   // ── 과일 ──
   { id: "golden-apple-yogurt", name: "골든애플 요거트", image: "/flavors/골든애플 요거트.png", color: "hsl(45,70%,75%)", categoryId: "fruit", description: "달콤한 사과와 상큼한 요거트의 조화", badge: null },

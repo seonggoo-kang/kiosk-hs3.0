@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useCallback, useRef, useEffect } from "react"
 import Image from "next/image"
-import { X } from "lucide-react"
+import { X, Sparkles, RotateCcw } from "lucide-react"
 import { ProgressStepper } from "@/components/kiosk/progress-stepper"
 import { KioskFooter } from "@/components/kiosk/kiosk-footer"
 import { ActionBar } from "@/components/kiosk/action-bar"
@@ -14,6 +14,15 @@ import {
   type Flavor,
 } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
+
+// Recommendation mode labels (same as ai-pick-panel)
+const RECOMMENDATION_MODES = [
+  { id: "ai", label: "나를 위한 AI 추천" },
+  { id: "popular", label: "인기 조합 추천" },
+  { id: "md", label: "MD 추천" },
+] as const
+
+type RecommendationMode = typeof RECOMMENDATION_MODES[number]["id"]
 
 const COLS = 4
 const ROWS = 4
@@ -31,10 +40,12 @@ interface FlavorsScreenProps {
 export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentStep, elapsedSeconds }: FlavorsScreenProps) {
   const product = useMemo(() => products.find((p) => p.id === productId), [productId])
 
-  const [activeCategory, setActiveCategory] = useState("all")
+  const [activeCategory, setActiveCategory] = useState("recommended")
   const [page, setPage] = useState(0)
   const [selectedFlavors, setSelectedFlavors] = useState<Flavor[]>([])
   const [focusedFlavor, setFocusedFlavor] = useState<Flavor | null>(null)
+  const [recommendationMode, setRecommendationMode] = useState<RecommendationMode>("ai")
+  const [isRefreshing, setIsRefreshing] = useState(false)
 
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -90,6 +101,22 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
   }, [])
 
   const handleCategoryChange = (catId: string) => { setActiveCategory(catId); setPage(0) }
+
+  // Cycle recommendation mode
+  const handleCycleMode = useCallback(() => {
+    setIsRefreshing(true)
+    const currentIndex = RECOMMENDATION_MODES.findIndex(m => m.id === recommendationMode)
+    const nextIndex = (currentIndex + 1) % RECOMMENDATION_MODES.length
+    const nextMode = RECOMMENDATION_MODES[nextIndex].id
+    
+    setTimeout(() => {
+      setRecommendationMode(nextMode)
+      setPage(0)
+      setIsRefreshing(false)
+    }, 500)
+  }, [recommendationMode])
+
+  const currentModeLabel = RECOMMENDATION_MODES.find(m => m.id === recommendationMode)?.label ?? ""
 
   // ── Pointer-event-based drag/swipe system (mirrors MenuScreen) ──
   const dragStartX = useRef(0)
@@ -239,6 +266,23 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
       <ProgressStepper currentStep={currentStep} elapsedSeconds={elapsedSeconds} onHome={onHome} />
+
+      {/* Recommendation button (only when on recommended category) */}
+      {activeCategory === "recommended" && (
+        <div className="shrink-0 border-b border-border bg-card px-3 py-2">
+          <button
+            onClick={handleCycleMode}
+            disabled={isRefreshing}
+            className="flex w-full items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-2 transition-colors active:bg-primary/10 disabled:opacity-50"
+          >
+            <Sparkles className="h-4 w-4 text-primary" />
+            <span className="text-xs font-bold text-primary">
+              {currentModeLabel}
+            </span>
+            <RotateCcw className={cn("h-3 w-3 text-primary/60", isRefreshing && "animate-spin")} />
+          </button>
+        </div>
+      )}
 
       {/* Category tabs */}
       <div className="shrink-0 border-b border-border bg-card">
