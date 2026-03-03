@@ -291,6 +291,23 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
         </div>
       </div>
 
+      {/* Recommendation button (only when on recommended category) - between tabs and grid */}
+      {activeCategory === "recommended" && (
+        <div className="shrink-0 flex justify-center bg-muted/30 px-3 py-2 border-b border-border/50">
+          <button
+            onClick={handleCycleMode}
+            disabled={isRefreshing}
+            className="flex items-center gap-1.5 rounded-full border border-primary/30 bg-card px-3 py-1.5 shadow-sm transition-colors active:bg-primary/10 disabled:opacity-50"
+          >
+            <Sparkles className="h-3 w-3 text-primary" />
+            <span className="text-[10px] font-bold text-primary">
+              {currentModeLabel}
+            </span>
+            <RotateCcw className={cn("h-2.5 w-2.5 text-primary/60", isRefreshing && "animate-spin")} />
+          </button>
+        </div>
+      )}
+
       {/* Carousel grid area -- pb-7 reserves space so the description pill never overlaps flavor items */}
       <div
         ref={containerRef}
@@ -354,23 +371,6 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
         )}
 
       </div>
-
-      {/* Recommendation button (only when on recommended category) - positioned above bottom panel */}
-      {activeCategory === "recommended" && (
-        <div className="shrink-0 flex justify-center bg-muted/30 px-3 py-2">
-          <button
-            onClick={handleCycleMode}
-            disabled={isRefreshing}
-            className="flex items-center gap-1.5 rounded-full border border-primary/30 bg-card px-3 py-1.5 shadow-sm transition-colors active:bg-primary/10 disabled:opacity-50"
-          >
-            <Sparkles className="h-3 w-3 text-primary" />
-            <span className="text-[10px] font-bold text-primary">
-              {currentModeLabel}
-            </span>
-            <RotateCcw className={cn("h-2.5 w-2.5 text-primary/60", isRefreshing && "animate-spin")} />
-          </button>
-        </div>
-      )}
 
       {/* Bottom selection panel */}
       <div className="relative shrink-0 border-t border-border bg-panel px-2 pb-1.5 pt-2">
