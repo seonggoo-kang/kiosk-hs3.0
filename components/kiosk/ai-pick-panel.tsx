@@ -47,10 +47,20 @@ type RecommendedPanelProps = {
   zoomLevel?: ZoomLevel
 }
 
+// Recommendation mode labels
+const RECOMMENDATION_MODES = [
+  { id: "ai", label: "나를 위한 AI 추천" },
+  { id: "popular", label: "인기 조합 추천" },
+  { id: "md", label: "MD 추천" },
+] as const
+
+type RecommendationMode = typeof RECOMMENDATION_MODES[number]["id"]
+
 export function RecommendedPanel({ cartProductIds, cartProductMap, onSelectProduct, onRemoveProduct, orderType, zoomLevel }: RecommendedPanelProps) {
   const [allProducts, setAllProducts] = useState<Product[]>(() => getRankedRecommendations(orderType))
   const [activeFilter, setActiveFilter] = useState("all")
   const [loading, setLoading] = useState(false)
+  const [recommendationMode, setRecommendationMode] = useState<RecommendationMode>("ai")
   const scrollRef = useRef<HTMLDivElement>(null)
   const filterRef = useRef<HTMLDivElement>(null)
 
@@ -114,16 +124,25 @@ export function RecommendedPanel({ cartProductIds, cartProductMap, onSelectProdu
     []
   )
 
-  // AI refresh
-  const handleRefresh = useCallback(() => {
+  // Cycle recommendation mode and refresh products
+  const handleCycleMode = useCallback(() => {
     setLoading(true)
+    // Cycle to next mode
+    const currentIndex = RECOMMENDATION_MODES.findIndex(m => m.id === recommendationMode)
+    const nextIndex = (currentIndex + 1) % RECOMMENDATION_MODES.length
+    const nextMode = RECOMMENDATION_MODES[nextIndex].id
+    
     setTimeout(() => {
+      setRecommendationMode(nextMode)
       setAllProducts(shuffleRankedRecommendations(orderType))
       setActiveFilter("all")
       setLoading(false)
       scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" })
     }, 800)
-  }, [])
+  }, [recommendationMode, orderType])
+  
+  // Get current mode label
+  const currentModeLabel = RECOMMENDATION_MODES.find(m => m.id === recommendationMode)?.label ?? ""
 
   // Build filter items -- hide categories with zero matching products.
   // Hide entire filter bar when 0 or 1 category groups have items (no filtering value).
@@ -175,14 +194,14 @@ export function RecommendedPanel({ cartProductIds, cartProductMap, onSelectProdu
           </div>
         ) : (
           <div className="px-3 pb-4 pt-3">
-            {/* AI refresh button */}
+            {/* Recommendation mode cycle button */}
             <button
-              onClick={handleRefresh}
+              onClick={handleCycleMode}
               className="mb-3 flex w-full items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-2.5 transition-colors active:bg-primary/10"
             >
               <Sparkles className="h-4 w-4 text-primary" />
               <span className="text-xs font-bold text-primary">
-                오늘의 조합 추천
+                {currentModeLabel}
               </span>
               <RotateCcw className="h-3 w-3 text-primary/60" />
             </button>
