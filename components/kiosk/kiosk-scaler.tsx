@@ -24,7 +24,8 @@ const LANDSCAPE_MIN_WIDTH = 1024
 export type DeviceMode = "mobile" | "kiosk-portrait" | "kiosk-landscape"
 
 // Global override state (persists across re-renders)
-let globalModeOverride: DeviceMode | null = null
+// Default to portrait mode (세로) - user can switch via toggle
+let globalModeOverride: DeviceMode | null = "kiosk-portrait"
 let globalListeners: Set<() => void> = new Set()
 
 function notifyListeners() {
