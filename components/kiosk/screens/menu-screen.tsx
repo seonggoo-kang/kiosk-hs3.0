@@ -245,14 +245,26 @@ export const MenuScreen = forwardRef<MenuScreenHandle, MenuScreenProps>(function
   const [showGestureHint, setShowGestureHint] = useState(false)
   const [zoomIndicator, setZoomIndicator] = useState<number | null>(null)
   const zoomIndicatorTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const gestureHintShownRef = useRef(false)
 
   useEffect(() => {
+    // Only show gesture hint once per session (check sessionStorage)
+    const alreadyShown = sessionStorage.getItem("gestureHintShown") === "true"
+    if (alreadyShown || gestureHintShownRef.current) return
+    
+    gestureHintShownRef.current = true
     const show = setTimeout(() => setShowGestureHint(true), 2000)
-    const hide = setTimeout(() => setShowGestureHint(false), 7000)
+    const hide = setTimeout(() => {
+      setShowGestureHint(false)
+      sessionStorage.setItem("gestureHintShown", "true")
+    }, 7000)
     return () => { clearTimeout(show); clearTimeout(hide) }
   }, [])
 
-  const dismissGestureHint = useCallback(() => setShowGestureHint(false), [])
+  const dismissGestureHint = useCallback(() => {
+    setShowGestureHint(false)
+    sessionStorage.setItem("gestureHintShown", "true")
+  }, [])
 
   const showZoomBadge = useCallback((level: number) => {
     setZoomIndicator(level)
