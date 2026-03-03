@@ -293,17 +293,17 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
 
       {/* Recommendation button (only when on recommended category) - between tabs and grid */}
       {activeCategory === "recommended" && (
-        <div className="shrink-0 flex justify-center bg-muted/30 px-3 py-2 border-b border-border/50">
+        <div className="shrink-0 bg-card px-3 py-2">
           <button
             onClick={handleCycleMode}
             disabled={isRefreshing}
-            className="flex items-center gap-1.5 rounded-full border border-primary/30 bg-card px-3 py-1.5 shadow-sm transition-colors active:bg-primary/10 disabled:opacity-50"
+            className="flex w-full items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-2.5 transition-colors active:bg-primary/10 disabled:opacity-50"
           >
-            <Sparkles className="h-3 w-3 text-primary" />
-            <span className="text-[10px] font-bold text-primary">
+            <Sparkles className="h-4 w-4 text-primary" />
+            <span className="text-xs font-bold text-primary">
               {currentModeLabel}
             </span>
-            <RotateCcw className={cn("h-2.5 w-2.5 text-primary/60", isRefreshing && "animate-spin")} />
+            <RotateCcw className={cn("h-3 w-3 text-primary/60", isRefreshing && "animate-spin")} />
           </button>
         </div>
       )}
