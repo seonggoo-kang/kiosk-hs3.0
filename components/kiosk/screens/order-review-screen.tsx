@@ -237,12 +237,14 @@ function OrderItemCard({ item, itemPrice, optionsString, onQuantityChange, onRem
           </div>
 
           {/* Edit options button - shows selected options */}
-          {onEditOptions && optionsString && (
+          {onEditOptions && (
             <button
               onClick={onEditOptions}
               className="flex items-center gap-1 rounded-lg bg-primary/10 px-2.5 py-1.5 transition-colors active:bg-primary/20"
             >
-              <span className="max-w-[120px] truncate text-[10px] font-semibold text-primary">{optionsString}</span>
+              <span className="max-w-[120px] truncate text-[10px] font-semibold text-primary">
+                {optionsString || "옵션 선택"}
+              </span>
               <svg className="h-3 w-3 shrink-0 text-primary/60" viewBox="0 0 12 12" fill="none">
                 <path d="M4 3l4 3-4 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>

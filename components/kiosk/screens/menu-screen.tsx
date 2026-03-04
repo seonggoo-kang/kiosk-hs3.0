@@ -213,6 +213,8 @@ function SlideContent({
 export type MenuScreenHandle = {
   /** Reopen the option bottom sheet for a product after returning from flavor picker */
   reopenSheetWithFlavors: (productId: string, flavors: Flavor[], reqSelections: ResolvedRequiredOption[]) => void
+  /** Open option bottom sheet to edit an existing cart item by cartId */
+  editCartItem: (cartId: string) => void
 }
 
 interface MenuScreenProps {
@@ -286,7 +288,7 @@ export const MenuScreen = forwardRef<MenuScreenHandle, MenuScreenProps>(function
   const [sheetProduct, setSheetProduct] = useState<Product | null>(null)
   const [sheetFlavors, setSheetFlavors] = useState<Flavor[]>([])
   const [sheetReqSelections, setSheetReqSelections] = useState<ResolvedRequiredOption[]>([])
-  // Expose imperative method so page.tsx can reopen the sheet directly
+  // Expose imperative methods so page.tsx can control the sheet directly
   useImperativeHandle(ref, () => ({
     reopenSheetWithFlavors(productId: string, flavors: Flavor[], reqSelections: ResolvedRequiredOption[]) {
       const prod = allProducts.find((p) => p.id === productId)
@@ -295,8 +297,18 @@ export const MenuScreen = forwardRef<MenuScreenHandle, MenuScreenProps>(function
         setSheetFlavors(flavors)
         setSheetReqSelections(reqSelections)
       }
+    },
+    editCartItem(cartId: string) {
+      const item = state.cart.find((i) => i.cartId === cartId)
+      if (!item) return
+      // Only open sheet for items that have options/flavors to edit
+      if (item.product.requiredOptions.length === 0 && !item.product.requiresFlavor) return
+      setEditingCartId(cartId)
+      setSheetProduct(item.product)
+      setSheetFlavors(item.selectedFlavors)
+      setSheetReqSelections(item.requiredSelections)
     }
-  }), [])
+  }), [state.cart])
 
   const flatSlides = useMemo<Slide[]>(() => {
     const slides: Slide[] = []

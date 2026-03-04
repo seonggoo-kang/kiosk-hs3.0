@@ -329,6 +329,14 @@ export default function KioskApp() {
         onGoToDiscounts={handleGoToDiscounts}
         onHome={goToLanding}
         onGoToMenu={() => navigateTo(SCREEN.MENU, "right")}
+        onEditOptions={(item) => {
+          // Navigate to menu and open the edit sheet for this item
+          navigateTo(SCREEN.MENU, "right")
+          // Use a small delay to ensure MenuScreen is mounted before calling editCartItem
+          setTimeout(() => {
+            menuScreenRef.current?.editCartItem(item.cartId)
+          }, 350)
+        }}
         currentStep={currentStep}
         elapsedSeconds={elapsedSeconds}
       />
