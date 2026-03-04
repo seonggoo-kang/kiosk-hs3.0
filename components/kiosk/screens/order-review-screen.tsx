@@ -171,9 +171,7 @@ function OrderItemCard({ item, itemPrice, optionsString, onQuantityChange, onRem
         {/* Product info */}
         <div className="flex flex-1 flex-col gap-1 pr-16">
           <h3 className="text-sm font-bold leading-tight text-foreground">{item.product.name.replace(/\\n/g, " ")}</h3>
-          {optionsString && (
-            <p className="text-[10px] leading-relaxed text-muted-foreground">{optionsString}</p>
-          )}
+  
           {/* Flavor pills */}
           {item.selectedFlavors.length > 0 && (
             <div className="mt-1 flex flex-wrap gap-1">
@@ -238,13 +236,16 @@ function OrderItemCard({ item, itemPrice, optionsString, onQuantityChange, onRem
             </button>
           </div>
 
-          {/* Edit options button */}
-          {onEditOptions && (
+          {/* Edit options button - shows selected options */}
+          {onEditOptions && optionsString && (
             <button
               onClick={onEditOptions}
-              className="rounded-lg bg-primary px-3 py-1.5 text-[10px] font-bold text-primary-foreground transition-colors active:bg-primary/90"
+              className="flex items-center gap-1 rounded-lg bg-primary/10 px-2.5 py-1.5 transition-colors active:bg-primary/20"
             >
-              옵션변경
+              <span className="max-w-[120px] truncate text-[10px] font-semibold text-primary">{optionsString}</span>
+              <svg className="h-3 w-3 shrink-0 text-primary/60" viewBox="0 0 12 12" fill="none">
+                <path d="M4 3l4 3-4 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
             </button>
           )}
         </div>
