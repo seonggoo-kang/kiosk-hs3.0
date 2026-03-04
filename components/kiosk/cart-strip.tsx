@@ -86,12 +86,12 @@ export function MiniCart({ onEditItem }: MiniCartProps = {}) {
         opacity: hasItems ? 1 : 0,
       }}
     >
-      <div className="bg-[#F6F6FA] px-4 pt-3 pb-3">
+      <div className="bg-panel px-screen pt-3 pb-3">
         {/* Summary row */}
         <div className="flex items-center justify-between pb-2.5">
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-bold text-foreground">
-              {"\uC8FC\uBB38\uC218\uB7C9"}
+              주문수량
             </span>
             <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[10px] font-bold text-white">
               {totalItems}
@@ -99,7 +99,7 @@ export function MiniCart({ onEditItem }: MiniCartProps = {}) {
           </div>
           <div className="flex items-baseline gap-1.5">
             <span className="text-[10px] text-muted-foreground">
-              {"\uCD1D \uC8FC\uBB38\uAE08\uC561"}
+              총 주문금액
             </span>
             <span className="text-base font-extrabold text-primary">
               {formatPrice(subtotal)}
@@ -151,22 +151,22 @@ export function MiniCart({ onEditItem }: MiniCartProps = {}) {
             return (
               <div
                 key={item.cartId}
-                className="relative flex w-44 shrink-0 flex-col overflow-visible rounded-xl border border-border bg-white p-2.5"
+                className="relative flex w-44 shrink-0 flex-col overflow-visible rounded-xl border border-border bg-card p-2.5"
               >
                 {/* X close button */}
                 <button
                   onClick={() =>
                     dispatch({ type: "REMOVE_FROM_CART", payload: item.cartId })
                   }
-                  className="absolute -right-2 -top-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-[#424242] text-white shadow"
+                  className="absolute -right-2 -top-2 z-[1] flex h-5 w-5 items-center justify-center rounded-full bg-foreground/80 text-white shadow"
                   aria-label="삭제"
                 >
-                  <X className="h-3 w-3" />
+                  <X className="h-2.5 w-2.5" />
                 </button>
 
                 {/* Image + info rows */}
                 <div className="flex items-start gap-2">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-gray-100">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-muted">
                     <img
                       src={item.product.image}
                       alt={item.product.name}

@@ -115,7 +115,7 @@ export function ProductCard({ product, isSelected, quantity, onSelect, onRemove,
     >
       {/* Quantity badge -- top-left */}
       {inCart && (
-        <span className="absolute -left-1 -top-1 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground shadow">
+        <span className="absolute -left-1 -top-1 z-[1] flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground shadow">
           {quantity}
         </span>
       )}
@@ -127,7 +127,7 @@ export function ProductCard({ product, isSelected, quantity, onSelect, onRemove,
           tabIndex={0}
           onClick={(e) => { e.stopPropagation(); onRemove(product) }}
           onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); onRemove(product) } }}
-          className="absolute -right-1 -top-1 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-foreground/80 text-background shadow transition-colors hover:bg-destructive"
+          className="absolute -right-1 -top-1 z-[1] flex h-5 w-5 items-center justify-center rounded-full bg-foreground/80 text-background shadow transition-colors hover:bg-destructive"
           aria-label="장바구니에서 제거"
         >
           <X className="h-3 w-3" strokeWidth={3} />

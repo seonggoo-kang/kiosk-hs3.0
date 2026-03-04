@@ -98,7 +98,7 @@ export function OptionsScreen({ productId, flavorIds, onBack, onComplete, onHome
     <div className="flex flex-1 flex-col overflow-hidden">
       <ProgressStepper currentStep={currentStep} elapsedSeconds={elapsedSeconds} onHome={onHome} />
 
-      <div className="flex-1 overflow-y-auto bg-muted/40">
+      <div className="flex-1 overflow-y-auto bg-muted/40 scrollbar-kiosk">
         <div className="p-4">
           {product.requiresFlavor && selectedFlavors.length > 0 && (
             <section className="mb-6">

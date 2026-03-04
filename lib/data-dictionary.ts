@@ -228,7 +228,7 @@ export const FLAVOR_CATEGORIES = [
 //   has_quantity   BOOLEAN       – whether user can adjust qty
 //   default_qty   INT NULL      – default quantity if has_quantity
 //   unit          VARCHAR NULL  – display unit ("개", "분")
-// ───────────────────────────────────────────────��─────────────────────
+// ────────────────────────────────────────────────────────────────────────
 export const OPTION_GROUPS = [
   {
     id: "spoon",

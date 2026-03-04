@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useCallback, useRef, useEffect } from "react"
 import Image from "next/image"
-import { X } from "lucide-react"
+import { X, Sparkles, RotateCcw } from "lucide-react"
 import { ProgressStepper } from "@/components/kiosk/progress-stepper"
 import { KioskFooter } from "@/components/kiosk/kiosk-footer"
 import { ActionBar } from "@/components/kiosk/action-bar"
@@ -14,6 +14,15 @@ import {
   type Flavor,
 } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
+
+// Recommendation mode labels (same as ai-pick-panel)
+const RECOMMENDATION_MODES = [
+  { id: "ai", label: "나를 위한 AI 추천" },
+  { id: "popular", label: "인기 조합 추천" },
+  { id: "md", label: "MD 추천" },
+] as const
+
+type RecommendationMode = typeof RECOMMENDATION_MODES[number]["id"]
 
 const COLS = 4
 const ROWS = 4
@@ -31,10 +40,12 @@ interface FlavorsScreenProps {
 export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentStep, elapsedSeconds }: FlavorsScreenProps) {
   const product = useMemo(() => products.find((p) => p.id === productId), [productId])
 
-  const [activeCategory, setActiveCategory] = useState("all")
+  const [activeCategory, setActiveCategory] = useState("recommended")
   const [page, setPage] = useState(0)
   const [selectedFlavors, setSelectedFlavors] = useState<Flavor[]>([])
   const [focusedFlavor, setFocusedFlavor] = useState<Flavor | null>(null)
+  const [recommendationMode, setRecommendationMode] = useState<RecommendationMode>("ai")
+  const [isRefreshing, setIsRefreshing] = useState(false)
 
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -90,6 +101,22 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
   }, [])
 
   const handleCategoryChange = (catId: string) => { setActiveCategory(catId); setPage(0) }
+
+  // Cycle recommendation mode
+  const handleCycleMode = useCallback(() => {
+    setIsRefreshing(true)
+    const currentIndex = RECOMMENDATION_MODES.findIndex(m => m.id === recommendationMode)
+    const nextIndex = (currentIndex + 1) % RECOMMENDATION_MODES.length
+    const nextMode = RECOMMENDATION_MODES[nextIndex].id
+    
+    setTimeout(() => {
+      setRecommendationMode(nextMode)
+      setPage(0)
+      setIsRefreshing(false)
+    }, 500)
+  }, [recommendationMode])
+
+  const currentModeLabel = RECOMMENDATION_MODES.find(m => m.id === recommendationMode)?.label ?? ""
 
   // ── Pointer-event-based drag/swipe system (mirrors MenuScreen) ──
   const dragStartX = useRef(0)
@@ -199,7 +226,7 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
               {isSelected && interactive && (
                 <button
                   onClick={(e) => { e.stopPropagation(); removeOneFlavor(flavor.id) }}
-                  className="absolute right-0 top-0 z-20 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-foreground/70 text-white shadow-sm"
+                  className="absolute right-0 top-0 z-20 flex h-5 w-5 items-center justify-center rounded-full bg-foreground/80 text-white shadow-sm"
                   aria-label={`${flavor.name} 제거`}
                 >
                   <X className="h-2.5 w-2.5" strokeWidth={3} />
@@ -216,7 +243,7 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
               >
                 {flavor.badge && (
                   <span className={cn(
-                    "absolute left-0.5 top-5 z-10 max-w-[90%] truncate rounded px-1 py-px text-[7px] font-bold leading-tight text-white",
+                    "absolute left-0.5 top-5 z-[1] max-w-[90%] truncate rounded px-1 py-px text-[7px] font-bold leading-tight text-white",
                     flavor.badge === "NEW" ? "bg-red-500" : flavor.badge === "과일 섬유질 포함" ? "bg-pink-400" : "bg-primary"
                   )}>
                     {flavor.badge}
@@ -245,8 +272,8 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
         <div className="grid grid-cols-4">
           {flavorCategories.slice(0, 4).map((cat) => (
             <button key={cat.id} onClick={() => handleCategoryChange(cat.id)}
-              className={cn("border-b-2 px-1 py-2 text-[11px] font-semibold transition-colors",
-                activeCategory === cat.id ? "border-primary text-primary" : "border-transparent text-muted-foreground"
+              className={cn("border-b-2 px-1 py-2 text-[10px] font-medium transition-colors",
+                activeCategory === cat.id ? "border-primary font-bold text-primary" : "border-transparent text-muted-foreground"
               )}>
               {cat.name}
             </button>
@@ -255,8 +282,8 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
         <div className="grid grid-cols-4">
           {flavorCategories.slice(4).map((cat) => (
             <button key={cat.id} onClick={() => handleCategoryChange(cat.id)}
-              className={cn("border-b-2 px-1 py-2 text-[11px] font-semibold transition-colors",
-                activeCategory === cat.id ? "border-primary text-primary" : "border-transparent text-muted-foreground"
+              className={cn("border-b-2 px-1 py-2 text-[10px] font-medium transition-colors",
+                activeCategory === cat.id ? "border-primary font-bold text-primary" : "border-transparent text-muted-foreground"
               )}>
               {cat.name}
             </button>
@@ -264,10 +291,27 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
         </div>
       </div>
 
-      {/* Carousel grid area */}
+      {/* Recommendation button (only when on recommended category) - between tabs and grid */}
+      {activeCategory === "recommended" && (
+        <div className="shrink-0 bg-card px-3 py-2">
+          <button
+            onClick={handleCycleMode}
+            disabled={isRefreshing}
+            className="flex w-full items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-2.5 transition-colors active:bg-primary/10 disabled:opacity-50"
+          >
+            <Sparkles className="h-4 w-4 text-primary" />
+            <span className="text-xs font-bold text-primary">
+              {currentModeLabel}
+            </span>
+            <RotateCcw className={cn("h-3 w-3 text-primary/60", isRefreshing && "animate-spin")} />
+          </button>
+        </div>
+      )}
+
+      {/* Carousel grid area -- pb-7 reserves space so the description pill never overlaps flavor items */}
       <div
         ref={containerRef}
-        className="relative flex-1 touch-pan-y overflow-hidden bg-muted/30"
+        className="relative flex-1 touch-pan-y overflow-hidden bg-muted/30 pb-7"
         style={{ touchAction: "pan-y" }}
         onPointerDown={onDragPointerDown}
         onPointerMove={onDragPointerMove}
@@ -314,30 +358,30 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
         </div>
 
         {/* Edge shadow hints (like MenuScreen) */}
-        {prevPageFlavors && <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-4 bg-gradient-to-r from-foreground/5 to-transparent" aria-hidden="true" />}
-        {nextPageFlavors && <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-4 bg-gradient-to-l from-foreground/5 to-transparent" aria-hidden="true" />}
+        {prevPageFlavors && <div className="pointer-events-none absolute left-0 top-0 z-[1] h-full w-4 bg-gradient-to-r from-foreground/5 to-transparent" aria-hidden="true" />}
+        {nextPageFlavors && <div className="pointer-events-none absolute right-0 top-0 z-[1] h-full w-4 bg-gradient-to-l from-foreground/5 to-transparent" aria-hidden="true" />}
 
         {/* Pagination dots */}
         {totalPages > 1 && (
-          <div className="pointer-events-none absolute bottom-2 left-0 right-0 z-10 flex items-center justify-center gap-1.5" aria-hidden="true">
+          <div className="pointer-events-none absolute bottom-2 left-0 right-0 z-[1] flex items-center justify-center gap-1.5" aria-hidden="true">
             {Array.from({ length: totalPages }).map((_, i) => (
               <span key={i} className={cn("h-1.5 rounded-full transition-all duration-300", i === page ? "w-4 bg-primary" : "w-1.5 bg-border")} />
             ))}
           </div>
         )}
+
       </div>
 
-      {/* Flavor description pill */}
-      {focusedFlavor && (
-        <div className="shrink-0 px-3 py-1.5">
-          <div className="rounded-full bg-pink-50 px-4 py-2">
-            <p className="text-center text-[10px] leading-relaxed text-foreground/70">{focusedFlavor.description}</p>
-          </div>
-        </div>
-      )}
-
       {/* Bottom selection panel */}
-      <div className="shrink-0 border-t border-border px-2 pb-1.5 pt-2" style={{ backgroundColor: "#F6F6FA" }}>
+      <div className="relative shrink-0 border-t border-border bg-panel px-2 pb-1.5 pt-2">
+        {/* Flavor description pill -- absolutely positioned above the panel so it never affects layout */}
+        {focusedFlavor && (
+          <div className="absolute bottom-full left-0 right-0 z-20 px-3 pb-1.5">
+            <div className="rounded-full bg-accent px-4 py-1.5 shadow-sm">
+              <p className="text-center text-[10px] leading-relaxed text-foreground/70">{focusedFlavor.description}</p>
+            </div>
+          </div>
+        )}
         <div className="flex items-stretch gap-1.5 overflow-x-auto scrollbar-hide" style={{ height: 100 }}>
           {/* Product thumbnail */}
           <div className="flex shrink-0 flex-col items-center justify-center rounded-2xl border border-border/50 px-1.5" style={{ width: 78 }}>
@@ -353,10 +397,10 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
             const flavor = selectedFlavors[i]
             if (flavor) {
               return (
-                <div key={`slot-${i}`} className="relative flex shrink-0 flex-col items-center justify-center rounded-2xl bg-pink-50" style={{ width: 68 }}>
+                <div key={`slot-${i}`} className="relative flex shrink-0 flex-col items-center justify-center rounded-2xl bg-accent" style={{ width: 68 }}>
                   <button
                     onClick={() => removeByIndex(i)}
-                    className="absolute right-0.5 top-0.5 z-10 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-foreground/70 text-white shadow-sm"
+                    className="absolute right-0.5 top-0.5 z-[1] flex h-5 w-5 items-center justify-center rounded-full bg-foreground/80 text-white shadow-sm"
                     aria-label={`${flavor.name} 제거`}
                   >
                     <X className="h-2.5 w-2.5" strokeWidth={3} />
@@ -369,7 +413,7 @@ export function FlavorsScreen({ productId, onBack, onComplete, onHome, currentSt
               )
             }
             return (
-              <div key={`empty-${i}`} className="flex shrink-0 flex-col items-center justify-center rounded-2xl" style={{ width: 68, backgroundColor: "#EDEDF2" }}>
+              <div key={`empty-${i}`} className="flex shrink-0 flex-col items-center justify-center rounded-2xl bg-muted" style={{ width: 68 }}>
                 <div className="mb-1 flex h-11 w-11 items-center justify-center rounded-full bg-muted">
                   <span className="text-base font-bold text-muted-foreground/40">{"?"}</span>
                 </div>

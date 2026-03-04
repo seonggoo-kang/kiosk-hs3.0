@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { OrderProvider } from '@/lib/order-context'
 import { KioskScaler } from '@/components/kiosk/kiosk-scaler'
+import { DeviceModeToggle } from '@/components/kiosk/device-mode-toggle'
 
 import './globals.css'
 
@@ -41,10 +42,18 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         <OrderProvider>
           <KioskScaler />
-          {/* Outer wrapper centres + scales the fixed-size kiosk frame */}
-          <div className="flex h-dvh w-dvw items-center justify-center overflow-hidden bg-black">
+          <DeviceModeToggle />
+          {/* 
+            Outer wrapper:
+            - Kiosk mode: centres + scales the fixed-size frame (480x853 logical)
+            - Mobile mode: full viewport, no scaling (100vw x 100dvh)
+            
+            The --kiosk-w, --kiosk-h, --kiosk-scale variables are set dynamically
+            by KioskScaler based on device detection.
+          */}
+          <div className="flex h-dvh w-dvw items-center justify-center overflow-hidden bg-black kiosk-outer">
             <div
-              className="relative flex flex-col overflow-hidden bg-card shadow-2xl"
+              className="relative flex flex-col overflow-hidden bg-card shadow-2xl kiosk-frame"
               style={{
                 width: 'var(--kiosk-w)',
                 height: 'var(--kiosk-h)',

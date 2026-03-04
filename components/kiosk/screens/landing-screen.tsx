@@ -204,9 +204,8 @@ export function LandingScreen({ onSelectOrderType }: LandingScreenProps) {
             ))}
           </div>
         ) : (
-          <div className="flex h-full w-full items-center justify-center bg-primary/5">
-            <img src="/images/br-logo.png" alt="Baskin Robbins" className="h-20 w-auto opacity-40" />
-          </div>
+          /* Fallback while banners load - simple background */
+          <div className="flex h-full w-full items-center justify-center bg-primary/5" />
         )}
 
         {/* Idle gradient overlay */}
@@ -214,24 +213,6 @@ export function LandingScreen({ onSelectOrderType }: LandingScreenProps) {
           className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent transition-opacity duration-500"
           style={{ opacity: isIdle ? 1 : 0 }}
         />
-
-        {/* Dot indicators */}
-        {banners.length > 1 && (
-          <div
-            className="absolute left-0 right-0 z-10 flex items-center justify-center gap-1.5 transition-all duration-500"
-            style={{ bottom: isIdle ? "48px" : "10px" }}
-            aria-hidden="true"
-          >
-            {banners.map((_, i) => (
-              <span
-                key={i}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  i === currentIndex ? "w-4 bg-primary" : "w-1.5 bg-border"
-                }`}
-              />
-            ))}
-          </div>
-        )}
 
         {/* Idle "touch to start" prompt */}
         <div

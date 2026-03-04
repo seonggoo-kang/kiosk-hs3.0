@@ -2,13 +2,16 @@
 
 import { useState, useCallback, useEffect, useRef } from "react"
 import { useOrder } from "@/lib/order-context"
+import { useDeviceMode, type DeviceMode } from "@/components/kiosk/kiosk-scaler"
 import { LandingScreen } from "@/components/kiosk/screens/landing-screen"
 import { MenuScreen, type MenuScreenHandle } from "@/components/kiosk/screens/menu-screen"
 import { FlavorsScreen } from "@/components/kiosk/screens/flavors-screen"
 import { OptionsScreen } from "@/components/kiosk/screens/options-screen"
+import { OrderReviewScreen } from "@/components/kiosk/screens/order-review-screen"
 import { DiscountsScreen } from "@/components/kiosk/screens/discounts-screen"
 import { PaymentScreen } from "@/components/kiosk/screens/payment-screen"
 import { ConfirmationScreen } from "@/components/kiosk/screens/confirmation-screen"
+import { LandscapeLayout } from "@/components/kiosk/landscape-layout"
 import { products } from "@/lib/mock-data"
 
 // Screen indices
@@ -17,9 +20,10 @@ const SCREEN = {
   MENU: 1,
   FLAVORS: 2,
   OPTIONS: 3,
-  DISCOUNTS: 4,
-  PAYMENT: 5,
-  CONFIRMATION: 6,
+  ORDER_REVIEW: 4,
+  DISCOUNTS: 5,
+  PAYMENT: 6,
+  CONFIRMATION: 7,
 } as const
 
 type ScreenIndex = (typeof SCREEN)[keyof typeof SCREEN]
@@ -30,6 +34,8 @@ export default function KioskApp() {
   useEffect(() => setMounted(true), [])
 
   const { dispatch } = useOrder()
+  const deviceMode = useDeviceMode()
+  const isLandscape = deviceMode === "kiosk-landscape"
 
   // ── Screen navigation state ──
   const [activeScreen, setActiveScreen] = useState<ScreenIndex>(SCREEN.LANDING)
@@ -53,8 +59,8 @@ export default function KioskApp() {
   const currentStep: 1 | 2 | 3 | 4 | 5 = (() => {
     switch (activeScreen) {
       case SCREEN.MENU: case SCREEN.FLAVORS: case SCREEN.OPTIONS: return 2
-      case SCREEN.DISCOUNTS: return 3
-      case SCREEN.PAYMENT: return 4
+      case SCREEN.ORDER_REVIEW: return 3
+      case SCREEN.DISCOUNTS: case SCREEN.PAYMENT: return 4
       case SCREEN.CONFIRMATION: return 5
       default: return 1
     }
@@ -162,6 +168,10 @@ export default function KioskApp() {
     setTimeout(() => setShowMenuToast(false), 3000)
   }, [navigateTo])
 
+  const handleGoToOrderReview = useCallback(() => {
+    navigateTo(SCREEN.ORDER_REVIEW, "left")
+  }, [navigateTo])
+
   const handleGoToDiscounts = useCallback(() => {
     navigateTo(SCREEN.DISCOUNTS, "left")
   }, [navigateTo])
@@ -264,13 +274,28 @@ export default function KioskApp() {
     [SCREEN.LANDING]: (
       <LandingScreen onSelectOrderType={handleOrderType} />
     ),
-    [SCREEN.MENU]: (
+    [SCREEN.MENU]: isLandscape ? (
+      <LandscapeLayout onGoToOrderReview={handleGoToOrderReview} showCart={true}>
+        <MenuScreen
+          ref={menuScreenRef}
+          onBack={goToLanding}
+          onGoToFlavors={handleGoToFlavors}
+          onGoToOptions={handleGoToOptions}
+          onGoToDiscounts={handleGoToOrderReview}
+          showAddedToast={showMenuToast}
+          currentStep={currentStep}
+          elapsedSeconds={elapsedSeconds}
+          onSetPendingSheet={(productId, reqSelections) => { pendingSheetReqSelectionsRef.current = reqSelections }}
+          hideMiniCart={true}
+        />
+      </LandscapeLayout>
+    ) : (
       <MenuScreen
         ref={menuScreenRef}
         onBack={goToLanding}
         onGoToFlavors={handleGoToFlavors}
         onGoToOptions={handleGoToOptions}
-        onGoToDiscounts={handleGoToDiscounts}
+        onGoToDiscounts={handleGoToOrderReview}
         showAddedToast={showMenuToast}
         currentStep={currentStep}
         elapsedSeconds={elapsedSeconds}
@@ -298,11 +323,31 @@ export default function KioskApp() {
         elapsedSeconds={elapsedSeconds}
       />
     ),
+    [SCREEN.ORDER_REVIEW]: (
+      <OrderReviewScreen
+        onBack={() => navigateTo(SCREEN.MENU, "right")}
+        onGoToDiscounts={handleGoToDiscounts}
+        onHome={goToLanding}
+        onGoToMenu={() => navigateTo(SCREEN.MENU, "right")}
+        onEditOptions={(item) => {
+          // Navigate to menu and open the edit sheet for this item
+          navigateTo(SCREEN.MENU, "right")
+          // Use a small delay to ensure MenuScreen is mounted before calling editCartItem
+          setTimeout(() => {
+            menuScreenRef.current?.editCartItem(item.cartId)
+          }, 350)
+        }}
+        currentStep={currentStep}
+        elapsedSeconds={elapsedSeconds}
+      />
+    ),
     [SCREEN.DISCOUNTS]: (
       <DiscountsScreen
-        onBack={() => navigateTo(SCREEN.MENU, "right")}
+        onBack={() => navigateTo(SCREEN.ORDER_REVIEW, "right")}
         onGoToPayment={handleGoToPayment}
         onHome={goToLanding}
+        onGoToMenu={() => navigateTo(SCREEN.MENU, "right")}
+        onGoToOrderReview={() => navigateTo(SCREEN.ORDER_REVIEW, "right")}
         currentStep={currentStep}
         elapsedSeconds={elapsedSeconds}
       />
@@ -312,6 +357,8 @@ export default function KioskApp() {
         onBack={() => navigateTo(SCREEN.DISCOUNTS, "right")}
         onComplete={handlePaymentComplete}
         onHome={goToLanding}
+        onGoToMenu={() => navigateTo(SCREEN.MENU, "right")}
+        onGoToOrderReview={() => navigateTo(SCREEN.ORDER_REVIEW, "right")}
         currentStep={currentStep}
         elapsedSeconds={elapsedSeconds}
       />
@@ -334,13 +381,19 @@ export default function KioskApp() {
       {Object.values(SCREEN).map((idx) => {
         const isActive = idx === activeScreen
         const isPrev = idx === prevScreen
+        
+        // Don't mount ConfirmationScreen until it's needed (it has a timer that auto-resets)
+        if (idx === SCREEN.CONFIRMATION && !isActive && !isPrev) {
+          return null
+        }
+        
         if (!isActive && !isPrev) {
           // Keep mounted but invisible for instant access
           return (
             <div
               key={idx}
               className="absolute inset-0 flex flex-col overflow-hidden"
-              style={{ visibility: "hidden", pointerEvents: "none" }}
+              style={{ visibility: "hidden", pointerEvents: "none", zIndex: -1 }}
             >
               {screens[idx]}
             </div>
@@ -348,12 +401,12 @@ export default function KioskApp() {
         }
 
         if (isPrev && animating) {
-          // Sliding out
+          // Sliding out - lower z-index so incoming screen covers it
           const to = slideDir === "left" ? "-100%" : "100%"
           return (
             <div
               key={idx}
-              className="absolute inset-0 flex flex-col overflow-hidden"
+              className="absolute inset-0 z-0 flex flex-col overflow-hidden bg-background"
               style={{
                 transform: `translateX(${to})`,
                 transition: "transform 300ms ease-out",
@@ -365,12 +418,13 @@ export default function KioskApp() {
           )
         }
 
-        // Active screen
+        // Active screen - higher z-index to cover outgoing screen
         return (
           <SlideIn
             key={`${idx}-${slideKey}`}
             from={animating ? (slideDir === "left" ? "100%" : "-100%") : "0%"}
             active
+            zIndex={10}
           >
             {screens[idx]}
           </SlideIn>
@@ -389,10 +443,12 @@ function SlideIn({
   from,
   active,
   children,
+  zIndex = 0,
 }: {
   from: string
   active: boolean
   children: React.ReactNode
+  zIndex?: number
 }) {
   const [offset, setOffset] = useState(from)
 
@@ -407,11 +463,12 @@ function SlideIn({
 
   return (
     <div
-      className="absolute inset-0 flex flex-col overflow-hidden"
+      className="absolute inset-0 flex flex-col overflow-hidden bg-background"
       style={{
         transform: `translateX(${offset})`,
         transition: offset === from && from !== "0%" ? "none" : "transform 300ms ease-out",
         pointerEvents: active ? "auto" : "none",
+        zIndex,
       }}
     >
       {children}

@@ -63,7 +63,39 @@ function orderReducer(state: OrderState, action: OrderAction): OrderState {
     case "ADD_TO_CART": {
       // Ensure requiredSelections exists for backward compatibility
       const cartItem = { ...action.payload, requiredSelections: action.payload.requiredSelections ?? [] }
-      return { ...state, cart: [...state.cart, cartItem], selectedProductId: null }
+
+      // Check if an identical item already exists (same product + flavors + required + options)
+      const existingIdx = state.cart.findIndex((existing) => {
+        if (existing.product.id !== cartItem.product.id) return false
+
+        // Compare selected flavors (by id, sorted)
+        const eFlavors = existing.selectedFlavors.map((f) => f.id).sort().join(",")
+        const nFlavors = cartItem.selectedFlavors.map((f) => f.id).sort().join(",")
+        if (eFlavors !== nFlavors) return false
+
+        // Compare required selections (by groupId + selectedOptionId, sorted)
+        const eReq = (existing.requiredSelections ?? []).map((r) => `${r.groupId}:${r.selectedOptionId}`).sort().join(",")
+        const nReq = cartItem.requiredSelections.map((r) => `${r.groupId}:${r.selectedOptionId}`).sort().join(",")
+        if (eReq !== nReq) return false
+
+        // Compare optional add-ons (by groupId + option.id + quantity, sorted)
+        const eOpt = existing.options.map((o) => `${o.groupId}:${o.option.id}:${o.quantity}`).sort().join(",")
+        const nOpt = cartItem.options.map((o) => `${o.groupId}:${o.option.id}:${o.quantity}`).sort().join(",")
+        if (eOpt !== nOpt) return false
+
+        return true
+      })
+
+      if (existingIdx >= 0) {
+        // Merge: increment quantity of existing identical item
+        const existingItem = state.cart[existingIdx]
+        const updatedCart = state.cart.map((item, i) =>
+          i === existingIdx ? { ...item, quantity: item.quantity + cartItem.quantity } : item
+        )
+        return { ...state, cart: updatedCart, selectedProductId: null, lastTouchedCartId: existingItem.cartId }
+      }
+
+      return { ...state, cart: [...state.cart, cartItem], selectedProductId: null, lastTouchedCartId: cartItem.cartId }
     }
     case "REMOVE_FROM_CART":
       return { ...state, cart: state.cart.filter((item) => item.cartId !== action.payload) }

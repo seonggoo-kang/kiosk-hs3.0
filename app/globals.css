@@ -50,52 +50,101 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+  
+  /* ── Kiosk Scrollbar (standardized across app) ── */
+  .scrollbar-kiosk {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--primary) / 0.4) transparent;
+  }
+  .scrollbar-kiosk::-webkit-scrollbar {
+    width: 6px;
+  }
+  .scrollbar-kiosk::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 3px;
+  }
+  .scrollbar-kiosk::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary) / 0.4);
+    border-radius: 3px;
+  }
+  .scrollbar-kiosk::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary) / 0.6);
+  }
 }
 
 @layer base {
   :root {
-    /* ── Kiosk hardware dimensions (portrait) ──
-       The physical screen is 1080 x 1920, but we author the
-       CSS layout at a "logical" viewport of 480 x 853
-       (i.e. 1080 / 2.25 and 1920 / 2.25). This keeps Tailwind
-       utility classes (text-sm, p-4, gap-2, etc.) looking correct
-       without converting every value to rem.
+    /* ══════════════════════════════════════════════════════════════════════
+       BR KIOSK DESIGN SYSTEM - CSS CUSTOM PROPERTIES
+       See /lib/design-system.ts for full documentation
+       ══════════════════════════════════════════════════════════════════════ */
 
-       The container is scaled up to fill the real hardware via
-       CSS transform: scale(). In the browser preview it scales
-       to fit whatever window size is available.
-
-       Override --kiosk-hw-* for different form factors:
-       - Standing kiosk: 1080 x 1920  (default)
-       - Table order:    800 x 1280   (example)
-    */
-    /* Logical viewport = physical / DPR (2.25)
-       Standing kiosk: 1080/2.25 = 480,  1920/2.25 ≈ 853  */
+    /* ── Kiosk Viewport ──────────────────────────────────────────────────── */
     --kiosk-w: 480px;
     --kiosk-h: 853px;
-    /* --kiosk-scale is set by JS on mount + resize (see KioskScaler). */
     --kiosk-scale: 1;
+    --is-mobile: 0;     /* 0 = kiosk, 1 = mobile (set by KioskScaler) */
+    --is-landscape: 0;  /* 0 = portrait, 1 = landscape (set by KioskScaler) */
 
-    --background: 0 0% 96%;
-    --foreground: 220 15% 15%;
-    --card: 0 0% 100%;
+    /* ── Brand Colors ────────────────────────────────────────────────────── */
+    --primary: 338 80% 55%;              /* BR Pink #E84073 */
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 338 80% 96%;        /* Light pink for accents */
+    --primary-dark: 338 80% 45%;         /* Darker pink for hover */
+
+    /* ── Semantic Colors ─────────────────────────────────────────────────── */
+    --background: 0 0% 96%;              /* Page background #F5F5F5 */
+    --foreground: 220 15% 15%;           /* Primary text #202530 */
+    --card: 0 0% 100%;                   /* Card surface #FFFFFF */
     --card-foreground: 220 15% 15%;
     --popover: 0 0% 100%;
     --popover-foreground: 220 15% 15%;
-    --primary: 338 80% 55%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 220 10% 46%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 220 10% 94%;
-    --muted-foreground: 220 10% 46%;
-    --accent: 338 80% 96%;
+    --muted: 220 10% 94%;                /* Muted backgrounds #EEEFF2 */
+    --muted-foreground: 220 10% 46%;     /* Secondary text #6B7280 */
+    --accent: 338 80% 96%;               /* Accent backgrounds */
     --accent-foreground: 338 80% 45%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 220 13% 89%;
+    --border: 220 13% 89%;               /* Borders #DFE1E6 */
     --input: 220 13% 89%;
     --ring: 338 80% 55%;
-    --radius: 0.75rem;
+
+    /* ── Panel Color (for bottom panels, action bars) ───────────────────── */
+    --panel: 240 20% 97%;                /* Panel background #F6F6FA */
+
+    /* ── Feedback Colors ─────────────────────────────────────────────────── */
+    --success: 142 76% 36%;
+    --warning: 38 92% 50%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --info: 199 89% 48%;
+
+    /* ── Secondary (for secondary buttons) ───────────────────────────────── */
+    --secondary: 220 10% 46%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* ── Border Radius Scale ─────────────────────────────────────────────── */
+    --radius: 0.75rem;                   /* 12px base radius */
+    --radius-sm: 0.25rem;                /* 4px */
+    --radius-md: 0.5rem;                 /* 8px */
+    --radius-lg: 0.75rem;                /* 12px */
+    --radius-xl: 1rem;                   /* 16px */
+    --radius-2xl: 1.25rem;               /* 20px */
+    --radius-full: 9999px;               /* Pills */
+
+    /* ── Spacing Scale ───────────────────────────────────────────────────── */
+    --space-screen: 0.75rem;             /* 12px - screen horizontal padding */
+    --space-card: 0.875rem;              /* 14px - card internal padding */
+    --space-section: 1rem;               /* 16px - between sections */
+    --space-item: 0.625rem;              /* 10px - between list items */
+
+    /* ── Component Heights ───────────────────────────────────────────────── */
+    --height-header: 52px;
+    --height-footer: 28px;
+    --height-action-bar: 100px;
+    --height-button: 48px;
+    --height-button-sm: 40px;
+
+    /* ── Typography ──────────────────────────────────────────────────────── */
+    --font-sans: 'NanumSquareNeo', system-ui, sans-serif;
   }
 }
 
@@ -106,5 +155,70 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   MOBILE-SPECIFIC STYLES
+   Applied when data-device="mobile" is set on <html> by KioskScaler
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Remove black background on mobile - app fills full screen */
+html[data-device="mobile"] .kiosk-outer {
+  background: transparent;
+}
+
+/* On mobile, the frame has no shadow and fills viewport */
+html[data-device="mobile"] .kiosk-frame {
+  box-shadow: none;
+  border-radius: 0;
+}
+
+/* Safe area insets for notched devices (iPhone X+, etc.) */
+@supports (padding: env(safe-area-inset-top)) {
+  html[data-device="mobile"] .kiosk-frame {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   LANDSCAPE TABLET STYLES
+   Applied when data-device="kiosk-landscape" is set on <html> by KioskScaler
+   Target: 1280x800 landscape tablets (table order kiosks)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Landscape kiosk uses a different aspect ratio frame */
+html[data-device="kiosk-landscape"] .kiosk-frame {
+  border-radius: 0.75rem;
+}
+
+/* Adjust text sizes for landscape (more horizontal space) */
+html[data-device="kiosk-landscape"] {
+  --landscape-text-scale: 1;
+}
+
+/* Landscape-specific component adjustments */
+html[data-device="kiosk-landscape"] .progress-stepper {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Landscape header - more compact */
+html[data-device="kiosk-landscape"] .kiosk-header {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+/* Landscape footer - more compact */
+html[data-device="kiosk-landscape"] .kiosk-footer {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+/* Landscape action bar - horizontal layout optimization */
+html[data-device="kiosk-landscape"] .action-bar {
+  padding: 0.75rem 1rem;
 }
 

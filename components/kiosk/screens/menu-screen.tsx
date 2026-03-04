@@ -118,7 +118,7 @@ function SlideContent({
   }
 
   return (
-    <div className="h-full overflow-y-auto overflow-x-hidden">
+    <div className="h-full overflow-y-auto overflow-x-hidden scrollbar-kiosk">
       <div className="flex min-h-full flex-col p-3">
         {slide.products.length > 0 ? (
           <div className={gridClassForCount(slide.totalCategoryProducts, zoomLevel)}>
@@ -213,6 +213,8 @@ function SlideContent({
 export type MenuScreenHandle = {
   /** Reopen the option bottom sheet for a product after returning from flavor picker */
   reopenSheetWithFlavors: (productId: string, flavors: Flavor[], reqSelections: ResolvedRequiredOption[]) => void
+  /** Open option bottom sheet to edit an existing cart item by cartId */
+  editCartItem: (cartId: string) => void
 }
 
 interface MenuScreenProps {
@@ -225,9 +227,11 @@ interface MenuScreenProps {
   elapsedSeconds: number
   /** Set the pending sheet state in the parent (survives navigation) */
   onSetPendingSheet?: (productId: string, reqSelections: ResolvedRequiredOption[]) => void
+  /** Hide the mini cart (for landscape mode where cart is in sidebar) */
+  hideMiniCart?: boolean
 }
 
-export const MenuScreen = forwardRef<MenuScreenHandle, MenuScreenProps>(function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscounts, showAddedToast: externalToast, currentStep, elapsedSeconds, onSetPendingSheet }, ref) {
+export const MenuScreen = forwardRef<MenuScreenHandle, MenuScreenProps>(function MenuScreen({ onBack, onGoToFlavors, onGoToOptions, onGoToDiscounts, showAddedToast: externalToast, currentStep, elapsedSeconds, onSetPendingSheet, hideMiniCart }, ref) {
   const { state, dispatch } = useOrder()
 
   const [cakeFilter, setCakeFilter] = useState("all")
@@ -240,17 +244,29 @@ export const MenuScreen = forwardRef<MenuScreenHandle, MenuScreenProps>(function
 
   // ── Grid zoom (per-category) ──
   const [zoomMap, setZoomMap] = useState<Record<string, ZoomLevel>>({})
-  const [showZoomHint, setShowZoomHint] = useState(false)
+  const [showGestureHint, setShowGestureHint] = useState(false)
   const [zoomIndicator, setZoomIndicator] = useState<number | null>(null)
   const zoomIndicatorTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const gestureHintShownRef = useRef(false)
 
   useEffect(() => {
-    const show = setTimeout(() => setShowZoomHint(true), 2000)
-    const hide = setTimeout(() => setShowZoomHint(false), 6000)
+    // Only show gesture hint once per session (check sessionStorage)
+    const alreadyShown = sessionStorage.getItem("gestureHintShown") === "true"
+    if (alreadyShown || gestureHintShownRef.current) return
+    
+    gestureHintShownRef.current = true
+    const show = setTimeout(() => setShowGestureHint(true), 2000)
+    const hide = setTimeout(() => {
+      setShowGestureHint(false)
+      sessionStorage.setItem("gestureHintShown", "true")
+    }, 7000)
     return () => { clearTimeout(show); clearTimeout(hide) }
   }, [])
 
-  const dismissZoomHint = useCallback(() => setShowZoomHint(false), [])
+  const dismissGestureHint = useCallback(() => {
+    setShowGestureHint(false)
+    sessionStorage.setItem("gestureHintShown", "true")
+  }, [])
 
   const showZoomBadge = useCallback((level: number) => {
     setZoomIndicator(level)
@@ -272,7 +288,7 @@ export const MenuScreen = forwardRef<MenuScreenHandle, MenuScreenProps>(function
   const [sheetProduct, setSheetProduct] = useState<Product | null>(null)
   const [sheetFlavors, setSheetFlavors] = useState<Flavor[]>([])
   const [sheetReqSelections, setSheetReqSelections] = useState<ResolvedRequiredOption[]>([])
-  // Expose imperative method so page.tsx can reopen the sheet directly
+  // Expose imperative methods so page.tsx can control the sheet directly
   useImperativeHandle(ref, () => ({
     reopenSheetWithFlavors(productId: string, flavors: Flavor[], reqSelections: ResolvedRequiredOption[]) {
       const prod = allProducts.find((p) => p.id === productId)
@@ -281,8 +297,18 @@ export const MenuScreen = forwardRef<MenuScreenHandle, MenuScreenProps>(function
         setSheetFlavors(flavors)
         setSheetReqSelections(reqSelections)
       }
+    },
+    editCartItem(cartId: string) {
+      const item = state.cart.find((i) => i.cartId === cartId)
+      if (!item) return
+      // Only open sheet for items that have options/flavors to edit
+      if (item.product.requiredOptions.length === 0 && !item.product.requiresFlavor) return
+      setEditingCartId(cartId)
+      setSheetProduct(item.product)
+      setSheetFlavors(item.selectedFlavors)
+      setSheetReqSelections(item.requiredSelections)
     }
-  }), [])
+  }), [state.cart])
 
   const flatSlides = useMemo<Slide[]>(() => {
     const slides: Slide[] = []
@@ -627,7 +653,7 @@ export const MenuScreen = forwardRef<MenuScreenHandle, MenuScreenProps>(function
       const delta = dist - pinchStartDist.current
       if (Math.abs(delta) > 60) {
         pinchFired.current = true
-        dismissZoomHint()
+        dismissGestureHint()
         setZoomMap((prev) => {
           const cat = activeCategory
           const cur = prev[cat] ?? 4
@@ -637,7 +663,7 @@ export const MenuScreen = forwardRef<MenuScreenHandle, MenuScreenProps>(function
         })
       }
     }
-  }, [dismissZoomHint, showZoomBadge])
+  }, [dismissGestureHint, showZoomBadge])
 
   const onPinchPointerUp = useCallback((e: React.PointerEvent) => {
     pinchPointers.current.delete(e.pointerId)
@@ -645,24 +671,24 @@ export const MenuScreen = forwardRef<MenuScreenHandle, MenuScreenProps>(function
   }, [])
 
   const handleZoomIn = useCallback(() => {
-    dismissZoomHint()
+    dismissGestureHint()
     setZoomMap((prev) => {
       const cur = prev[activeCategory] ?? 4
       const next = Math.max(1, cur - 1) as 1 | 2 | 3 | 4 | 5
       showZoomBadge(next)
       return { ...prev, [activeCategory]: next }
     })
-  }, [dismissZoomHint, showZoomBadge, activeCategory])
+  }, [dismissGestureHint, showZoomBadge, activeCategory])
 
   const handleZoomOut = useCallback(() => {
-    dismissZoomHint()
+    dismissGestureHint()
     setZoomMap((prev) => {
       const cur = prev[activeCategory] ?? 4
       const next = Math.min(5, cur + 1) as 1 | 2 | 3 | 4 | 5
       showZoomBadge(next)
       return { ...prev, [activeCategory]: next }
     })
-  }, [dismissZoomHint, showZoomBadge, activeCategory])
+  }, [dismissGestureHint, showZoomBadge, activeCategory])
 
   const handleApplyZoomToAll = useCallback(() => {
     const current = zoomMap[activeCategory] ?? null
@@ -855,7 +881,7 @@ export const MenuScreen = forwardRef<MenuScreenHandle, MenuScreenProps>(function
       {/* Carousel */}
       <div
         ref={containerRef}
-        className="relative flex-1 overflow-hidden bg-[#FFFFFF] select-none"
+        className="relative flex-1 overflow-hidden bg-background select-none"
         style={{ touchAction: "none" }}
         onPointerDown={(e) => { onDragPointerDown(e); onPinchPointerDown(e) }}
         onPointerMove={(e) => { onDragPointerMove(e); onPinchPointerMove(e) }}
@@ -896,16 +922,8 @@ export const MenuScreen = forwardRef<MenuScreenHandle, MenuScreenProps>(function
           )}
         </div>
 
-        {prevSlide && <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-4 bg-gradient-to-r from-foreground/5 to-transparent" aria-hidden="true" />}
-        {nextSlide && <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-4 bg-gradient-to-l from-foreground/5 to-transparent" aria-hidden="true" />}
-
-        {displaySlide.totalPages > 1 && (
-          <div className="pointer-events-none absolute bottom-2 left-0 right-0 z-10 flex items-center justify-center gap-1.5" aria-hidden="true">
-            {Array.from({ length: displaySlide.totalPages }).map((_, i) => (
-              <span key={i} className={`h-1.5 rounded-full transition-all duration-300 ${i === displaySlide.pageIndex ? "w-4 bg-primary" : "w-1.5 bg-border"}`} />
-            ))}
-          </div>
-        )}
+        {prevSlide && <div className="pointer-events-none absolute left-0 top-0 z-[1] h-full w-4 bg-gradient-to-r from-foreground/5 to-transparent" aria-hidden="true" />}
+        {nextSlide && <div className="pointer-events-none absolute right-0 top-0 z-[1] h-full w-4 bg-gradient-to-l from-foreground/5 to-transparent" aria-hidden="true" />}
 
         {/* Zoom level indicator (brief flash on change) */}
         {zoomIndicator !== null && (
@@ -925,24 +943,36 @@ export const MenuScreen = forwardRef<MenuScreenHandle, MenuScreenProps>(function
           </div>
         )}
 
-        {/* First-time zoom hint */}
-        {showZoomHint && (
+        {/* First-time gesture hint (swipe + zoom) */}
+        {showGestureHint && (
           <div
             className="pointer-events-auto absolute inset-0 z-30 flex items-center justify-center bg-foreground/20 backdrop-blur-[1px] animate-in fade-in duration-500"
-            onClick={dismissZoomHint}
+            onClick={dismissGestureHint}
             role="button"
             tabIndex={0}
-            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") dismissZoomHint() }}
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") dismissGestureHint() }}
             aria-label="힌트 닫기"
           >
-            <div className="flex items-center gap-3 rounded-2xl bg-card/95 px-6 py-5 shadow-xl backdrop-blur-sm">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
-                <path d="M6 6l4 4M18 6l-4 4M6 18l4-4M18 18l-4-4" />
-                <circle cx="12" cy="12" r="2" />
-              </svg>
-              <span className="text-xs font-medium text-foreground">
-                {"두 손가락으로 확대/축소"}
-              </span>
+            <div className="flex flex-col gap-4 rounded-2xl bg-card/95 px-6 py-5 shadow-xl backdrop-blur-sm">
+              {/* Swipe hint */}
+              <div className="flex items-center gap-3">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
+                  <path d="M5 12h14M5 12l4-4M5 12l4 4M19 12l-4-4M19 12l-4 4" />
+                </svg>
+                <span className="text-xs font-medium text-foreground">
+                  좌우로 밀어서 카테고리 이동
+                </span>
+              </div>
+              {/* Zoom hint */}
+              <div className="flex items-center gap-3">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
+                  <path d="M6 6l4 4M18 6l-4 4M6 18l4-4M18 18l-4-4" />
+                  <circle cx="12" cy="12" r="2" />
+                </svg>
+                <span className="text-xs font-medium text-foreground">
+                  두 손가락으로 확대/축소
+                </span>
+              </div>
             </div>
           </div>
         )}
@@ -957,7 +987,7 @@ export const MenuScreen = forwardRef<MenuScreenHandle, MenuScreenProps>(function
         )}
       </div>
 
-      <MiniCart onEditItem={handleEditCartItem} />
+      {!hideMiniCart && <MiniCart onEditItem={handleEditCartItem} />}
       <ActionBar
         onBack={() => {
           dispatch({ type: "RESET_ORDER" })
